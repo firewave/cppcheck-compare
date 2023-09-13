@@ -1,0 +1,3241 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741938 expected@var22 !=@expr1073741939 actual@var23 ) {
+62: std ::@expr1073741940 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741941 expected@var22 ;
+64: std ::@expr1073741942 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741943 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741944 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741945 str (@expr1073741946 ) , actualStr@var26 .@expr1073741947 str (@expr1073741948 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741949 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741950 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741951 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741952 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testbool.cpp
+
+1:
+|
+27:
+28: class TestBool : public TestFixture {
+29: public:
+30: TestBool ( ) : TestFixture ( "TestBool" ) { }
+31:
+32: private:
+33: Settings settings@var102 ;
+34:
+35: void run ( ) override {
+36: settings@var102 .@expr132 severity@var103 .@expr133 enable (@expr1073741958 Severity ::@expr1073741959 style@expr1073741953 ) ;
+37: settings@var102 .@expr132 severity@var103 .@expr133 enable (@expr1073741962 Severity ::@expr1073741963 warning@expr1073741954 ) ;
+38: settings@var102 .@expr1073741964 certainty@var104 .@expr1073741965 enable (@expr1073741966 Certainty ::@expr1073741967 inconclusive@expr1073741955 ) ;
+39:
+40: $do ${ $if $(@expr1073741968 $prepareTest $(@expr1073741969 "bitwiseOnBoolean" $) $) ${ $setVerbose $(@expr1073741970 $false $) $; bitwiseOnBoolean $(@expr1073741971 $) $; $} $} $while $(@expr1073741972 $false $) ;
+41: $do ${ $if $(@expr1073741973 $prepareTest $(@expr1073741974 "incrementBoolean" $) $) ${ $setVerbose $(@expr1073741975 $false $) $; incrementBoolean $(@expr1073741976 $) $; $} $} $while $(@expr1073741977 $false $) ;
+42: $do ${ $if $(@expr1073741978 $prepareTest $(@expr1073741979 "assignBoolToPointer" $) $) ${ $setVerbose $(@expr1073741980 $false $) $; assignBoolToPointer $(@expr1073741981 $) $; $} $} $while $(@expr1073741982 $false $) ;
+43: $do ${ $if $(@expr1073741983 $prepareTest $(@expr1073741984 "assignBoolToFloat" $) $) ${ $setVerbose $(@expr1073741985 $false $) $; assignBoolToFloat $(@expr1073741986 $) $; $} $} $while $(@expr1073741987 $false $) ;
+44:
+45: $do ${ $if $(@expr1073741988 $prepareTest $(@expr1073741989 "comparisonOfBoolExpressionWithInt1" $) $) ${ $setVerbose $(@expr1073741990 $false $) $; comparisonOfBoolExpressionWithInt1 $(@expr1073741991 $) $; $} $} $while $(@expr1073741992 $false $) ;
+46: $do ${ $if $(@expr1073741993 $prepareTest $(@expr1073741994 "comparisonOfBoolExpressionWithInt2" $) $) ${ $setVerbose $(@expr1073741995 $false $) $; comparisonOfBoolExpressionWithInt2 $(@expr1073741996 $) $; $} $} $while $(@expr1073741997 $false $) ;
+47: $do ${ $if $(@expr1073741998 $prepareTest $(@expr1073741999 "comparisonOfBoolExpressionWithInt3" $) $) ${ $setVerbose $(@expr1073742000 $false $) $; comparisonOfBoolExpressionWithInt3 $(@expr1073742001 $) $; $} $} $while $(@expr1073742002 $false $) ;
+48: $do ${ $if $(@expr1073742003 $prepareTest $(@expr1073742004 "comparisonOfBoolExpressionWithInt4" $) $) ${ $setVerbose $(@expr1073742005 $false $) $; comparisonOfBoolExpressionWithInt4 $(@expr1073742006 $) $; $} $} $while $(@expr1073742007 $false $) ;
+49:
+50: $do ${ $if $(@expr1073742008 $prepareTest $(@expr1073742009 "comparisonOfBoolWithInt1" $) $) ${ $setVerbose $(@expr1073742010 $false $) $; comparisonOfBoolWithInt1 $(@expr1073742011 $) $; $} $} $while $(@expr1073742012 $false $) ;
+51: $do ${ $if $(@expr1073742013 $prepareTest $(@expr1073742014 "comparisonOfBoolWithInt2" $) $) ${ $setVerbose $(@expr1073742015 $false $) $; comparisonOfBoolWithInt2 $(@expr1073742016 $) $; $} $} $while $(@expr1073742017 $false $) ;
+52: $do ${ $if $(@expr1073742018 $prepareTest $(@expr1073742019 "comparisonOfBoolWithInt3" $) $) ${ $setVerbose $(@expr1073742020 $false $) $; comparisonOfBoolWithInt3 $(@expr1073742021 $) $; $} $} $while $(@expr1073742022 $false $) ;
+53: $do ${ $if $(@expr1073742023 $prepareTest $(@expr1073742024 "comparisonOfBoolWithInt4" $) $) ${ $setVerbose $(@expr1073742025 $false $) $; comparisonOfBoolWithInt4 $(@expr1073742026 $) $; $} $} $while $(@expr1073742027 $false $) ;
+54: $do ${ $if $(@expr1073742028 $prepareTest $(@expr1073742029 "comparisonOfBoolWithInt5" $) $) ${ $setVerbose $(@expr1073742030 $false $) $; comparisonOfBoolWithInt5 $(@expr1073742031 $) $; $} $} $while $(@expr1073742032 $false $) ;
+55: $do ${ $if $(@expr1073742033 $prepareTest $(@expr1073742034 "comparisonOfBoolWithInt6" $) $) ${ $setVerbose $(@expr1073742035 $false $) $; comparisonOfBoolWithInt6 $(@expr1073742036 $) $; $} $} $while $(@expr1073742037 $false $) ;
+56: $do ${ $if $(@expr1073742038 $prepareTest $(@expr1073742039 "comparisonOfBoolWithInt7" $) $) ${ $setVerbose $(@expr1073742040 $false $) $; comparisonOfBoolWithInt7 $(@expr1073742041 $) $; $} $} $while $(@expr1073742042 $false $) ;
+57: $do ${ $if $(@expr1073742043 $prepareTest $(@expr1073742044 "comparisonOfBoolWithInt8" $) $) ${ $setVerbose $(@expr1073742045 $false $) $; comparisonOfBoolWithInt8 $(@expr1073742046 $) $; $} $} $while $(@expr1073742047 $false $) ;
+58: $do ${ $if $(@expr1073742048 $prepareTest $(@expr1073742049 "comparisonOfBoolWithInt9" $) $) ${ $setVerbose $(@expr1073742050 $false $) $; comparisonOfBoolWithInt9 $(@expr1073742051 $) $; $} $} $while $(@expr1073742052 $false $) ;
+59:
+60: $do ${ $if $(@expr1073742053 $prepareTest $(@expr1073742054 "checkComparisonOfFuncReturningBool1" $) $) ${ $setVerbose $(@expr1073742055 $false $) $; checkComparisonOfFuncReturningBool1 $(@expr1073742056 $) $; $} $} $while $(@expr1073742057 $false $) ;
+61: $do ${ $if $(@expr1073742058 $prepareTest $(@expr1073742059 "checkComparisonOfFuncReturningBool2" $) $) ${ $setVerbose $(@expr1073742060 $false $) $; checkComparisonOfFuncReturningBool2 $(@expr1073742061 $) $; $} $} $while $(@expr1073742062 $false $) ;
+62: $do ${ $if $(@expr1073742063 $prepareTest $(@expr1073742064 "checkComparisonOfFuncReturningBool3" $) $) ${ $setVerbose $(@expr1073742065 $false $) $; checkComparisonOfFuncReturningBool3 $(@expr1073742066 $) $; $} $} $while $(@expr1073742067 $false $) ;
+63: $do ${ $if $(@expr1073742068 $prepareTest $(@expr1073742069 "checkComparisonOfFuncReturningBool4" $) $) ${ $setVerbose $(@expr1073742070 $false $) $; checkComparisonOfFuncReturningBool4 $(@expr1073742071 $) $; $} $} $while $(@expr1073742072 $false $) ;
+64: $do ${ $if $(@expr1073742073 $prepareTest $(@expr1073742074 "checkComparisonOfFuncReturningBool5" $) $) ${ $setVerbose $(@expr1073742075 $false $) $; checkComparisonOfFuncReturningBool5 $(@expr1073742076 $) $; $} $} $while $(@expr1073742077 $false $) ;
+65: $do ${ $if $(@expr1073742078 $prepareTest $(@expr1073742079 "checkComparisonOfFuncReturningBool6" $) $) ${ $setVerbose $(@expr1073742080 $false $) $; checkComparisonOfFuncReturningBool6 $(@expr1073742081 $) $; $} $} $while $(@expr1073742082 $false $) ;
+66: $do ${ $if $(@expr1073742083 $prepareTest $(@expr1073742084 "checkComparisonOfFuncReturningBool7" $) $) ${ $setVerbose $(@expr1073742085 $false $) $; checkComparisonOfFuncReturningBool7 $(@expr1073742086 $) $; $} $} $while $(@expr1073742087 $false $) ;
+67: $do ${ $if $(@expr1073742088 $prepareTest $(@expr1073742089 "checkComparisonOfFuncReturningBool8" $) $) ${ $setVerbose $(@expr1073742090 $false $) $; checkComparisonOfFuncReturningBool8 $(@expr1073742091 $) $; $} $} $while $(@expr1073742092 $false $) ;
+68:
+69: $do ${ $if $(@expr1073742093 $prepareTest $(@expr1073742094 "checkComparisonOfFuncReturningBoolIntegrationTest1" $) $) ${ $setVerbose $(@expr1073742095 $false $) $; checkComparisonOfFuncReturningBoolIntegrationTest1 $(@expr1073742096 $) $; $} $} $while $(@expr1073742097 $false $) ;
+70:
+71: $do ${ $if $(@expr1073742098 $prepareTest $(@expr1073742099 "checkComparisonOfBoolWithBool" $) $) ${ $setVerbose $(@expr1073742100 $false $) $; checkComparisonOfBoolWithBool $(@expr1073742101 $) $; $} $} $while $(@expr1073742102 $false $) ;
+72:
+73:
+74: $do ${ $if $(@expr1073742103 $prepareTest $(@expr1073742104 "pointerArithBool1" $) $) ${ $setVerbose $(@expr1073742105 $false $) $; pointerArithBool1 $(@expr1073742106 $) $; $} $} $while $(@expr1073742107 $false $) ;
+75:
+76: $do ${ $if $(@expr1073742108 $prepareTest $(@expr1073742109 "returnNonBool" $) $) ${ $setVerbose $(@expr1073742110 $false $) $; returnNonBool $(@expr1073742111 $) $; $} $} $while $(@expr1073742112 $false $) ;
+77: $do ${ $if $(@expr1073742113 $prepareTest $(@expr1073742114 "returnNonBoolLambda" $) $) ${ $setVerbose $(@expr1073742115 $false $) $; returnNonBoolLambda $(@expr1073742116 $) $; $} $} $while $(@expr1073742117 $false $) ;
+78: $do ${ $if $(@expr1073742118 $prepareTest $(@expr1073742119 "returnNonBoolLogicalOp" $) $) ${ $setVerbose $(@expr1073742120 $false $) $; returnNonBoolLogicalOp $(@expr1073742121 $) $; $} $} $while $(@expr1073742122 $false $) ;
+79: $do ${ $if $(@expr1073742123 $prepareTest $(@expr1073742124 "returnNonBoolClass" $) $) ${ $setVerbose $(@expr1073742125 $false $) $; returnNonBoolClass $(@expr1073742126 $) $; $} $} $while $(@expr1073742127 $false $) ;
+80: }
+81:
+82:
+83: void check_ ( const char * file@var105 , int line@var106 , const char code@var107 [ ] , const char filename@var108 [ 9 ] = "test.cpp" ) {
+84:
+85: errout@var100 .@expr1073742128 str (@expr1073742129 "" ) ;
+86:
+87:
+88: Tokenizer tokenizer@var109 (@expr1073742130 &@expr307 settings@var102 , this@expr308 ) ;
+89: std ::@expr1073742133 istringstream istr@var110 (@expr1073742134 code@var107 ) ;
+90: $assert_ $(@expr1073742135 file@var105 $, line@var106 $, $(@expr1073742136 tokenizer@var109 .@expr1073742137 tokenize (@expr1073742138 istr@var110 , filename@var108 ) $) $) ;
+91:
+92:
+93: CheckBool checkBool@var111 (@expr1073742139 &@expr316 tokenizer@var109 , &@expr307 settings@var102 , this@expr308 ) ;
+94: checkBool@var111 .@expr1073742142 runChecks (@expr1073742143 &@expr316 tokenizer@var109 , &@expr307 settings@var102 , this@expr308 ) ;
+95: }
+96:
+97:
+98: void assignBoolToPointer ( ) {
+99: $check_ $(@expr1073742146 "cppcheck-2.8/test/testbool.cpp" $, 99 $, "void foo(bool *p) {\n    p = false;\n}" $)
+100:
+101: ;
+102: $if $(@expr1073742147 $!@expr1073742148 $assertEquals $(@expr1073742149 "cppcheck-2.8/test/testbool.cpp" $, 102 $, "[test.cpp:2]: (error) Boolean value assigned to pointer.\n" $, errout@var100 .@expr326 str (@expr327 ) $) $) { $return ; }
+103:
+104: $check_ $(@expr1073742152 "cppcheck-2.8/test/testbool.cpp" $, 104 $, "void foo(bool *p) {\n    p = (x<y);\n}" $)
+105:
+106: ;
+107: $if $(@expr1073742153 $!@expr1073742154 $assertEquals $(@expr1073742155 "cppcheck-2.8/test/testbool.cpp" $, 107 $, "[test.cpp:2]: (error) Boolean value assigned to pointer.\n" $, errout@var100 .@expr326 str (@expr327 ) $) $) { $return ; }
+108:
+109: $check_ $(@expr1073742158 "cppcheck-2.8/test/testbool.cpp" $, 109 $, "void foo(bool *p) {\n    p = (x||y);\n}" $)
+110:
+111: ;
+112: $if $(@expr1073742159 $!@expr1073742160 $assertEquals $(@expr1073742161 "cppcheck-2.8/test/testbool.cpp" $, 112 $, "[test.cpp:2]: (error) Boolean value assigned to pointer.\n" $, errout@var100 .@expr326 str (@expr327 ) $) $) { $return ; }
+113:
+114: $check_ $(@expr1073742164 "cppcheck-2.8/test/testbool.cpp" $, 114 $, "void foo(bool *p) {\n    p = (x&&y);\n}" $)
+115:
+116: ;
+117: $if $(@expr1073742165 $!@expr1073742166 $assertEquals $(@expr1073742167 "cppcheck-2.8/test/testbool.cpp" $, 117 $, "[test.cpp:2]: (error) Boolean value assigned to pointer.\n" $, errout@var100 .@expr326 str (@expr327 ) $) $) { $return ; }
+118:
+119:
+120: $check_ $(@expr1073742170 "cppcheck-2.8/test/testbool.cpp" $, 120 $, "void foo(bool *p) {\n    *p = false;\n}" $)
+121:
+122: ;
+123: $if $(@expr1073742171 $!@expr1073742172 $assertEquals $(@expr1073742173 "cppcheck-2.8/test/testbool.cpp" $, 123 $, "" $, errout@var100 .@expr326 str (@expr327 ) $) $) { $return ; }
+124:
+125:
+126: $check_ $(@expr1073742176 "cppcheck-2.8/test/testbool.cpp" $, 126 $, "struct S {\n    bool *p;\n};\nvoid f() {\n    S s = {0};\n    *s.p = true;\n}" $)
+127:
+|
+131:
+132: ;
+133: $if $(@expr1073742177 $!@expr1073742178 $assertEquals $(@expr1073742179 "cppcheck-2.8/test/testbool.cpp" $, 133 $, "" $, errout@var100 .@expr326 str (@expr327 ) $) $) { $return ; }
+134:
+135: $check_ $(@expr1073742182 "cppcheck-2.8/test/testbool.cpp" $, 135 $, "struct S {\n    bool *p;\n};\nvoid f() {\n    S s = {0};\n    s.p = true;\n}" $)
+136:
+|
+140:
+141: ;
+142: $if $(@expr1073742183 $!@expr1073742184 $assertEquals $(@expr1073742185 "cppcheck-2.8/test/testbool.cpp" $, 142 $, "[test.cpp:6]: (error) Boolean value assigned to pointer.\n" $, errout@var100 .@expr326 str (@expr327 ) $) $) { $return ; }
+143:
+144:
+145: $check_ $(@expr1073742188 "cppcheck-2.8/test/testbool.cpp" $, 145 $, "void f() {\n    X *p = new ::std::pair<int,int>[rSize];\n}" $)
+146:
+147: ;
+148: $if $(@expr1073742189 $!@expr1073742190 $assertEquals $(@expr1073742191 "cppcheck-2.8/test/testbool.cpp" $, 148 $, "" $, errout@var100 .@expr326 str (@expr327 ) $) $) { $return ; }
+149:
+150:
+151: $check_ $(@expr1073742194 "cppcheck-2.8/test/testbool.cpp" $, 151 $, "struct MpegEncContext { int *q_intra_matrix, *q_chroma_intra_matrix; };\nvoid dnxhd_10bit_dct_quantize(MpegEncContext *ctx, int n, int qscale) {\n  const int *qmat = n < 4;\n  const int *rmat = n < 4 ?                        ctx->q_intra_matrix :                       ctx->q_chroma_intra_matrix;\n}" , "test.c" $)
+152:
+|
+156:
+157: ;
+158: $if $(@expr1073742195 $!@expr1073742196 $assertEquals $(@expr1073742197 "cppcheck-2.8/test/testbool.cpp" $, 158 $, "[test.c:3]: (error) Boolean value assigned to pointer.\n" $, errout@var100 .@expr326 str (@expr327 ) $) $) { $return ; }
+159:
+160:
+161: $check_ $(@expr1073742200 "cppcheck-2.8/test/testbool.cpp" $, 161 $, "struct MpegEncContext { int *q_intra_matrix, *q_chroma_intra_matrix; };\nvoid dnxhd_10bit_dct_quantize(MpegEncContext *ctx, int n, int qscale) {\n  const int *qmat = n < 4;\n  const int *rmat = n < 4 ?                        ctx->q_intra_matrix :                       ctx->q_chroma_intra_matrix;\n}" $)
+162:
+|
+166:
+167: ;
+168: $if $(@expr1073742201 $!@expr1073742202 $assertEquals $(@expr1073742203 "cppcheck-2.8/test/testbool.cpp" $, 168 $, "[test.cpp:3]: (error) Boolean value assigned to pointer.\n" $, errout@var100 .@expr326 str (@expr327 ) $) $) { $return ; }
+169:
+170:
+171: $check_ $(@expr1073742206 "cppcheck-2.8/test/testbool.cpp" $, 171 $, "void pivot_big(char *first, int compare(const void *, const void *)) {\n  char *a = first, *b = first + 1, *c = first + 2;\n  char* m1 = compare(a, b) < 0\n      ? (compare(b, c) < 0 ? b : (compare(a, c) < 0 ? c : a))\n      : (compare(a, c) < 0 ? a : (compare(b, c) < 0 ? c : b));\n}" , "test.c" $)
+172:
+|
+175:
+176: ;
+177: $if $(@expr1073742207 $!@expr1073742208 $assertEquals $(@expr1073742209 "cppcheck-2.8/test/testbool.cpp" $, 177 $, "" $, errout@var100 .@expr326 str (@expr327 ) $) $) { $return ; }
+178:
+179:
+180: $check_ $(@expr1073742212 "cppcheck-2.8/test/testbool.cpp" $, 180 $, "void foo(bool *p, bool b) {\n    p = b;\n    p = &b;\n}" $)
+181:
+182:
+183: ;
+184: $if $(@expr1073742213 $!@expr1073742214 $assertEquals $(@expr1073742215 "cppcheck-2.8/test/testbool.cpp" $, 184 $, "[test.cpp:2]: (error) Boolean value assigned to pointer.\n" $, errout@var100 .@expr326 str (@expr327 ) $) $) { $return ; }
+185: }
+186:
+187: void assignBoolToFloat ( ) {
+188: $check_ $(@expr1073742218 "cppcheck-2.8/test/testbool.cpp" $, 188 $, "void foo1() {\n    double d = false;\n}" $)
+189:
+190: ;
+191: $if $(@expr1073742219 $!@expr1073742220 $assertEquals $(@expr1073742221 "cppcheck-2.8/test/testbool.cpp" $, 191 $, "[test.cpp:2]: (style) Boolean value assigned to floating point variable.\n" $, errout@var100 .@expr398 str (@expr399 ) $) $) { $return ; }
+192:
+193: $check_ $(@expr1073742224 "cppcheck-2.8/test/testbool.cpp" $, 193 $, "void foo2() {\n    float d = true;\n}" $)
+194:
+195: ;
+196: $if $(@expr1073742225 $!@expr1073742226 $assertEquals $(@expr1073742227 "cppcheck-2.8/test/testbool.cpp" $, 196 $, "[test.cpp:2]: (style) Boolean value assigned to floating point variable.\n" $, errout@var100 .@expr398 str (@expr399 ) $) $) { $return ; }
+197:
+198: $check_ $(@expr1073742230 "cppcheck-2.8/test/testbool.cpp" $, 198 $, "void foo3() {\n    long double d = (2>1);\n}" $)
+199:
+200: ;
+201: $if $(@expr1073742231 $!@expr1073742232 $assertEquals $(@expr1073742233 "cppcheck-2.8/test/testbool.cpp" $, 201 $, "[test.cpp:2]: (style) Boolean value assigned to floating point variable.\n" $, errout@var100 .@expr398 str (@expr399 ) $) $) { $return ; }
+202:
+203:
+204: $check_ $(@expr1073742236 "cppcheck-2.8/test/testbool.cpp" $, 204 $, "void foo4() {\n    unknown = false;\n}" $)
+205:
+206: ;
+207: $if $(@expr1073742237 $!@expr1073742238 $assertEquals $(@expr1073742239 "cppcheck-2.8/test/testbool.cpp" $, 207 $, "" $, errout@var100 .@expr398 str (@expr399 ) $) $) { $return ; }
+208:
+209: $check_ $(@expr1073742242 "cppcheck-2.8/test/testbool.cpp" $, 209 $, "struct S {\n    float p;\n};\nvoid f() {\n    S s = {0};\n    s.p = true;\n}" $)
+210:
+|
+214:
+215: ;
+216: $if $(@expr1073742243 $!@expr1073742244 $assertEquals $(@expr1073742245 "cppcheck-2.8/test/testbool.cpp" $, 216 $, "[test.cpp:6]: (style) Boolean value assigned to floating point variable.\n" $, errout@var100 .@expr398 str (@expr399 ) $) $) { $return ; }
+217:
+218: $check_ $(@expr1073742248 "cppcheck-2.8/test/testbool.cpp" $, 218 $, "struct S {\n    float* p[1];\n};\nvoid f() {\n    S s = {0};\n    *s.p[0] = true;\n}" $)
+219:
+|
+223:
+224: ;
+225: $if $(@expr1073742249 $!@expr1073742250 $assertEquals $(@expr1073742251 "cppcheck-2.8/test/testbool.cpp" $, 225 $, "[test.cpp:6]: (style) Boolean value assigned to floating point variable.\n" $, errout@var100 .@expr398 str (@expr399 ) $) $) { $return ; }
+226: }
+227:
+228: void comparisonOfBoolExpressionWithInt1 ( ) {
+229: $check_ $(@expr1073742254 "cppcheck-2.8/test/testbool.cpp" $, 229 $, "void f(int x) {\n    if ((x && 0x0f)==6)\n        a++;\n}" $)
+230:
+231:
+232: ;
+233: $if $(@expr1073742255 $!@expr1073742256 $assertEquals $(@expr1073742257 "cppcheck-2.8/test/testbool.cpp" $, 233 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+234:
+235: $check_ $(@expr1073742260 "cppcheck-2.8/test/testbool.cpp" $, 235 $, "void f(int x) {\n    if ((x && 0x0f)==0)\n        a++;\n}" $)
+236:
+237:
+238: ;
+239: $if $(@expr1073742261 $!@expr1073742262 $assertEquals $(@expr1073742263 "cppcheck-2.8/test/testbool.cpp" $, 239 $, "" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+240:
+241: $check_ $(@expr1073742266 "cppcheck-2.8/test/testbool.cpp" $, 241 $, "void f(int x) {\n    if ((x || 0x0f)==6)\n        a++;\n}" $)
+242:
+243:
+244: ;
+245: $if $(@expr1073742267 $!@expr1073742268 $assertEquals $(@expr1073742269 "cppcheck-2.8/test/testbool.cpp" $, 245 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+246:
+247: $check_ $(@expr1073742272 "cppcheck-2.8/test/testbool.cpp" $, 247 $, "void f(int x) {\n    if ((x || 0x0f)==0)\n        a++;\n}" $)
+248:
+249:
+250: ;
+251: $if $(@expr1073742273 $!@expr1073742274 $assertEquals $(@expr1073742275 "cppcheck-2.8/test/testbool.cpp" $, 251 $, "" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+252:
+253: $check_ $(@expr1073742278 "cppcheck-2.8/test/testbool.cpp" $, 253 $, "void f(int x) {\n    if ((x & 0x0f)==6)\n        a++;\n}" $)
+254:
+255:
+256: ;
+257: $if $(@expr1073742279 $!@expr1073742280 $assertEquals $(@expr1073742281 "cppcheck-2.8/test/testbool.cpp" $, 257 $, "" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+258:
+259: $check_ $(@expr1073742284 "cppcheck-2.8/test/testbool.cpp" $, 259 $, "void f(int x) {\n    if ((x | 0x0f)==6)\n        a++;\n}" $)
+260:
+261:
+262: ;
+263: $if $(@expr1073742285 $!@expr1073742286 $assertEquals $(@expr1073742287 "cppcheck-2.8/test/testbool.cpp" $, 263 $, "" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+264:
+265:
+266: $check_ $(@expr1073742290 "cppcheck-2.8/test/testbool.cpp" $, 266 $, "void f(int x) {\n    if ((5 && x)==3)\n        a++;\n}" $)
+267:
+268:
+269: ;
+270: $if $(@expr1073742291 $!@expr1073742292 $assertEquals $(@expr1073742293 "cppcheck-2.8/test/testbool.cpp" $, 270 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+271:
+272: $check_ $(@expr1073742296 "cppcheck-2.8/test/testbool.cpp" $, 272 $, "void f(int x) {\n    if ((5 && x)==3 || (8 && x)==9)\n        a++;\n}" $)
+273:
+274:
+275: ;
+276: $if $(@expr1073742297 $!@expr1073742298 $assertEquals $(@expr1073742299 "cppcheck-2.8/test/testbool.cpp" $, 276 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+277:
+278: $check_ $(@expr1073742302 "cppcheck-2.8/test/testbool.cpp" $, 278 $, "void f(int x) {\n    if ((5 && x)!=3)\n        a++;\n}" $)
+279:
+280:
+281: ;
+282: $if $(@expr1073742303 $!@expr1073742304 $assertEquals $(@expr1073742305 "cppcheck-2.8/test/testbool.cpp" $, 282 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+283:
+284:
+285: $check_ $(@expr1073742308 "cppcheck-2.8/test/testbool.cpp" $, 285 $, "void f(int x) {\n    if ((5 && x) > 3)\n        a++;\n}" $)
+286:
+287:
+288: ;
+289: $if $(@expr1073742309 $!@expr1073742310 $assertEquals $(@expr1073742311 "cppcheck-2.8/test/testbool.cpp" $, 289 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+290:
+291: $check_ $(@expr1073742314 "cppcheck-2.8/test/testbool.cpp" $, 291 $, "void f(int x) {\n    if ((5 && x) > 0)\n        a++;\n}" $)
+292:
+293:
+294: ;
+295: $if $(@expr1073742315 $!@expr1073742316 $assertEquals $(@expr1073742317 "cppcheck-2.8/test/testbool.cpp" $, 295 $, "" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+296:
+297: $check_ $(@expr1073742320 "cppcheck-2.8/test/testbool.cpp" $, 297 $, "void f(int x) {\n    if ((5 && x) < 0)\n        a++;\n}" $)
+298:
+299:
+300:
+301: ;
+302: $if $(@expr1073742321 $!@expr1073742322 $assertEquals $(@expr1073742323 "cppcheck-2.8/test/testbool.cpp" $, 302 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer.\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+303:
+304: $check_ $(@expr1073742326 "cppcheck-2.8/test/testbool.cpp" $, 304 $, "void f(int x) {\n    if ((5 && x) < 1)\n        a++;\n}" $)
+305:
+306:
+307: ;
+308: $if $(@expr1073742327 $!@expr1073742328 $assertEquals $(@expr1073742329 "cppcheck-2.8/test/testbool.cpp" $, 308 $, "" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+309:
+310: $check_ $(@expr1073742332 "cppcheck-2.8/test/testbool.cpp" $, 310 $, "void f(int x) {\n    if ((5 && x) > 1)\n        a++;\n}" $)
+311:
+312:
+313:
+314: ;
+315: $if $(@expr1073742333 $!@expr1073742334 $assertEquals $(@expr1073742335 "cppcheck-2.8/test/testbool.cpp" $, 315 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer.\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+316:
+317:
+318: $check_ $(@expr1073742338 "cppcheck-2.8/test/testbool.cpp" $, 318 $, "void f(int x) {\n    if (0 < (5 && x))\n        a++;\n}" $)
+319:
+320:
+321: ;
+322: $if $(@expr1073742339 $!@expr1073742340 $assertEquals $(@expr1073742341 "cppcheck-2.8/test/testbool.cpp" $, 322 $, "" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+323:
+324: $check_ $(@expr1073742344 "cppcheck-2.8/test/testbool.cpp" $, 324 $, "void f(int x) {\n    if (0 > (5 && x))\n        a++;\n}" $)
+325:
+326:
+327:
+328: ;
+329: $if $(@expr1073742345 $!@expr1073742346 $assertEquals $(@expr1073742347 "cppcheck-2.8/test/testbool.cpp" $, 329 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer.\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+330:
+331: $check_ $(@expr1073742350 "cppcheck-2.8/test/testbool.cpp" $, 331 $, "void f(int x) {\n    if (1 > (5 && x))\n        a++;\n}" $)
+332:
+333:
+334: ;
+335: $if $(@expr1073742351 $!@expr1073742352 $assertEquals $(@expr1073742353 "cppcheck-2.8/test/testbool.cpp" $, 335 $, "" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+336:
+337: $check_ $(@expr1073742356 "cppcheck-2.8/test/testbool.cpp" $, 337 $, "void f(int x) {\n    if (1 < (5 && x))\n        a++;\n}" $)
+338:
+339:
+340:
+341: ;
+342: $if $(@expr1073742357 $!@expr1073742358 $assertEquals $(@expr1073742359 "cppcheck-2.8/test/testbool.cpp" $, 342 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer.\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+343:
+344: $check_ $(@expr1073742362 "cppcheck-2.8/test/testbool.cpp" $, 344 $, "void f(bool x ) {\n  if ( x > false )\n      a++;\n}" $)
+345:
+346:
+347: ;
+348: $if $(@expr1073742363 $!@expr1073742364 $assertEquals $(@expr1073742365 "cppcheck-2.8/test/testbool.cpp" $, 348 $, "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+349:
+350: $check_ $(@expr1073742368 "cppcheck-2.8/test/testbool.cpp" $, 350 $, "void f(bool x ) {\n  if ( false < x )\n      a++;\n}" $)
+351:
+352:
+353: ;
+354: $if $(@expr1073742369 $!@expr1073742370 $assertEquals $(@expr1073742371 "cppcheck-2.8/test/testbool.cpp" $, 354 $, "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+355:
+356: $check_ $(@expr1073742374 "cppcheck-2.8/test/testbool.cpp" $, 356 $, "void f(bool x ) {\n  if ( x < false )\n      a++;\n}" $)
+357:
+358:
+359: ;
+360: $if $(@expr1073742375 $!@expr1073742376 $assertEquals $(@expr1073742377 "cppcheck-2.8/test/testbool.cpp" $, 360 $, "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+361:
+362: $check_ $(@expr1073742380 "cppcheck-2.8/test/testbool.cpp" $, 362 $, "void f(bool x ) {\n  if ( false > x )\n      a++;\n}" $)
+363:
+364:
+365: ;
+366: $if $(@expr1073742381 $!@expr1073742382 $assertEquals $(@expr1073742383 "cppcheck-2.8/test/testbool.cpp" $, 366 $, "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+367:
+368: $check_ $(@expr1073742386 "cppcheck-2.8/test/testbool.cpp" $, 368 $, "void f(bool x ) {\n  if ( x >= false )\n      a++;\n}" $)
+369:
+370:
+371: ;
+372: $if $(@expr1073742387 $!@expr1073742388 $assertEquals $(@expr1073742389 "cppcheck-2.8/test/testbool.cpp" $, 372 $, "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+373:
+374: $check_ $(@expr1073742392 "cppcheck-2.8/test/testbool.cpp" $, 374 $, "void f(bool x ) {\n  if ( false >= x )\n      a++;\n}" $)
+375:
+376:
+377: ;
+378: $if $(@expr1073742393 $!@expr1073742394 $assertEquals $(@expr1073742395 "cppcheck-2.8/test/testbool.cpp" $, 378 $, "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+379:
+380: $check_ $(@expr1073742398 "cppcheck-2.8/test/testbool.cpp" $, 380 $, "void f(bool x ) {\n  if ( x <= false )\n      a++;\n}" $)
+381:
+382:
+383: ;
+384: $if $(@expr1073742399 $!@expr1073742400 $assertEquals $(@expr1073742401 "cppcheck-2.8/test/testbool.cpp" $, 384 $, "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+385:
+386: $check_ $(@expr1073742404 "cppcheck-2.8/test/testbool.cpp" $, 386 $, "void f(bool x ) {\n  if ( false <= x )\n      a++;\n}" $)
+387:
+388:
+389: ;
+390: $if $(@expr1073742405 $!@expr1073742406 $assertEquals $(@expr1073742407 "cppcheck-2.8/test/testbool.cpp" $, 390 $, "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+391:
+392: $check_ $(@expr1073742410 "cppcheck-2.8/test/testbool.cpp" $, 392 $, "typedef int (*func)(bool invert);\nvoid x(int, func f);\nvoid foo(int error) {\n  if (error == ABC) { }\n}" $)
+393:
+394:
+395:
+396: ;
+397: $if $(@expr1073742411 $!@expr1073742412 $assertEquals $(@expr1073742413 "cppcheck-2.8/test/testbool.cpp" $, 397 $, "" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+398:
+399: $check_ $(@expr1073742416 "cppcheck-2.8/test/testbool.cpp" $, 399 $, "int f() { return !a+b<c; }" $) ;
+400: $if $(@expr1073742417 $!@expr1073742418 $assertEquals $(@expr1073742419 "cppcheck-2.8/test/testbool.cpp" $, 400 $, "" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+401:
+402: $check_ $(@expr1073742422 "cppcheck-2.8/test/testbool.cpp" $, 402 $, "int f() { return (!a+b<c); }" $) ;
+403: $if $(@expr1073742423 $!@expr1073742424 $assertEquals $(@expr1073742425 "cppcheck-2.8/test/testbool.cpp" $, 403 $, "" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+404:
+405: $check_ $(@expr1073742428 "cppcheck-2.8/test/testbool.cpp" $, 405 $, "int f() { return (a+(b<5)<=c); }" $) ;
+406: $if $(@expr1073742429 $!@expr1073742430 $assertEquals $(@expr1073742431 "cppcheck-2.8/test/testbool.cpp" $, 406 $, "" $, errout@var100 .@expr434 str (@expr435 ) $) $) { $return ; }
+407: }
+408:
+409: void comparisonOfBoolExpressionWithInt2 ( ) {
+410: $check_ $(@expr1073742434 "cppcheck-2.8/test/testbool.cpp" $, 410 $, "void f(int x) {\n    if (!x == 10) {\n        printf(\"x not equal to 10\");\n    }\n}" $)
+411:
+412:
+413:
+414: ;
+415: $if $(@expr1073742435 $!@expr1073742436 $assertEquals $(@expr1073742437 "cppcheck-2.8/test/testbool.cpp" $, 415 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr614 str (@expr615 ) $) $) { $return ; }
+416:
+417: $check_ $(@expr1073742440 "cppcheck-2.8/test/testbool.cpp" $, 417 $, "void f(int x) {\n    if (!x != 10) {\n        printf(\"x not equal to 10\");\n    }\n}" $)
+418:
+419:
+420:
+421: ;
+422: $if $(@expr1073742441 $!@expr1073742442 $assertEquals $(@expr1073742443 "cppcheck-2.8/test/testbool.cpp" $, 422 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr614 str (@expr615 ) $) $) { $return ; }
+423:
+424: $check_ $(@expr1073742446 "cppcheck-2.8/test/testbool.cpp" $, 424 $, "void f(int x) {\n    if (x != 10) {\n        printf(\"x not equal to 10\");\n    }\n}" $)
+425:
+426:
+427:
+428: ;
+429: $if $(@expr1073742447 $!@expr1073742448 $assertEquals $(@expr1073742449 "cppcheck-2.8/test/testbool.cpp" $, 429 $, "" $, errout@var100 .@expr614 str (@expr615 ) $) $) { $return ; }
+430:
+431: $check_ $(@expr1073742452 "cppcheck-2.8/test/testbool.cpp" $, 431 $, "void f(int x) {\n    if (10 == !x) {\n        printf(\"x not equal to 10\");\n    }\n}" $)
+432:
+433:
+434:
+435: ;
+436: $if $(@expr1073742453 $!@expr1073742454 $assertEquals $(@expr1073742455 "cppcheck-2.8/test/testbool.cpp" $, 436 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr614 str (@expr615 ) $) $) { $return ; }
+437:
+438: $check_ $(@expr1073742458 "cppcheck-2.8/test/testbool.cpp" $, 438 $, "void f(int x) {\n    if (10 != !x) {\n        printf(\"x not equal to 10\");\n    }\n}" $)
+439:
+440:
+441:
+442: ;
+443: $if $(@expr1073742459 $!@expr1073742460 $assertEquals $(@expr1073742461 "cppcheck-2.8/test/testbool.cpp" $, 443 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr614 str (@expr615 ) $) $) { $return ; }
+444:
+445: $check_ $(@expr1073742464 "cppcheck-2.8/test/testbool.cpp" $, 445 $, "void f(int x, int y) {\n    if (y != !x) {\n        printf(\"x not equal to 10\");\n    }\n}" $)
+446:
+447:
+448:
+449: ;
+450: $if $(@expr1073742465 $!@expr1073742466 $assertEquals $(@expr1073742467 "cppcheck-2.8/test/testbool.cpp" $, 450 $, "" $, errout@var100 .@expr614 str (@expr615 ) $) $) { $return ; }
+451:
+452: $check_ $(@expr1073742470 "cppcheck-2.8/test/testbool.cpp" $, 452 $, "void f(int x, bool y) {\n    if (y != !x) {\n        printf(\"x not equal to 10\");\n    }\n}" $)
+453:
+454:
+455:
+456: ;
+457: $if $(@expr1073742471 $!@expr1073742472 $assertEquals $(@expr1073742473 "cppcheck-2.8/test/testbool.cpp" $, 457 $, "" $, errout@var100 .@expr614 str (@expr615 ) $) $) { $return ; }
+458:
+459: $check_ $(@expr1073742476 "cppcheck-2.8/test/testbool.cpp" $, 459 $, "void f(int x) {\n    if (10 != x) {\n        printf(\"x not equal to 10\");\n    }\n}" $)
+460:
+461:
+462:
+463: ;
+464: $if $(@expr1073742477 $!@expr1073742478 $assertEquals $(@expr1073742479 "cppcheck-2.8/test/testbool.cpp" $, 464 $, "" $, errout@var100 .@expr614 str (@expr615 ) $) $) { $return ; }
+465:
+466: $check_ $(@expr1073742482 "cppcheck-2.8/test/testbool.cpp" $, 466 $, "void f(int x, int y) {\n    return (!y == !x);\n}" $)
+467:
+468: ;
+469: $if $(@expr1073742483 $!@expr1073742484 $assertEquals $(@expr1073742485 "cppcheck-2.8/test/testbool.cpp" $, 469 $, "" $, errout@var100 .@expr614 str (@expr615 ) $) $) { $return ; }
+470:
+471: $check_ $(@expr1073742488 "cppcheck-2.8/test/testbool.cpp" $, 471 $, "int f(int a) {\n  return (x()+1 == !a);\n}" $)
+472:
+473: ;
+474: $todoAssertEquals $(@expr1073742489 "cppcheck-2.8/test/testbool.cpp" $, 474 $, "error" $, "" $, errout@var100 .@expr614 str (@expr615 ) $) ;
+475:
+476: $check_ $(@expr1073742492 "cppcheck-2.8/test/testbool.cpp" $, 476 $, "void f() { if (!!a+!!b+!!c>1){} }" $) ;
+477: $if $(@expr1073742493 $!@expr1073742494 $assertEquals $(@expr1073742495 "cppcheck-2.8/test/testbool.cpp" $, 477 $, "" $, errout@var100 .@expr614 str (@expr615 ) $) $) { $return ; }
+478:
+479: $check_ $(@expr1073742498 "cppcheck-2.8/test/testbool.cpp" $, 479 $, "void f(int a, int b, int c) { if (a != !b || c) {} }" $) ;
+480: $if $(@expr1073742499 $!@expr1073742500 $assertEquals $(@expr1073742501 "cppcheck-2.8/test/testbool.cpp" $, 480 $, "" $, errout@var100 .@expr614 str (@expr615 ) $) $) { $return ; }
+481:
+482: $check_ $(@expr1073742504 "cppcheck-2.8/test/testbool.cpp" $, 482 $, "void f(int a, int b, int c) { if (1 < !!a + !!b + !!c) {} }" $) ;
+483: $if $(@expr1073742505 $!@expr1073742506 $assertEquals $(@expr1073742507 "cppcheck-2.8/test/testbool.cpp" $, 483 $, "" $, errout@var100 .@expr614 str (@expr615 ) $) $) { $return ; }
+484:
+485: $check_ $(@expr1073742510 "cppcheck-2.8/test/testbool.cpp" $, 485 $, "void f(int a, int b, int c) { if (1 < !(a+b)) {} }" $) ;
+486: $if $(@expr1073742511 $!@expr1073742512 $assertEquals $(@expr1073742513 "cppcheck-2.8/test/testbool.cpp" $, 486 $, "[test.cpp:1]: (warning) Comparison of a boolean expression with an integer.\n" $, errout@var100 .@expr614 str (@expr615 ) $) $) { $return ; }
+487: }
+488:
+489: void comparisonOfBoolExpressionWithInt3 ( ) {
+490: $check_ $(@expr1073742516 "cppcheck-2.8/test/testbool.cpp" $, 490 $, "int f(int x) {\n    return t<0>() && x;\n}" $)
+491:
+492: ;
+493: $if $(@expr1073742517 $!@expr1073742518 $assertEquals $(@expr1073742519 "cppcheck-2.8/test/testbool.cpp" $, 493 $, "" $, errout@var100 .@expr1073742520 str (@expr1073742521 ) $) $) { $return ; }
+494: }
+495:
+496: void comparisonOfBoolExpressionWithInt4 ( ) {
+497:
+498: $check_ $(@expr1073742522 "cppcheck-2.8/test/testbool.cpp" $, 498 $, "void f() {\n  for(int i = 4; i > -1 < 5 ; --i) {}\n}" $)
+499:
+500: ;
+501: $if $(@expr1073742523 $!@expr1073742524 $assertEquals $(@expr1073742525 "cppcheck-2.8/test/testbool.cpp" $, 501 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr702 str (@expr703 ) $) $) { $return ; }
+502:
+503: $check_ $(@expr1073742528 "cppcheck-2.8/test/testbool.cpp" $, 503 $, "void f(int a, int b, int c) {\n  return (a > b) < c;\n}" $)
+504:
+505: ;
+506: $if $(@expr1073742529 $!@expr1073742530 $assertEquals $(@expr1073742531 "cppcheck-2.8/test/testbool.cpp" $, 506 $, "" $, errout@var100 .@expr702 str (@expr703 ) $) $) { $return ; }
+507:
+508: $check_ $(@expr1073742534 "cppcheck-2.8/test/testbool.cpp" $, 508 $, "void f(int a, int b, int c) {\n  return x(a > b) < c;\n}" $)
+509:
+510: ;
+511: $if $(@expr1073742535 $!@expr1073742536 $assertEquals $(@expr1073742537 "cppcheck-2.8/test/testbool.cpp" $, 511 $, "" $, errout@var100 .@expr702 str (@expr703 ) $) $) { $return ; }
+512:
+513: $check_ $(@expr1073742540 "cppcheck-2.8/test/testbool.cpp" $, 513 $, "void f(int a, int b, int c) {\n  return a > b == c;\n}" $)
+514:
+515: ;
+516: $if $(@expr1073742541 $!@expr1073742542 $assertEquals $(@expr1073742543 "cppcheck-2.8/test/testbool.cpp" $, 516 $, "" $, errout@var100 .@expr702 str (@expr703 ) $) $) { $return ; }
+517:
+518:
+519: $check_ $(@expr1073742546 "cppcheck-2.8/test/testbool.cpp" $, 519 $, "struct Tokenizer { TokenList list; };\nvoid Tokenizer::f() {\n  std::list<Token*> locationList;\n}" $)
+520:
+521:
+522: ;
+523: $if $(@expr1073742547 $!@expr1073742548 $assertEquals $(@expr1073742549 "cppcheck-2.8/test/testbool.cpp" $, 523 $, "" $, errout@var100 .@expr702 str (@expr703 ) $) $) { $return ; }
+524:
+525:
+526: $check_ $(@expr1073742552 "cppcheck-2.8/test/testbool.cpp" $, 526 $, "void f() {\n  return a > b or c < d;\n}" $)
+527:
+528: ;
+529: $if $(@expr1073742553 $!@expr1073742554 $assertEquals $(@expr1073742555 "cppcheck-2.8/test/testbool.cpp" $, 529 $, "" $, errout@var100 .@expr702 str (@expr703 ) $) $) { $return ; }
+530:
+531: $check_ $(@expr1073742558 "cppcheck-2.8/test/testbool.cpp" $, 531 $, "int f() {\n  return (a < b) != 0U;\n}" $)
+532:
+533: ;
+534: $if $(@expr1073742559 $!@expr1073742560 $assertEquals $(@expr1073742561 "cppcheck-2.8/test/testbool.cpp" $, 534 $, "" $, errout@var100 .@expr702 str (@expr703 ) $) $) { $return ; }
+535: $check_ $(@expr1073742564 "cppcheck-2.8/test/testbool.cpp" $, 535 $, "int f() {\n  return (a < b) != 0x0;\n}" $)
+536:
+537: ;
+538: $if $(@expr1073742565 $!@expr1073742566 $assertEquals $(@expr1073742567 "cppcheck-2.8/test/testbool.cpp" $, 538 $, "" $, errout@var100 .@expr702 str (@expr703 ) $) $) { $return ; }
+539: $check_ $(@expr1073742570 "cppcheck-2.8/test/testbool.cpp" $, 539 $, "int f() {\n  return (a < b) != 42U;\n}" $)
+540:
+541: ;
+542: $if $(@expr1073742571 $!@expr1073742572 $assertEquals $(@expr1073742573 "cppcheck-2.8/test/testbool.cpp" $, 542 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr702 str (@expr703 ) $) $) { $return ; }
+543: }
+544:
+545: void checkComparisonOfFuncReturningBool1 ( ) {
+546: $check_ $(@expr1073742576 "cppcheck-2.8/test/testbool.cpp" $, 546 $, "void f(){\n     int temp = 4;\n     if(compare1(temp) > compare2(temp)){\n         printf(\"foo\");\n     }\n}\nbool compare1(int temp){\n     if(temp==4){\n         return true;\n     }\n     else\n         return false;\n}\nbool compare2(int temp){\n     if(temp==4){\n         return false;\n     }\n     else\n         return true;\n}" $)
+547:
+|
+564:
+565: ;
+566: $if $(@expr1073742577 $!@expr1073742578 $assertEquals $(@expr1073742579 "cppcheck-2.8/test/testbool.cpp" $, 566 $, "[test.cpp:3]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n" $, errout@var100 .@expr1073742580 str (@expr1073742581 ) $) $) { $return ; }
+567: }
+568:
+569: void checkComparisonOfFuncReturningBool2 ( ) {
+570: $check_ $(@expr1073742582 "cppcheck-2.8/test/testbool.cpp" $, 570 $, "void leftOfComparison(){\n int temp = 4;\n bool a = true;\n if(compare(temp) > a){\n     printf(\"foo\");\n }\n}\nvoid rightOfComparison(){\n int temp = 4;\n bool a = true;\n if(a < compare(temp)){\n     printf(\"foo\");\n }\n}\nbool compare(int temp){\n  if(temp==4){\n     return true;\n  }\n    else\n     return false;\n}" $)
+571:
+|
+589:
+590: ;
+591: $if $(@expr1073742583 $!@expr1073742584 $assertEquals $(@expr1073742585 "cppcheck-2.8/test/testbool.cpp" $, 591 $, "[test.cpp:4]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n[test.cpp:11]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n" $, errout@var100 .@expr1073742586 str (@expr1073742587 ) $) $) { $return
+592: ; }
+593: }
+594:
+595: void checkComparisonOfFuncReturningBool3 ( ) {
+596: $check_ $(@expr1073742588 "cppcheck-2.8/test/testbool.cpp" $, 596 $, "void f(){\n int temp = 4;\n if(compare(temp) > temp){\n         printf(\"foo\");\n   }\n}\nbool compare(int temp);" $)
+597:
+|
+601:
+602: ;
+603: $if $(@expr1073742589 $!@expr1073742590 $assertEquals $(@expr1073742591 "cppcheck-2.8/test/testbool.cpp" $, 603 $, "[test.cpp:3]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n[test.cpp:3]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n" $, errout@var100 .@expr1073742592 str (@expr1073742593 ) $) $) { $return
+604: ; }
+605: }
+606:
+607: void checkComparisonOfFuncReturningBool4 ( ) {
+608: $check_ $(@expr1073742594 "cppcheck-2.8/test/testbool.cpp" $, 608 $, "void f(){\n   int temp = 4;\n bool b = compare2(6);\n if(compare1(temp)> b){\n         printf(\"foo\");\n }\n}\nbool compare1(int temp){\n if(temp==4){\n     return true;\n     }\n else\n     return false;\n}\nbool compare2(int temp){\n if(temp == 5){\n     return true;\n }\n else\n     return false;\n}" $)
+609:
+|
+627:
+628: ;
+629: $if $(@expr1073742595 $!@expr1073742596 $assertEquals $(@expr1073742597 "cppcheck-2.8/test/testbool.cpp" $, 629 $, "[test.cpp:4]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n" $, errout@var100 .@expr1073742598 str (@expr1073742599 ) $) $) { $return ; }
+630: }
+631:
+632: void checkComparisonOfFuncReturningBool5 ( ) {
+633: $check_ $(@expr1073742600 "cppcheck-2.8/test/testbool.cpp" $, 633 $, "void f(){\n     int temp = 4;\n     if(compare1(temp) > !compare2(temp)){\n         printf(\"foo\");\n     }\n}\nbool compare1(int temp){\n     if(temp==4){\n         return true;\n     }\n     else\n         return false;\n}\nbool compare2(int temp){\n     if(temp==4){\n         return false;\n     }\n     else\n         return true;\n}" $)
+634:
+|
+651:
+652: ;
+653: $if $(@expr1073742601 $!@expr1073742602 $assertEquals $(@expr1073742603 "cppcheck-2.8/test/testbool.cpp" $, 653 $, "[test.cpp:3]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n" $, errout@var100 .@expr1073742604 str (@expr1073742605 ) $) $) { $return ; }
+654: }
+655:
+656: void checkComparisonOfFuncReturningBool6 ( ) {
+657: $check_ $(@expr1073742606 "cppcheck-2.8/test/testbool.cpp" $, 657 $, "int compare1(int temp);\nnamespace Foo {\n    bool compare1(int temp);\n}\nvoid f(){\n    int temp = 4;\n    if(compare1(temp) > compare2(temp)){\n        printf(\"foo\");\n    }\n}" $)
+658:
+|
+665:
+666: ;
+667: $if $(@expr1073742607 $!@expr1073742608 $assertEquals $(@expr1073742609 "cppcheck-2.8/test/testbool.cpp" $, 667 $, "" $, errout@var100 .@expr786 str (@expr787 ) $) $) { $return ; }
+668:
+669: $check_ $(@expr1073742612 "cppcheck-2.8/test/testbool.cpp" $, 669 $, "namespace Foo {\n    bool compare1(int temp);\n}\nint compare1(int temp);\nvoid f(){\n    int temp = 4;\n    if(compare1(temp) > compare2(temp)){\n        printf(\"foo\");\n    }\n}" $)
+670:
+|
+677:
+678: ;
+679: $if $(@expr1073742613 $!@expr1073742614 $assertEquals $(@expr1073742615 "cppcheck-2.8/test/testbool.cpp" $, 679 $, "" $, errout@var100 .@expr786 str (@expr787 ) $) $) { $return ; }
+680:
+681: $check_ $(@expr1073742618 "cppcheck-2.8/test/testbool.cpp" $, 681 $, "int compare1(int temp);\nnamespace Foo {\n    bool compare1(int temp);\n    void f(){\n        int temp = 4;\n        if(compare1(temp) > compare2(temp)){\n            printf(\"foo\");\n        }\n    }\n}" $)
+682:
+|
+689:
+690: ;
+691: $if $(@expr1073742619 $!@expr1073742620 $assertEquals $(@expr1073742621 "cppcheck-2.8/test/testbool.cpp" $, 691 $, "[test.cpp:6]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n" $, errout@var100 .@expr786 str (@expr787 ) $) $) { $return ; }
+692:
+693: $check_ $(@expr1073742624 "cppcheck-2.8/test/testbool.cpp" $, 693 $, "int compare1(int temp);\nnamespace Foo {\n    bool compare1(int temp);\n    void f(){\n        int temp = 4;\n        if(::compare1(temp) > compare2(temp)){\n            printf(\"foo\");\n        }\n    }\n}" $)
+694:
+|
+701:
+702: ;
+703: $if $(@expr1073742625 $!@expr1073742626 $assertEquals $(@expr1073742627 "cppcheck-2.8/test/testbool.cpp" $, 703 $, "" $, errout@var100 .@expr786 str (@expr787 ) $) $) { $return ; }
+704:
+705: $check_ $(@expr1073742630 "cppcheck-2.8/test/testbool.cpp" $, 705 $, "bool compare1(int temp);\nvoid f(){\n    int temp = 4;\n    if(foo.compare1(temp) > compare2(temp)){\n        printf(\"foo\");\n    }\n}" $)
+706:
+|
+710:
+711: ;
+712: $if $(@expr1073742631 $!@expr1073742632 $assertEquals $(@expr1073742633 "cppcheck-2.8/test/testbool.cpp" $, 712 $, "" $, errout@var100 .@expr786 str (@expr787 ) $) $) { $return ; }
+713: }
+714:
+715: void checkComparisonOfFuncReturningBool7 ( ) {
+716: $check_ $(@expr1073742636 "cppcheck-2.8/test/testbool.cpp" $, 716 $, "struct C {\n    bool isEmpty();\n};\nvoid f() {\n    C c1, c2;\n    if ((c1.isEmpty()) < (c2.isEmpty())) {}\n    if (!c1.isEmpty() < !!c2.isEmpty()) {}\n    if ((int)c1.isEmpty() < (int)c2.isEmpty()) {}\n    if (static_cast<int>(c1.isEmpty()) < static_cast<int>(c2.isEmpty())) {}\n}\n" $)
+717:
+|
+724:
+725: ;
+726: $if $(@expr1073742637 $!@expr1073742638 $assertEquals $(@expr1073742639 "cppcheck-2.8/test/testbool.cpp" $, 726 $, "[test.cpp:6]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n[test.cpp:7]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n[test.cpp:8]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n[test.cpp:9]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n" $, errout@var100 .@expr1073742640 str (@expr1073742641 ) $) $) { $return
+727:
+728:
+729:
+730: ; }
+731: }
+732:
+733: void checkComparisonOfFuncReturningBool8 ( ) {
+734:
+735: $check_ $(@expr1073742642 "cppcheck-2.8/test/testbool.cpp" $, 735 $, "int main(void){\n    bool a = true;\n    bool b = false;\n    if(b > a){ \n        ;\n    }\n}" $)
+736:
+|
+740:
+741: ;
+742: $if $(@expr1073742643 $!@expr1073742644 $assertEquals $(@expr1073742645 "cppcheck-2.8/test/testbool.cpp" $, 742 $, "[test.cpp:4]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n" $, errout@var100 .@expr822 str (@expr823 ) $) $) { $return ; }
+743:
+744: $check_ $(@expr1073742648 "cppcheck-2.8/test/testbool.cpp" $, 744 $, "int main(void){\n    bool a = true;\n    bool b = false;\n    if(b < a){ \n        ;\n    }\n}" $)
+745:
+|
+749:
+750: ;
+751: $if $(@expr1073742649 $!@expr1073742650 $assertEquals $(@expr1073742651 "cppcheck-2.8/test/testbool.cpp" $, 751 $, "[test.cpp:4]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n" $, errout@var100 .@expr822 str (@expr823 ) $) $) { $return ; }
+752:
+753: $check_ $(@expr1073742654 "cppcheck-2.8/test/testbool.cpp" $, 753 $, "int main(void){\n    bool a = true;\n    bool b = false;\n    if(b >= a){ \n        ;\n    }\n}" $)
+754:
+|
+758:
+759: ;
+760: $if $(@expr1073742655 $!@expr1073742656 $assertEquals $(@expr1073742657 "cppcheck-2.8/test/testbool.cpp" $, 760 $, "[test.cpp:4]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n" $, errout@var100 .@expr822 str (@expr823 ) $) $) { $return ; }
+761:
+762: $check_ $(@expr1073742660 "cppcheck-2.8/test/testbool.cpp" $, 762 $, "int main(void){\n    bool a = true;\n    bool b = false;\n    if(b <= a){ \n        ;\n    }\n}" $)
+763:
+|
+767:
+768: ;
+769: $if $(@expr1073742661 $!@expr1073742662 $assertEquals $(@expr1073742663 "cppcheck-2.8/test/testbool.cpp" $, 769 $, "[test.cpp:4]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n" $, errout@var100 .@expr822 str (@expr823 ) $) $) { $return ; }
+770: }
+771:
+772: void checkComparisonOfFuncReturningBoolIntegrationTest1 ( ) {
+773: $check_ $(@expr1073742666 "cppcheck-2.8/test/testbool.cpp" $, 773 $, "bool eval(double *) { return false; }\ndouble eval(char *) { return 1.0; }\nint main(int argc, char *argv[])\n{\n  if ( eval(argv[1]) > eval(argv[2]) )\n    return 1;\n  return 0;\n}" $)
+774:
+|
+779:
+780: ;
+781: $if $(@expr1073742667 $!@expr1073742668 $assertEquals $(@expr1073742669 "cppcheck-2.8/test/testbool.cpp" $, 781 $, "" $, errout@var100 .@expr1073742670 str (@expr1073742671 ) $) $) { $return ; }
+782: }
+783:
+784: void checkComparisonOfBoolWithBool ( ) {
+785: const char code@var112 [@expr1073742672 333 ] =@expr1073742673 "void f(){\n    int temp = 4;\n    bool b = compare2(6);\n    bool a = compare1(4);\n    if(b > a){\n        printf(\"foo\");\n    }\n}\nbool compare1(int temp){\n    if(temp==4){\n        return true;\n    }\n    else\n        return false;\n}\nbool compare2(int temp){\n    if(temp == 5){\n        return true;\n    }\n    else\n        return false;\n}\n"
+786:
+|
+805:
+806: ;
+807: $check_ $(@expr1073742674 "cppcheck-2.8/test/testbool.cpp" $, 807 $, code@var112 $) ;
+808: $if $(@expr1073742675 $!@expr1073742676 $assertEquals $(@expr1073742677 "cppcheck-2.8/test/testbool.cpp" $, 808 $, "[test.cpp:5]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n" $, errout@var100 .@expr1073742678 str (@expr1073742679 ) $) $) { $return ; }
+809: }
+810:
+811: void bitwiseOnBoolean ( ) {
+812: $check_ $(@expr1073742680 "cppcheck-2.8/test/testbool.cpp" $, 812 $, "void f(_Bool a, _Bool b) {\n    if(a & b) {}\n}" $)
+813:
+814: ;
+815: $if $(@expr1073742681 $!@expr1073742682 $assertEquals $(@expr1073742683 "cppcheck-2.8/test/testbool.cpp" $, 815 $, "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+816:
+817: $check_ $(@expr1073742686 "cppcheck-2.8/test/testbool.cpp" $, 817 $, "void f(_Bool a, _Bool b) {\n    if(a | b) {}\n}" $)
+818:
+819: ;
+820: $if $(@expr1073742687 $!@expr1073742688 $assertEquals $(@expr1073742689 "cppcheck-2.8/test/testbool.cpp" $, 820 $, "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+821:
+822: $check_ $(@expr1073742692 "cppcheck-2.8/test/testbool.cpp" $, 822 $, "void f(bool a, bool b) {\n    if(a & !b) {}\n}" $)
+823:
+824: ;
+825: $if $(@expr1073742693 $!@expr1073742694 $assertEquals $(@expr1073742695 "cppcheck-2.8/test/testbool.cpp" $, 825 $, "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+826:
+827: $check_ $(@expr1073742698 "cppcheck-2.8/test/testbool.cpp" $, 827 $, "void f(bool a, bool b) {\n    if(a | !b) {}\n}" $)
+828:
+829: ;
+830: $if $(@expr1073742699 $!@expr1073742700 $assertEquals $(@expr1073742701 "cppcheck-2.8/test/testbool.cpp" $, 830 $, "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+831:
+832: $check_ $(@expr1073742704 "cppcheck-2.8/test/testbool.cpp" $, 832 $, "bool a, b;\nvoid f() {\n    if(a & b) {}\n}" $)
+833:
+834:
+835: ;
+836: $if $(@expr1073742705 $!@expr1073742706 $assertEquals $(@expr1073742707 "cppcheck-2.8/test/testbool.cpp" $, 836 $, "[test.cpp:3]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+837:
+838: $check_ $(@expr1073742710 "cppcheck-2.8/test/testbool.cpp" $, 838 $, "bool a, b;\nvoid f() {\n    if(a & !b) {}\n}" $)
+839:
+840:
+841: ;
+842: $if $(@expr1073742711 $!@expr1073742712 $assertEquals $(@expr1073742713 "cppcheck-2.8/test/testbool.cpp" $, 842 $, "[test.cpp:3]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+843:
+844: $check_ $(@expr1073742716 "cppcheck-2.8/test/testbool.cpp" $, 844 $, "bool a, b;\nvoid f() {\n    if(a | b) {}\n}" $)
+845:
+846:
+847: ;
+848: $if $(@expr1073742717 $!@expr1073742718 $assertEquals $(@expr1073742719 "cppcheck-2.8/test/testbool.cpp" $, 848 $, "[test.cpp:3]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+849:
+850: $check_ $(@expr1073742722 "cppcheck-2.8/test/testbool.cpp" $, 850 $, "bool a, b;\nvoid f() {\n    if(a | !b) {}\n}" $)
+851:
+852:
+853: ;
+854: $if $(@expr1073742723 $!@expr1073742724 $assertEquals $(@expr1073742725 "cppcheck-2.8/test/testbool.cpp" $, 854 $, "[test.cpp:3]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+855:
+856: $check_ $(@expr1073742728 "cppcheck-2.8/test/testbool.cpp" $, 856 $, "void f(bool a, int b) {\n    if(a & b) {}\n}" $)
+857:
+858: ;
+859: $if $(@expr1073742729 $!@expr1073742730 $assertEquals $(@expr1073742731 "cppcheck-2.8/test/testbool.cpp" $, 859 $, "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+860:
+861: $check_ $(@expr1073742734 "cppcheck-2.8/test/testbool.cpp" $, 861 $, "void f(int a, bool b) {\n    if(a & b) {}\n}" $)
+862:
+863: ;
+864: $if $(@expr1073742735 $!@expr1073742736 $assertEquals $(@expr1073742737 "cppcheck-2.8/test/testbool.cpp" $, 864 $, "[test.cpp:2]: (style, inconclusive) Boolean expression 'b' is used in bitwise operation. Did you mean '&&'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+865:
+866: $check_ $(@expr1073742740 "cppcheck-2.8/test/testbool.cpp" $, 866 $, "void f(int a, int b) {\n    if((a > 0) & (b < 0)) {}\n}" $)
+867:
+868: ;
+869: $if $(@expr1073742741 $!@expr1073742742 $assertEquals $(@expr1073742743 "cppcheck-2.8/test/testbool.cpp" $, 869 $, "[test.cpp:2]: (style, inconclusive) Boolean expression 'a>0' is used in bitwise operation. Did you mean '&&'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+870:
+871: $check_ $(@expr1073742746 "cppcheck-2.8/test/testbool.cpp" $, 871 $, "void f(bool a, int b) {\n    if(a | b) {}\n}" $)
+872:
+873: ;
+874: $if $(@expr1073742747 $!@expr1073742748 $assertEquals $(@expr1073742749 "cppcheck-2.8/test/testbool.cpp" $, 874 $, "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+875:
+876: $check_ $(@expr1073742752 "cppcheck-2.8/test/testbool.cpp" $, 876 $, "void f(int a, bool b) {\n    if(a | b) {}\n}" $)
+877:
+878: ;
+879: $if $(@expr1073742753 $!@expr1073742754 $assertEquals $(@expr1073742755 "cppcheck-2.8/test/testbool.cpp" $, 879 $, "[test.cpp:2]: (style, inconclusive) Boolean expression 'b' is used in bitwise operation. Did you mean '||'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+880:
+881: $check_ $(@expr1073742758 "cppcheck-2.8/test/testbool.cpp" $, 881 $, "int f(bool a, int b) {\n    return a | b;\n}" $)
+882:
+883: ;
+884: $if $(@expr1073742759 $!@expr1073742760 $assertEquals $(@expr1073742761 "cppcheck-2.8/test/testbool.cpp" $, 884 $, "" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+885:
+886: $check_ $(@expr1073742764 "cppcheck-2.8/test/testbool.cpp" $, 886 $, "bool f(bool a, int b) {\n    return a | b;\n}" $)
+887:
+888: ;
+889: $if $(@expr1073742765 $!@expr1073742766 $assertEquals $(@expr1073742767 "cppcheck-2.8/test/testbool.cpp" $, 889 $, "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+890:
+891: $check_ $(@expr1073742770 "cppcheck-2.8/test/testbool.cpp" $, 891 $, "void f(int a, int b) {\n    if(a & b) {}\n}" $)
+892:
+893: ;
+894: $if $(@expr1073742771 $!@expr1073742772 $assertEquals $(@expr1073742773 "cppcheck-2.8/test/testbool.cpp" $, 894 $, "" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+895:
+896: $check_ $(@expr1073742776 "cppcheck-2.8/test/testbool.cpp" $, 896 $, "void f(bool b) {\n    foo(bar, &b);\n}" $)
+897:
+898: ;
+899: $if $(@expr1073742777 $!@expr1073742778 $assertEquals $(@expr1073742779 "cppcheck-2.8/test/testbool.cpp" $, 899 $, "" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+900:
+901: $check_ $(@expr1073742782 "cppcheck-2.8/test/testbool.cpp" $, 901 $, "void f(bool b) {\n    class C { void foo(bool &b) {} };\n}" $)
+902:
+903: ;
+904: $if $(@expr1073742783 $!@expr1073742784 $assertEquals $(@expr1073742785 "cppcheck-2.8/test/testbool.cpp" $, 904 $, "" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+905:
+906: $check_ $(@expr1073742788 "cppcheck-2.8/test/testbool.cpp" $, 906 $, "bool f();\nbool g() {\n  return f() | f();\n}\n" $)
+907:
+908:
+909: ;
+910: $if $(@expr1073742789 $!@expr1073742790 $assertEquals $(@expr1073742791 "cppcheck-2.8/test/testbool.cpp" $, 910 $, "" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+911:
+912: $check_ $(@expr1073742794 "cppcheck-2.8/test/testbool.cpp" $, 912 $, "uint8 outcode(float p) {\n    float d = 0.;\n    return ((p - xm >= d) << 1) | (x - p > d);\n}\n" $)
+913:
+914:
+915: ;
+916: $if $(@expr1073742795 $!@expr1073742796 $assertEquals $(@expr1073742797 "cppcheck-2.8/test/testbool.cpp" $, 916 $, "" $, errout@var100 .@expr860 str (@expr861 ) $) $) { $return ; }
+917: }
+918:
+919: void incrementBoolean ( ) {
+920: $check_ $(@expr1073742800 "cppcheck-2.8/test/testbool.cpp" $, 920 $, "bool bValue = true;\nvoid f() { bValue++; }" $)
+921: ;
+922: $if $(@expr1073742801 $!@expr1073742802 $assertEquals $(@expr1073742803 "cppcheck-2.8/test/testbool.cpp" $, 922 $, "[test.cpp:2]: (style) Incrementing a variable of type 'bool' with postfix operator++ is deprecated by the C++ Standard. You should assign it the value 'true' instead.\n" $, errout@var100 .@expr980 str (@expr981 ) $) $) { $return ; }
+923:
+924: $check_ $(@expr1073742806 "cppcheck-2.8/test/testbool.cpp" $, 924 $, "void f(bool test){\n    test++;\n}" $)
+925:
+926: ;
+927: $if $(@expr1073742807 $!@expr1073742808 $assertEquals $(@expr1073742809 "cppcheck-2.8/test/testbool.cpp" $, 927 $, "[test.cpp:2]: (style) Incrementing a variable of type 'bool' with postfix operator++ is deprecated by the C++ Standard. You should assign it the value 'true' instead.\n" $, errout@var100 .@expr980 str (@expr981 ) $) $) { $return ; }
+928:
+929: $check_ $(@expr1073742812 "cppcheck-2.8/test/testbool.cpp" $, 929 $, "void f(bool* test){\n    (*test)++;\n}" $)
+930:
+931: ;
+932: $if $(@expr1073742813 $!@expr1073742814 $assertEquals $(@expr1073742815 "cppcheck-2.8/test/testbool.cpp" $, 932 $, "[test.cpp:2]: (style) Incrementing a variable of type 'bool' with postfix operator++ is deprecated by the C++ Standard. You should assign it the value 'true' instead.\n" $, errout@var100 .@expr980 str (@expr981 ) $) $) { $return ; }
+933:
+934: $check_ $(@expr1073742818 "cppcheck-2.8/test/testbool.cpp" $, 934 $, "void f(bool* test){\n    test[0]++;\n}" $)
+935:
+936: ;
+937: $if $(@expr1073742819 $!@expr1073742820 $assertEquals $(@expr1073742821 "cppcheck-2.8/test/testbool.cpp" $, 937 $, "[test.cpp:2]: (style) Incrementing a variable of type 'bool' with postfix operator++ is deprecated by the C++ Standard. You should assign it the value 'true' instead.\n" $, errout@var100 .@expr980 str (@expr981 ) $) $) { $return ; }
+938:
+939: $check_ $(@expr1073742824 "cppcheck-2.8/test/testbool.cpp" $, 939 $, "void f(int test){\n    test++;\n}" $)
+940:
+941: ;
+942: $if $(@expr1073742825 $!@expr1073742826 $assertEquals $(@expr1073742827 "cppcheck-2.8/test/testbool.cpp" $, 942 $, "" $, errout@var100 .@expr980 str (@expr981 ) $) $) { $return ; }
+943: }
+944:
+945: void comparisonOfBoolWithInt1 ( ) {
+946: $check_ $(@expr1073742830 "cppcheck-2.8/test/testbool.cpp" $, 946 $, "void f(bool x) {\n    if (x < 10) {\n        printf(\"foo\");\n    }\n}" $)
+947:
+948:
+949:
+950: ;
+951: $if $(@expr1073742831 $!@expr1073742832 $assertEquals $(@expr1073742833 "cppcheck-2.8/test/testbool.cpp" $, 951 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr1010 str (@expr1011 ) $) $) { $return ; }
+952:
+953: $check_ $(@expr1073742836 "cppcheck-2.8/test/testbool.cpp" $, 953 $, "void f(bool x) {\n    if (10 >= x) {\n        printf(\"foo\");\n    }\n}" $)
+954:
+955:
+956:
+957: ;
+958: $if $(@expr1073742837 $!@expr1073742838 $assertEquals $(@expr1073742839 "cppcheck-2.8/test/testbool.cpp" $, 958 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr1010 str (@expr1011 ) $) $) { $return ; }
+959:
+960: $check_ $(@expr1073742842 "cppcheck-2.8/test/testbool.cpp" $, 960 $, "void f(bool x) {\n    if (x != 0) {\n        printf(\"foo\");\n    }\n}" $)
+961:
+962:
+963:
+964: ;
+965: $if $(@expr1073742843 $!@expr1073742844 $assertEquals $(@expr1073742845 "cppcheck-2.8/test/testbool.cpp" $, 965 $, "" $, errout@var100 .@expr1010 str (@expr1011 ) $) $) { $return ; }
+966:
+967: $check_ $(@expr1073742848 "cppcheck-2.8/test/testbool.cpp" $, 967 $, "void f(bool x) {\n    if (x == 1) {\n    }\n}" $)
+968:
+969:
+970: ;
+971: $if $(@expr1073742849 $!@expr1073742850 $assertEquals $(@expr1073742851 "cppcheck-2.8/test/testbool.cpp" $, 971 $, "" $, errout@var100 .@expr1010 str (@expr1011 ) $) $) { $return ; }
+972:
+973: $check_ $(@expr1073742854 "cppcheck-2.8/test/testbool.cpp" $, 973 $, "void f(bool x) {\n    if (x != 10) {\n        printf(\"foo\");\n    }\n}" $)
+974:
+975:
+976:
+977: ;
+978: $if $(@expr1073742855 $!@expr1073742856 $assertEquals $(@expr1073742857 "cppcheck-2.8/test/testbool.cpp" $, 978 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr1010 str (@expr1011 ) $) $) { $return ; }
+979:
+980: $check_ $(@expr1073742860 "cppcheck-2.8/test/testbool.cpp" $, 980 $, "void f(bool x) {\n    if (x == 10) {\n        printf(\"foo\");\n    }\n}" $)
+981:
+982:
+983:
+984: ;
+985: $if $(@expr1073742861 $!@expr1073742862 $assertEquals $(@expr1073742863 "cppcheck-2.8/test/testbool.cpp" $, 985 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr1010 str (@expr1011 ) $) $) { $return ; }
+986:
+987: $check_ $(@expr1073742866 "cppcheck-2.8/test/testbool.cpp" $, 987 $, "void f(bool x) {\n    if (x == 0) {\n        printf(\"foo\");\n    }\n}" $)
+988:
+989:
+990:
+991: ;
+992: $if $(@expr1073742867 $!@expr1073742868 $assertEquals $(@expr1073742869 "cppcheck-2.8/test/testbool.cpp" $, 992 $, "" $, errout@var100 .@expr1010 str (@expr1011 ) $) $) { $return ; }
+993:
+994: $check_ $(@expr1073742872 "cppcheck-2.8/test/testbool.cpp" $, 994 $, "DensePropertyMap<int, true> visited;" $) ;
+995: $if $(@expr1073742873 $!@expr1073742874 $assertEquals $(@expr1073742875 "cppcheck-2.8/test/testbool.cpp" $, 995 $, "" $, errout@var100 .@expr1010 str (@expr1011 ) $) $) { $return ; }
+996: }
+997:
+998: void comparisonOfBoolWithInt2 ( ) {
+999: $check_ $(@expr1073742878 "cppcheck-2.8/test/testbool.cpp" $, 999 $, "void f(bool x, int y) {\n    if (x == y) {\n        printf(\"foo\");\n    }\n}" $)
+1000:
+1001:
+1002:
+1003: ;
+1004: $if $(@expr1073742879 $!@expr1073742880 $assertEquals $(@expr1073742881 "cppcheck-2.8/test/testbool.cpp" $, 1004 $, "" $, errout@var100 .@expr1058 str (@expr1059 ) $) $) { $return ; }
+1005:
+1006: $check_ $(@expr1073742884 "cppcheck-2.8/test/testbool.cpp" $, 1006 $, "void f(int x, bool y) {\n    if (x == y) {\n        printf(\"foo\");\n    }\n}" $)
+1007:
+1008:
+1009:
+1010: ;
+1011: $if $(@expr1073742885 $!@expr1073742886 $assertEquals $(@expr1073742887 "cppcheck-2.8/test/testbool.cpp" $, 1011 $, "" $, errout@var100 .@expr1058 str (@expr1059 ) $) $) { $return ; }
+1012:
+1013: $check_ $(@expr1073742890 "cppcheck-2.8/test/testbool.cpp" $, 1013 $, "void f(bool x, bool y) {\n    if (x == y) {\n        printf(\"foo\");\n    }\n}" $)
+1014:
+1015:
+1016:
+1017: ;
+1018: $if $(@expr1073742891 $!@expr1073742892 $assertEquals $(@expr1073742893 "cppcheck-2.8/test/testbool.cpp" $, 1018 $, "" $, errout@var100 .@expr1058 str (@expr1059 ) $) $) { $return ; }
+1019:
+1020: $check_ $(@expr1073742896 "cppcheck-2.8/test/testbool.cpp" $, 1020 $, "void f(bool x, fooClass y) {\n    if (x == y) {\n        printf(\"foo\");\n    }\n}" $)
+1021:
+1022:
+1023:
+1024: ;
+1025: $if $(@expr1073742897 $!@expr1073742898 $assertEquals $(@expr1073742899 "cppcheck-2.8/test/testbool.cpp" $, 1025 $, "" $, errout@var100 .@expr1058 str (@expr1059 ) $) $) { $return ; }
+1026: }
+1027:
+1028: void comparisonOfBoolWithInt3 ( ) {
+1029: $check_ $(@expr1073742902 "cppcheck-2.8/test/testbool.cpp" $, 1029 $, "void f(int y) {\n    if (y > false) {\n        printf(\"foo\");\n    }\n}" $)
+1030:
+1031:
+1032:
+1033: ;
+1034: $if $(@expr1073742903 $!@expr1073742904 $assertEquals $(@expr1073742905 "cppcheck-2.8/test/testbool.cpp" $, 1034 $, "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" $, errout@var100 .@expr1082 str (@expr1083 ) $) $) { $return ; }
+1035:
+1036: $check_ $(@expr1073742908 "cppcheck-2.8/test/testbool.cpp" $, 1036 $, "void f(int y) {\n    if (true == y) {\n        printf(\"foo\");\n    }\n}" $)
+1037:
+1038:
+1039:
+1040: ;
+1041: $if $(@expr1073742909 $!@expr1073742910 $assertEquals $(@expr1073742911 "cppcheck-2.8/test/testbool.cpp" $, 1041 $, "" $, errout@var100 .@expr1082 str (@expr1083 ) $) $) { $return ; }
+1042:
+1043: $check_ $(@expr1073742914 "cppcheck-2.8/test/testbool.cpp" $, 1043 $, "void f(bool y) {\n    if (y == true) {\n        printf(\"foo\");\n    }\n}" $)
+1044:
+1045:
+1046:
+1047: ;
+1048: $if $(@expr1073742915 $!@expr1073742916 $assertEquals $(@expr1073742917 "cppcheck-2.8/test/testbool.cpp" $, 1048 $, "" $, errout@var100 .@expr1082 str (@expr1083 ) $) $) { $return ; }
+1049:
+1050: $check_ $(@expr1073742920 "cppcheck-2.8/test/testbool.cpp" $, 1050 $, "void f(bool y) {\n    if (false < 5) {\n        printf(\"foo\");\n    }\n}" $)
+1051:
+1052:
+1053:
+1054: ;
+1055: $if $(@expr1073742921 $!@expr1073742922 $assertEquals $(@expr1073742923 "cppcheck-2.8/test/testbool.cpp" $, 1055 $, "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" $, errout@var100 .@expr1082 str (@expr1083 ) $) $) { $return ; }
+1056: }
+1057:
+1058: void comparisonOfBoolWithInt4 ( ) {
+1059: $check_ $(@expr1073742926 "cppcheck-2.8/test/testbool.cpp" $, 1059 $, "void f(int x) {\n    if (!x == 1) { }\n}" $)
+1060:
+1061: ;
+1062: $if $(@expr1073742927 $!@expr1073742928 $assertEquals $(@expr1073742929 "cppcheck-2.8/test/testbool.cpp" $, 1062 $, "" $, errout@var100 .@expr1073742930 str (@expr1073742931 ) $) $) { $return ; }
+1063: }
+1064:
+1065: void comparisonOfBoolWithInt5 ( ) {
+1066: $check_ $(@expr1073742932 "cppcheck-2.8/test/testbool.cpp" $, 1066 $, "void SetVisible(int index, bool visible) {\n    bool (SciTEBase::*ischarforsel)(char ch);\n    if (visible != GetVisible(index)) { }\n}" $)
+1067:
+1068:
+1069: ;
+1070: $if $(@expr1073742933 $!@expr1073742934 $assertEquals $(@expr1073742935 "cppcheck-2.8/test/testbool.cpp" $, 1070 $, "" $, errout@var100 .@expr1073742936 str (@expr1073742937 ) $) $) { $return ; }
+1071: }
+1072:
+1073: void comparisonOfBoolWithInt6 ( ) {
+1074: $check_ $(@expr1073742938 "cppcheck-2.8/test/testbool.cpp" $, 1074 $, "void SetVisible(bool b, int i) {\n    if (b == (bool)i) { }\n}" $)
+1075:
+1076: ;
+1077: $if $(@expr1073742939 $!@expr1073742940 $assertEquals $(@expr1073742941 "cppcheck-2.8/test/testbool.cpp" $, 1077 $, "" $, errout@var100 .@expr1073742942 str (@expr1073742943 ) $) $) { $return ; }
+1078: }
+1079:
+1080: void comparisonOfBoolWithInt7 ( ) {
+1081: $check_ $(@expr1073742944 "cppcheck-2.8/test/testbool.cpp" $, 1081 $, "void f(int x) {\n    if (!x == true) { }\n}" $)
+1082:
+1083: ;
+1084: $if $(@expr1073742945 $!@expr1073742946 $assertEquals $(@expr1073742947 "cppcheck-2.8/test/testbool.cpp" $, 1084 $, "" $, errout@var100 .@expr1073742948 str (@expr1073742949 ) $) $) { $return ; }
+1085: }
+1086:
+1087: void comparisonOfBoolWithInt8 ( ) {
+1088: $check_ $(@expr1073742950 "cppcheck-2.8/test/testbool.cpp" $, 1088 $, "bool Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (expectedResult == res)\n        throw 2;\n}" $)
+1089:
+|
+1092:
+1093: ;
+1094: $if $(@expr1073742951 $!@expr1073742952 $assertEquals $(@expr1073742953 "cppcheck-2.8/test/testbool.cpp" $, 1094 $, "" $, errout@var100 .@expr1130 str (@expr1131 ) $) $) { $return ; }
+1095:
+1096: $check_ $(@expr1073742956 "cppcheck-2.8/test/testbool.cpp" $, 1096 $, "int Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (expectedResult == res)\n        throw 2;\n}" $)
+1097:
+|
+1100:
+1101: ;
+1102: $if $(@expr1073742957 $!@expr1073742958 $assertEquals $(@expr1073742959 "cppcheck-2.8/test/testbool.cpp" $, 1102 $, "" $, errout@var100 .@expr1130 str (@expr1131 ) $) $) { $return ; }
+1103:
+1104: $check_ $(@expr1073742962 "cppcheck-2.8/test/testbool.cpp" $, 1104 $, "bool Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (5 + expectedResult == res)\n        throw 2;\n}" $)
+1105:
+|
+1108:
+1109: ;
+1110: $if $(@expr1073742963 $!@expr1073742964 $assertEquals $(@expr1073742965 "cppcheck-2.8/test/testbool.cpp" $, 1110 $, "" $, errout@var100 .@expr1130 str (@expr1131 ) $) $) { $return ; }
+1111:
+1112: $check_ $(@expr1073742968 "cppcheck-2.8/test/testbool.cpp" $, 1112 $, "int Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (5 + expectedResult == res)\n        throw 2;\n}" $)
+1113:
+|
+1116:
+1117: ;
+1118: $if $(@expr1073742969 $!@expr1073742970 $assertEquals $(@expr1073742971 "cppcheck-2.8/test/testbool.cpp" $, 1118 $, "" $, errout@var100 .@expr1130 str (@expr1131 ) $) $) { $return ; }
+1119:
+1120: $check_ $(@expr1073742974 "cppcheck-2.8/test/testbool.cpp" $, 1120 $, "int Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (expectedResult == res + 5)\n        throw 2;\n}" $)
+1121:
+|
+1124:
+1125: ;
+1126: $todoAssertEquals $(@expr1073742975 "cppcheck-2.8/test/testbool.cpp" $, 1126 $, "error" $, "" $, errout@var100 .@expr1130 str (@expr1131 ) $) ;
+1127: }
+1128:
+1129: void comparisonOfBoolWithInt9 ( ) {
+1130: $check_ $(@expr1073742978 "cppcheck-2.8/test/testbool.cpp" $, 1130 $, "bool f(int a, bool b)\n{\n    if ((a == 0 ? false : true) != b) {\n        b = !b;\n    }\n    return b;\n}" $)
+1131:
+|
+1135:
+1136: ;
+1137: $if $(@expr1073742979 $!@expr1073742980 $assertEquals $(@expr1073742981 "cppcheck-2.8/test/testbool.cpp" $, 1137 $, "" $, errout@var100 .@expr1073742982 str (@expr1073742983 ) $) $) { $return ; }
+1138: }
+1139:
+1140:
+1141: void pointerArithBool1 ( ) {
+1142: $check_ $(@expr1073742984 "cppcheck-2.8/test/testbool.cpp" $, 1142 $, "void f(char *p) {\n    if (p+1){}\n}" $)
+1143:
+1144: ;
+1145: $if $(@expr1073742985 $!@expr1073742986 $assertEquals $(@expr1073742987 "cppcheck-2.8/test/testbool.cpp" $, 1145 $, "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n" $, errout@var100 .@expr1164 str (@expr1165 ) $) $) { $return ; }
+1146:
+1147: $check_ $(@expr1073742990 "cppcheck-2.8/test/testbool.cpp" $, 1147 $, "void f(char *p) {\n    do {} while (p+1);\n}" $)
+1148:
+1149: ;
+1150: $if $(@expr1073742991 $!@expr1073742992 $assertEquals $(@expr1073742993 "cppcheck-2.8/test/testbool.cpp" $, 1150 $, "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n" $, errout@var100 .@expr1164 str (@expr1165 ) $) $) { $return ; }
+1151:
+1152: $check_ $(@expr1073742996 "cppcheck-2.8/test/testbool.cpp" $, 1152 $, "void f(char *p) {\n    while (p-1) {}\n}" $)
+1153:
+1154: ;
+1155: $if $(@expr1073742997 $!@expr1073742998 $assertEquals $(@expr1073742999 "cppcheck-2.8/test/testbool.cpp" $, 1155 $, "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n" $, errout@var100 .@expr1164 str (@expr1165 ) $) $) { $return ; }
+1156:
+1157: $check_ $(@expr1073743002 "cppcheck-2.8/test/testbool.cpp" $, 1157 $, "void f(char *p) {\n    for (int i = 0; p+1; i++) {}\n}" $)
+1158:
+1159: ;
+1160: $if $(@expr1073743003 $!@expr1073743004 $assertEquals $(@expr1073743005 "cppcheck-2.8/test/testbool.cpp" $, 1160 $, "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n" $, errout@var100 .@expr1164 str (@expr1165 ) $) $) { $return ; }
+1161:
+1162: $check_ $(@expr1073743008 "cppcheck-2.8/test/testbool.cpp" $, 1162 $, "void f(char *p) {\n    if (p && p+1){}\n}" $)
+1163:
+1164: ;
+1165: $if $(@expr1073743009 $!@expr1073743010 $assertEquals $(@expr1073743011 "cppcheck-2.8/test/testbool.cpp" $, 1165 $, "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n" $, errout@var100 .@expr1164 str (@expr1165 ) $) $) { $return ; }
+1166:
+1167: $check_ $(@expr1073743014 "cppcheck-2.8/test/testbool.cpp" $, 1167 $, "void f(char *p) {\n    if (p+2 || p) {}\n}" $)
+1168:
+1169: ;
+1170: $if $(@expr1073743015 $!@expr1073743016 $assertEquals $(@expr1073743017 "cppcheck-2.8/test/testbool.cpp" $, 1170 $, "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n" $, errout@var100 .@expr1164 str (@expr1165 ) $) $) { $return ; }
+1171: }
+1172:
+1173: void returnNonBool ( ) {
+1174: $check_ $(@expr1073743020 "cppcheck-2.8/test/testbool.cpp" $, 1174 $, "bool f(void) {\n    return 0;\n}" $)
+1175:
+1176: ;
+1177: $if $(@expr1073743021 $!@expr1073743022 $assertEquals $(@expr1073743023 "cppcheck-2.8/test/testbool.cpp" $, 1177 $, "" $, errout@var100 .@expr1200 str (@expr1201 ) $) $) { $return ; }
+1178:
+1179: $check_ $(@expr1073743026 "cppcheck-2.8/test/testbool.cpp" $, 1179 $, "bool f(void) {\n    return 1;\n}" $)
+1180:
+1181: ;
+1182: $if $(@expr1073743027 $!@expr1073743028 $assertEquals $(@expr1073743029 "cppcheck-2.8/test/testbool.cpp" $, 1182 $, "" $, errout@var100 .@expr1200 str (@expr1201 ) $) $) { $return ; }
+1183:
+1184: $check_ $(@expr1073743032 "cppcheck-2.8/test/testbool.cpp" $, 1184 $, "bool f(void) {\n    return 2;\n}" $)
+1185:
+1186: ;
+1187: $if $(@expr1073743033 $!@expr1073743034 $assertEquals $(@expr1073743035 "cppcheck-2.8/test/testbool.cpp" $, 1187 $, "[test.cpp:2]: (style) Non-boolean value returned from function returning bool\n" $, errout@var100 .@expr1200 str (@expr1201 ) $) $) { $return ; }
+1188:
+1189: $check_ $(@expr1073743038 "cppcheck-2.8/test/testbool.cpp" $, 1189 $, "bool f(void) {\n    return -1;\n}" $)
+1190:
+1191: ;
+1192: $if $(@expr1073743039 $!@expr1073743040 $assertEquals $(@expr1073743041 "cppcheck-2.8/test/testbool.cpp" $, 1192 $, "[test.cpp:2]: (style) Non-boolean value returned from function returning bool\n" $, errout@var100 .@expr1200 str (@expr1201 ) $) $) { $return ; }
+1193:
+1194: $check_ $(@expr1073743044 "cppcheck-2.8/test/testbool.cpp" $, 1194 $, "bool f(void) {\n    return 1 + 1;\n}" $)
+1195:
+1196: ;
+1197: $if $(@expr1073743045 $!@expr1073743046 $assertEquals $(@expr1073743047 "cppcheck-2.8/test/testbool.cpp" $, 1197 $, "[test.cpp:2]: (style) Non-boolean value returned from function returning bool\n" $, errout@var100 .@expr1200 str (@expr1201 ) $) $) { $return ; }
+1198:
+1199: $check_ $(@expr1073743050 "cppcheck-2.8/test/testbool.cpp" $, 1199 $, "bool f(void) {\n    int x = 0;\n    return x;\n}" $)
+1200:
+1201:
+1202: ;
+1203: $if $(@expr1073743051 $!@expr1073743052 $assertEquals $(@expr1073743053 "cppcheck-2.8/test/testbool.cpp" $, 1203 $, "" $, errout@var100 .@expr1200 str (@expr1201 ) $) $) { $return ; }
+1204:
+1205: $check_ $(@expr1073743056 "cppcheck-2.8/test/testbool.cpp" $, 1205 $, "bool f(void) {\n    int x = 10;\n    return x;\n}" $)
+1206:
+1207:
+1208: ;
+1209: $if $(@expr1073743057 $!@expr1073743058 $assertEquals $(@expr1073743059 "cppcheck-2.8/test/testbool.cpp" $, 1209 $, "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n" $, errout@var100 .@expr1200 str (@expr1201 ) $) $) { $return ; }
+1210:
+1211: $check_ $(@expr1073743062 "cppcheck-2.8/test/testbool.cpp" $, 1211 $, "bool f(void) {\n    return 2 < 1;\n}" $)
+1212:
+1213: ;
+1214: $if $(@expr1073743063 $!@expr1073743064 $assertEquals $(@expr1073743065 "cppcheck-2.8/test/testbool.cpp" $, 1214 $, "" $, errout@var100 .@expr1200 str (@expr1201 ) $) $) { $return ; }
+1215:
+1216: $check_ $(@expr1073743068 "cppcheck-2.8/test/testbool.cpp" $, 1216 $, "bool f(void) {\n    int ret = 0;\n    if (a)\n        ret = 1;\n    return ret;\n}" $)
+1217:
+|
+1220:
+1221: ;
+1222: $if $(@expr1073743069 $!@expr1073743070 $assertEquals $(@expr1073743071 "cppcheck-2.8/test/testbool.cpp" $, 1222 $, "" $, errout@var100 .@expr1200 str (@expr1201 ) $) $) { $return ; }
+1223:
+1224: $check_ $(@expr1073743074 "cppcheck-2.8/test/testbool.cpp" $, 1224 $, "bool f(void) {\n    int ret = 0;\n    if (a)\n        ret = 3;\n    return ret;\n}" $)
+1225:
+|
+1228:
+1229: ;
+1230: $if $(@expr1073743075 $!@expr1073743076 $assertEquals $(@expr1073743077 "cppcheck-2.8/test/testbool.cpp" $, 1230 $, "[test.cpp:5]: (style) Non-boolean value returned from function returning bool\n" $, errout@var100 .@expr1200 str (@expr1201 ) $) $) { $return ; }
+1231:
+1232: $check_ $(@expr1073743080 "cppcheck-2.8/test/testbool.cpp" $, 1232 $, "bool f(void) {\n    if (a)\n        return 3;\n    return 4;\n}" $)
+1233:
+1234:
+1235:
+1236: ;
+1237: $if $(@expr1073743081 $!@expr1073743082 $assertEquals $(@expr1073743083 "cppcheck-2.8/test/testbool.cpp" $, 1237 $, "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n[test.cpp:4]: (style) Non-boolean value returned from function returning bool\n" $, errout@var100 .@expr1200 str (@expr1201 ) $) $) { $return
+1238: ; }
+1239:
+1240: $check_ $(@expr1073743086 "cppcheck-2.8/test/testbool.cpp" $, 1240 $, "bool f(void) {\n    return;\n}" $)
+1241:
+1242: ;
+1243: $if $(@expr1073743087 $!@expr1073743088 $assertEquals $(@expr1073743089 "cppcheck-2.8/test/testbool.cpp" $, 1243 $, "" $, errout@var100 .@expr1200 str (@expr1201 ) $) $) { $return ; }
+1244: }
+1245:
+1246: void returnNonBoolLambda ( ) {
+1247: $check_ $(@expr1073743092 "cppcheck-2.8/test/testbool.cpp" $, 1247 $, "bool f(void) {\n    auto x = [](void) { return -1; };\n    return false;\n}" $)
+1248:
+1249:
+1250: ;
+1251: $if $(@expr1073743093 $!@expr1073743094 $assertEquals $(@expr1073743095 "cppcheck-2.8/test/testbool.cpp" $, 1251 $, "" $, errout@var100 .@expr1272 str (@expr1273 ) $) $) { $return ; }
+1252:
+1253: $check_ $(@expr1073743098 "cppcheck-2.8/test/testbool.cpp" $, 1253 $, "bool f(void) {\n    auto x = [](void) { return -1; };\n    return 2;\n}" $)
+1254:
+1255:
+1256: ;
+1257: $if $(@expr1073743099 $!@expr1073743100 $assertEquals $(@expr1073743101 "cppcheck-2.8/test/testbool.cpp" $, 1257 $, "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n" $, errout@var100 .@expr1272 str (@expr1273 ) $) $) { $return ; }
+1258:
+1259: $check_ $(@expr1073743104 "cppcheck-2.8/test/testbool.cpp" $, 1259 $, "bool f(void) {\n    auto x = [](void) -> int { return -1; };\n    return false;\n}" $)
+1260:
+1261:
+1262: ;
+1263: $if $(@expr1073743105 $!@expr1073743106 $assertEquals $(@expr1073743107 "cppcheck-2.8/test/testbool.cpp" $, 1263 $, "" $, errout@var100 .@expr1272 str (@expr1273 ) $) $) { $return ; }
+1264:
+1265: $check_ $(@expr1073743110 "cppcheck-2.8/test/testbool.cpp" $, 1265 $, "bool f(void) {\n    auto x = [](void) -> int { return -1; };\n    return 2;\n}" $)
+1266:
+1267:
+1268: ;
+1269: $if $(@expr1073743111 $!@expr1073743112 $assertEquals $(@expr1073743113 "cppcheck-2.8/test/testbool.cpp" $, 1269 $, "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n" $, errout@var100 .@expr1272 str (@expr1273 ) $) $) { $return ; }
+1270: }
+1271:
+1272: void returnNonBoolLogicalOp ( ) {
+1273: $check_ $(@expr1073743116 "cppcheck-2.8/test/testbool.cpp" $, 1273 $, "bool f(int x) {\n    return x & 0x4;\n}" $)
+1274:
+1275: ;
+1276: $if $(@expr1073743117 $!@expr1073743118 $assertEquals $(@expr1073743119 "cppcheck-2.8/test/testbool.cpp" $, 1276 $, "" $, errout@var100 .@expr1296 str (@expr1297 ) $) $) { $return ; }
+1277:
+1278: $check_ $(@expr1073743122 "cppcheck-2.8/test/testbool.cpp" $, 1278 $, "bool f(int x, int y) {\n    return x | y;\n}" $)
+1279:
+1280: ;
+1281: $if $(@expr1073743123 $!@expr1073743124 $assertEquals $(@expr1073743125 "cppcheck-2.8/test/testbool.cpp" $, 1281 $, "" $, errout@var100 .@expr1296 str (@expr1297 ) $) $) { $return ; }
+1282:
+1283: $check_ $(@expr1073743128 "cppcheck-2.8/test/testbool.cpp" $, 1283 $, "bool f(int x) {\n    return (x & 0x2);\n}" $)
+1284:
+1285: ;
+1286: $if $(@expr1073743129 $!@expr1073743130 $assertEquals $(@expr1073743131 "cppcheck-2.8/test/testbool.cpp" $, 1286 $, "" $, errout@var100 .@expr1296 str (@expr1297 ) $) $) { $return ; }
+1287: }
+1288:
+1289: void returnNonBoolClass ( ) {
+1290: $check_ $(@expr1073743134 "cppcheck-2.8/test/testbool.cpp" $, 1290 $, "class X {\n    public:\n        bool f() { return -1;}\n}" $)
+1291:
+1292:
+1293: ;
+1294: $if $(@expr1073743135 $!@expr1073743136 $assertEquals $(@expr1073743137 "cppcheck-2.8/test/testbool.cpp" $, 1294 $, "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n" $, errout@var100 .@expr1314 str (@expr1315 ) $) $) { $return ; }
+1295:
+1296: $check_ $(@expr1073743140 "cppcheck-2.8/test/testbool.cpp" $, 1296 $, "bool f() {\n    struct X {\n        public:\n            int f() { return -1;}\n    };\n    return false;\n}" $)
+1297:
+|
+1301:
+1302: ;
+1303: $if $(@expr1073743141 $!@expr1073743142 $assertEquals $(@expr1073743143 "cppcheck-2.8/test/testbool.cpp" $, 1303 $, "" $, errout@var100 .@expr1314 str (@expr1315 ) $) $) { $return ; }
+1304:
+1305: $check_ $(@expr1073743146 "cppcheck-2.8/test/testbool.cpp" $, 1305 $, "bool f() {\n    class X {\n        public:\n            int f() { return -1;}\n    };\n    return false;\n}" $)
+1306:
+|
+1310:
+1311: ;
+1312: $if $(@expr1073743147 $!@expr1073743148 $assertEquals $(@expr1073743149 "cppcheck-2.8/test/testbool.cpp" $, 1312 $, "" $, errout@var100 .@expr1314 str (@expr1315 ) $) $) { $return ; }
+1313:
+1314: $check_ $(@expr1073743152 "cppcheck-2.8/test/testbool.cpp" $, 1314 $, "bool f() {\n    class X {\n        public:\n            bool f() { return -1;}\n    };\n    return -1;\n}" $)
+1315:
+|
+1319:
+1320: ;
+1321: $if $(@expr1073743153 $!@expr1073743154 $assertEquals $(@expr1073743155 "cppcheck-2.8/test/testbool.cpp" $, 1321 $, "[test.cpp:6]: (style) Non-boolean value returned from function returning bool\n[test.cpp:4]: (style) Non-boolean value returned from function returning bool\n" $, errout@var100 .@expr1314 str (@expr1315 ) $) $) { $return
+1322: ; }
+1323: }
+1324: } ;
+1325:
+1326: $namespace ${ TestBool instance_TestBool@var113 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@170}
+  v {!<=-1,!>=2,0@170}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 30
+  "TestBool" always "TestBool"
+Line 40
+  ( always {!<=-1,!>=2}
+  "bitwiseOnBoolean" always "bitwiseOnBoolean"
+  false always 0
+  false always 0
+Line 41
+  ( always {!<=-1,!>=2}
+  "incrementBoolean" always "incrementBoolean"
+  false always 0
+  false always 0
+Line 42
+  ( always {!<=-1,!>=2}
+  "assignBoolToPointer" always "assignBoolToPointer"
+  false always 0
+  false always 0
+Line 43
+  ( always {!<=-1,!>=2}
+  "assignBoolToFloat" always "assignBoolToFloat"
+  false always 0
+  false always 0
+Line 45
+  ( always {!<=-1,!>=2}
+  "comparisonOfBoolExpressionWithInt1" always "comparisonOfBoolExpressionWithInt1"
+  false always 0
+  false always 0
+Line 46
+  ( always {!<=-1,!>=2}
+  "comparisonOfBoolExpressionWithInt2" always "comparisonOfBoolExpressionWithInt2"
+  false always 0
+  false always 0
+Line 47
+  ( always {!<=-1,!>=2}
+  "comparisonOfBoolExpressionWithInt3" always "comparisonOfBoolExpressionWithInt3"
+  false always 0
+  false always 0
+Line 48
+  ( always {!<=-1,!>=2}
+  "comparisonOfBoolExpressionWithInt4" always "comparisonOfBoolExpressionWithInt4"
+  false always 0
+  false always 0
+Line 50
+  ( always {!<=-1,!>=2}
+  "comparisonOfBoolWithInt1" always "comparisonOfBoolWithInt1"
+  false always 0
+  false always 0
+Line 51
+  ( always {!<=-1,!>=2}
+  "comparisonOfBoolWithInt2" always "comparisonOfBoolWithInt2"
+  false always 0
+  false always 0
+Line 52
+  ( always {!<=-1,!>=2}
+  "comparisonOfBoolWithInt3" always "comparisonOfBoolWithInt3"
+  false always 0
+  false always 0
+Line 53
+  ( always {!<=-1,!>=2}
+  "comparisonOfBoolWithInt4" always "comparisonOfBoolWithInt4"
+  false always 0
+  false always 0
+Line 54
+  ( always {!<=-1,!>=2}
+  "comparisonOfBoolWithInt5" always "comparisonOfBoolWithInt5"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "comparisonOfBoolWithInt6" always "comparisonOfBoolWithInt6"
+  false always 0
+  false always 0
+Line 56
+  ( always {!<=-1,!>=2}
+  "comparisonOfBoolWithInt7" always "comparisonOfBoolWithInt7"
+  false always 0
+  false always 0
+Line 57
+  ( always {!<=-1,!>=2}
+  "comparisonOfBoolWithInt8" always "comparisonOfBoolWithInt8"
+  false always 0
+  false always 0
+Line 58
+  ( always {!<=-1,!>=2}
+  "comparisonOfBoolWithInt9" always "comparisonOfBoolWithInt9"
+  false always 0
+  false always 0
+Line 60
+  ( always {!<=-1,!>=2}
+  "checkComparisonOfFuncReturningBool1" always "checkComparisonOfFuncReturningBool1"
+  false always 0
+  false always 0
+Line 61
+  ( always {!<=-1,!>=2}
+  "checkComparisonOfFuncReturningBool2" always "checkComparisonOfFuncReturningBool2"
+  false always 0
+  false always 0
+Line 62
+  ( always {!<=-1,!>=2}
+  "checkComparisonOfFuncReturningBool3" always "checkComparisonOfFuncReturningBool3"
+  false always 0
+  false always 0
+Line 63
+  ( always {!<=-1,!>=2}
+  "checkComparisonOfFuncReturningBool4" always "checkComparisonOfFuncReturningBool4"
+  false always 0
+  false always 0
+Line 64
+  ( always {!<=-1,!>=2}
+  "checkComparisonOfFuncReturningBool5" always "checkComparisonOfFuncReturningBool5"
+  false always 0
+  false always 0
+Line 65
+  ( always {!<=-1,!>=2}
+  "checkComparisonOfFuncReturningBool6" always "checkComparisonOfFuncReturningBool6"
+  false always 0
+  false always 0
+Line 66
+  ( always {!<=-1,!>=2}
+  "checkComparisonOfFuncReturningBool7" always "checkComparisonOfFuncReturningBool7"
+  false always 0
+  false always 0
+Line 67
+  ( always {!<=-1,!>=2}
+  "checkComparisonOfFuncReturningBool8" always "checkComparisonOfFuncReturningBool8"
+  false always 0
+  false always 0
+Line 69
+  ( always {!<=-1,!>=2}
+  "checkComparisonOfFuncReturningBoolIntegrationTest1" always "checkComparisonOfFuncReturningBoolIntegrationTest1"
+  false always 0
+  false always 0
+Line 71
+  ( always {!<=-1,!>=2}
+  "checkComparisonOfBoolWithBool" always "checkComparisonOfBoolWithBool"
+  false always 0
+  false always 0
+Line 74
+  ( always {!<=-1,!>=2}
+  "pointerArithBool1" always "pointerArithBool1"
+  false always 0
+  false always 0
+Line 76
+  ( always {!<=-1,!>=2}
+  "returnNonBool" always "returnNonBool"
+  false always 0
+  false always 0
+Line 77
+  ( always {!<=-1,!>=2}
+  "returnNonBoolLambda" always "returnNonBoolLambda"
+  false always 0
+  false always 0
+Line 78
+  ( always {!<=-1,!>=2}
+  "returnNonBoolLogicalOp" always "returnNonBoolLogicalOp"
+  false always 0
+  false always 0
+Line 79
+  ( always {!<=-1,!>=2}
+  "returnNonBoolClass" always "returnNonBoolClass"
+  false always 0
+  false always 0
+Line 83
+  , always "test.cpp"
+  9 always 9
+  = always "test.cpp"
+  "test.cpp" always "test.cpp"
+Line 85
+  "" always ""
+Line 88
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 89
+  code possible {"class X {\n    public:\n        bool f() { return -1;}\n}"@1,"bool f() {\n    struct X {\n        public:\n            int f() { return -1;}\n    };\n    return false;\n}"@2,"bool f() {\n    class X {\n        public:\n            int f() { return -1;}\n    };\n    return false;\n}"@3,"bool f() {\n    class X {\n        public:\n            bool f() { return -1;}\n    };\n    return -1;\n}"@4,"bool f(int x) {\n    return x & 0x4;\n}"@5,"bool f(int x, int y) {\n    return x | y;\n}"@6,"bool f(int x) {\n    return (x & 0x2);\n}"@7,"bool f(void) {\n    auto x = [](void) { return -1; };\n    return false;\n}"@8,"bool f(void) {\n    auto x = [](void) { return -1; };\n    return 2;\n}"@9,"bool f(void) {\n    auto x = [](void) -> int { return -1; };\n    return false;\n}"@10}
+Line 90
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testbool.cpp"@1,"cppcheck-2.8/test/testbool.cpp"@2,"cppcheck-2.8/test/testbool.cpp"@3,"cppcheck-2.8/test/testbool.cpp"@4,"cppcheck-2.8/test/testbool.cpp"@5,"cppcheck-2.8/test/testbool.cpp"@6,"cppcheck-2.8/test/testbool.cpp"@7,"cppcheck-2.8/test/testbool.cpp"@8,"cppcheck-2.8/test/testbool.cpp"@9,"cppcheck-2.8/test/testbool.cpp"@10}
+  line inconclusive {1290@1,1296@2,1305@3,1314@4,1273@5,1278@6,1283@7,1247@8,1253@9,1259@10}
+  filename inconclusive {"test.c"@166,"test.c"@168}
+Line 93
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 94
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 99
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  99 always 99
+  "void foo(bool *p) {\n    p = false;\n}" always "void foo(bool *p) {\n    p = false;\n}"
+Line 102
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  102 always 102
+  "[test.cpp:2]: (error) Boolean value assigned to pointer.\n" always "[test.cpp:2]: (error) Boolean value assigned to pointer.\n"
+Line 104
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  104 always 104
+  "void foo(bool *p) {\n    p = (x<y);\n}" always "void foo(bool *p) {\n    p = (x<y);\n}"
+Line 107
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  107 always 107
+  "[test.cpp:2]: (error) Boolean value assigned to pointer.\n" always "[test.cpp:2]: (error) Boolean value assigned to pointer.\n"
+Line 109
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  109 always 109
+  "void foo(bool *p) {\n    p = (x||y);\n}" always "void foo(bool *p) {\n    p = (x||y);\n}"
+Line 112
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  112 always 112
+  "[test.cpp:2]: (error) Boolean value assigned to pointer.\n" always "[test.cpp:2]: (error) Boolean value assigned to pointer.\n"
+Line 114
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  114 always 114
+  "void foo(bool *p) {\n    p = (x&&y);\n}" always "void foo(bool *p) {\n    p = (x&&y);\n}"
+Line 117
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  117 always 117
+  "[test.cpp:2]: (error) Boolean value assigned to pointer.\n" always "[test.cpp:2]: (error) Boolean value assigned to pointer.\n"
+Line 120
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  120 always 120
+  "void foo(bool *p) {\n    *p = false;\n}" always "void foo(bool *p) {\n    *p = false;\n}"
+Line 123
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  123 always 123
+  "" always ""
+Line 126
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  126 always 126
+  "struct S {\n    bool *p;\n};\nvoid f() {\n    S s = {0};\n    *s.p = true;\n}" always "struct S {\n    bool *p;\n};\nvoid f() {\n    S s = {0};\n    *s.p = true;\n}"
+Line 133
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  133 always 133
+  "" always ""
+Line 135
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  135 always 135
+  "struct S {\n    bool *p;\n};\nvoid f() {\n    S s = {0};\n    s.p = true;\n}" always "struct S {\n    bool *p;\n};\nvoid f() {\n    S s = {0};\n    s.p = true;\n}"
+Line 142
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  142 always 142
+  "[test.cpp:6]: (error) Boolean value assigned to pointer.\n" always "[test.cpp:6]: (error) Boolean value assigned to pointer.\n"
+Line 145
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  145 always 145
+  "void f() {\n    X *p = new ::std::pair<int,int>[rSize];\n}" always "void f() {\n    X *p = new ::std::pair<int,int>[rSize];\n}"
+Line 148
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  148 always 148
+  "" always ""
+Line 151
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  151 always 151
+  "struct MpegEncContext { int *q_intra_matrix, *q_chroma_intra_matrix; };\nvoid dnxhd_10bit_dct_quantize(MpegEncContext *ctx, int n, int qscale) {\n  const int *qmat = n < 4;\n  const int *rmat = n < 4 ?                        ctx->q_intra_matrix :                       ctx->q_chroma_intra_matrix;\n}" always "struct MpegEncContext { int *q_intra_matrix, *q_chroma_intra_matrix; };\nvoid dnxhd_10bit_dct_quantize(MpegEncContext *ctx, int n, int qscale) {\n  const int *qmat = n < 4;\n  const int *rmat = n < 4 ?                        ctx->q_intra_matrix :                       ctx->q_chroma_intra_matrix;\n}"
+  "test.c" always "test.c"
+Line 158
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  158 always 158
+  "[test.c:3]: (error) Boolean value assigned to pointer.\n" always "[test.c:3]: (error) Boolean value assigned to pointer.\n"
+Line 161
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  161 always 161
+  "struct MpegEncContext { int *q_intra_matrix, *q_chroma_intra_matrix; };\nvoid dnxhd_10bit_dct_quantize(MpegEncContext *ctx, int n, int qscale) {\n  const int *qmat = n < 4;\n  const int *rmat = n < 4 ?                        ctx->q_intra_matrix :                       ctx->q_chroma_intra_matrix;\n}" always "struct MpegEncContext { int *q_intra_matrix, *q_chroma_intra_matrix; };\nvoid dnxhd_10bit_dct_quantize(MpegEncContext *ctx, int n, int qscale) {\n  const int *qmat = n < 4;\n  const int *rmat = n < 4 ?                        ctx->q_intra_matrix :                       ctx->q_chroma_intra_matrix;\n}"
+Line 168
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  168 always 168
+  "[test.cpp:3]: (error) Boolean value assigned to pointer.\n" always "[test.cpp:3]: (error) Boolean value assigned to pointer.\n"
+Line 171
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  171 always 171
+  "void pivot_big(char *first, int compare(const void *, const void *)) {\n  char *a = first, *b = first + 1, *c = first + 2;\n  char* m1 = compare(a, b) < 0\n      ? (compare(b, c) < 0 ? b : (compare(a, c) < 0 ? c : a))\n      : (compare(a, c) < 0 ? a : (compare(b, c) < 0 ? c : b));\n}" always "void pivot_big(char *first, int compare(const void *, const void *)) {\n  char *a = first, *b = first + 1, *c = first + 2;\n  char* m1 = compare(a, b) < 0\n      ? (compare(b, c) < 0 ? b : (compare(a, c) < 0 ? c : a))\n      : (compare(a, c) < 0 ? a : (compare(b, c) < 0 ? c : b));\n}"
+  "test.c" always "test.c"
+Line 177
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  177 always 177
+  "" always ""
+Line 180
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  180 always 180
+  "void foo(bool *p, bool b) {\n    p = b;\n    p = &b;\n}" always "void foo(bool *p, bool b) {\n    p = b;\n    p = &b;\n}"
+Line 184
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  184 always 184
+  "[test.cpp:2]: (error) Boolean value assigned to pointer.\n" always "[test.cpp:2]: (error) Boolean value assigned to pointer.\n"
+Line 188
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  188 always 188
+  "void foo1() {\n    double d = false;\n}" always "void foo1() {\n    double d = false;\n}"
+Line 191
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  191 always 191
+  "[test.cpp:2]: (style) Boolean value assigned to floating point variable.\n" always "[test.cpp:2]: (style) Boolean value assigned to floating point variable.\n"
+Line 193
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  193 always 193
+  "void foo2() {\n    float d = true;\n}" always "void foo2() {\n    float d = true;\n}"
+Line 196
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  196 always 196
+  "[test.cpp:2]: (style) Boolean value assigned to floating point variable.\n" always "[test.cpp:2]: (style) Boolean value assigned to floating point variable.\n"
+Line 198
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  198 always 198
+  "void foo3() {\n    long double d = (2>1);\n}" always "void foo3() {\n    long double d = (2>1);\n}"
+Line 201
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  201 always 201
+  "[test.cpp:2]: (style) Boolean value assigned to floating point variable.\n" always "[test.cpp:2]: (style) Boolean value assigned to floating point variable.\n"
+Line 204
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  204 always 204
+  "void foo4() {\n    unknown = false;\n}" always "void foo4() {\n    unknown = false;\n}"
+Line 207
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  207 always 207
+  "" always ""
+Line 209
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  209 always 209
+  "struct S {\n    float p;\n};\nvoid f() {\n    S s = {0};\n    s.p = true;\n}" always "struct S {\n    float p;\n};\nvoid f() {\n    S s = {0};\n    s.p = true;\n}"
+Line 216
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  216 always 216
+  "[test.cpp:6]: (style) Boolean value assigned to floating point variable.\n" always "[test.cpp:6]: (style) Boolean value assigned to floating point variable.\n"
+Line 218
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  218 always 218
+  "struct S {\n    float* p[1];\n};\nvoid f() {\n    S s = {0};\n    *s.p[0] = true;\n}" always "struct S {\n    float* p[1];\n};\nvoid f() {\n    S s = {0};\n    *s.p[0] = true;\n}"
+Line 225
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  225 always 225
+  "[test.cpp:6]: (style) Boolean value assigned to floating point variable.\n" always "[test.cpp:6]: (style) Boolean value assigned to floating point variable.\n"
+Line 229
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  229 always 229
+  "void f(int x) {\n    if ((x && 0x0f)==6)\n        a++;\n}" always "void f(int x) {\n    if ((x && 0x0f)==6)\n        a++;\n}"
+Line 233
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  233 always 233
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 235
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  235 always 235
+  "void f(int x) {\n    if ((x && 0x0f)==0)\n        a++;\n}" always "void f(int x) {\n    if ((x && 0x0f)==0)\n        a++;\n}"
+Line 239
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  239 always 239
+  "" always ""
+Line 241
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  241 always 241
+  "void f(int x) {\n    if ((x || 0x0f)==6)\n        a++;\n}" always "void f(int x) {\n    if ((x || 0x0f)==6)\n        a++;\n}"
+Line 245
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  245 always 245
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 247
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  247 always 247
+  "void f(int x) {\n    if ((x || 0x0f)==0)\n        a++;\n}" always "void f(int x) {\n    if ((x || 0x0f)==0)\n        a++;\n}"
+Line 251
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  251 always 251
+  "" always ""
+Line 253
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  253 always 253
+  "void f(int x) {\n    if ((x & 0x0f)==6)\n        a++;\n}" always "void f(int x) {\n    if ((x & 0x0f)==6)\n        a++;\n}"
+Line 257
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  257 always 257
+  "" always ""
+Line 259
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  259 always 259
+  "void f(int x) {\n    if ((x | 0x0f)==6)\n        a++;\n}" always "void f(int x) {\n    if ((x | 0x0f)==6)\n        a++;\n}"
+Line 263
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  263 always 263
+  "" always ""
+Line 266
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  266 always 266
+  "void f(int x) {\n    if ((5 && x)==3)\n        a++;\n}" always "void f(int x) {\n    if ((5 && x)==3)\n        a++;\n}"
+Line 270
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  270 always 270
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 272
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  272 always 272
+  "void f(int x) {\n    if ((5 && x)==3 || (8 && x)==9)\n        a++;\n}" always "void f(int x) {\n    if ((5 && x)==3 || (8 && x)==9)\n        a++;\n}"
+Line 276
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  276 always 276
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 278
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  278 always 278
+  "void f(int x) {\n    if ((5 && x)!=3)\n        a++;\n}" always "void f(int x) {\n    if ((5 && x)!=3)\n        a++;\n}"
+Line 282
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  282 always 282
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 285
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  285 always 285
+  "void f(int x) {\n    if ((5 && x) > 3)\n        a++;\n}" always "void f(int x) {\n    if ((5 && x) > 3)\n        a++;\n}"
+Line 289
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  289 always 289
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 291
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  291 always 291
+  "void f(int x) {\n    if ((5 && x) > 0)\n        a++;\n}" always "void f(int x) {\n    if ((5 && x) > 0)\n        a++;\n}"
+Line 295
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  295 always 295
+  "" always ""
+Line 297
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  297 always 297
+  "void f(int x) {\n    if ((5 && x) < 0)\n        a++;\n}" always "void f(int x) {\n    if ((5 && x) < 0)\n        a++;\n}"
+Line 302
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  302 always 302
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer.\n"
+Line 304
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  304 always 304
+  "void f(int x) {\n    if ((5 && x) < 1)\n        a++;\n}" always "void f(int x) {\n    if ((5 && x) < 1)\n        a++;\n}"
+Line 308
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  308 always 308
+  "" always ""
+Line 310
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  310 always 310
+  "void f(int x) {\n    if ((5 && x) > 1)\n        a++;\n}" always "void f(int x) {\n    if ((5 && x) > 1)\n        a++;\n}"
+Line 315
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  315 always 315
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer.\n"
+Line 318
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  318 always 318
+  "void f(int x) {\n    if (0 < (5 && x))\n        a++;\n}" always "void f(int x) {\n    if (0 < (5 && x))\n        a++;\n}"
+Line 322
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  322 always 322
+  "" always ""
+Line 324
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  324 always 324
+  "void f(int x) {\n    if (0 > (5 && x))\n        a++;\n}" always "void f(int x) {\n    if (0 > (5 && x))\n        a++;\n}"
+Line 329
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  329 always 329
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer.\n"
+Line 331
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  331 always 331
+  "void f(int x) {\n    if (1 > (5 && x))\n        a++;\n}" always "void f(int x) {\n    if (1 > (5 && x))\n        a++;\n}"
+Line 335
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  335 always 335
+  "" always ""
+Line 337
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  337 always 337
+  "void f(int x) {\n    if (1 < (5 && x))\n        a++;\n}" always "void f(int x) {\n    if (1 < (5 && x))\n        a++;\n}"
+Line 342
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  342 always 342
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer.\n"
+Line 344
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  344 always 344
+  "void f(bool x ) {\n  if ( x > false )\n      a++;\n}" always "void f(bool x ) {\n  if ( x > false )\n      a++;\n}"
+Line 348
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  348 always 348
+  "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" always "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n"
+Line 350
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  350 always 350
+  "void f(bool x ) {\n  if ( false < x )\n      a++;\n}" always "void f(bool x ) {\n  if ( false < x )\n      a++;\n}"
+Line 354
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  354 always 354
+  "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" always "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n"
+Line 356
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  356 always 356
+  "void f(bool x ) {\n  if ( x < false )\n      a++;\n}" always "void f(bool x ) {\n  if ( x < false )\n      a++;\n}"
+Line 360
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  360 always 360
+  "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" always "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n"
+Line 362
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  362 always 362
+  "void f(bool x ) {\n  if ( false > x )\n      a++;\n}" always "void f(bool x ) {\n  if ( false > x )\n      a++;\n}"
+Line 366
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  366 always 366
+  "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" always "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n"
+Line 368
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  368 always 368
+  "void f(bool x ) {\n  if ( x >= false )\n      a++;\n}" always "void f(bool x ) {\n  if ( x >= false )\n      a++;\n}"
+Line 372
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  372 always 372
+  "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" always "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n"
+Line 374
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  374 always 374
+  "void f(bool x ) {\n  if ( false >= x )\n      a++;\n}" always "void f(bool x ) {\n  if ( false >= x )\n      a++;\n}"
+Line 378
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  378 always 378
+  "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" always "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n"
+Line 380
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  380 always 380
+  "void f(bool x ) {\n  if ( x <= false )\n      a++;\n}" always "void f(bool x ) {\n  if ( x <= false )\n      a++;\n}"
+Line 384
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  384 always 384
+  "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" always "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n"
+Line 386
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  386 always 386
+  "void f(bool x ) {\n  if ( false <= x )\n      a++;\n}" always "void f(bool x ) {\n  if ( false <= x )\n      a++;\n}"
+Line 390
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  390 always 390
+  "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" always "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n"
+Line 392
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  392 always 392
+  "typedef int (*func)(bool invert);\nvoid x(int, func f);\nvoid foo(int error) {\n  if (error == ABC) { }\n}" always "typedef int (*func)(bool invert);\nvoid x(int, func f);\nvoid foo(int error) {\n  if (error == ABC) { }\n}"
+Line 397
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  397 always 397
+  "" always ""
+Line 399
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  399 always 399
+  "int f() { return !a+b<c; }" always "int f() { return !a+b<c; }"
+Line 400
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  400 always 400
+  "" always ""
+Line 402
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  402 always 402
+  "int f() { return (!a+b<c); }" always "int f() { return (!a+b<c); }"
+Line 403
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  403 always 403
+  "" always ""
+Line 405
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  405 always 405
+  "int f() { return (a+(b<5)<=c); }" always "int f() { return (a+(b<5)<=c); }"
+Line 406
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  406 always 406
+  "" always ""
+Line 410
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  410 always 410
+  "void f(int x) {\n    if (!x == 10) {\n        printf(\"x not equal to 10\");\n    }\n}" always "void f(int x) {\n    if (!x == 10) {\n        printf(\"x not equal to 10\");\n    }\n}"
+Line 415
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  415 always 415
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 417
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  417 always 417
+  "void f(int x) {\n    if (!x != 10) {\n        printf(\"x not equal to 10\");\n    }\n}" always "void f(int x) {\n    if (!x != 10) {\n        printf(\"x not equal to 10\");\n    }\n}"
+Line 422
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  422 always 422
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 424
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  424 always 424
+  "void f(int x) {\n    if (x != 10) {\n        printf(\"x not equal to 10\");\n    }\n}" always "void f(int x) {\n    if (x != 10) {\n        printf(\"x not equal to 10\");\n    }\n}"
+Line 429
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  429 always 429
+  "" always ""
+Line 431
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  431 always 431
+  "void f(int x) {\n    if (10 == !x) {\n        printf(\"x not equal to 10\");\n    }\n}" always "void f(int x) {\n    if (10 == !x) {\n        printf(\"x not equal to 10\");\n    }\n}"
+Line 436
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  436 always 436
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 438
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  438 always 438
+  "void f(int x) {\n    if (10 != !x) {\n        printf(\"x not equal to 10\");\n    }\n}" always "void f(int x) {\n    if (10 != !x) {\n        printf(\"x not equal to 10\");\n    }\n}"
+Line 443
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  443 always 443
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 445
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  445 always 445
+  "void f(int x, int y) {\n    if (y != !x) {\n        printf(\"x not equal to 10\");\n    }\n}" always "void f(int x, int y) {\n    if (y != !x) {\n        printf(\"x not equal to 10\");\n    }\n}"
+Line 450
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  450 always 450
+  "" always ""
+Line 452
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  452 always 452
+  "void f(int x, bool y) {\n    if (y != !x) {\n        printf(\"x not equal to 10\");\n    }\n}" always "void f(int x, bool y) {\n    if (y != !x) {\n        printf(\"x not equal to 10\");\n    }\n}"
+Line 457
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  457 always 457
+  "" always ""
+Line 459
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  459 always 459
+  "void f(int x) {\n    if (10 != x) {\n        printf(\"x not equal to 10\");\n    }\n}" always "void f(int x) {\n    if (10 != x) {\n        printf(\"x not equal to 10\");\n    }\n}"
+Line 464
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  464 always 464
+  "" always ""
+Line 466
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  466 always 466
+  "void f(int x, int y) {\n    return (!y == !x);\n}" always "void f(int x, int y) {\n    return (!y == !x);\n}"
+Line 469
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  469 always 469
+  "" always ""
+Line 471
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  471 always 471
+  "int f(int a) {\n  return (x()+1 == !a);\n}" always "int f(int a) {\n  return (x()+1 == !a);\n}"
+Line 474
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  474 always 474
+  "error" always "error"
+  "" always ""
+Line 476
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  476 always 476
+  "void f() { if (!!a+!!b+!!c>1){} }" always "void f() { if (!!a+!!b+!!c>1){} }"
+Line 477
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  477 always 477
+  "" always ""
+Line 479
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  479 always 479
+  "void f(int a, int b, int c) { if (a != !b || c) {} }" always "void f(int a, int b, int c) { if (a != !b || c) {} }"
+Line 480
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  480 always 480
+  "" always ""
+Line 482
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  482 always 482
+  "void f(int a, int b, int c) { if (1 < !!a + !!b + !!c) {} }" always "void f(int a, int b, int c) { if (1 < !!a + !!b + !!c) {} }"
+Line 483
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  483 always 483
+  "" always ""
+Line 485
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  485 always 485
+  "void f(int a, int b, int c) { if (1 < !(a+b)) {} }" always "void f(int a, int b, int c) { if (1 < !(a+b)) {} }"
+Line 486
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  486 always 486
+  "[test.cpp:1]: (warning) Comparison of a boolean expression with an integer.\n" always "[test.cpp:1]: (warning) Comparison of a boolean expression with an integer.\n"
+Line 490
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  490 always 490
+  "int f(int x) {\n    return t<0>() && x;\n}" always "int f(int x) {\n    return t<0>() && x;\n}"
+Line 493
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  493 always 493
+  "" always ""
+Line 498
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  498 always 498
+  "void f() {\n  for(int i = 4; i > -1 < 5 ; --i) {}\n}" always "void f() {\n  for(int i = 4; i > -1 < 5 ; --i) {}\n}"
+Line 501
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  501 always 501
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 503
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  503 always 503
+  "void f(int a, int b, int c) {\n  return (a > b) < c;\n}" always "void f(int a, int b, int c) {\n  return (a > b) < c;\n}"
+Line 506
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  506 always 506
+  "" always ""
+Line 508
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  508 always 508
+  "void f(int a, int b, int c) {\n  return x(a > b) < c;\n}" always "void f(int a, int b, int c) {\n  return x(a > b) < c;\n}"
+Line 511
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  511 always 511
+  "" always ""
+Line 513
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  513 always 513
+  "void f(int a, int b, int c) {\n  return a > b == c;\n}" always "void f(int a, int b, int c) {\n  return a > b == c;\n}"
+Line 516
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  516 always 516
+  "" always ""
+Line 519
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  519 always 519
+  "struct Tokenizer { TokenList list; };\nvoid Tokenizer::f() {\n  std::list<Token*> locationList;\n}" always "struct Tokenizer { TokenList list; };\nvoid Tokenizer::f() {\n  std::list<Token*> locationList;\n}"
+Line 523
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  523 always 523
+  "" always ""
+Line 526
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  526 always 526
+  "void f() {\n  return a > b or c < d;\n}" always "void f() {\n  return a > b or c < d;\n}"
+Line 529
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  529 always 529
+  "" always ""
+Line 531
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  531 always 531
+  "int f() {\n  return (a < b) != 0U;\n}" always "int f() {\n  return (a < b) != 0U;\n}"
+Line 534
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  534 always 534
+  "" always ""
+Line 535
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  535 always 535
+  "int f() {\n  return (a < b) != 0x0;\n}" always "int f() {\n  return (a < b) != 0x0;\n}"
+Line 538
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  538 always 538
+  "" always ""
+Line 539
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  539 always 539
+  "int f() {\n  return (a < b) != 42U;\n}" always "int f() {\n  return (a < b) != 42U;\n}"
+Line 542
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  542 always 542
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 546
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  546 always 546
+  "void f(){\n     int temp = 4;\n     if(compare1(temp) > compare2(temp)){\n         printf(\"foo\");\n     }\n}\nbool compare1(int temp){\n     if(temp==4){\n         return true;\n     }\n     else\n         return false;\n}\nbool compare2(int temp){\n     if(temp==4){\n         return false;\n     }\n     else\n         return true;\n}" always "void f(){\n     int temp = 4;\n     if(compare1(temp) > compare2(temp)){\n         printf(\"foo\");\n     }\n}\nbool compare1(int temp){\n     if(temp==4){\n         return true;\n     }\n     else\n         return false;\n}\nbool compare2(int temp){\n     if(temp==4){\n         return false;\n     }\n     else\n         return true;\n}"
+Line 566
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  566 always 566
+  "[test.cpp:3]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n" always "[test.cpp:3]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n"
+Line 570
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  570 always 570
+  "void leftOfComparison(){\n int temp = 4;\n bool a = true;\n if(compare(temp) > a){\n     printf(\"foo\");\n }\n}\nvoid rightOfComparison(){\n int temp = 4;\n bool a = true;\n if(a < compare(temp)){\n     printf(\"foo\");\n }\n}\nbool compare(int temp){\n  if(temp==4){\n     return true;\n  }\n    else\n     return false;\n}" always "void leftOfComparison(){\n int temp = 4;\n bool a = true;\n if(compare(temp) > a){\n     printf(\"foo\");\n }\n}\nvoid rightOfComparison(){\n int temp = 4;\n bool a = true;\n if(a < compare(temp)){\n     printf(\"foo\");\n }\n}\nbool compare(int temp){\n  if(temp==4){\n     return true;\n  }\n    else\n     return false;\n}"
+Line 591
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  591 always 591
+  "[test.cpp:4]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n[test.cpp:11]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n" always "[test.cpp:4]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n[test.cpp:11]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n"
+Line 596
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  596 always 596
+  "void f(){\n int temp = 4;\n if(compare(temp) > temp){\n         printf(\"foo\");\n   }\n}\nbool compare(int temp);" always "void f(){\n int temp = 4;\n if(compare(temp) > temp){\n         printf(\"foo\");\n   }\n}\nbool compare(int temp);"
+Line 603
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  603 always 603
+  "[test.cpp:3]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n[test.cpp:3]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n" always "[test.cpp:3]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n[test.cpp:3]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n"
+Line 608
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  608 always 608
+  "void f(){\n   int temp = 4;\n bool b = compare2(6);\n if(compare1(temp)> b){\n         printf(\"foo\");\n }\n}\nbool compare1(int temp){\n if(temp==4){\n     return true;\n     }\n else\n     return false;\n}\nbool compare2(int temp){\n if(temp == 5){\n     return true;\n }\n else\n     return false;\n}" always "void f(){\n   int temp = 4;\n bool b = compare2(6);\n if(compare1(temp)> b){\n         printf(\"foo\");\n }\n}\nbool compare1(int temp){\n if(temp==4){\n     return true;\n     }\n else\n     return false;\n}\nbool compare2(int temp){\n if(temp == 5){\n     return true;\n }\n else\n     return false;\n}"
+Line 629
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  629 always 629
+  "[test.cpp:4]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n" always "[test.cpp:4]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n"
+Line 633
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  633 always 633
+  "void f(){\n     int temp = 4;\n     if(compare1(temp) > !compare2(temp)){\n         printf(\"foo\");\n     }\n}\nbool compare1(int temp){\n     if(temp==4){\n         return true;\n     }\n     else\n         return false;\n}\nbool compare2(int temp){\n     if(temp==4){\n         return false;\n     }\n     else\n         return true;\n}" always "void f(){\n     int temp = 4;\n     if(compare1(temp) > !compare2(temp)){\n         printf(\"foo\");\n     }\n}\nbool compare1(int temp){\n     if(temp==4){\n         return true;\n     }\n     else\n         return false;\n}\nbool compare2(int temp){\n     if(temp==4){\n         return false;\n     }\n     else\n         return true;\n}"
+Line 653
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  653 always 653
+  "[test.cpp:3]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n" always "[test.cpp:3]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n"
+Line 657
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  657 always 657
+  "int compare1(int temp);\nnamespace Foo {\n    bool compare1(int temp);\n}\nvoid f(){\n    int temp = 4;\n    if(compare1(temp) > compare2(temp)){\n        printf(\"foo\");\n    }\n}" always "int compare1(int temp);\nnamespace Foo {\n    bool compare1(int temp);\n}\nvoid f(){\n    int temp = 4;\n    if(compare1(temp) > compare2(temp)){\n        printf(\"foo\");\n    }\n}"
+Line 667
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  667 always 667
+  "" always ""
+Line 669
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  669 always 669
+  "namespace Foo {\n    bool compare1(int temp);\n}\nint compare1(int temp);\nvoid f(){\n    int temp = 4;\n    if(compare1(temp) > compare2(temp)){\n        printf(\"foo\");\n    }\n}" always "namespace Foo {\n    bool compare1(int temp);\n}\nint compare1(int temp);\nvoid f(){\n    int temp = 4;\n    if(compare1(temp) > compare2(temp)){\n        printf(\"foo\");\n    }\n}"
+Line 679
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  679 always 679
+  "" always ""
+Line 681
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  681 always 681
+  "int compare1(int temp);\nnamespace Foo {\n    bool compare1(int temp);\n    void f(){\n        int temp = 4;\n        if(compare1(temp) > compare2(temp)){\n            printf(\"foo\");\n        }\n    }\n}" always "int compare1(int temp);\nnamespace Foo {\n    bool compare1(int temp);\n    void f(){\n        int temp = 4;\n        if(compare1(temp) > compare2(temp)){\n            printf(\"foo\");\n        }\n    }\n}"
+Line 691
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  691 always 691
+  "[test.cpp:6]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n" always "[test.cpp:6]: (style) Comparison of a function returning boolean value using relational (<, >, <= or >=) operator.\n"
+Line 693
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  693 always 693
+  "int compare1(int temp);\nnamespace Foo {\n    bool compare1(int temp);\n    void f(){\n        int temp = 4;\n        if(::compare1(temp) > compare2(temp)){\n            printf(\"foo\");\n        }\n    }\n}" always "int compare1(int temp);\nnamespace Foo {\n    bool compare1(int temp);\n    void f(){\n        int temp = 4;\n        if(::compare1(temp) > compare2(temp)){\n            printf(\"foo\");\n        }\n    }\n}"
+Line 703
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  703 always 703
+  "" always ""
+Line 705
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  705 always 705
+  "bool compare1(int temp);\nvoid f(){\n    int temp = 4;\n    if(foo.compare1(temp) > compare2(temp)){\n        printf(\"foo\");\n    }\n}" always "bool compare1(int temp);\nvoid f(){\n    int temp = 4;\n    if(foo.compare1(temp) > compare2(temp)){\n        printf(\"foo\");\n    }\n}"
+Line 712
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  712 always 712
+  "" always ""
+Line 716
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  716 always 716
+  "struct C {\n    bool isEmpty();\n};\nvoid f() {\n    C c1, c2;\n    if ((c1.isEmpty()) < (c2.isEmpty())) {}\n    if (!c1.isEmpty() < !!c2.isEmpty()) {}\n    if ((int)c1.isEmpty() < (int)c2.isEmpty()) {}\n    if (static_cast<int>(c1.isEmpty()) < static_cast<int>(c2.isEmpty())) {}\n}\n" always "struct C {\n    bool isEmpty();\n};\nvoid f() {\n    C c1, c2;\n    if ((c1.isEmpty()) < (c2.isEmpty())) {}\n    if (!c1.isEmpty() < !!c2.isEmpty()) {}\n    if ((int)c1.isEmpty() < (int)c2.isEmpty()) {}\n    if (static_cast<int>(c1.isEmpty()) < static_cast<int>(c2.isEmpty())) {}\n}\n"
+Line 726
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  726 always 726
+  "[test.cpp:6]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n[test.cpp:7]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n[test.cpp:8]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n[test.cpp:9]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n" always "[test.cpp:6]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n[test.cpp:7]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n[test.cpp:8]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n[test.cpp:9]: (style) Comparison of two functions returning boolean value using relational (<, >, <= or >=) operator.\n"
+Line 735
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  735 always 735
+  "int main(void){\n    bool a = true;\n    bool b = false;\n    if(b > a){ \n        ;\n    }\n}" always "int main(void){\n    bool a = true;\n    bool b = false;\n    if(b > a){ \n        ;\n    }\n}"
+Line 742
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  742 always 742
+  "[test.cpp:4]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n" always "[test.cpp:4]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n"
+Line 744
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  744 always 744
+  "int main(void){\n    bool a = true;\n    bool b = false;\n    if(b < a){ \n        ;\n    }\n}" always "int main(void){\n    bool a = true;\n    bool b = false;\n    if(b < a){ \n        ;\n    }\n}"
+Line 751
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  751 always 751
+  "[test.cpp:4]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n" always "[test.cpp:4]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n"
+Line 753
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  753 always 753
+  "int main(void){\n    bool a = true;\n    bool b = false;\n    if(b >= a){ \n        ;\n    }\n}" always "int main(void){\n    bool a = true;\n    bool b = false;\n    if(b >= a){ \n        ;\n    }\n}"
+Line 760
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  760 always 760
+  "[test.cpp:4]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n" always "[test.cpp:4]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n"
+Line 762
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  762 always 762
+  "int main(void){\n    bool a = true;\n    bool b = false;\n    if(b <= a){ \n        ;\n    }\n}" always "int main(void){\n    bool a = true;\n    bool b = false;\n    if(b <= a){ \n        ;\n    }\n}"
+Line 769
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  769 always 769
+  "[test.cpp:4]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n" always "[test.cpp:4]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n"
+Line 773
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  773 always 773
+  "bool eval(double *) { return false; }\ndouble eval(char *) { return 1.0; }\nint main(int argc, char *argv[])\n{\n  if ( eval(argv[1]) > eval(argv[2]) )\n    return 1;\n  return 0;\n}" always "bool eval(double *) { return false; }\ndouble eval(char *) { return 1.0; }\nint main(int argc, char *argv[])\n{\n  if ( eval(argv[1]) > eval(argv[2]) )\n    return 1;\n  return 0;\n}"
+Line 781
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  781 always 781
+  "" always ""
+Line 785
+  333 always 333
+  = always "void f(){\n    int temp = 4;\n    bool b = compare2(6);\n    bool a = compare1(4);\n    if(b > a){\n        printf(\"foo\");\n    }\n}\nbool compare1(int temp){\n    if(temp==4){\n        return true;\n    }\n    else\n        return false;\n}\nbool compare2(int temp){\n    if(temp == 5){\n        return true;\n    }\n    else\n        return false;\n}\n"
+  "void f(){\n    int temp = 4;\n    bool b = compare2(6);\n    bool a = compare1(4);\n    if(b > a){\n        printf(\"foo\");\n    }\n}\nbool compare1(int temp){\n    if(temp==4){\n        return true;\n    }\n    else\n        return false;\n}\nbool compare2(int temp){\n    if(temp == 5){\n        return true;\n    }\n    else\n        return false;\n}\n" always "void f(){\n    int temp = 4;\n    bool b = compare2(6);\n    bool a = compare1(4);\n    if(b > a){\n        printf(\"foo\");\n    }\n}\nbool compare1(int temp){\n    if(temp==4){\n        return true;\n    }\n    else\n        return false;\n}\nbool compare2(int temp){\n    if(temp == 5){\n        return true;\n    }\n    else\n        return false;\n}\n"
+Line 807
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  807 always 807
+  code always "void f(){\n    int temp = 4;\n    bool b = compare2(6);\n    bool a = compare1(4);\n    if(b > a){\n        printf(\"foo\");\n    }\n}\nbool compare1(int temp){\n    if(temp==4){\n        return true;\n    }\n    else\n        return false;\n}\nbool compare2(int temp){\n    if(temp == 5){\n        return true;\n    }\n    else\n        return false;\n}\n"
+Line 808
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  808 always 808
+  "[test.cpp:5]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n" always "[test.cpp:5]: (style) Comparison of a variable having boolean value using relational (<, >, <= or >=) operator.\n"
+Line 812
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  812 always 812
+  "void f(_Bool a, _Bool b) {\n    if(a & b) {}\n}" always "void f(_Bool a, _Bool b) {\n    if(a & b) {}\n}"
+Line 815
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  815 always 815
+  "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n" always "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n"
+Line 817
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  817 always 817
+  "void f(_Bool a, _Bool b) {\n    if(a | b) {}\n}" always "void f(_Bool a, _Bool b) {\n    if(a | b) {}\n}"
+Line 820
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  820 always 820
+  "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n" always "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n"
+Line 822
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  822 always 822
+  "void f(bool a, bool b) {\n    if(a & !b) {}\n}" always "void f(bool a, bool b) {\n    if(a & !b) {}\n}"
+Line 825
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  825 always 825
+  "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n" always "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n"
+Line 827
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  827 always 827
+  "void f(bool a, bool b) {\n    if(a | !b) {}\n}" always "void f(bool a, bool b) {\n    if(a | !b) {}\n}"
+Line 830
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  830 always 830
+  "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n" always "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n"
+Line 832
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  832 always 832
+  "bool a, b;\nvoid f() {\n    if(a & b) {}\n}" always "bool a, b;\nvoid f() {\n    if(a & b) {}\n}"
+Line 836
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  836 always 836
+  "[test.cpp:3]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n" always "[test.cpp:3]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n"
+Line 838
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  838 always 838
+  "bool a, b;\nvoid f() {\n    if(a & !b) {}\n}" always "bool a, b;\nvoid f() {\n    if(a & !b) {}\n}"
+Line 842
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  842 always 842
+  "[test.cpp:3]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n" always "[test.cpp:3]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n"
+Line 844
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  844 always 844
+  "bool a, b;\nvoid f() {\n    if(a | b) {}\n}" always "bool a, b;\nvoid f() {\n    if(a | b) {}\n}"
+Line 848
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  848 always 848
+  "[test.cpp:3]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n" always "[test.cpp:3]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n"
+Line 850
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  850 always 850
+  "bool a, b;\nvoid f() {\n    if(a | !b) {}\n}" always "bool a, b;\nvoid f() {\n    if(a | !b) {}\n}"
+Line 854
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  854 always 854
+  "[test.cpp:3]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n" always "[test.cpp:3]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n"
+Line 856
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  856 always 856
+  "void f(bool a, int b) {\n    if(a & b) {}\n}" always "void f(bool a, int b) {\n    if(a & b) {}\n}"
+Line 859
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  859 always 859
+  "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n" always "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '&&'?\n"
+Line 861
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  861 always 861
+  "void f(int a, bool b) {\n    if(a & b) {}\n}" always "void f(int a, bool b) {\n    if(a & b) {}\n}"
+Line 864
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  864 always 864
+  "[test.cpp:2]: (style, inconclusive) Boolean expression 'b' is used in bitwise operation. Did you mean '&&'?\n" always "[test.cpp:2]: (style, inconclusive) Boolean expression 'b' is used in bitwise operation. Did you mean '&&'?\n"
+Line 866
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  866 always 866
+  "void f(int a, int b) {\n    if((a > 0) & (b < 0)) {}\n}" always "void f(int a, int b) {\n    if((a > 0) & (b < 0)) {}\n}"
+Line 869
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  869 always 869
+  "[test.cpp:2]: (style, inconclusive) Boolean expression 'a>0' is used in bitwise operation. Did you mean '&&'?\n" always "[test.cpp:2]: (style, inconclusive) Boolean expression 'a>0' is used in bitwise operation. Did you mean '&&'?\n"
+Line 871
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  871 always 871
+  "void f(bool a, int b) {\n    if(a | b) {}\n}" always "void f(bool a, int b) {\n    if(a | b) {}\n}"
+Line 874
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  874 always 874
+  "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n" always "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n"
+Line 876
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  876 always 876
+  "void f(int a, bool b) {\n    if(a | b) {}\n}" always "void f(int a, bool b) {\n    if(a | b) {}\n}"
+Line 879
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  879 always 879
+  "[test.cpp:2]: (style, inconclusive) Boolean expression 'b' is used in bitwise operation. Did you mean '||'?\n" always "[test.cpp:2]: (style, inconclusive) Boolean expression 'b' is used in bitwise operation. Did you mean '||'?\n"
+Line 881
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  881 always 881
+  "int f(bool a, int b) {\n    return a | b;\n}" always "int f(bool a, int b) {\n    return a | b;\n}"
+Line 884
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  884 always 884
+  "" always ""
+Line 886
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  886 always 886
+  "bool f(bool a, int b) {\n    return a | b;\n}" always "bool f(bool a, int b) {\n    return a | b;\n}"
+Line 889
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  889 always 889
+  "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n" always "[test.cpp:2]: (style, inconclusive) Boolean expression 'a' is used in bitwise operation. Did you mean '||'?\n"
+Line 891
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  891 always 891
+  "void f(int a, int b) {\n    if(a & b) {}\n}" always "void f(int a, int b) {\n    if(a & b) {}\n}"
+Line 894
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  894 always 894
+  "" always ""
+Line 896
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  896 always 896
+  "void f(bool b) {\n    foo(bar, &b);\n}" always "void f(bool b) {\n    foo(bar, &b);\n}"
+Line 899
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  899 always 899
+  "" always ""
+Line 901
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  901 always 901
+  "void f(bool b) {\n    class C { void foo(bool &b) {} };\n}" always "void f(bool b) {\n    class C { void foo(bool &b) {} };\n}"
+Line 904
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  904 always 904
+  "" always ""
+Line 906
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  906 always 906
+  "bool f();\nbool g() {\n  return f() | f();\n}\n" always "bool f();\nbool g() {\n  return f() | f();\n}\n"
+Line 910
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  910 always 910
+  "" always ""
+Line 912
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  912 always 912
+  "uint8 outcode(float p) {\n    float d = 0.;\n    return ((p - xm >= d) << 1) | (x - p > d);\n}\n" always "uint8 outcode(float p) {\n    float d = 0.;\n    return ((p - xm >= d) << 1) | (x - p > d);\n}\n"
+Line 916
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  916 always 916
+  "" always ""
+Line 920
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  920 always 920
+  "bool bValue = true;\nvoid f() { bValue++; }" always "bool bValue = true;\nvoid f() { bValue++; }"
+Line 922
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  922 always 922
+  "[test.cpp:2]: (style) Incrementing a variable of type 'bool' with postfix operator++ is deprecated by the C++ Standard. You should assign it the value 'true' instead.\n" always "[test.cpp:2]: (style) Incrementing a variable of type 'bool' with postfix operator++ is deprecated by the C++ Standard. You should assign it the value 'true' instead.\n"
+Line 924
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  924 always 924
+  "void f(bool test){\n    test++;\n}" always "void f(bool test){\n    test++;\n}"
+Line 927
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  927 always 927
+  "[test.cpp:2]: (style) Incrementing a variable of type 'bool' with postfix operator++ is deprecated by the C++ Standard. You should assign it the value 'true' instead.\n" always "[test.cpp:2]: (style) Incrementing a variable of type 'bool' with postfix operator++ is deprecated by the C++ Standard. You should assign it the value 'true' instead.\n"
+Line 929
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  929 always 929
+  "void f(bool* test){\n    (*test)++;\n}" always "void f(bool* test){\n    (*test)++;\n}"
+Line 932
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  932 always 932
+  "[test.cpp:2]: (style) Incrementing a variable of type 'bool' with postfix operator++ is deprecated by the C++ Standard. You should assign it the value 'true' instead.\n" always "[test.cpp:2]: (style) Incrementing a variable of type 'bool' with postfix operator++ is deprecated by the C++ Standard. You should assign it the value 'true' instead.\n"
+Line 934
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  934 always 934
+  "void f(bool* test){\n    test[0]++;\n}" always "void f(bool* test){\n    test[0]++;\n}"
+Line 937
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  937 always 937
+  "[test.cpp:2]: (style) Incrementing a variable of type 'bool' with postfix operator++ is deprecated by the C++ Standard. You should assign it the value 'true' instead.\n" always "[test.cpp:2]: (style) Incrementing a variable of type 'bool' with postfix operator++ is deprecated by the C++ Standard. You should assign it the value 'true' instead.\n"
+Line 939
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  939 always 939
+  "void f(int test){\n    test++;\n}" always "void f(int test){\n    test++;\n}"
+Line 942
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  942 always 942
+  "" always ""
+Line 946
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  946 always 946
+  "void f(bool x) {\n    if (x < 10) {\n        printf(\"foo\");\n    }\n}" always "void f(bool x) {\n    if (x < 10) {\n        printf(\"foo\");\n    }\n}"
+Line 951
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  951 always 951
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 953
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  953 always 953
+  "void f(bool x) {\n    if (10 >= x) {\n        printf(\"foo\");\n    }\n}" always "void f(bool x) {\n    if (10 >= x) {\n        printf(\"foo\");\n    }\n}"
+Line 958
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  958 always 958
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 960
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  960 always 960
+  "void f(bool x) {\n    if (x != 0) {\n        printf(\"foo\");\n    }\n}" always "void f(bool x) {\n    if (x != 0) {\n        printf(\"foo\");\n    }\n}"
+Line 965
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  965 always 965
+  "" always ""
+Line 967
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  967 always 967
+  "void f(bool x) {\n    if (x == 1) {\n    }\n}" always "void f(bool x) {\n    if (x == 1) {\n    }\n}"
+Line 971
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  971 always 971
+  "" always ""
+Line 973
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  973 always 973
+  "void f(bool x) {\n    if (x != 10) {\n        printf(\"foo\");\n    }\n}" always "void f(bool x) {\n    if (x != 10) {\n        printf(\"foo\");\n    }\n}"
+Line 978
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  978 always 978
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 980
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  980 always 980
+  "void f(bool x) {\n    if (x == 10) {\n        printf(\"foo\");\n    }\n}" always "void f(bool x) {\n    if (x == 10) {\n        printf(\"foo\");\n    }\n}"
+Line 985
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  985 always 985
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 987
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  987 always 987
+  "void f(bool x) {\n    if (x == 0) {\n        printf(\"foo\");\n    }\n}" always "void f(bool x) {\n    if (x == 0) {\n        printf(\"foo\");\n    }\n}"
+Line 992
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  992 always 992
+  "" always ""
+Line 994
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  994 always 994
+  "DensePropertyMap<int, true> visited;" always "DensePropertyMap<int, true> visited;"
+Line 995
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  995 always 995
+  "" always ""
+Line 999
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  999 always 999
+  "void f(bool x, int y) {\n    if (x == y) {\n        printf(\"foo\");\n    }\n}" always "void f(bool x, int y) {\n    if (x == y) {\n        printf(\"foo\");\n    }\n}"
+Line 1004
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1004 always 1004
+  "" always ""
+Line 1006
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1006 always 1006
+  "void f(int x, bool y) {\n    if (x == y) {\n        printf(\"foo\");\n    }\n}" always "void f(int x, bool y) {\n    if (x == y) {\n        printf(\"foo\");\n    }\n}"
+Line 1011
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1011 always 1011
+  "" always ""
+Line 1013
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1013 always 1013
+  "void f(bool x, bool y) {\n    if (x == y) {\n        printf(\"foo\");\n    }\n}" always "void f(bool x, bool y) {\n    if (x == y) {\n        printf(\"foo\");\n    }\n}"
+Line 1018
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1018 always 1018
+  "" always ""
+Line 1020
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1020 always 1020
+  "void f(bool x, fooClass y) {\n    if (x == y) {\n        printf(\"foo\");\n    }\n}" always "void f(bool x, fooClass y) {\n    if (x == y) {\n        printf(\"foo\");\n    }\n}"
+Line 1025
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1025 always 1025
+  "" always ""
+Line 1029
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1029 always 1029
+  "void f(int y) {\n    if (y > false) {\n        printf(\"foo\");\n    }\n}" always "void f(int y) {\n    if (y > false) {\n        printf(\"foo\");\n    }\n}"
+Line 1034
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1034 always 1034
+  "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n" always "[test.cpp:2]: (warning) Comparison of a boolean value using relational operator (<, >, <= or >=).\n"
+Line 1036
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1036 always 1036
+  "void f(int y) {\n    if (true == y) {\n        printf(\"foo\");\n    }\n}" always "void f(int y) {\n    if (true == y) {\n        printf(\"foo\");\n    }\n}"
+Line 1041
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1041 always 1041
+  "" always ""
+Line 1043
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1043 always 1043
+  "void f(bool y) {\n    if (y == true) {\n        printf(\"foo\");\n    }\n}" always "void f(bool y) {\n    if (y == true) {\n        printf(\"foo\");\n    }\n}"
+Line 1048
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1048 always 1048
+  "" always ""
+Line 1050
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1050 always 1050
+  "void f(bool y) {\n    if (false < 5) {\n        printf(\"foo\");\n    }\n}" always "void f(bool y) {\n    if (false < 5) {\n        printf(\"foo\");\n    }\n}"
+Line 1055
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1055 always 1055
+  "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n" always "[test.cpp:2]: (warning) Comparison of a boolean expression with an integer other than 0 or 1.\n"
+Line 1059
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1059 always 1059
+  "void f(int x) {\n    if (!x == 1) { }\n}" always "void f(int x) {\n    if (!x == 1) { }\n}"
+Line 1062
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1062 always 1062
+  "" always ""
+Line 1066
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1066 always 1066
+  "void SetVisible(int index, bool visible) {\n    bool (SciTEBase::*ischarforsel)(char ch);\n    if (visible != GetVisible(index)) { }\n}" always "void SetVisible(int index, bool visible) {\n    bool (SciTEBase::*ischarforsel)(char ch);\n    if (visible != GetVisible(index)) { }\n}"
+Line 1070
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1070 always 1070
+  "" always ""
+Line 1074
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1074 always 1074
+  "void SetVisible(bool b, int i) {\n    if (b == (bool)i) { }\n}" always "void SetVisible(bool b, int i) {\n    if (b == (bool)i) { }\n}"
+Line 1077
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1077 always 1077
+  "" always ""
+Line 1081
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1081 always 1081
+  "void f(int x) {\n    if (!x == true) { }\n}" always "void f(int x) {\n    if (!x == true) { }\n}"
+Line 1084
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1084 always 1084
+  "" always ""
+Line 1088
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1088 always 1088
+  "bool Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (expectedResult == res)\n        throw 2;\n}" always "bool Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (expectedResult == res)\n        throw 2;\n}"
+Line 1094
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1094 always 1094
+  "" always ""
+Line 1096
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1096 always 1096
+  "int Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (expectedResult == res)\n        throw 2;\n}" always "int Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (expectedResult == res)\n        throw 2;\n}"
+Line 1102
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1102 always 1102
+  "" always ""
+Line 1104
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1104 always 1104
+  "bool Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (5 + expectedResult == res)\n        throw 2;\n}" always "bool Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (5 + expectedResult == res)\n        throw 2;\n}"
+Line 1110
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1110 always 1110
+  "" always ""
+Line 1112
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1112 always 1112
+  "int Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (5 + expectedResult == res)\n        throw 2;\n}" always "int Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (5 + expectedResult == res)\n        throw 2;\n}"
+Line 1118
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1118 always 1118
+  "" always ""
+Line 1120
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1120 always 1120
+  "int Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (expectedResult == res + 5)\n        throw 2;\n}" always "int Fun();\nvoid Test(bool expectedResult) {\n    auto res = Fun();\n    if (expectedResult == res + 5)\n        throw 2;\n}"
+Line 1126
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1126 always 1126
+  "error" always "error"
+  "" always ""
+Line 1130
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1130 always 1130
+  "bool f(int a, bool b)\n{\n    if ((a == 0 ? false : true) != b) {\n        b = !b;\n    }\n    return b;\n}" always "bool f(int a, bool b)\n{\n    if ((a == 0 ? false : true) != b) {\n        b = !b;\n    }\n    return b;\n}"
+Line 1137
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1137 always 1137
+  "" always ""
+Line 1142
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1142 always 1142
+  "void f(char *p) {\n    if (p+1){}\n}" always "void f(char *p) {\n    if (p+1){}\n}"
+Line 1145
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1145 always 1145
+  "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n" always "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n"
+Line 1147
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1147 always 1147
+  "void f(char *p) {\n    do {} while (p+1);\n}" always "void f(char *p) {\n    do {} while (p+1);\n}"
+Line 1150
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1150 always 1150
+  "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n" always "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n"
+Line 1152
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1152 always 1152
+  "void f(char *p) {\n    while (p-1) {}\n}" always "void f(char *p) {\n    while (p-1) {}\n}"
+Line 1155
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1155 always 1155
+  "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n" always "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n"
+Line 1157
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1157 always 1157
+  "void f(char *p) {\n    for (int i = 0; p+1; i++) {}\n}" always "void f(char *p) {\n    for (int i = 0; p+1; i++) {}\n}"
+Line 1160
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1160 always 1160
+  "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n" always "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n"
+Line 1162
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1162 always 1162
+  "void f(char *p) {\n    if (p && p+1){}\n}" always "void f(char *p) {\n    if (p && p+1){}\n}"
+Line 1165
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1165 always 1165
+  "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n" always "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n"
+Line 1167
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1167 always 1167
+  "void f(char *p) {\n    if (p+2 || p) {}\n}" always "void f(char *p) {\n    if (p+2 || p) {}\n}"
+Line 1170
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1170 always 1170
+  "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n" always "[test.cpp:2]: (error) Converting pointer arithmetic result to bool. The bool is always true unless there is undefined behaviour.\n"
+Line 1174
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1174 always 1174
+  "bool f(void) {\n    return 0;\n}" always "bool f(void) {\n    return 0;\n}"
+Line 1177
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1177 always 1177
+  "" always ""
+Line 1179
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1179 always 1179
+  "bool f(void) {\n    return 1;\n}" always "bool f(void) {\n    return 1;\n}"
+Line 1182
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1182 always 1182
+  "" always ""
+Line 1184
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1184 always 1184
+  "bool f(void) {\n    return 2;\n}" always "bool f(void) {\n    return 2;\n}"
+Line 1187
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1187 always 1187
+  "[test.cpp:2]: (style) Non-boolean value returned from function returning bool\n" always "[test.cpp:2]: (style) Non-boolean value returned from function returning bool\n"
+Line 1189
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1189 always 1189
+  "bool f(void) {\n    return -1;\n}" always "bool f(void) {\n    return -1;\n}"
+Line 1192
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1192 always 1192
+  "[test.cpp:2]: (style) Non-boolean value returned from function returning bool\n" always "[test.cpp:2]: (style) Non-boolean value returned from function returning bool\n"
+Line 1194
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1194 always 1194
+  "bool f(void) {\n    return 1 + 1;\n}" always "bool f(void) {\n    return 1 + 1;\n}"
+Line 1197
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1197 always 1197
+  "[test.cpp:2]: (style) Non-boolean value returned from function returning bool\n" always "[test.cpp:2]: (style) Non-boolean value returned from function returning bool\n"
+Line 1199
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1199 always 1199
+  "bool f(void) {\n    int x = 0;\n    return x;\n}" always "bool f(void) {\n    int x = 0;\n    return x;\n}"
+Line 1203
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1203 always 1203
+  "" always ""
+Line 1205
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1205 always 1205
+  "bool f(void) {\n    int x = 10;\n    return x;\n}" always "bool f(void) {\n    int x = 10;\n    return x;\n}"
+Line 1209
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1209 always 1209
+  "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n" always "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n"
+Line 1211
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1211 always 1211
+  "bool f(void) {\n    return 2 < 1;\n}" always "bool f(void) {\n    return 2 < 1;\n}"
+Line 1214
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1214 always 1214
+  "" always ""
+Line 1216
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1216 always 1216
+  "bool f(void) {\n    int ret = 0;\n    if (a)\n        ret = 1;\n    return ret;\n}" always "bool f(void) {\n    int ret = 0;\n    if (a)\n        ret = 1;\n    return ret;\n}"
+Line 1222
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1222 always 1222
+  "" always ""
+Line 1224
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1224 always 1224
+  "bool f(void) {\n    int ret = 0;\n    if (a)\n        ret = 3;\n    return ret;\n}" always "bool f(void) {\n    int ret = 0;\n    if (a)\n        ret = 3;\n    return ret;\n}"
+Line 1230
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1230 always 1230
+  "[test.cpp:5]: (style) Non-boolean value returned from function returning bool\n" always "[test.cpp:5]: (style) Non-boolean value returned from function returning bool\n"
+Line 1232
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1232 always 1232
+  "bool f(void) {\n    if (a)\n        return 3;\n    return 4;\n}" always "bool f(void) {\n    if (a)\n        return 3;\n    return 4;\n}"
+Line 1237
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1237 always 1237
+  "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n[test.cpp:4]: (style) Non-boolean value returned from function returning bool\n" always "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n[test.cpp:4]: (style) Non-boolean value returned from function returning bool\n"
+Line 1240
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1240 always 1240
+  "bool f(void) {\n    return;\n}" always "bool f(void) {\n    return;\n}"
+Line 1243
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1243 always 1243
+  "" always ""
+Line 1247
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1247 always 1247
+  "bool f(void) {\n    auto x = [](void) { return -1; };\n    return false;\n}" always "bool f(void) {\n    auto x = [](void) { return -1; };\n    return false;\n}"
+Line 1251
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1251 always 1251
+  "" always ""
+Line 1253
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1253 always 1253
+  "bool f(void) {\n    auto x = [](void) { return -1; };\n    return 2;\n}" always "bool f(void) {\n    auto x = [](void) { return -1; };\n    return 2;\n}"
+Line 1257
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1257 always 1257
+  "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n" always "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n"
+Line 1259
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1259 always 1259
+  "bool f(void) {\n    auto x = [](void) -> int { return -1; };\n    return false;\n}" always "bool f(void) {\n    auto x = [](void) -> int { return -1; };\n    return false;\n}"
+Line 1263
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1263 always 1263
+  "" always ""
+Line 1265
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1265 always 1265
+  "bool f(void) {\n    auto x = [](void) -> int { return -1; };\n    return 2;\n}" always "bool f(void) {\n    auto x = [](void) -> int { return -1; };\n    return 2;\n}"
+Line 1269
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1269 always 1269
+  "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n" always "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n"
+Line 1273
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1273 always 1273
+  "bool f(int x) {\n    return x & 0x4;\n}" always "bool f(int x) {\n    return x & 0x4;\n}"
+Line 1276
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1276 always 1276
+  "" always ""
+Line 1278
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1278 always 1278
+  "bool f(int x, int y) {\n    return x | y;\n}" always "bool f(int x, int y) {\n    return x | y;\n}"
+Line 1281
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1281 always 1281
+  "" always ""
+Line 1283
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1283 always 1283
+  "bool f(int x) {\n    return (x & 0x2);\n}" always "bool f(int x) {\n    return (x & 0x2);\n}"
+Line 1286
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1286 always 1286
+  "" always ""
+Line 1290
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1290 always 1290
+  "class X {\n    public:\n        bool f() { return -1;}\n}" always "class X {\n    public:\n        bool f() { return -1;}\n}"
+Line 1294
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1294 always 1294
+  "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n" always "[test.cpp:3]: (style) Non-boolean value returned from function returning bool\n"
+Line 1296
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1296 always 1296
+  "bool f() {\n    struct X {\n        public:\n            int f() { return -1;}\n    };\n    return false;\n}" always "bool f() {\n    struct X {\n        public:\n            int f() { return -1;}\n    };\n    return false;\n}"
+Line 1303
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1303 always 1303
+  "" always ""
+Line 1305
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1305 always 1305
+  "bool f() {\n    class X {\n        public:\n            int f() { return -1;}\n    };\n    return false;\n}" always "bool f() {\n    class X {\n        public:\n            int f() { return -1;}\n    };\n    return false;\n}"
+Line 1312
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1312 always 1312
+  "" always ""
+Line 1314
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1314 always 1314
+  "bool f() {\n    class X {\n        public:\n            bool f() { return -1;}\n    };\n    return -1;\n}" always "bool f() {\n    class X {\n        public:\n            bool f() { return -1;}\n    };\n    return -1;\n}"
+Line 1321
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testbool.cpp" always "cppcheck-2.8/test/testbool.cpp"
+  1321 always 1321
+  "[test.cpp:6]: (style) Non-boolean value returned from function returning bool\n[test.cpp:4]: (style) Non-boolean value returned from function returning bool\n" always "[test.cpp:6]: (style) Non-boolean value returned from function returning bool\n[test.cpp:4]: (style) Non-boolean value returned from function returning bool\n"

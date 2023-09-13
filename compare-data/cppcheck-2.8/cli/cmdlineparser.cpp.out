@@ -1,0 +1,2427 @@
+
+
+##file cppcheck-2.8/cli/cmdlineparser.h
+
+1:
+|
+24:
+25: class Settings ;
+26:
+|
+38:
+39: class CmdLineParser {
+40: public:
+41:
+|
+45:
+46: explicit CmdLineParser ( Settings * settings@var1 ) ;
+47:
+|
+51:
+52: bool parseFromArgs ( int argc@var2 , const char * const argv@var3 [ ] ) ;
+53:
+|
+56:
+57: bool getShowVersion ( ) const {
+58: return mShowVersion@var10 ;
+59: }
+60:
+|
+63:
+64: bool getShowErrorMessages ( ) const {
+65: return mShowErrorMessages@var11 ;
+66: }
+67:
+|
+70:
+71: const std :: vector < std :: string > & getPathNames ( ) const {
+72: return mPathNames@var6 ;
+73: }
+74:
+|
+77:
+78: bool getShowHelp ( ) const {
+79: return mShowHelp@var9 ;
+80: }
+81:
+|
+84:
+85: bool exitAfterPrinting ( ) const {
+86: return mExitAfterPrint@var12 ;
+87: }
+88:
+|
+91:
+92: const std :: vector < std :: string > & getIgnoredPaths ( ) const {
+93: return mIgnoredPaths@var7 ;
+94: }
+95:
+96: protected:
+97:
+|
+100:
+101: static void printHelp ( ) ;
+102:
+|
+105:
+106: static void printMessage ( const std :: string & message@var4 ) ;
+107:
+|
+110:
+111: static void printError ( const std :: string & message@var5 ) ;
+112:
+113: private:
+114: std :: vector < std :: string > mPathNames@var6 ;
+115: std :: vector < std :: string > mIgnoredPaths@var7 ;
+116: Settings * mSettings@var8 ;
+117: bool mShowHelp@var9 ;
+118: bool mShowVersion@var10 ;
+119: bool mShowErrorMessages@var11 ;
+120: bool mExitAfterPrint@var12 ;
+121: std :: string mVSConfig@var13 ;
+122: } ;
+
+##file cppcheck-2.8/cli/cppcheckexecutor.h
+
+1:
+|
+32:
+33: class CppCheck ;
+34: class Library ;
+35: class Settings ;
+36:
+|
+43:
+44: class CppCheckExecutor : public ErrorLogger {
+45: public:
+46:
+47:
+48:
+49: CppCheckExecutor ( ) ;
+50: CppCheckExecutor ( const CppCheckExecutor & ) = delete ;
+51: void operator= ( const CppCheckExecutor & ) = delete ;
+52:
+|
+55:
+56: ~ CppCheckExecutor ( ) override ;
+57:
+|
+68:
+69: int check ( int argc@var14 , const char * const argv@var15 [ ] ) ;
+70:
+|
+76:
+77: void reportOut ( const std :: string & outmsg@var16 , Color c@var17 = Color :: Reset ) override ;
+78:
+79:
+80: void reportErr ( const ErrorMessage & msg@var18 ) override ;
+81:
+82: void reportProgress ( const std :: string & filename@var19 , const char stage@var20 [ ] , const unsigned long value@var21 ) override ;
+83:
+|
+86:
+87: void reportInfo ( const ErrorMessage & msg@var22 ) override ;
+88:
+|
+96:
+97: static void reportStatus ( unsigned long fileindex@var23 , unsigned long filecount@var24 , unsigned long sizedone@var25 , unsigned long sizetotal@var26 ) ;
+98:
+|
+101:
+102: static void setExceptionOutput ( FILE * exceptionOutput@var27 ) ;
+103:
+104:
+105:
+106: static FILE * getExceptionOutput ( ) ;
+107:
+|
+111:
+112: static bool tryLoadLibrary ( Library & destination@var28 , const std :: string & basepath@var29 , const char * filename@var30 ) ;
+113:
+|
+116:
+117: static bool executeCommand ( std :: string exe@var31 , std :: vector < std :: string > args@var32 , const std :: string & redirect@var33 , std :: string * output_@var34 ) ;
+118:
+119: protected:
+120:
+|
+124:
+125: void reportErr ( const std :: string & errmsg@var35 ) ;
+126:
+|
+135:
+136: bool parseFromArgs ( CppCheck * cppcheck@var36 , int argc@var37 , const char * const argv@var38 [ ] ) ;
+137:
+|
+141:
+142: void setSettings ( const Settings & settings@var39 ) ;
+143:
+144: private:
+145:
+|
+151:
+152: int check_wrapper ( CppCheck & cppcheck@var40 ) ;
+153:
+|
+163:
+164: int check_internal ( CppCheck & cppcheck@var41 ) ;
+165:
+|
+168:
+169: const Settings * mSettings@var42 ;
+170:
+|
+173:
+174: std :: set < std :: string > mShownErrors@var43 ;
+175:
+|
+178:
+179: std :: map < std :: string , unsigned long > mFiles@var44 ;
+180:
+|
+183:
+184: std :: time_t mLatestProgressOutputTime@var45 ;
+185:
+|
+188:
+189: static FILE * mExceptionOutput@var46 ;
+190:
+|
+193:
+194: std :: ofstream * mErrorOutput@var47 ;
+195:
+|
+198:
+199: bool mShowAllErrors@var48 ;
+200: } ;
+
+##file cppcheck-2.8/cli/filelister.h
+
+1:
+|
+26:
+27: class PathMatch ;
+28:
+|
+32:
+33: class FileLister {
+34: public:
+35:
+|
+44:
+45: static std :: string recursiveAddFiles ( std :: map < std :: string , unsigned long > & files@var49 , const std :: string & path@var50 , const PathMatch & ignored@var51 ) {
+46: const std ::@expr1073741954 set < std ::@expr1073741955 string > extra@var52 ;
+47: return recursiveAddFiles (@expr1073741956 files@var49 , path@var50 , extra@var52 , ignored@var51 ) ;
+48: }
+49:
+|
+60:
+61: static std :: string recursiveAddFiles ( std :: map < std :: string , unsigned long > & files@var53 , const std :: string & path@var54 , const std :: set < std :: string > & extra@var55 , const PathMatch & ignored@var56 ) ;
+62:
+|
+74:
+75: static std :: string addFiles ( std :: map < std :: string , unsigned long > & files@var57 , const std :: string & path@var58 , const std :: set < std :: string > & extra@var59 , bool recursive@var60 , const PathMatch & ignored@var61 ) ;
+76:
+|
+80:
+81: static bool isDirectory ( const std :: string & path@var62 ) ;
+82:
+|
+86:
+87: static bool fileExists ( const std :: string & path@var63 ) ;
+88: } ;
+
+##file cppcheck-2.8/cli/cmdlineparser.cpp
+
+1:
+|
+52:
+53: static void addFilesToList ( const std :: string & fileList@var64 , std :: vector < std :: string > & pathNames@var65 )
+54: {
+55:
+56: std ::@expr1073741958 istream * files@var66 ;
+57: std ::@expr1073741959 ifstream infile@var67 ;
+58: if (@expr1073741960 fileList@var64 ==@expr1073741961 "-" ) {
+59: files@var66 =@expr1073741962 &@expr1073741963 std ::@expr1073741964 cin@expr1073741957 ;
+60: } else {
+61: infile@var67 .@expr1073741965 open (@expr1073741966 fileList@var64 ) ;
+62: files@var66 =@expr1073741967 &@expr1073741968 infile@var67 ;
+63: }
+64: if (@expr1073741969 files@var66 &&@expr1073741970 *@expr147 files@var66 ) {
+65: std ::@expr1073741972 string fileName@var68 ;
+66: while (@expr1073741973 std ::@expr1073741974 getline (@expr1073741975 *@expr147 files@var66 , fileName@var68 ) ) {
+67: if (@expr1073741977 !@expr1073741978 fileName@var68 .@expr1073741979 empty (@expr1073741980 ) ) {
+68: pathNames@var65 .@expr1073741981 emplace_back (@expr1073741982 fileName@var68 ) ;
+69: }
+70: }
+71: }
+72: }
+73:
+74: static bool addIncludePathsToList ( const std :: string & fileList@var69 , std :: list < std :: string > * pathNames@var70 )
+75: {
+76: std ::@expr1073741983 ifstream files@var71 (@expr1073741984 fileList@var69 ) ;
+77: if (@expr1073741985 files@var71 ) {
+78: std ::@expr1073741986 string pathName@var72 ;
+79: while (@expr1073741987 std ::@expr1073741988 getline (@expr1073741989 files@var71 , pathName@var72 ) ) {
+80: if (@expr1073741990 !@expr1073741991 pathName@var72 .@expr1073741992 empty (@expr1073741993 ) ) {
+81: pathName@var72 =@expr1073741994 Path ::@expr1073741995 removeQuotationMarks (@expr1073741996 pathName@var72 ) ;
+82: pathName@var72 =@expr1073741997 Path ::@expr1073741998 fromNativeSeparators (@expr1073741999 pathName@var72 ) ;
+83:
+84:
+85: if (@expr1073742000 !@expr1073742001 endsWith (@expr1073742002 pathName@var72 , '/' ) ) {
+86: pathName@var72 +=@expr1073742003 '/' ; }
+87:
+88: pathNames@var70 .@expr1073742004 emplace_back (@expr1073742005 pathName@var72 ) ;
+89: }
+90: }
+91: return true ;
+92: }
+93: return false ;
+94: }
+95:
+96: static bool addPathsToSet ( const std :: string & fileName@var73 , std :: set < std :: string > * set@var74 )
+97: {
+98: std ::@expr1073742006 list < std ::@expr1073742007 string > templist@var75 ;
+99: if (@expr1073742008 !@expr1073742009 addIncludePathsToList (@expr1073742010 fileName@var73 , &@expr1073742011 templist@var75 ) ) {
+100: return false ; }
+101: set@var74 .@expr1073742012 insert (@expr1073742013 templist@var75 .@expr1073742014 begin (@expr1073742015 ) , templist@var75 .@expr1073742016 end (@expr1073742017 ) ) ;
+102: return true ;
+103: }
+104:
+105: CmdLineParser :: CmdLineParser ( Settings * settings@var76 )
+106: : mSettings@var8 ( settings@var76 )
+107: , mShowHelp@var9 ( false )
+108: , mShowVersion@var10 ( false )
+109: , mShowErrorMessages@var11 ( false )
+110: , mExitAfterPrint@var12 ( false )
+111: { }
+112:
+113: void CmdLineParser :: printMessage ( const std :: string & message@var77 )
+114: {
+115: std ::@expr1073742020 cout@expr1073742018 <<@expr1073742021 "cppcheck: " <<@expr1073742022 message@var77 <<@expr1073742023 std ::@expr1073742024 endl@expr1073742019 ;
+116: }
+117:
+118: void CmdLineParser :: printError ( const std :: string & message@var78 )
+119: {
+120: printMessage (@expr1073742025 "error: " +@expr1073742026 message@var78 ) ;
+121: }
+122:
+123: bool CmdLineParser :: parseFromArgs ( int argc@var79 , const char * const argv@var80 [ ] )
+124: {
+125: bool def@var81 ; def@var81 =@expr1073742053 false ;
+126: bool maxconfigs@var82 ; maxconfigs@var82 =@expr1073742054 false ;
+127:
+128: mSettings@var8 .@expr1073742055 exename@var130 =@expr1073742056 argv@var80 [@expr233 0 ] ;
+129:
+|
+137:
+138: for (@expr1073742058 int i@var83 =@expr1073742059 1 ; i@var83 <@expr1073742060 argc@var79 ; i@var83 ++@expr1073742061 ) {
+139: if (@expr1073742062 argv@var80 [@expr239 i@var83 ] [@expr240 0 ] ==@expr241 '-' ) {
+140:
+141: if (@expr1073742066 std ::@expr243 strncmp (@expr1073742068 argv@var80 [@expr239 i@var83 ] , "-D" , 2 ) ==@expr1073742070 0 ) {
+142: std ::@expr1073742071 string define@var84 ;
+143:
+144:
+145: if (@expr1073742072 std ::@expr249 strcmp (@expr1073742074 argv@var80 [@expr239 i@var83 ] , "-D" ) ==@expr1073742076 0 ) {
+146: ++@expr1073742077 i@var83 ;
+147: if (@expr254 i@var83 >=@expr255 argc@var79 ||@expr256 argv@var80 [@expr239 i@var83 ] [@expr240 0 ] ==@expr241 '-' ) {
+148: printError (@expr1073742084 "argument to '-D' is missing." ) ;
+149: return false ;
+150: }
+151:
+152: define@var84 =@expr1073742085 argv@var80 [@expr239 i@var83 ] ;
+153: }
+154:
+155: else {
+156: define@var84 =@expr1073742087 2 +@expr264 argv@var80 [@expr239 i@var83 ] ;
+157: }
+158:
+159:
+160: if (@expr1073742090 define@var84 .@expr1073742091 find (@expr1073742092 '=' ) ==@expr1073742093 std ::@expr270 string ::@expr271 npos@expr203 ) {
+161: define@var84 +=@expr1073742096 "=1" ; }
+162:
+163: if (@expr1073742097 !@expr1073742098 mSettings@var8 .@expr275 userDefines@var131 .@expr1073742100 empty (@expr1073742101 ) ) {
+164: mSettings@var8 .@expr275 userDefines@var131 +=@expr1073742103 ";" ; }
+165: mSettings@var8 .@expr275 userDefines@var131 +=@expr1073742105 define@var84 ;
+166:
+167: def@var81 =@expr1073742106 true ;
+168: }
+169:
+170:
+171: else { if (@expr1073742107 std ::@expr249 strcmp (@expr1073742109 argv@var80 [@expr239 i@var83 ] , "-E" ) ==@expr1073742111 0 ) {
+172: mSettings@var8 .@expr288 preprocessOnly@var132 =@expr1073742113 true ;
+173: mSettings@var8 .@expr290 quiet@var133 =@expr1073742115 true ;
+174: }
+175:
+176:
+177: else { if (@expr1073742116 std ::@expr243 strncmp (@expr1073742118 argv@var80 [@expr239 i@var83 ] , "-I" , 2 ) ==@expr1073742120 0 ) {
+178: std ::@expr1073742121 string path@var85 ;
+179:
+180:
+181: if (@expr1073742122 std ::@expr249 strcmp (@expr1073742124 argv@var80 [@expr239 i@var83 ] , "-I" ) ==@expr1073742126 0 ) {
+182: ++@expr1073742127 i@var83 ;
+183: if (@expr254 i@var83 >=@expr255 argc@var79 ||@expr256 argv@var80 [@expr239 i@var83 ] [@expr240 0 ] ==@expr241 '-' ) {
+184: printError (@expr1073742134 "argument to '-I' is missing." ) ;
+185: return false ;
+186: }
+187: path@var85 =@expr1073742135 argv@var80 [@expr239 i@var83 ] ;
+188: }
+189:
+190:
+191: else {
+192: path@var85 =@expr1073742137 2 +@expr264 argv@var80 [@expr239 i@var83 ] ;
+193: }
+194: path@var85 =@expr1073742140 Path ::@expr317 removeQuotationMarks (@expr1073742142 path@var85 ) ;
+195: path@var85 =@expr1073742143 Path ::@expr320 fromNativeSeparators (@expr1073742145 path@var85 ) ;
+196:
+197:
+198: if (@expr1073742146 !@expr1073742147 endsWith (@expr1073742148 path@var85 , '/' ) ) {
+199: path@var85 +=@expr1073742149 '/' ; }
+200:
+201: mSettings@var8 .@expr326 includePaths@var134 .@expr1073742151 emplace_back (@expr1073742152 path@var85 ) ;
+202: }
+203:
+204:
+205: else { if (@expr1073742153 std ::@expr243 strncmp (@expr1073742155 argv@var80 [@expr239 i@var83 ] , "-U" , 2 ) ==@expr1073742157 0 ) {
+206: std ::@expr1073742158 string undef@var86 ;
+207:
+208:
+209: if (@expr1073742159 std ::@expr249 strcmp (@expr1073742161 argv@var80 [@expr239 i@var83 ] , "-U" ) ==@expr1073742163 0 ) {
+210: ++@expr1073742164 i@var83 ;
+211: if (@expr254 i@var83 >=@expr255 argc@var79 ||@expr256 argv@var80 [@expr239 i@var83 ] [@expr240 0 ] ==@expr241 '-' ) {
+212: printError (@expr1073742171 "argument to '-U' is missing." ) ;
+213: return false ;
+214: }
+215:
+216: undef@var86 =@expr1073742172 argv@var80 [@expr239 i@var83 ] ;
+217: }
+218:
+219: else {
+220: undef@var86 =@expr1073742174 2 +@expr264 argv@var80 [@expr239 i@var83 ] ;
+221: }
+222:
+223: mSettings@var8 .@expr1073742177 userUndefs@var135 .@expr1073742178 insert (@expr1073742179 undef@var86 ) ;
+224: }
+225:
+226: else { if (@expr1073742180 std ::@expr243 strncmp (@expr1073742182 argv@var80 [@expr239 i@var83 ] , "--addon=" , 8 ) ==@expr1073742184 0 ) {
+227: mSettings@var8 .@expr1073742185 addons@var136 .@expr1073742186 emplace_back (@expr1073742187 argv@var80 [@expr239 i@var83 ] +@expr365 8 ) ; }
+228:
+229: else { if (@expr1073742190 std ::@expr243 strncmp (@expr1073742192 argv@var80 [@expr239 i@var83 ] , "--addon-python=" , 15 ) ==@expr1073742194 0 ) {
+230: mSettings@var8 .@expr1073742195 addonPython@var137 .@expr1073742196 assign (@expr1073742197 argv@var80 [@expr239 i@var83 ] +@expr375 15 ) ; }
+231:
+232:
+233: else { if (@expr1073742200 std ::@expr249 strcmp (@expr1073742202 argv@var80 [@expr239 i@var83 ] , "--check-config" ) ==@expr1073742204 0 ) {
+234: mSettings@var8 .@expr1073742205 checkConfiguration@var138 =@expr1073742206 true ; }
+235:
+236:
+237: else { if (@expr1073742207 std ::@expr249 strcmp (@expr1073742209 argv@var80 [@expr239 i@var83 ] , "--check-library" ) ==@expr1073742211 0 ) {
+238: mSettings@var8 .@expr1073742212 checkLibrary@var139 =@expr1073742213 true ;
+239:
+240: mSettings@var8 .@expr390 addEnabled (@expr1073742215 "information" ) ;
+241: }
+242:
+243: else { if (@expr1073742216 std ::@expr243 strncmp (@expr1073742218 argv@var80 [@expr239 i@var83 ] , "--clang" , 7 ) ==@expr1073742220 0 ) {
+244: mSettings@var8 .@expr1073742221 clang@var140 =@expr1073742222 true ;
+245: if (@expr1073742223 std ::@expr243 strncmp (@expr1073742225 argv@var80 [@expr239 i@var83 ] , "--clang=" , 8 ) ==@expr1073742227 0 ) {
+246: mSettings@var8 .@expr1073742228 clangExecutable@var141 =@expr1073742229 argv@var80 [@expr239 i@var83 ] +@expr365 8 ;
+247: }
+248: }
+249:
+250: else { if (@expr1073742232 std ::@expr243 strncmp (@expr1073742234 argv@var80 [@expr239 i@var83 ] , "--config-exclude=" , 17 ) ==@expr1073742236 0 ) {
+251: mSettings@var8 .@expr413 configExcludePaths@var142 .@expr1073742238 insert (@expr1073742239 Path ::@expr320 fromNativeSeparators (@expr1073742241 argv@var80 [@expr239 i@var83 ] +@expr419 17 ) ) ;
+252: }
+253:
+254: else { if (@expr1073742244 std ::@expr243 strncmp (@expr1073742246 argv@var80 [@expr239 i@var83 ] , "--config-excludes-file=" , 23 ) ==@expr1073742248 0 ) {
+255:
+256: const std ::@expr1073742249 string cfgExcludesFile@var87 (@expr1073742250 23 +@expr1073742251 argv@var80 [@expr239 i@var83 ] ) ;
+257: if (@expr1073742253 !@expr1073742254 addPathsToSet (@expr1073742255 cfgExcludesFile@var87 , &@expr1073742256 mSettings@var8 .@expr413 configExcludePaths@var142 ) ) {
+258: printError (@expr1073742258 "unable to open config excludes file at '" +@expr1073742259 cfgExcludesFile@var87 +@expr1073742260 "'" ) ;
+259: return false ;
+260: }
+261: }
+262:
+263: else { if (@expr1073742261 std ::@expr243 strncmp (@expr1073742263 argv@var80 [@expr239 i@var83 ] , "--cppcheck-build-dir=" , 21 ) ==@expr1073742265 0 ) {
+264: mSettings@var8 .@expr442 buildDir@var143 =@expr1073742267 Path ::@expr320 fromNativeSeparators (@expr1073742269 argv@var80 [@expr239 i@var83 ] +@expr1073742271 21 ) ;
+265: if (@expr1073742272 endsWith (@expr1073742273 mSettings@var8 .@expr442 buildDir@var143 , '/' ) ) {
+266: mSettings@var8 .@expr442 buildDir@var143 .@expr1073742276 pop_back (@expr1073742277 ) ; }
+267: }
+268:
+269:
+270: else { if (@expr1073742278 std ::@expr249 strcmp (@expr1073742280 argv@var80 [@expr239 i@var83 ] , "--debug" ) ==@expr1073742282 0 ||@expr1073742283
+271: std ::@expr249 strcmp (@expr1073742285 argv@var80 [@expr239 i@var83 ] , "--debug-normal" ) ==@expr1073742287 0 ) {
+272: mSettings@var8 .@expr1073742288 debugnormal@var144 =@expr1073742289 true ; }
+273:
+274:
+275: else { if (@expr1073742290 std ::@expr249 strcmp (@expr1073742292 argv@var80 [@expr239 i@var83 ] , "--debug-simplified" ) ==@expr1073742294 0 ) {
+276: mSettings@var8 .@expr1073742295 debugSimplified@var145 =@expr1073742296 true ; }
+277:
+278:
+279: else { if (@expr1073742297 std ::@expr249 strcmp (@expr1073742299 argv@var80 [@expr239 i@var83 ] , "--debug-template" ) ==@expr1073742301 0 ) {
+280: mSettings@var8 .@expr1073742302 debugtemplate@var146 =@expr1073742303 true ; }
+281:
+282:
+283: else { if (@expr1073742304 std ::@expr249 strcmp (@expr1073742306 argv@var80 [@expr239 i@var83 ] , "--debug-warnings" ) ==@expr1073742308 0 ) {
+284: mSettings@var8 .@expr1073742309 debugwarnings@var147 =@expr1073742310 true ; }
+285:
+286:
+287: else { if (@expr1073742311 std ::@expr249 strcmp (@expr1073742313 argv@var80 [@expr239 i@var83 ] , "--doc" ) ==@expr1073742315 0 ) {
+288: std ::@expr1073742316 ostringstream doc@var88 ;
+289:
+290: for (@expr1073742317 const Check *@expr1073742318 it@var89 :@expr1073742319 Check ::@expr1073742320 instances (@expr1073742321 ) ) {
+291: const std ::@expr270 string & name@var90 (@expr1073742323 it@var89 .@expr1073742324 name (@expr1073742325 ) ) ;
+292: const std ::@expr1073742326 string info@var91 (@expr1073742327 it@var89 .@expr1073742328 classInfo (@expr1073742329 ) ) ;
+293: if (@expr1073742330 !@expr1073742331 name@var90 .@expr1073742332 empty (@expr1073742333 ) &&@expr1073742334 !@expr1073742335 info@var91 .@expr1073742336 empty (@expr1073742337 ) ) {
+294: doc@var88 <<@expr1073742338 "## " <<@expr1073742339 name@var90 <<@expr1073742340 " ##\n"
+295: <<@expr1073742341 info@var91 <<@expr1073742342 "\n" ; }
+296: }
+297:
+298: std ::@expr1073742343 cout@expr1073742028 <<@expr1073742344 doc@var88 .@expr1073742345 str (@expr1073742346 ) ;
+299: mExitAfterPrint@var12 =@expr1073742347 true ;
+300: return true ;
+301: }
+302:
+303:
+304: else { if (@expr1073742348 std ::@expr249 strcmp (@expr1073742350 argv@var80 [@expr239 i@var83 ] , "--dump" ) ==@expr1073742352 0 ) {
+305: mSettings@var8 .@expr1073742353 dump@var148 =@expr1073742354 true ; }
+306:
+307: else { if (@expr1073742355 std ::@expr243 strncmp (@expr1073742357 argv@var80 [@expr239 i@var83 ] , "--enable=" , 9 ) ==@expr1073742359 0 ) {
+308: const std ::@expr536 string errmsg@var92 =@expr1073742361 mSettings@var8 .@expr390 addEnabled (@expr1073742363 argv@var80 [@expr239 i@var83 ] +@expr1073742365 9 ) ;
+309: if (@expr1073742366 !@expr1073742367 errmsg@var92 .@expr1073742368 empty (@expr1073742369 ) ) {
+310: printError (@expr1073742370 errmsg@var92 ) ;
+311: return false ;
+312: }
+313:
+314: if (@expr1073742371 mSettings@var8 .@expr1073742372 severity@var149 .@expr1073742373 isEnabled (@expr1073742374 Severity ::@expr1073742375 style@expr1073742029 ) ) {
+315: mSettings@var8 .@expr390 addEnabled (@expr1073742377 "warning" ) ;
+316: mSettings@var8 .@expr390 addEnabled (@expr1073742379 "performance" ) ;
+317: mSettings@var8 .@expr390 addEnabled (@expr1073742381 "portability" ) ;
+318: }
+319: }
+320:
+321:
+322: else { if (@expr1073742382 std ::@expr249 strcmp (@expr1073742384 argv@var80 [@expr239 i@var83 ] , "--errorlist" ) ==@expr1073742386 0 ) {
+323: mShowErrorMessages@var11 =@expr1073742387 true ;
+324: mSettings@var8 .@expr564 xml@var150 =@expr1073742389 true ;
+325: mExitAfterPrint@var12 =@expr1073742390 true ;
+326: }
+327:
+328:
+329: else { if (@expr1073742391 std ::@expr243 strncmp (@expr1073742393 argv@var80 [@expr239 i@var83 ] , "--error-exitcode=" , 17 ) ==@expr1073742395 0 ) {
+330: const std ::@expr536 string temp@var93 =@expr1073742397 argv@var80 [@expr239 i@var83 ] +@expr419 17 ;
+331: std ::@expr1073742400 istringstream iss@var94 (@expr1073742401 temp@var93 ) ;
+332: if (@expr1073742402 !@expr1073742403 (@expr1073742404 iss@var94 >>@expr1073742405 mSettings@var8 .@expr582 exitCode@var151 ) ) {
+333: mSettings@var8 .@expr582 exitCode@var151 =@expr1073742408 0 ;
+334: printError (@expr1073742409 "argument must be an integer. Try something like '--error-exitcode=1'." ) ;
+335: return false ;
+336: }
+337: }
+338:
+339:
+340: else { if (@expr1073742410 std ::@expr249 strcmp (@expr1073742412 argv@var80 [@expr239 i@var83 ] , "--exception-handling" ) ==@expr1073742414 0 ) {
+341: mSettings@var8 .@expr591 exceptionHandling@var152 =@expr1073742416 true ; }
+342:
+343: else { if (@expr1073742417 std ::@expr243 strncmp (@expr1073742419 argv@var80 [@expr239 i@var83 ] , "--exception-handling=" , 21 ) ==@expr1073742421 0 ) {
+344: mSettings@var8 .@expr591 exceptionHandling@var152 =@expr1073742423 true ;
+345: const std ::@expr536 string exceptionOutfilename@var95 =@expr1073742425 &@expr1073742426 (@expr1073742427 argv@var80 [@expr239 i@var83 ] [@expr1073742429 21 ] ) ;
+346: CppCheckExecutor ::@expr1073742430 setExceptionOutput (@expr1073742431 (@expr1073742432 exceptionOutfilename@var95 ==@expr1073742433 "stderr" ) ?@expr1073742434 stderr :@expr1073742435 stdout@expr1073742030 ) ;
+347: }
+348:
+349:
+350: else { if (@expr1073742436 std ::@expr243 strncmp (@expr1073742438 argv@var80 [@expr239 i@var83 ] , "--exitcode-suppressions=" , 24 ) ==@expr1073742440 0 ) {
+351:
+352: std ::@expr1073742441 string filename@var96 ; filename@var96 =@expr1073742442 24 +@expr619 argv@var80 [@expr239 i@var83 ] ;
+353:
+354: std ::@expr1073742445 ifstream f@var97 (@expr1073742446 filename@var96 ) ;
+355: if (@expr1073742447 !@expr1073742448 f@var97 .@expr1073742449 is_open (@expr1073742450 ) ) {
+356: printError (@expr1073742451 "couldn't open the file: \"" +@expr1073742452 filename@var96 +@expr1073742453 "\"." ) ;
+357: return false ;
+358: }
+359: const std ::@expr1073742454 string errmsg@var98 (@expr1073742455 mSettings@var8 .@expr1073742456 nofail@var153 .@expr1073742457 parseFile (@expr1073742458 f@var97 ) ) ;
+360: if (@expr1073742459 !@expr1073742460 errmsg@var98 .@expr1073742461 empty (@expr1073742462 ) ) {
+361: printError (@expr1073742463 errmsg@var98 ) ;
+362: return false ;
+363: }
+364: }
+365:
+366:
+367: else { if (@expr1073742464 std ::@expr243 strncmp (@expr1073742466 argv@var80 [@expr239 i@var83 ] , "--file-filter=" , 14 ) ==@expr1073742468 0 ) {
+368: mSettings@var8 .@expr1073742469 fileFilters@var154 .@expr1073742470 push_back (@expr1073742471 argv@var80 [@expr239 i@var83 ] +@expr649 14 ) ; }
+369:
+370:
+371: else { if (@expr1073742474 std ::@expr243 strncmp (@expr1073742476 argv@var80 [@expr239 i@var83 ] , "--file-list=" , 12 ) ==@expr1073742478 0 ) {
+372:
+373: addFilesToList (@expr1073742479 12 +@expr1073742480 argv@var80 [@expr239 i@var83 ] , mPathNames@var6 ) ; }
+374:
+375:
+376: else { if (@expr1073742482 std ::@expr249 strcmp (@expr1073742484 argv@var80 [@expr239 i@var83 ] , "-f" ) ==@expr1073742486 0 ||@expr1073742487 std ::@expr249 strcmp (@expr1073742489 argv@var80 [@expr239 i@var83 ] , "--force" ) ==@expr1073742491 0 ) {
+377: mSettings@var8 .@expr668 force@var155 =@expr1073742493 true ; }
+378:
+379:
+380: else { if (@expr1073742494 std ::@expr249 strcmp (@expr1073742496 argv@var80 [@expr239 i@var83 ] , "-h" ) ==@expr1073742498 0 ||@expr1073742499 std ::@expr249 strcmp (@expr1073742501 argv@var80 [@expr239 i@var83 ] , "--help" ) ==@expr1073742503 0 ) {
+381: mPathNames@var6 .@expr1073742504 clear (@expr1073742505 ) ;
+382: mShowHelp@var9 =@expr1073742506 true ;
+383: mExitAfterPrint@var12 =@expr1073742507 true ;
+384: break ;
+385: }
+386:
+387:
+388: else { if (@expr1073742508 std ::@expr243 strncmp (@expr1073742510 argv@var80 [@expr239 i@var83 ] , "-i" , 2 ) ==@expr1073742512 0 ) {
+389: std ::@expr1073742513 string path@var99 ;
+390:
+391:
+392: if (@expr1073742514 std ::@expr249 strcmp (@expr1073742516 argv@var80 [@expr239 i@var83 ] , "-i" ) ==@expr1073742518 0 ) {
+393: ++@expr1073742519 i@var83 ;
+394: if (@expr254 i@var83 >=@expr255 argc@var79 ||@expr256 argv@var80 [@expr239 i@var83 ] [@expr240 0 ] ==@expr241 '-' ) {
+395: printError (@expr1073742526 "argument to '-i' is missing." ) ;
+396: return false ;
+397: }
+398: path@var99 =@expr1073742527 argv@var80 [@expr239 i@var83 ] ;
+399: }
+400:
+401:
+402: else {
+403: path@var99 =@expr1073742529 2 +@expr264 argv@var80 [@expr239 i@var83 ] ;
+404: }
+405:
+406: if (@expr1073742532 !@expr1073742533 path@var99 .@expr1073742534 empty (@expr1073742535 ) ) {
+407: path@var99 =@expr1073742536 Path ::@expr317 removeQuotationMarks (@expr1073742538 path@var99 ) ;
+408: path@var99 =@expr1073742539 Path ::@expr320 fromNativeSeparators (@expr1073742541 path@var99 ) ;
+409: path@var99 =@expr1073742542 Path ::@expr719 simplifyPath (@expr1073742544 path@var99 ) ;
+410:
+411: if (@expr1073742545 FileLister ::@expr722 isDirectory (@expr1073742547 path@var99 ) ) {
+412:
+413: if (@expr1073742548 !@expr1073742549 endsWith (@expr1073742550 path@var99 , '/' ) ) {
+414: path@var99 +=@expr1073742551 '/' ; }
+415: }
+416: mIgnoredPaths@var7 .@expr728 emplace_back (@expr1073742553 path@var99 ) ;
+417: }
+418: }
+419:
+420: else { if (@expr1073742554 std ::@expr243 strncmp (@expr1073742556 argv@var80 [@expr239 i@var83 ] , "--include=" , 10 ) ==@expr1073742558 0 ) {
+421: mSettings@var8 .@expr1073742559 userIncludes@var156 .@expr1073742560 emplace_back (@expr1073742561 Path ::@expr320 fromNativeSeparators (@expr1073742563 argv@var80 [@expr239 i@var83 ] +@expr741 10 ) ) ;
+422: }
+423:
+424: else { if (@expr1073742566 std ::@expr243 strncmp (@expr1073742568 argv@var80 [@expr239 i@var83 ] , "--includes-file=" , 16 ) ==@expr1073742570 0 ) {
+425:
+426: const std ::@expr1073742571 string includesFile@var100 (@expr1073742572 16 +@expr749 argv@var80 [@expr239 i@var83 ] ) ;
+427: if (@expr1073742575 !@expr1073742576 addIncludePathsToList (@expr1073742577 includesFile@var100 , &@expr1073742578 mSettings@var8 .@expr326 includePaths@var134 ) ) {
+428: printError (@expr1073742580 "unable to open includes file at '" +@expr1073742581 includesFile@var100 +@expr1073742582 "'" ) ;
+429: return false ;
+430: }
+431: }
+432:
+433:
+434: else { if (@expr1073742583 std ::@expr249 strcmp (@expr1073742585 argv@var80 [@expr239 i@var83 ] , "--inconclusive" ) ==@expr1073742587 0 ) {
+435: mSettings@var8 .@expr1073742588 certainty@var157 .@expr1073742589 enable (@expr1073742590 Certainty ::@expr1073742591 inconclusive@expr1073742031 ) ; }
+436:
+437:
+438: else { if (@expr1073742592 std ::@expr249 strcmp (@expr1073742594 argv@var80 [@expr239 i@var83 ] , "--inline-suppr" ) ==@expr1073742596 0 ) {
+439: mSettings@var8 .@expr1073742597 inlineSuppressions@var158 =@expr1073742598 true ; }
+440:
+441:
+442: else { if (@expr1073742599 std ::@expr243 strncmp (@expr1073742601 argv@var80 [@expr239 i@var83 ] , "-j" , 2 ) ==@expr1073742603 0 ) {
+443: std ::@expr1073742604 string numberString@var101 ;
+444:
+445:
+446: if (@expr1073742605 std ::@expr249 strcmp (@expr1073742607 argv@var80 [@expr239 i@var83 ] , "-j" ) ==@expr1073742609 0 ) {
+447: ++@expr1073742610 i@var83 ;
+448: if (@expr254 i@var83 >=@expr255 argc@var79 ||@expr256 argv@var80 [@expr239 i@var83 ] [@expr240 0 ] ==@expr241 '-' ) {
+449: printError (@expr1073742617 "argument to '-j' is missing." ) ;
+450: return false ;
+451: }
+452:
+453: numberString@var101 =@expr1073742618 argv@var80 [@expr239 i@var83 ] ;
+454: }
+455:
+456:
+457: else {
+458: numberString@var101 =@expr1073742620 argv@var80 [@expr239 i@var83 ] +@expr264 2 ; }
+459:
+460: std ::@expr1073742623 istringstream iss@var102 (@expr1073742624 numberString@var101 ) ;
+461: if (@expr1073742625 !@expr1073742626 (@expr1073742627 iss@var102 >>@expr1073742628 mSettings@var8 .@expr805 jobs@var159 ) ) {
+462: printError (@expr1073742630 "argument to '-j' is not a number." ) ;
+463: return false ;
+464: }
+465:
+466: if (@expr1073742631 mSettings@var8 .@expr805 jobs@var159 >@expr1073742633 10000 ) {
+467:
+468:
+469: printError (@expr1073742634 "argument for '-j' is allowed to be 10000 at max." ) ;
+470: return false ;
+471: }
+472: }
+473:
+|
+501:
+502: else { if (@expr1073742635 std ::@expr243 strncmp (@expr1073742637 argv@var80 [@expr239 i@var83 ] , "--language=" , 11 ) ==@expr1073742639 0 ||@expr1073742640 std ::@expr249 strcmp (@expr1073742642 argv@var80 [@expr239 i@var83 ] , "-x" ) ==@expr1073742644 0 ) {
+503: std ::@expr1073742645 string str@var103 ;
+504: if (@expr1073742646 argv@var80 [@expr239 i@var83 ] [@expr1073742648 2 ] ) {
+505: str@var103 =@expr1073742649 argv@var80 [@expr239 i@var83 ] +@expr827 11 ;
+506: } else {
+507: i@var83 ++@expr1073742652 ;
+508: if (@expr254 i@var83 >=@expr255 argc@var79 ||@expr256 argv@var80 [@expr239 i@var83 ] [@expr240 0 ] ==@expr241 '-' ) {
+509: printError (@expr1073742659 "no language given to '-x' option." ) ;
+510: return false ;
+511: }
+512: str@var103 =@expr1073742660 argv@var80 [@expr239 i@var83 ] ;
+513: }
+514:
+515: if (@expr1073742662 str@var103 ==@expr1073742663 "c" ) {
+516: mSettings@var8 .@expr840 enforcedLang@var160 =@expr1073742665 Settings ::@expr1073742666 C@expr1073742032 ; }
+517: else { if (@expr1073742667 str@var103 ==@expr1073742668 "c++" ) {
+518: mSettings@var8 .@expr840 enforcedLang@var160 =@expr1073742670 Settings ::@expr1073742671 CPP@expr1073742033 ; }
+519: else {
+520: printError (@expr1073742672 "unknown language '" +@expr1073742673 str@var103 +@expr1073742674 "' enforced." ) ;
+521: return false ;
+522: } }
+523: }
+524:
+525:
+526: else { if (@expr1073742675 std ::@expr243 strncmp (@expr1073742677 argv@var80 [@expr239 i@var83 ] , "--library=" , 10 ) ==@expr1073742679 0 ) {
+527: mSettings@var8 .@expr856 libraries@var161 .@expr857 emplace_back (@expr1073742682 argv@var80 [@expr239 i@var83 ] +@expr741 10 ) ;
+528: }
+529:
+530:
+531: else { if (@expr1073742685 std ::@expr243 strncmp (@expr1073742687 argv@var80 [@expr239 i@var83 ] , "--max-configs=" , 14 ) ==@expr1073742689 0 ) {
+532: mSettings@var8 .@expr668 force@var155 =@expr1073742691 false ;
+533:
+534: std ::@expr1073742692 istringstream iss@var104 (@expr1073742693 14 +@expr649 argv@var80 [@expr239 i@var83 ] ) ;
+535: if (@expr1073742696 !@expr1073742697 (@expr1073742698 iss@var104 >>@expr1073742699 mSettings@var8 .@expr876 maxConfigs@var162 ) ) {
+536: printError (@expr1073742701 "argument to '--max-configs=' is not a number." ) ;
+537: return false ;
+538: }
+539:
+540: if (@expr1073742702 mSettings@var8 .@expr876 maxConfigs@var162 <@expr1073742704 1 ) {
+541: printError (@expr1073742705 "argument to '--max-configs=' must be greater than 0." ) ;
+542: return false ;
+543: }
+544:
+545: maxconfigs@var82 =@expr1073742706 true ;
+546: }
+547:
+548:
+549: else { if (@expr1073742707 std ::@expr243 strncmp (@expr1073742709 argv@var80 [@expr239 i@var83 ] , "--max-ctu-depth=" , 16 ) ==@expr1073742711 0 ) {
+550: mSettings@var8 .@expr1073742712 maxCtuDepth@var163 =@expr1073742713 std ::@expr1073742714 atoi (@expr1073742715 argv@var80 [@expr239 i@var83 ] +@expr749 16 ) ; }
+551:
+552:
+553: else { if (@expr1073742718 std ::@expr243 strncmp (@expr1073742720 argv@var80 [@expr239 i@var83 ] , "--output-file=" , 14 ) ==@expr1073742722 0 ) {
+554: mSettings@var8 .@expr1073742723 outputFile@var164 =@expr1073742724 Path ::@expr719 simplifyPath (@expr1073742726 Path ::@expr320 fromNativeSeparators (@expr1073742728 argv@var80 [@expr239 i@var83 ] +@expr649 14 ) ) ; }
+555:
+556:
+557: else { if (@expr1073742731 std ::@expr243 strncmp (@expr1073742733 argv@var80 [@expr239 i@var83 ] , "--platform=" , 11 ) ==@expr1073742735 0 ) {
+558: const std ::@expr1073742736 string platform@var105 (@expr1073742737 11 +@expr827 argv@var80 [@expr239 i@var83 ] ) ;
+559:
+560: if (@expr1073742740 platform@var105 ==@expr1073742741 "win32A" ) {
+561: mSettings@var8 .@expr918 platform (@expr919 Settings ::@expr920 Win32A@expr210 ) ; }
+562: else { if (@expr1073742745 platform@var105 ==@expr1073742746 "win32W" ) {
+563: mSettings@var8 .@expr918 platform (@expr924 Settings ::@expr925 Win32W@expr211 ) ; }
+564: else { if (@expr1073742750 platform@var105 ==@expr1073742751 "win64" ) {
+565: mSettings@var8 .@expr918 platform (@expr929 Settings ::@expr930 Win64@expr212 ) ; }
+566: else { if (@expr1073742755 platform@var105 ==@expr1073742756 "unix32" ) {
+567: mSettings@var8 .@expr918 platform (@expr934 Settings ::@expr935 Unix32@expr213 ) ; }
+568: else { if (@expr1073742760 platform@var105 ==@expr1073742761 "unix64" ) {
+569: mSettings@var8 .@expr918 platform (@expr939 Settings ::@expr940 Unix64@expr214 ) ; }
+570: else { if (@expr1073742765 platform@var105 ==@expr1073742766 "native" ) {
+571: mSettings@var8 .@expr918 platform (@expr944 Settings ::@expr945 Native@expr215 ) ; }
+572: else { if (@expr1073742770 platform@var105 ==@expr1073742771 "unspecified" ) {
+573: mSettings@var8 .@expr918 platform (@expr1073742773 Settings ::@expr1073742774 Unspecified@expr1073742040 ) ; }
+574: else { if (@expr1073742775 !@expr1073742776 mSettings@var8 .@expr953 loadPlatformFile (@expr1073742778 argv@var80 [@expr233 0 ] , platform@var105 ) ) {
+575: std ::@expr1073742780 string message@var106 (@expr1073742781 "unrecognized platform: \"" ) ;
+576: message@var106 +=@expr1073742782 platform@var105 ;
+577: message@var106 +=@expr1073742783 "\"." ;
+578: printError (@expr1073742784 message@var106 ) ;
+579: return false ;
+580: } } } } } } } }
+581: }
+582:
+583:
+584: else { if (@expr1073742785 std ::@expr243 strncmp (@expr1073742787 argv@var80 [@expr239 i@var83 ] , "--plist-output=" , 15 ) ==@expr1073742789 0 ) {
+585: mSettings@var8 .@expr966 plistOutput@var165 =@expr1073742791 Path ::@expr719 simplifyPath (@expr1073742793 Path ::@expr320 fromNativeSeparators (@expr1073742795 argv@var80 [@expr239 i@var83 ] +@expr375 15 ) ) ;
+586: if (@expr1073742798 mSettings@var8 .@expr966 plistOutput@var165 .@expr1073742800 empty (@expr1073742801 ) ) {
+587: mSettings@var8 .@expr966 plistOutput@var165 =@expr1073742803 "./" ; }
+588: else { if (@expr1073742804 !@expr1073742805 endsWith (@expr1073742806 mSettings@var8 .@expr966 plistOutput@var165 , '/' ) ) {
+589: mSettings@var8 .@expr966 plistOutput@var165 +=@expr1073742809 '/' ; } }
+590:
+591: const std ::@expr536 string plistOutput@var107 =@expr1073742811 Path ::@expr1073742812 toNativeSeparators (@expr1073742813 mSettings@var8 .@expr966 plistOutput@var165 ) ;
+592: if (@expr1073742815 !@expr1073742816 FileLister ::@expr722 isDirectory (@expr1073742818 plistOutput@var107 ) ) {
+593: std ::@expr1073742819 string message@var108 (@expr1073742820 "plist folder does not exist: \"" ) ;
+594: message@var108 +=@expr1073742821 plistOutput@var107 ;
+595: message@var108 +=@expr1073742822 "\"." ;
+596: printError (@expr1073742823 message@var108 ) ;
+597: return false ;
+598: }
+599: }
+600:
+601:
+602: else { if (@expr1073742824 std ::@expr243 strncmp (@expr1073742826 argv@var80 [@expr239 i@var83 ] , "--project=" , 10 ) ==@expr1073742828 0 ) {
+603: mSettings@var8 .@expr1005 checkAllConfigurations@var166 =@expr1073742830 false ;
+604: const std ::@expr536 string projectFile@var109 =@expr1073742832 argv@var80 [@expr239 i@var83 ] +@expr741 10 ;
+605: ImportProject ::@expr1073742835 Type projType@var110 ; projType@var110 =@expr1073742836 mSettings@var8 .@expr1013 project@var167 .@expr1014 import (@expr1073742839 projectFile@var109 , mSettings@var8 ) ;
+606: mSettings@var8 .@expr1013 project@var167 .@expr1017 projectType@var168 =@expr1073742842 projType@var110 ;
+607: if (@expr1073742843 projType@var110 ==@expr1073742844 ImportProject ::@expr1021 Type ::@expr1073742846 CPPCHECK_GUI@expr1073742041 ) {
+608: mPathNames@var6 =@expr1073742847 mSettings@var8 .@expr1013 project@var167 .@expr1025 guiProject@var169 .@expr1073742850 pathNames@var170 ;
+609: for (@expr1073742851 const std ::@expr536 string &@expr1029 lib@var111 :@expr1073742854 mSettings@var8 .@expr1013 project@var167 .@expr1025 guiProject@var169 .@expr1073742857 libraries@var171 ) {
+610: mSettings@var8 .@expr856 libraries@var161 .@expr857 emplace_back (@expr1073742860 lib@var111 ) ; }
+611:
+612: for (@expr1073742861 const std ::@expr536 string &@expr1029 ignorePath@var112 :@expr1073742864 mSettings@var8 .@expr1013 project@var167 .@expr1025 guiProject@var169 .@expr1073742867 excludedPaths@var172 ) {
+613: mIgnoredPaths@var7 .@expr728 emplace_back (@expr1073742869 ignorePath@var112 ) ; }
+614:
+615: const std ::@expr1073742870 string platform@var113 (@expr1073742871 mSettings@var8 .@expr1013 project@var167 .@expr1025 guiProject@var169 .@expr1073742874 platform@var173 ) ;
+616:
+617: if (@expr1073742875 platform@var113 ==@expr1073742876 "win32A" ) {
+618: mSettings@var8 .@expr918 platform (@expr919 Settings ::@expr920 Win32A@expr210 ) ; }
+619: else { if (@expr1073742880 platform@var113 ==@expr1073742881 "win32W" ) {
+620: mSettings@var8 .@expr918 platform (@expr924 Settings ::@expr925 Win32W@expr211 ) ; }
+621: else { if (@expr1073742885 platform@var113 ==@expr1073742886 "win64" ) {
+622: mSettings@var8 .@expr918 platform (@expr929 Settings ::@expr930 Win64@expr212 ) ; }
+623: else { if (@expr1073742890 platform@var113 ==@expr1073742891 "unix32" ) {
+624: mSettings@var8 .@expr918 platform (@expr934 Settings ::@expr935 Unix32@expr213 ) ; }
+625: else { if (@expr1073742895 platform@var113 ==@expr1073742896 "unix64" ) {
+626: mSettings@var8 .@expr918 platform (@expr939 Settings ::@expr940 Unix64@expr214 ) ; }
+627: else { if (@expr1073742900 platform@var113 ==@expr1073742901 "native" ) {
+628: mSettings@var8 .@expr918 platform (@expr944 Settings ::@expr945 Native@expr215 ) ; }
+629: else { if (@expr1073742905 platform@var113 ==@expr1073742906 "unspecified" ||@expr1073742907 platform@var113 ==@expr1073742908 "Unspecified" ||@expr1073742909 platform@var113 .@expr1073742910 empty (@expr1073742911 ) ) {
+630: ; }
+631: else { if (@expr1073742912 !@expr1073742913 mSettings@var8 .@expr953 loadPlatformFile (@expr1073742915 projectFile@var109 .@expr1073742916 c_str (@expr1073742917 ) , platform@var113 ) &&@expr1073742918 !@expr1073742919 mSettings@var8 .@expr953 loadPlatformFile (@expr1073742921 argv@var80 [@expr233 0 ] , platform@var113 ) ) {
+632: std ::@expr1073742923 string message@var114 (@expr1073742924 "unrecognized platform: \"" ) ;
+633: message@var114 +=@expr1073742925 platform@var113 ;
+634: message@var114 +=@expr1073742926 "\"." ;
+635: printError (@expr1073742927 message@var114 ) ;
+636: return false ;
+637: } } } } } } } }
+638:
+639: if (@expr1073742928 !@expr1073742929 mSettings@var8 .@expr1013 project@var167 .@expr1025 guiProject@var169 .@expr1108 projectFile@var174 .@expr1073742933 empty (@expr1073742934 ) ) {
+640: projType@var110 =@expr1073742935 mSettings@var8 .@expr1013 project@var167 .@expr1014 import (@expr1073742938 mSettings@var8 .@expr1013 project@var167 .@expr1025 guiProject@var169 .@expr1108 projectFile@var174 , mSettings@var8 ) ; }
+641: }
+642: if (@expr1073742942 projType@var110 ==@expr1073742943 ImportProject ::@expr1021 Type ::@expr1121 VS_SLN@expr218 ||@expr1073742946 projType@var110 ==@expr1073742947 ImportProject ::@expr1021 Type ::@expr1125 VS_VCXPROJ@expr219 ) {
+643: if (@expr1073742950 mSettings@var8 .@expr1013 project@var167 .@expr1025 guiProject@var169 .@expr1073742953 analyzeAllVsConfigs@var175 ==@expr1073742954 "false" ) {
+644: mSettings@var8 .@expr1013 project@var167 .@expr1073742956 selectOneVsConfig (@expr1073742957 mSettings@var8 .@expr1073742958 platformType@var176 ) ; }
+645: if (@expr1073742959 !@expr1073742960 CppCheckExecutor ::@expr1073742961 tryLoadLibrary (@expr1073742962 mSettings@var8 .@expr1073742963 library@var177 , argv@var80 [@expr233 0 ] , "windows.cfg" ) ) {
+646:
+647: printError (@expr1073742965 "failed to load 'windows.cfg'. Your Cppcheck installation is broken. Please re-install." ) ;
+648: return false ;
+649: }
+650: }
+651: if (@expr1073742966 projType@var110 ==@expr1073742967 ImportProject ::@expr1021 Type ::@expr1073742969 MISSING@expr1073742044 ) {
+652: printError (@expr1073742970 "failed to open project '" +@expr1073742971 projectFile@var109 +@expr1073742972 "'. The file does not exist." ) ;
+653: return false ;
+654: }
+655: if (@expr1073742973 projType@var110 ==@expr1073742974 ImportProject ::@expr1021 Type ::@expr1073742976 UNKNOWN@expr1073742045 ) {
+656: printError (@expr1073742977 "failed to load project '" +@expr1154 projectFile@var109 +@expr1073742979 "'. The format is unknown." ) ;
+657: return false ;
+658: }
+659: if (@expr1073742980 projType@var110 ==@expr1073742981 ImportProject ::@expr1021 Type ::@expr1073742983 FAILURE@expr1073742046 ) {
+660: printError (@expr1073742984 "failed to load project '" +@expr1154 projectFile@var109 +@expr1073742986 "'. An error occurred." ) ;
+661: return false ;
+662: }
+663: }
+664:
+665:
+666: else { if (@expr1073742987 std ::@expr243 strncmp (@expr1073742989 argv@var80 [@expr239 i@var83 ] , "--project-configuration=" , 24 ) ==@expr1073742991 0 ) {
+667: mVSConfig@var13 =@expr1073742992 argv@var80 [@expr239 i@var83 ] +@expr619 24 ;
+668: if (@expr1073742995 !@expr1073742996 mVSConfig@var13 .@expr1073742997 empty (@expr1073742998 ) &&@expr1073742999 (@expr1073743000 mSettings@var8 .@expr1013 project@var167 .@expr1017 projectType@var168 ==@expr1073743003 ImportProject ::@expr1021 Type ::@expr1121 VS_SLN@expr218 ||@expr1073743006 mSettings@var8 .@expr1013 project@var167 .@expr1017 projectType@var168 ==@expr1073743009 ImportProject ::@expr1021 Type ::@expr1125 VS_VCXPROJ@expr219 ) ) {
+669: mSettings@var8 .@expr1013 project@var167 .@expr1073743013 ignoreOtherConfigs (@expr1073743014 mVSConfig@var13 ) ; }
+670: }
+671:
+672:
+673: else { if (@expr1073743015 std ::@expr249 strcmp (@expr1073743017 argv@var80 [@expr239 i@var83 ] , "-q" ) ==@expr1073743019 0 ||@expr1073743020 std ::@expr249 strcmp (@expr1073743022 argv@var80 [@expr239 i@var83 ] , "--quiet" ) ==@expr1073743024 0 ) {
+674: mSettings@var8 .@expr290 quiet@var133 =@expr1073743026 true ; }
+675:
+676:
+677: else { if (@expr1073743027 std ::@expr249 strcmp (@expr1073743029 argv@var80 [@expr239 i@var83 ] , "-rp" ) ==@expr1073743031 0 ||@expr1073743032 std ::@expr249 strcmp (@expr1073743034 argv@var80 [@expr239 i@var83 ] , "--relative-paths" ) ==@expr1073743036 0 ) {
+678: mSettings@var8 .@expr1213 relativePaths@var178 =@expr1073743038 true ; }
+679: else { if (@expr1073743039 std ::@expr243 strncmp (@expr1073743041 argv@var80 [@expr239 i@var83 ] , "-rp=" , 4 ) ==@expr1073743043 0 ||@expr1073743044 std ::@expr243 strncmp (@expr1073743046 argv@var80 [@expr239 i@var83 ] , "--relative-paths=" , 17 ) ==@expr1073743048 0 ) {
+680: mSettings@var8 .@expr1213 relativePaths@var178 =@expr1073743050 true ;
+681: if (@expr1073743051 argv@var80 [@expr239 i@var83 ] [@expr1073743053 argv@var80 [@expr239 i@var83 ] [@expr1231 3 ] ==@expr1232 '=' ?@expr1233 4 :@expr1234 17 ] !=@expr1073743059 0 ) {
+682: std ::@expr1073743060 string paths@var115 ; paths@var115 =@expr1073743061 argv@var80 [@expr239 i@var83 ] +@expr1073743063 (@expr1073743064 argv@var80 [@expr239 i@var83 ] [@expr1231 3 ] ==@expr1232 '=' ?@expr1233 4 :@expr1234 17 ) ;
+683: for (@expr1073743070 ; ; ) {
+684: const std ::@expr536 string ::@expr536 size_type pos@var116 =@expr1073743073 paths@var115 .@expr1073743074 find (@expr1073743075 ';' ) ;
+685: if (@expr1073743076 pos@var116 ==@expr1073743077 std ::@expr270 string ::@expr271 npos@expr203 ) {
+686: mSettings@var8 .@expr1256 basePaths@var179 .@expr1257 emplace_back (@expr1073743082 Path ::@expr320 fromNativeSeparators (@expr1073743084 paths@var115 ) ) ;
+687: break ;
+688: }
+689: mSettings@var8 .@expr1256 basePaths@var179 .@expr1257 emplace_back (@expr1073743087 Path ::@expr320 fromNativeSeparators (@expr1073743089 paths@var115 .@expr1073743090 substr (@expr1073743091 0 , pos@var116 ) ) ) ;
+690: paths@var115 .@expr1073743092 erase (@expr1073743093 0 , pos@var116 +@expr1073743094 1 ) ;
+691: }
+692: } else {
+693: printError (@expr1073743095 "no paths specified for the '" +@expr1073743096 std ::@expr270 string (@expr1073743098 argv@var80 [@expr239 i@var83 ] ) +@expr1073743100 "' option." ) ;
+694: return false ;
+695: }
+696: }
+697:
+698:
+699: else { if (@expr1073743101 std ::@expr249 strcmp (@expr1073743103 argv@var80 [@expr239 i@var83 ] , "--report-progress" ) ==@expr1073743105 0 ) {
+700: mSettings@var8 .@expr1073743106 reportProgress@var180 =@expr1073743107 true ;
+701: }
+702:
+|
+753:
+754: else { if (@expr1073743108 std ::@expr243 strncmp (@expr1073743110 argv@var80 [@expr239 i@var83 ] , "--showtime=" , 11 ) ==@expr1073743112 0 ) {
+755: const std ::@expr536 string showtimeMode@var117 =@expr1073743114 argv@var80 [@expr239 i@var83 ] +@expr827 11 ;
+756: if (@expr1073743117 showtimeMode@var117 ==@expr1073743118 "file" ) {
+757: mSettings@var8 .@expr1295 showtime@var181 =@expr1073743120 SHOWTIME_MODES ::@expr1073743121 SHOWTIME_FILE@expr1073742047 ; }
+758: else { if (@expr1073743122 showtimeMode@var117 ==@expr1073743123 "summary" ) {
+759: mSettings@var8 .@expr1295 showtime@var181 =@expr1073743125 SHOWTIME_MODES ::@expr1073743126 SHOWTIME_SUMMARY@expr1073742048 ; }
+760: else { if (@expr1073743127 showtimeMode@var117 ==@expr1073743128 "top5" ) {
+761: mSettings@var8 .@expr1295 showtime@var181 =@expr1073743130 SHOWTIME_MODES ::@expr1073743131 SHOWTIME_TOP5@expr1073742049 ; }
+762: else { if (@expr1073743132 showtimeMode@var117 .@expr1073743133 empty (@expr1073743134 ) ) {
+763: mSettings@var8 .@expr1295 showtime@var181 =@expr1073743136 SHOWTIME_MODES ::@expr1073743137 SHOWTIME_NONE@expr1073742050 ; }
+764: else {
+765: printError (@expr1073743138 "unrecognized showtime mode: \"" +@expr1073743139 showtimeMode@var117 +@expr1073743140 "\". Supported modes: file, summary, top5." ) ;
+766: return false ;
+767: } } } }
+768: }
+769:
+770:
+771: else { if (@expr1073743141 std ::@expr243 strncmp (@expr1073743143 argv@var80 [@expr239 i@var83 ] , "--std=" , 6 ) ==@expr1073743145 0 ) {
+772: const std ::@expr536 string std@var118 =@expr1073743147 argv@var80 [@expr239 i@var83 ] +@expr1073743149 6 ;
+773:
+774: if (@expr1073743150 std ::@expr243 strncmp (@expr1073743152 std@var118 .@expr1329 c_str (@expr1330 ) , "c++" , 3 ) ==@expr1073743155 0 ) {
+775: mSettings@var8 .@expr1332 standards@var182 .@expr1073743157 cpp@var183 =@expr1073743158 Standards ::@expr1073743159 getCPP (@expr1073743160 std@var118 ) ;
+776: }
+777: else { if (@expr1073743161 std ::@expr243 strncmp (@expr1073743163 std@var118 .@expr1329 c_str (@expr1330 ) , "c" , 1 ) ==@expr1073743166 0 ) {
+778: mSettings@var8 .@expr1332 standards@var182 .@expr1073743168 c@var184 =@expr1073743169 Standards ::@expr1073743170 getC (@expr1073743171 std@var118 ) ;
+779: }
+780: else {
+781: printError (@expr1073743172 "unknown --std value '" +@expr1073743173 std@var118 +@expr1073743174 "'" ) ;
+782: return false ;
+783: } }
+784: }
+785:
+786: else { if (@expr1073743175 std ::@expr243 strncmp (@expr1073743177 argv@var80 [@expr239 i@var83 ] , "--suppress=" , 11 ) ==@expr1073743179 0 ) {
+787: const std ::@expr536 string suppression@var119 =@expr1073743181 argv@var80 [@expr239 i@var83 ] +@expr827 11 ;
+788: const std ::@expr1073743184 string errmsg@var120 (@expr1073743185 mSettings@var8 .@expr1362 nomsg@var185 .@expr1073743187 addSuppressionLine (@expr1073743188 suppression@var119 ) ) ;
+789: if (@expr1073743189 !@expr1073743190 errmsg@var120 .@expr1073743191 empty (@expr1073743192 ) ) {
+790: printError (@expr1073743193 errmsg@var120 ) ;
+791: return false ;
+792: }
+793: }
+794:
+795:
+796: else { if (@expr1073743194 std ::@expr243 strncmp (@expr1073743196 argv@var80 [@expr239 i@var83 ] , "--suppressions-list=" , 20 ) ==@expr1073743198 0 ) {
+797: std ::@expr1073743199 string filename@var121 ; filename@var121 =@expr1073743200 argv@var80 [@expr239 i@var83 ] +@expr1378 20 ;
+798: std ::@expr1073743203 ifstream f@var122 (@expr1073743204 filename@var121 ) ;
+799: if (@expr1073743205 !@expr1073743206 f@var122 .@expr1073743207 is_open (@expr1073743208 ) ) {
+800: std ::@expr1073743209 string message@var123 (@expr1073743210 "couldn't open the file: \"" ) ;
+801: message@var123 +=@expr1073743211 filename@var121 ;
+802: message@var123 +=@expr1073743212 "\"." ;
+803: if (@expr1073743213 std ::@expr1390 count (@expr1073743215 filename@var121 .@expr1392 begin (@expr1393 ) , filename@var121 .@expr1394 end (@expr1395 ) , ',' ) >@expr1073743220 0 ||@expr1073743221
+804: std ::@expr1390 count (@expr1073743223 filename@var121 .@expr1392 begin (@expr1393 ) , filename@var121 .@expr1394 end (@expr1395 ) , '.' ) >@expr1073743228 1 ) {
+805:
+806:
+807:
+808: message@var123 +=@expr1073743229 "\nIf you want to pass two files, you can do it e.g. like this:" ;
+809: message@var123 +=@expr1073743230 "\n    cppcheck --suppressions-list=a.txt --suppressions-list=b.txt file.cpp" ;
+810: }
+811:
+812: printError (@expr1073743231 message@var123 ) ;
+813: return false ;
+814: }
+815: const std ::@expr1073743232 string errmsg@var124 (@expr1073743233 mSettings@var8 .@expr1362 nomsg@var185 .@expr1073743235 parseFile (@expr1073743236 f@var122 ) ) ;
+816: if (@expr1073743237 !@expr1073743238 errmsg@var124 .@expr1073743239 empty (@expr1073743240 ) ) {
+817: printError (@expr1073743241 errmsg@var124 ) ;
+818: return false ;
+819: }
+820: }
+821:
+822: else { if (@expr1073743242 std ::@expr243 strncmp (@expr1073743244 argv@var80 [@expr239 i@var83 ] , "--suppress-xml=" , 15 ) ==@expr1073743246 0 ) {
+823: const char * filename@var125 ; filename@var125 =@expr1073743247 argv@var80 [@expr239 i@var83 ] +@expr375 15 ;
+824: const std ::@expr1073743250 string errmsg@var126 (@expr1073743251 mSettings@var8 .@expr1362 nomsg@var185 .@expr1073743253 parseXmlFile (@expr1073743254 filename@var125 ) ) ;
+825: if (@expr1073743255 !@expr1073743256 errmsg@var126 .@expr1073743257 empty (@expr1073743258 ) ) {
+826: printError (@expr1073743259 errmsg@var126 ) ;
+827: return false ;
+828: }
+829: }
+830:
+831:
+832: else { if (@expr1073743260 std ::@expr249 strcmp (@expr1073743262 argv@var80 [@expr239 i@var83 ] , "--template" ) ==@expr1073743264 0 ||@expr1073743265
+833: std ::@expr243 strncmp (@expr1073743267 argv@var80 [@expr239 i@var83 ] , "--template=" , 11 ) ==@expr1073743269 0 ) {
+834:
+835: if (@expr1073743270 argv@var80 [@expr239 i@var83 ] [@expr1073743272 10 ] ==@expr1073743273 '=' ) {
+836: mSettings@var8 .@expr1450 templateFormat@var186 =@expr1073743275 argv@var80 [@expr239 i@var83 ] +@expr827 11 ; }
+837: else { if (@expr1454 (@expr1073743279 i@var83 +@expr1456 1 ) <@expr1457 argc@var79 &&@expr1458 argv@var80 [@expr1459 i@var83 +@expr1456 1 ] [@expr1461 0 ] !=@expr1462 '-' ) {
+838: ++@expr1073743287 i@var83 ;
+839: mSettings@var8 .@expr1450 templateFormat@var186 =@expr1073743289 argv@var80 [@expr239 i@var83 ] ;
+840: } else {
+841: printError (@expr1467 "argument to '--template' is missing." ) ;
+842: return false ;
+843: } }
+844:
+845: if (@expr1073743292 mSettings@var8 .@expr1450 templateFormat@var186 ==@expr1073743294 "gcc" ) {
+846: mSettings@var8 .@expr1450 templateFormat@var186 =@expr1073743296 "{bold}{file}:{line}:{column}: {magenta}warning:{default} {message} [{id}]{reset}\\n{code}" ;
+847: mSettings@var8 .@expr1473 templateLocation@var187 =@expr1073743298 "{bold}{file}:{line}:{column}: {dim}note:{reset} {info}\\n{code}" ;
+848: } else { if (@expr1073743299 mSettings@var8 .@expr1450 templateFormat@var186 ==@expr1073743301 "daca2" ) {
+849: mSettings@var8 .@expr1478 daca@var188 =@expr1073743303 true ;
+850: mSettings@var8 .@expr1450 templateFormat@var186 =@expr1073743305 "{file}:{line}:{column}: {severity}:{inconclusive:inconclusive:} {message} [{id}]" ;
+851: mSettings@var8 .@expr1473 templateLocation@var187 =@expr1073743307 "{file}:{line}:{column}: note: {info}" ;
+852: } else { if (@expr1073743308 mSettings@var8 .@expr1450 templateFormat@var186 ==@expr1073743310 "vs" ) {
+853: mSettings@var8 .@expr1450 templateFormat@var186 =@expr1073743312 "{file}({line}): {severity}: {message}" ; }
+854: else { if (@expr1073743313 mSettings@var8 .@expr1450 templateFormat@var186 ==@expr1073743315 "edit" ) {
+855: mSettings@var8 .@expr1450 templateFormat@var186 =@expr1073743317 "{file} +{line}: {severity}: {message}" ; }
+856: else { if (@expr1073743318 mSettings@var8 .@expr1450 templateFormat@var186 ==@expr1073743320 "cppcheck1" ) {
+857: mSettings@var8 .@expr1450 templateFormat@var186 =@expr1073743322 "{callstack}: ({severity}{inconclusive:, inconclusive}) {message}" ; }
+858: else { if (@expr1073743323 mSettings@var8 .@expr1450 templateFormat@var186 ==@expr1073743325 "selfcheck" ) {
+859: mSettings@var8 .@expr1450 templateFormat@var186 =@expr1073743327 "{file}:{line}:{column}: {severity}:{inconclusive:inconclusive:} {message} [{id}]\\n{code}" ;
+860: mSettings@var8 .@expr1473 templateLocation@var187 =@expr1073743329 "{file}:{line}:{column}: note: {info}\\n{code}" ;
+861: mSettings@var8 .@expr1478 daca@var188 =@expr1073743331 true ;
+862: } } } } } }
+863: }
+864:
+865: else { if (@expr1073743332 std ::@expr249 strcmp (@expr1073743334 argv@var80 [@expr239 i@var83 ] , "--template-location" ) ==@expr1073743336 0 ||@expr1073743337
+866: std ::@expr243 strncmp (@expr1073743339 argv@var80 [@expr239 i@var83 ] , "--template-location=" , 20 ) ==@expr1073743341 0 ) {
+867:
+868: if (@expr1073743342 argv@var80 [@expr239 i@var83 ] [@expr1073743344 19 ] ==@expr1073743345 '=' ) {
+869: mSettings@var8 .@expr1473 templateLocation@var187 =@expr1073743347 argv@var80 [@expr239 i@var83 ] +@expr1378 20 ; }
+870: else { if (@expr1454 (@expr1073743351 i@var83 +@expr1456 1 ) <@expr1457 argc@var79 &&@expr1458 argv@var80 [@expr1459 i@var83 +@expr1456 1 ] [@expr1461 0 ] !=@expr1462 '-' ) {
+871: ++@expr1073743359 i@var83 ;
+872: mSettings@var8 .@expr1473 templateLocation@var187 =@expr1073743361 argv@var80 [@expr239 i@var83 ] ;
+873: } else {
+874: printError (@expr1467 "argument to '--template' is missing." ) ;
+875: return false ;
+876: } }
+877: }
+878:
+879: else { if (@expr1073743364 std ::@expr249 strcmp (@expr1073743366 argv@var80 [@expr239 i@var83 ] , "-v" ) ==@expr1073743368 0 ||@expr1073743369 std ::@expr249 strcmp (@expr1073743371 argv@var80 [@expr239 i@var83 ] , "--verbose" ) ==@expr1073743373 0 ) {
+880: mSettings@var8 .@expr1073743374 verbose@var189 =@expr1073743375 true ; }
+881:
+882: else { if (@expr1073743376 std ::@expr249 strcmp (@expr1073743378 argv@var80 [@expr239 i@var83 ] , "--version" ) ==@expr1073743380 0 ) {
+883: mShowVersion@var10 =@expr1073743381 true ;
+884: mExitAfterPrint@var12 =@expr1073743382 true ;
+885: mSettings@var8 .@expr1559 loadCppcheckCfg (@expr1560 ) ;
+886: return true ;
+887: }
+888:
+889:
+890: else { if (@expr1073743385 std ::@expr249 strcmp (@expr1073743387 argv@var80 [@expr239 i@var83 ] , "--xml" ) ==@expr1073743389 0 ) {
+891: mSettings@var8 .@expr564 xml@var150 =@expr1073743391 true ; }
+892:
+893:
+894: else { if (@expr1073743392 std ::@expr243 strncmp (@expr1073743394 argv@var80 [@expr239 i@var83 ] , "--xml-version=" , 14 ) ==@expr1073743396 0 ) {
+895: const std ::@expr1073743397 string numberString@var127 (@expr1073743398 argv@var80 [@expr239 i@var83 ] +@expr649 14 ) ;
+896:
+897: std ::@expr1073743401 istringstream iss@var128 (@expr1073743402 numberString@var127 ) ;
+898: if (@expr1073743403 !@expr1073743404 (@expr1073743405 iss@var128 >>@expr1073743406 mSettings@var8 .@expr1583 xml_version@var190 ) ) {
+899: printError (@expr1073743408 "argument to '--xml-version' is not a number." ) ;
+900: return false ;
+901: }
+902:
+903: if (@expr1073743409 mSettings@var8 .@expr1583 xml_version@var190 !=@expr1073743411 2 ) {
+904:
+905: printError (@expr1073743412 "'--xml-version' can only be 2." ) ;
+906: return false ;
+907: }
+908:
+909:
+910: mSettings@var8 .@expr564 xml@var150 =@expr1073743414 true ;
+911: }
+912:
+913: else {
+914: std ::@expr1073743415 string message@var129 (@expr1073743416 "unrecognized command line option: \"" ) ;
+915: message@var129 +=@expr1073743417 argv@var80 [@expr239 i@var83 ] ;
+916: message@var129 +=@expr1073743419 "\"." ;
+917: printError (@expr1073743420 message@var129 ) ;
+918: return false ;
+919: } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } } }
+920: }
+921:
+922: else {
+923: mPathNames@var6 .@expr1073743421 emplace_back (@expr1073743422 Path ::@expr320 fromNativeSeparators (@expr1073743424 Path ::@expr317 removeQuotationMarks (@expr1073743426 argv@var80 [@expr239 i@var83 ] ) ) ) ;
+924: }
+925: }
+926:
+927: mSettings@var8 .@expr1559 loadCppcheckCfg (@expr1560 ) ;
+928:
+929:
+930: if (@expr1073743430 mSettings@var8 .@expr1450 templateFormat@var186 .@expr1073743432 empty (@expr1073743433 ) ) {
+931: mSettings@var8 .@expr1450 templateFormat@var186 =@expr1073743435 "{bold}{file}:{line}:{column}: {red}{inconclusive:{magenta}}{severity}:{inconclusive: inconclusive:}{default} {message} [{id}]{reset}\\n{code}" ;
+932: if (@expr1073743436 mSettings@var8 .@expr1473 templateLocation@var187 .@expr1073743438 empty (@expr1073743439 ) ) {
+933: mSettings@var8 .@expr1473 templateLocation@var187 =@expr1073743441 "{bold}{file}:{line}:{column}: {dim}note:{reset} {info}\\n{code}" ; }
+934: }
+935:
+936: mSettings@var8 .@expr1013 project@var167 .@expr1073743443 ignorePaths (@expr1073743444 mIgnoredPaths@var7 ) ;
+937:
+938: if (@expr1073743445 mSettings@var8 .@expr668 force@var155 ||@expr1073743447 maxconfigs@var82 ) {
+939: mSettings@var8 .@expr1005 checkAllConfigurations@var166 =@expr1073743449 true ; }
+940:
+941: if (@expr1073743450 mSettings@var8 .@expr668 force@var155 ) {
+942: mSettings@var8 .@expr876 maxConfigs@var162 =@expr1073743453 INT_MAX@expr1073742051 ; }
+943:
+944: else { if (@expr1073743454 (@expr1073743455 def@var81 ||@expr1073743456 mSettings@var8 .@expr288 preprocessOnly@var132 ) &&@expr1073743458 !@expr1073743459 maxconfigs@var82 ) {
+945: mSettings@var8 .@expr876 maxConfigs@var162 =@expr1073743461 1U ; } }
+946:
+947: if (@expr1073743462 mSettings@var8 .@expr1073743463 checks@var191 .@expr1073743464 isEnabled (@expr1073743465 Checks ::@expr1073743466 unusedFunction@expr1073742052 ) &&@expr1073743467 mSettings@var8 .@expr805 jobs@var159 >@expr1073743469 1 ) {
+948: printMessage (@expr1073743470 "unusedFunction check can't be used with '-j' option. Disabling unusedFunction check." ) ;
+949: }
+950:
+951: if (@expr1073743471 argc@var79 <=@expr1073743472 1 ) {
+952: mShowHelp@var9 =@expr1073743473 true ;
+953: mExitAfterPrint@var12 =@expr1073743474 true ;
+954: }
+955:
+956: if (@expr1073743475 mShowHelp@var9 ) {
+957: printHelp (@expr1073743476 ) ;
+958: return true ;
+959: }
+960:
+961:
+962: if (@expr1073743477 !@expr1073743478 mExitAfterPrint@var12 &&@expr1073743479 mPathNames@var6 .@expr1073743480 empty (@expr1073743481 ) &&@expr1073743482 mSettings@var8 .@expr1013 project@var167 .@expr1073743484 fileSettings@var192 .@expr1073743485 empty (@expr1073743486 ) ) {
+963: printError (@expr1073743487 "no C or C++ source files found." ) ;
+964: return false ;
+965: }
+966:
+967:
+968: if (@expr1073743488 mSettings@var8 .@expr1256 basePaths@var179 .@expr1073743490 empty (@expr1073743491 ) &&@expr1073743492 mSettings@var8 .@expr1213 relativePaths@var178 ) {
+969: mSettings@var8 .@expr1256 basePaths@var179 =@expr1073743495 mPathNames@var6 ; }
+970:
+971: return true ;
+972: }
+973:
+974: void CmdLineParser :: printHelp ( )
+975: {
+976: std ::@expr1073743498 cout@expr1073743496 <<@expr1073743499 "Cppcheck - A tool for static C/C++ code analysis\n\nSyntax:\n    cppcheck [OPTIONS] [files or paths]\n\nIf a directory is given instead of a filename, *.cpp, *.cxx, *.cc, *.c++, *.c, *.ipp,\n*.ixx, *.tpp, and *.txx files are checked recursively from the given directory.\n\nOptions:\n    --addon=<addon>\n                         Execute addon. i.e. --addon=cert. If options must be\n                         provided a json configuration is needed.\n    --addon-python=<python interpreter>\n                         You can specify the python interpreter either in the\n                         addon json files or through this command line option.\n                         If not present, Cppcheck will try \"python3\" first and\n                         then \"python\".\n    --bug-hunting\n                         Enable noisy and soundy analysis. The normal Cppcheck\n                         analysis is turned off.\n    --cppcheck-build-dir=<dir>\n                         Cppcheck work folder. Advantages:\n                          * whole program analysis\n                          * faster analysis; Cppcheck will reuse the results if\n                            the hash for a file is unchanged.\n                          * some useful debug information, i.e. commands used to\n                            execute clang/clang-tidy/addons.\n    --check-config       Check cppcheck configuration. The normal code\n                         analysis is disabled by this flag.\n    --check-library      Show information messages when library files have\n                         incomplete info.\n    --clang=<path>       Experimental: Use Clang parser instead of the builtin Cppcheck\n                         parser. Takes the executable as optional parameter and\n                         defaults to `clang`. Cppcheck will run the given Clang\n                         executable, import the Clang AST and convert it into\n                         Cppcheck data. After that the normal Cppcheck analysis is\n                         used. You must have the executable in PATH if no path is\n                         given.\n    --config-exclude=<dir>\n                         Path (prefix) to be excluded from configuration\n                         checking. Preprocessor configurations defined in\n                         headers (but not sources) matching the prefix will not\n                         be considered for evaluation.\n    --config-excludes-file=<file>\n                         A file that contains a list of config-excludes\n    --dump               Dump xml data for each translation unit. The dump\n                         files have the extension .dump and contain ast,\n                         tokenlist, symboldatabase, valueflow.\n    -D<ID>               Define preprocessor symbol. Unless --max-configs or\n                         --force is used, Cppcheck will only check the given\n                         configuration when -D is used.\n                         Example: '-DDEBUG=1 -D__cplusplus'.\n    -E                   Print preprocessor output on stdout and don't do any\n                         further processing.\n    --enable=<id>        Enable additional checks. The available ids are:\n                          * all\n                                  Enable all checks. It is recommended to only\n                                  use --enable=all when the whole program is\n                                  scanned, because this enables unusedFunction.\n                          * warning\n                                  Enable warning messages\n                          * style\n                                  Enable all coding style checks. All messages\n                                  with the severities 'style', 'warning',\n                                  'performance' and 'portability' are enabled.\n                          * performance\n                                  Enable performance messages\n                          * portability\n                                  Enable portability messages\n                          * information\n                                  Enable information messages\n                          * unusedFunction\n                                  Check for unused functions. It is recommended\n                                  to only enable this when the whole program is\n                                  scanned.\n                          * missingInclude\n                                  Warn if there are missing includes. For\n                                  detailed information, use '--check-config'.\n                         Several ids can be given if you separate them with\n                         commas. See also --std\n    --error-exitcode=<n> If errors are found, integer [n] is returned instead of\n                         the default '0'. '"
+977:
+|
+1055:
+1056: <<@expr1073743500 EXIT_FAILURE@expr1073743497 <<@expr1073743501 "' is returned\n                         if arguments are not valid or if no input files are\n                         provided. Note that your operating system can modify\n                         this value, e.g. '256' can become '0'.\n    --errorlist          Print a list of all the error messages in XML format.\n    --exitcode-suppressions=<file>\n                         Used when certain messages should be displayed but\n                         should not cause a non-zero exitcode.\n    --file-filter=<str>  Analyze only those files matching the given filter str\n                         Can be used multiple times\n                         Example: --file-filter=*bar.cpp analyzes only files\n                                  that end with bar.cpp.\n    --file-list=<file>   Specify the files to check in a text file. Add one\n                         filename per line. When file is '-,' the file list will\n                         be read from standard input.\n    -f, --force          Force checking of all configurations in files. If used\n                         together with '--max-configs=', the last option is the\n                         one that is effective.\n    -h, --help           Print this help.\n    -I <dir>             Give path to search for include files. Give several -I\n                         parameters to give several paths. First given path is\n                         searched for contained header files first. If paths are\n                         relative to source files, this is not needed.\n    --includes-file=<file>\n                         Specify directory paths to search for included header\n                         files in a text file. Add one include path per line.\n                         First given path is searched for contained header\n                         files first. If paths are relative to source files,\n                         this is not needed.\n    --include=<file>\n                         Force inclusion of a file before the checked file.\n    -i <dir or file>     Give a source file or source file directory to exclude\n                         from the check. This applies only to source files so\n                         header files included by source files are not matched.\n                         Directory name is matched to all parts of the path.\n    --inconclusive       Allow that Cppcheck reports even though the analysis is\n                         inconclusive.\n                         There are false positives with this option. Each result\n                         must be carefully investigated before you know if it is\n                         good or bad.\n    --inline-suppr       Enable inline suppressions. Use them by placing one or\n                         more comments, like: '// cppcheck-suppress warningId'\n                         on the lines before the warning to suppress.\n    -j <jobs>            Start <jobs> threads to do the checking simultaneously.\n    --language=<language>, -x <language>\n                         Forces cppcheck to check all files as the given\n                         language. Valid values are: c, c++\n    --library=<cfg>      Load file <cfg> that contains information about types\n                         and functions. With such information Cppcheck\n                         understands your code better and therefore you\n                         get better results. The std.cfg file that is\n                         distributed with Cppcheck is loaded automatically.\n                         For more information about library files, read the\n                         manual.\n    --max-ctu-depth=N    Max depth in whole program analysis. The default value\n                         is 2. A larger value will mean more errors can be found\n                         but also means the analysis will be slower.\n    --output-file=<file> Write results to file, rather than standard error.\n    --project=<file>     Run Cppcheck on project. The <file> can be a Visual\n                         Studio Solution (*.sln), Visual Studio Project\n                         (*.vcxproj), compile database (compile_commands.json),\n                         or Borland C++ Builder 6 (*.bpr). The files to analyse,\n                         include paths, defines, platform and undefines in\n                         the specified file will be used.\n    --project-configuration=<config>\n                         If used together with a Visual Studio Solution (*.sln)\n                         or Visual Studio Project (*.vcxproj) you can limit\n                         the configuration cppcheck should check.\n                         For example: '--project-configuration=Release|Win32'\n    --max-configs=<limit>\n                         Maximum number of configurations to check in a file\n                         before skipping it. Default is '12'. If used together\n                         with '--force', the last option is the one that is\n                         effective.\n    --platform=<type>, --platform=<file>\n                         Specifies platform specific types and sizes. The\n                         available builtin platforms are:\n                          * unix32\n                                 32 bit unix variant\n                          * unix64\n                                 64 bit unix variant\n                          * win32A\n                                 32 bit Windows ASCII character encoding\n                          * win32W\n                                 32 bit Windows UNICODE character encoding\n                          * win64\n                                 64 bit Windows\n                          * avr8\n                                 8 bit AVR microcontrollers\n                          * elbrus-e1cp\n                                 Elbrus e1c+ architecture\n                          * pic8\n                                 8 bit PIC microcontrollers\n                                 Baseline and mid-range architectures\n                          * pic8-enhanced\n                                 8 bit PIC microcontrollers\n                                 Enhanced mid-range and high end (PIC18) architectures\n                          * pic16\n                                 16 bit PIC microcontrollers\n                          * mips32\n                                 32 bit MIPS microcontrollers\n                          * native\n                                 Type sizes of host system are assumed, but no\n                                 further assumptions.\n                          * unspecified\n                                 Unknown type sizes\n    --plist-output=<path>\n                         Generate Clang-plist output files in folder.\n    -q, --quiet          Do not show progress reports.\n    -rp=<paths>, --relative-paths=<paths>\n                         Use relative paths in output. When given, <paths> are\n                         used as base. You can separate multiple paths by ';'.\n                         Otherwise path where source files are searched is used.\n                         We use string comparison to create relative paths, so\n                         using e.g. ~ for home folder does not work. It is\n                         currently only possible to apply the base paths to\n                         files that are on a lower level in the directory tree.\n    --report-progress    Report progress messages while checking a file.\n    --std=<id>           Set standard.\n                         The available options are:\n                          * c89\n                                 C code is C89 compatible\n                          * c99\n                                 C code is C99 compatible\n                          * c11\n                                 C code is C11 compatible (default)\n                          * c++03\n                                 C++ code is C++03 compatible\n                          * c++11\n                                 C++ code is C++11 compatible\n                          * c++14\n                                 C++ code is C++14 compatible\n                          * c++17\n                                 C++ code is C++17 compatible\n                          * c++20\n                                 C++ code is C++20 compatible (default)\n    --suppress=<spec>    Suppress warnings that match <spec>. The format of\n                         <spec> is:\n                         [error id]:[filename]:[line]\n                         The [filename] and [line] are optional. If [error id]\n                         is a wildcard '*', all error ids match.\n    --suppressions-list=<file>\n                         Suppress warnings listed in the file. Each suppression\n                         is in the same format as <spec> above.\n    --suppress-xml=<file>\n                         Suppress warnings listed in a xml file. XML file should\n                         follow the manual.pdf format specified in section.\n                         `6.4 XML suppressions` .\n    --template='<text>'  Format the error messages. Available fields:\n                           {file}              file name\n                           {line}              line number\n                           {column}            column number\n                           {callstack}         show a callstack. Example:\n                                                 [file.c:1] -> [file.c:100]\n                           {inconclusive:text} if warning is inconclusive, text\n                                               is written\n                           {severity}          severity\n                           {message}           warning message\n                           {id}                warning id\n                           {cwe}               CWE id (Common Weakness Enumeration)\n                           {code}              show the real code\n                           \\t                 insert tab\n                           \\n                 insert newline\n                           \\r                 insert carriage return\n                         Example formats:\n                         '{file}:{line},{severity},{id},{message}' or\n                         '{file}({line}):({severity}) {message}' or\n                         '{callstack} {message}'\n                         Pre-defined templates: gcc (default), cppcheck1 (old default), vs, edit.\n    --template-location='<text>'\n                         Format error message location. If this is not provided\n                         then no extra location info is shown.\n                         Available fields:\n                           {file}      file name\n                           {line}      line number\n                           {column}    column number\n                           {info}      location info\n                           {code}      show the real code\n                           \\t         insert tab\n                           \\n         insert newline\n                           \\r         insert carriage return\n                         Example format (gcc-like):\n                         '{file}:{line}:{column}: note: {info}\\n{code}'\n    -U<ID>               Undefine preprocessor symbol. Use -U to explicitly\n                         hide certain #ifdef <ID> code paths from checking.\n                         Example: '-UDEBUG'\n    -v, --verbose        Output more detailed error information.\n    --version            Print out version number.\n    --xml                Write results in xml format to error stream (stderr).\n    --xml-version=<version>\n                         Select the XML file version. Also implies --xml.\n                         Currently only version 2 is available. The default version is 2.\n\nExample usage:\n  # Recursively check the current folder. Print the progress on the screen and\n  # write errors to a file:\n  cppcheck . 2> err.txt\n\n  # Recursively check ../myproject/ and don't print progress:\n  cppcheck --quiet ../myproject/\n\n  # Check test.cpp, enable all checks:\n  cppcheck --enable=all --inconclusive --library=posix test.cpp\n\n  # Check f.cpp and search include files from inc1/ and inc2/:\n  cppcheck -I inc1/ -I inc2/ f.cpp\n\nFor more information:\n    https://cppcheck.sourceforge.io/manual.pdf\n\nMany thanks to the 3rd party libraries we use:\n * tinyxml2 -- loading project/library/ctu files.\n * picojson -- loading compile database.\n * pcre -- rules.\n * qt -- used in GUI\n"
+1057:
+|
+1280:
+1281: ;
+1282: }
+
+
+
+##Value flow
+Line 52
+  ( always {!<=-1,!>=2}
+Line 57
+  ( always {!<=-1,!>=2}
+Line 58
+  return always {!<=-1,!>=2}
+  mShowVersion always {!<=-1,!>=2}
+Line 64
+  ( always {!<=-1,!>=2}
+Line 65
+  return always {!<=-1,!>=2}
+  mShowErrorMessages always {!<=-1,!>=2}
+Line 78
+  ( always {!<=-1,!>=2}
+Line 79
+  return always {!<=-1,!>=2}
+  mShowHelp always {!<=-1,!>=2}
+Line 85
+  ( always {!<=-1,!>=2}
+Line 86
+  return always {!<=-1,!>=2}
+  mExitAfterPrint always {!<=-1,!>=2}
+Line 117
+  mShowHelp always {!<=-1,!>=2}
+Line 118
+  mShowVersion always {!<=-1,!>=2}
+Line 119
+  mShowErrorMessages always {!<=-1,!>=2}
+Line 120
+  mExitAfterPrint always {!<=-1,!>=2}
+Line 82
+  value always !<=-1
+Line 97
+  fileindex always !<=-1
+  filecount always !<=-1
+  sizedone always !<=-1
+  sizetotal always !<=-1
+Line 112
+  ( always {!<=-1,!>=2}
+Line 117
+  ( always {!<=-1,!>=2}
+Line 136
+  ( always {!<=-1,!>=2}
+Line 199
+  mShowAllErrors always {!<=-1,!>=2}
+Line 47
+  extra always size=0
+Line 75
+  , always {!<=-1,!>=2}
+  recursive always {!<=-1,!>=2}
+Line 81
+  ( always {!<=-1,!>=2}
+Line 87
+  ( always {!<=-1,!>=2}
+Line 58
+  == always {!<=-1,!>=2}
+  "-" always "-"
+Line 59
+  = {lifetime[Address]=(cin),!0}
+  & {lifetime[Address]=(cin),!0}
+Line 62
+  = {&,lifetime[Address]=(infile),!0}
+  & {&,lifetime[Address]=(infile),!0}
+Line 64
+  files possible {lifetime[Address]=(cin),lifetime[Address]=(infile),symbolic=(&infile),&}
+  && always {!<=-1,!>=2}
+  files {lifetime[Address]=(cin),lifetime[Address]=(infile),!0}
+Line 66
+  files {lifetime[Address]=(cin),lifetime[Address]=(infile),!0}
+  fileName possible size=0
+Line 67
+  ! {!<=-1,!>=2,0}
+  fileName possible size=0
+  ( {!<=-1,!>=2,1}
+Line 68
+  fileName always !size=0
+Line 74
+  ( always {!<=-1,!>=2}
+Line 76
+  :: possible 0
+  files possible 0
+Line 79
+  pathName possible size=0
+Line 80
+  ! {!<=-1,!>=2,0}
+  pathName possible size=0
+  ( {!<=-1,!>=2,1}
+Line 81
+  pathName always !size=0
+Line 85
+  ! always {!<=-1,!>=2}
+  '/' always 47
+Line 86
+  '/' always 47
+Line 88
+  pathNames possible {lifetime[Address]=(mSettings->includePaths)@12,lifetime[Address]=(templist)@44}
+Line 91
+  return always {!<=-1,!>=2}
+  true always 1
+Line 93
+  return always {!<=-1,!>=2}
+  false always 0
+Line 96
+  ( always {!<=-1,!>=2}
+Line 99
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  & {lifetime[Address]=(templist),!0}
+  templist always size=0
+Line 100
+  return always {!<=-1,!>=2}
+  false always 0
+Line 101
+  set possible lifetime[Address]=(mSettings->configExcludePaths)@4
+  ( {lifetime[Iterator]=(templist),start=0}
+  ( {lifetime[Iterator]=(templist),end=0}
+Line 102
+  return always {!<=-1,!>=2}
+  true always 1
+Line 107
+  mShowHelp always {!<=-1,!>=2}
+  false always 0
+Line 108
+  mShowVersion always {!<=-1,!>=2}
+  false always 0
+Line 109
+  mShowErrorMessages always {!<=-1,!>=2}
+  false always 0
+Line 110
+  mExitAfterPrint always {!<=-1,!>=2}
+  false always 0
+Line 115
+  "cppcheck: " always "cppcheck: "
+  message possible "unusedFunction check can't be used with '-j' option. Disabling unusedFunction check."@40
+Line 120
+  "error: " always "error: "
+  message possible {"argument to '-D' is missing."@1,"argument to '-I' is missing."@2,"argument to '-U' is missing."@3,"argument must be an integer. Try something like '--error-exitcode=1'."@7,"argument to '-i' is missing."@11,"argument to '-j' is missing."@14,"argument to '-j' is not a number."@15,"argument for '-j' is allowed to be 10000 at max."@16,"no language given to '-x' option."@17,"argument to '--max-configs=' is not a number."@19}
+Line 123
+  ( always {!<=-1,!>=2}
+Line 125
+  def always {!<=-1,!>=2}
+  def always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 126
+  maxconfigs always {!<=-1,!>=2}
+  maxconfigs always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 128
+  0 always 0
+Line 138
+  = always 1
+  1 always 1
+  < always {!<=-1,!>=2}
+Line 139
+  0 always 0
+  == always {!<=-1,!>=2}
+  '-' always 45
+Line 141
+  "-D" always "-D"
+  2 always 2
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 145
+  "-D" always "-D"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 147
+  >= always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  0 always 0
+  == always {!<=-1,!>=2}
+  '-' always 45
+Line 148
+  "argument to '-D' is missing." always "argument to '-D' is missing."
+Line 149
+  return always {!<=-1,!>=2}
+  false always 0
+Line 156
+  2 always 2
+Line 160
+  ( always !<=-1
+  '=' always 61
+  == always {!<=-1,!>=2}
+Line 161
+  "=1" always "=1"
+Line 163
+  ! always {!<=-1,!>=2}
+Line 164
+  ";" always ";"
+Line 167
+  def always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 171
+  "-E" always "-E"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 172
+  = always 1
+  true always 1
+Line 173
+  = always 1
+  true always 1
+Line 177
+  "-I" always "-I"
+  2 always 2
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 181
+  "-I" always "-I"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 183
+  >= always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  0 always 0
+  == always {!<=-1,!>=2}
+  '-' always 45
+Line 184
+  "argument to '-I' is missing." always "argument to '-I' is missing."
+Line 185
+  return always {!<=-1,!>=2}
+  false always 0
+Line 192
+  2 always 2
+Line 198
+  ! always {!<=-1,!>=2}
+  '/' always 47
+Line 199
+  '/' always 47
+Line 205
+  "-U" always "-U"
+  2 always 2
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 209
+  "-U" always "-U"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 211
+  >= always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  0 always 0
+  == always {!<=-1,!>=2}
+  '-' always 45
+Line 212
+  "argument to '-U' is missing." always "argument to '-U' is missing."
+Line 213
+  return always {!<=-1,!>=2}
+  false always 0
+Line 220
+  2 always 2
+Line 226
+  "--addon=" always "--addon="
+  8 always 8
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 227
+  8 always 8
+Line 229
+  "--addon-python=" always "--addon-python="
+  15 always 15
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 230
+  15 always 15
+Line 233
+  "--check-config" always "--check-config"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 234
+  = always 1
+  true always 1
+Line 237
+  "--check-library" always "--check-library"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 238
+  = always 1
+  true always 1
+Line 240
+  "information" always "information"
+Line 243
+  "--clang" always "--clang"
+  7 always 7
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 244
+  = always 1
+  true always 1
+Line 245
+  "--clang=" always "--clang="
+  8 always 8
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 246
+  8 always 8
+Line 250
+  "--config-exclude=" always "--config-exclude="
+  17 always 17
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 251
+  17 always 17
+Line 254
+  "--config-excludes-file=" always "--config-excludes-file="
+  23 always 23
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 256
+  23 always 23
+Line 257
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  & {lifetime[Address]=(mSettings->configExcludePaths),!0}
+Line 258
+  "unable to open config excludes file at '" always "unable to open config excludes file at '"
+  "'" always "'"
+Line 259
+  return always {!<=-1,!>=2}
+  false always 0
+Line 263
+  "--cppcheck-build-dir=" always "--cppcheck-build-dir="
+  21 always 21
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 264
+  21 always 21
+Line 265
+  '/' always 47
+Line 270
+  "--debug" always "--debug"
+  == always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+Line 271
+  "--debug-normal" always "--debug-normal"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 272
+  = always 1
+  true always 1
+Line 275
+  "--debug-simplified" always "--debug-simplified"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 276
+  = always 1
+  true always 1
+Line 279
+  "--debug-template" always "--debug-template"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 280
+  = always 1
+  true always 1
+Line 283
+  "--debug-warnings" always "--debug-warnings"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 284
+  = always 1
+  true always 1
+Line 287
+  "--doc" always "--doc"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 293
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 294
+  "## " always "## "
+  " ##\n" always " ##\n"
+Line 295
+  "\n" always "\n"
+Line 299
+  mExitAfterPrint always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 300
+  return always {!<=-1,!>=2}
+  true always 1
+Line 304
+  "--dump" always "--dump"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 305
+  = always 1
+  true always 1
+Line 307
+  "--enable=" always "--enable="
+  9 always 9
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 308
+  9 always 9
+Line 309
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 311
+  return always {!<=-1,!>=2}
+  false always 0
+Line 315
+  "warning" always "warning"
+Line 316
+  "performance" always "performance"
+Line 317
+  "portability" always "portability"
+Line 322
+  "--errorlist" always "--errorlist"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 323
+  mShowErrorMessages always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 324
+  = always 1
+  true always 1
+Line 325
+  mExitAfterPrint always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 329
+  "--error-exitcode=" always "--error-exitcode="
+  17 always 17
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 330
+  17 always 17
+Line 332
+  ! always {!<=-1,!>=2}
+Line 333
+  = always 0
+  0 always 0
+Line 334
+  "argument must be an integer. Try something like '--error-exitcode=1'." always "argument must be an integer. Try something like '--error-exitcode=1'."
+Line 335
+  return always {!<=-1,!>=2}
+  false always 0
+Line 340
+  "--exception-handling" always "--exception-handling"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 341
+  = always 1
+  true always 1
+Line 343
+  "--exception-handling=" always "--exception-handling="
+  21 always 21
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 344
+  = always 1
+  true always 1
+Line 345
+  = {&,lifetime[Address]=(argv[i][21]),!0}
+  & {&,lifetime[Address]=(argv[i][21]),!0}
+  21 always 21
+Line 346
+  == always {!<=-1,!>=2}
+  "stderr" always "stderr"
+Line 350
+  "--exitcode-suppressions=" always "--exitcode-suppressions="
+  24 always 24
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 352
+  24 always 24
+Line 355
+  ! always {!<=-1,!>=2}
+Line 356
+  "couldn't open the file: \"" always "couldn't open the file: \""
+  "\"." always "\"."
+Line 357
+  return always {!<=-1,!>=2}
+  false always 0
+Line 360
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 362
+  return always {!<=-1,!>=2}
+  false always 0
+Line 367
+  "--file-filter=" always "--file-filter="
+  14 always 14
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 368
+  14 always 14
+Line 371
+  "--file-list=" always "--file-list="
+  12 always 12
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 373
+  12 always 12
+Line 376
+  "-f" always "-f"
+  == always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+  "--force" always "--force"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 377
+  = always 1
+  true always 1
+Line 380
+  "-h" always "-h"
+  == always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+  "--help" always "--help"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 382
+  mShowHelp always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 383
+  mExitAfterPrint always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 388
+  "-i" always "-i"
+  2 always 2
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 392
+  "-i" always "-i"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 394
+  >= always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  0 always 0
+  == always {!<=-1,!>=2}
+  '-' always 45
+Line 395
+  "argument to '-i' is missing." always "argument to '-i' is missing."
+Line 396
+  return always {!<=-1,!>=2}
+  false always 0
+Line 403
+  2 always 2
+Line 406
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 411
+  ( always {!<=-1,!>=2}
+Line 413
+  ! always {!<=-1,!>=2}
+  '/' always 47
+Line 414
+  '/' always 47
+Line 420
+  "--include=" always "--include="
+  10 always 10
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 421
+  10 always 10
+Line 424
+  "--includes-file=" always "--includes-file="
+  16 always 16
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 426
+  16 always 16
+Line 427
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  & {lifetime[Address]=(mSettings->includePaths),!0}
+Line 428
+  "unable to open includes file at '" always "unable to open includes file at '"
+  "'" always "'"
+Line 429
+  return always {!<=-1,!>=2}
+  false always 0
+Line 434
+  "--inconclusive" always "--inconclusive"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 438
+  "--inline-suppr" always "--inline-suppr"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 439
+  = always 1
+  true always 1
+Line 442
+  "-j" always "-j"
+  2 always 2
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 446
+  "-j" always "-j"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 448
+  >= always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  0 always 0
+  == always {!<=-1,!>=2}
+  '-' always 45
+Line 449
+  "argument to '-j' is missing." always "argument to '-j' is missing."
+Line 450
+  return always {!<=-1,!>=2}
+  false always 0
+Line 458
+  2 always 2
+Line 461
+  ! always {!<=-1,!>=2}
+Line 462
+  "argument to '-j' is not a number." always "argument to '-j' is not a number."
+Line 463
+  return always {!<=-1,!>=2}
+  false always 0
+Line 466
+  > always {!<=-1,!>=2}
+  10000 always 10000
+Line 469
+  "argument for '-j' is allowed to be 10000 at max." always "argument for '-j' is allowed to be 10000 at max."
+Line 470
+  return always {!<=-1,!>=2}
+  false always 0
+Line 502
+  "--language=" always "--language="
+  11 always 11
+  == always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+  "-x" always "-x"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 504
+  2 always 2
+Line 505
+  11 always 11
+Line 508
+  >= always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  0 always 0
+  == always {!<=-1,!>=2}
+  '-' always 45
+Line 509
+  "no language given to '-x' option." always "no language given to '-x' option."
+Line 510
+  return always {!<=-1,!>=2}
+  false always 0
+Line 515
+  == always {!<=-1,!>=2}
+  "c" always "c"
+Line 517
+  == always {!<=-1,!>=2}
+  "c++" always "c++"
+Line 520
+  "unknown language '" always "unknown language '"
+  "' enforced." always "' enforced."
+Line 521
+  return always {!<=-1,!>=2}
+  false always 0
+Line 526
+  "--library=" always "--library="
+  10 always 10
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 527
+  10 always 10
+Line 531
+  "--max-configs=" always "--max-configs="
+  14 always 14
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 532
+  = always 0
+  false always 0
+Line 534
+  14 always 14
+Line 535
+  ! always {!<=-1,!>=2}
+Line 536
+  "argument to '--max-configs=' is not a number." always "argument to '--max-configs=' is not a number."
+Line 537
+  return always {!<=-1,!>=2}
+  false always 0
+Line 540
+  < always {!<=-1,!>=2}
+  1 always 1
+Line 541
+  "argument to '--max-configs=' must be greater than 0." always "argument to '--max-configs=' must be greater than 0."
+Line 542
+  return always {!<=-1,!>=2}
+  false always 0
+Line 545
+  maxconfigs always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 549
+  "--max-ctu-depth=" always "--max-ctu-depth="
+  16 always 16
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 550
+  16 always 16
+Line 553
+  "--output-file=" always "--output-file="
+  14 always 14
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 554
+  14 always 14
+Line 557
+  "--platform=" always "--platform="
+  11 always 11
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 558
+  11 always 11
+Line 560
+  == always {!<=-1,!>=2}
+  "win32A" always "win32A"
+Line 562
+  == always {!<=-1,!>=2}
+  "win32W" always "win32W"
+Line 564
+  == always {!<=-1,!>=2}
+  "win64" always "win64"
+Line 566
+  == always {!<=-1,!>=2}
+  "unix32" always "unix32"
+Line 568
+  == always {!<=-1,!>=2}
+  "unix64" always "unix64"
+Line 570
+  == always {!<=-1,!>=2}
+  "native" always "native"
+Line 572
+  == always {!<=-1,!>=2}
+  "unspecified" always "unspecified"
+Line 574
+  ! always {!<=-1,!>=2}
+  0 always 0
+Line 575
+  "unrecognized platform: \"" always "unrecognized platform: \""
+Line 577
+  "\"." always "\"."
+Line 578
+  message always !<=size=1
+Line 579
+  return always {!<=-1,!>=2}
+  false always 0
+Line 584
+  "--plist-output=" always "--plist-output="
+  15 always 15
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 585
+  15 always 15
+Line 587
+  = always "./"
+  "./" always "./"
+Line 588
+  ! always {!<=-1,!>=2}
+  '/' always 47
+Line 589
+  '/' always 47
+Line 592
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 593
+  "plist folder does not exist: \"" always "plist folder does not exist: \""
+Line 595
+  "\"." always "\"."
+Line 596
+  message always !<=size=1
+Line 597
+  return always {!<=-1,!>=2}
+  false always 0
+Line 602
+  "--project=" always "--project="
+  10 always 10
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 603
+  = always 0
+  false always 0
+Line 604
+  10 always 10
+Line 607
+  == always {!<=-1,!>=2}
+Line 617
+  == always {!<=-1,!>=2}
+  "win32A" always "win32A"
+Line 619
+  == always {!<=-1,!>=2}
+  "win32W" always "win32W"
+Line 621
+  == always {!<=-1,!>=2}
+  "win64" always "win64"
+Line 623
+  == always {!<=-1,!>=2}
+  "unix32" always "unix32"
+Line 625
+  == always {!<=-1,!>=2}
+  "unix64" always "unix64"
+Line 627
+  == always {!<=-1,!>=2}
+  "native" always "native"
+Line 629
+  == always {!<=-1,!>=2}
+  "unspecified" always "unspecified"
+  || always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "Unspecified" always "Unspecified"
+  || always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 631
+  ! always {!<=-1,!>=2}
+  ( {lifetime[Object]=(projectFile),!0}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  0 always 0
+Line 632
+  "unrecognized platform: \"" always "unrecognized platform: \""
+Line 634
+  "\"." always "\"."
+Line 635
+  message always !<=size=1
+Line 636
+  return always {!<=-1,!>=2}
+  false always 0
+Line 639
+  ! always {!<=-1,!>=2}
+Line 642
+  == always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 643
+  == always {!<=-1,!>=2}
+  "false" always "false"
+Line 645
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  0 always 0
+  "windows.cfg" always "windows.cfg"
+Line 647
+  "failed to load 'windows.cfg'. Your Cppcheck installation is broken. Please re-install." always "failed to load 'windows.cfg'. Your Cppcheck installation is broken. Please re-install."
+Line 648
+  return always {!<=-1,!>=2}
+  false always 0
+Line 651
+  == always {!<=-1,!>=2}
+Line 652
+  "failed to open project '" always "failed to open project '"
+  "'. The file does not exist." always "'. The file does not exist."
+Line 653
+  return always {!<=-1,!>=2}
+  false always 0
+Line 655
+  == always {!<=-1,!>=2}
+Line 656
+  "failed to load project '" always "failed to load project '"
+  "'. The format is unknown." always "'. The format is unknown."
+Line 657
+  return always {!<=-1,!>=2}
+  false always 0
+Line 659
+  == always {!<=-1,!>=2}
+Line 660
+  "failed to load project '" always "failed to load project '"
+  "'. An error occurred." always "'. An error occurred."
+Line 661
+  return always {!<=-1,!>=2}
+  false always 0
+Line 666
+  "--project-configuration=" always "--project-configuration="
+  24 always 24
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 667
+  24 always 24
+Line 668
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 673
+  "-q" always "-q"
+  == always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+  "--quiet" always "--quiet"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 674
+  = always 1
+  true always 1
+Line 677
+  "-rp" always "-rp"
+  == always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+  "--relative-paths" always "--relative-paths"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 678
+  = always 1
+  true always 1
+Line 679
+  "-rp=" always "-rp="
+  4 always 4
+  == always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+  "--relative-paths=" always "--relative-paths="
+  17 always 17
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 680
+  = always 1
+  true always 1
+Line 681
+  3 always 3
+  == always {!<=-1,!>=2}
+  '=' always 61
+  4 always 4
+  : always 17
+  17 always 17
+  != always {!<=-1,!>=2}
+  0 always 0
+Line 682
+  3 always 3
+  == always {!<=-1,!>=2}
+  '=' always 61
+  4 always 4
+  : always 17
+  17 always 17
+Line 684
+  pos always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  ';' always 59
+Line 685
+  pos always !<=-1
+  == always {!<=-1,!>=2}
+Line 689
+  0 always 0
+  pos always !<=-1
+Line 690
+  0 always 0
+  pos always !<=-1
+  + always !<=0
+  1 always 1
+Line 693
+  "no paths specified for the '" always "no paths specified for the '"
+  "' option." always "' option."
+Line 694
+  return always {!<=-1,!>=2}
+  false always 0
+Line 699
+  "--report-progress" always "--report-progress"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 700
+  = always 1
+  true always 1
+Line 754
+  "--showtime=" always "--showtime="
+  11 always 11
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 755
+  11 always 11
+Line 756
+  == always {!<=-1,!>=2}
+  "file" always "file"
+Line 758
+  == always {!<=-1,!>=2}
+  "summary" always "summary"
+Line 760
+  == always {!<=-1,!>=2}
+  "top5" always "top5"
+Line 762
+  ( always {!<=-1,!>=2}
+Line 765
+  "unrecognized showtime mode: \"" always "unrecognized showtime mode: \""
+  "\". Supported modes: file, summary, top5." always "\". Supported modes: file, summary, top5."
+Line 766
+  return always {!<=-1,!>=2}
+  false always 0
+Line 771
+  "--std=" always "--std="
+  6 always 6
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 772
+  6 always 6
+Line 774
+  ( {lifetime[Object]=(std),!0}
+  "c++" always "c++"
+  3 always 3
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 777
+  ( {lifetime[Object]=(std),!0}
+  "c" always "c"
+  1 always 1
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 781
+  "unknown --std value '" always "unknown --std value '"
+  "'" always "'"
+Line 782
+  return always {!<=-1,!>=2}
+  false always 0
+Line 786
+  "--suppress=" always "--suppress="
+  11 always 11
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 787
+  11 always 11
+Line 789
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 791
+  return always {!<=-1,!>=2}
+  false always 0
+Line 796
+  "--suppressions-list=" always "--suppressions-list="
+  20 always 20
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 797
+  20 always 20
+Line 799
+  ! always {!<=-1,!>=2}
+Line 800
+  "couldn't open the file: \"" always "couldn't open the file: \""
+Line 802
+  "\"." always "\"."
+Line 803
+  ( {lifetime[Iterator]=(filename),start=0}
+  ( {lifetime[Iterator]=(filename),end=0}
+  ',' always 44
+  > always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+Line 804
+  ( {lifetime[Iterator]=(filename),start=0}
+  ( {lifetime[Iterator]=(filename),end=0}
+  '.' always 46
+  > always {!<=-1,!>=2}
+  1 always 1
+Line 808
+  message always !<=size=1
+  "\nIf you want to pass two files, you can do it e.g. like this:" always "\nIf you want to pass two files, you can do it e.g. like this:"
+Line 809
+  message always !<=size=62
+  "\n    cppcheck --suppressions-list=a.txt --suppressions-list=b.txt file.cpp" always "\n    cppcheck --suppressions-list=a.txt --suppressions-list=b.txt file.cpp"
+Line 813
+  return always {!<=-1,!>=2}
+  false always 0
+Line 816
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 818
+  return always {!<=-1,!>=2}
+  false always 0
+Line 822
+  "--suppress-xml=" always "--suppress-xml="
+  15 always 15
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 823
+  15 always 15
+Line 824
+  filename always symbolic=(argv[i]+15)
+Line 825
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 827
+  return always {!<=-1,!>=2}
+  false always 0
+Line 832
+  "--template" always "--template"
+  == always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+Line 833
+  "--template=" always "--template="
+  11 always 11
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 835
+  10 always 10
+  == always {!<=-1,!>=2}
+  '=' always 61
+Line 836
+  11 always 11
+Line 837
+  1 always 1
+  < always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  1 always 1
+  0 always 0
+  != always {!<=-1,!>=2}
+  '-' always 45
+Line 841
+  "argument to '--template' is missing." always "argument to '--template' is missing."
+Line 842
+  return always {!<=-1,!>=2}
+  false always 0
+Line 845
+  == always {!<=-1,!>=2}
+  "gcc" always "gcc"
+Line 846
+  = always "{bold}{file}:{line}:{column}: {magenta}warning:{default} {message} [{id}]{reset}\\n{code}"
+  "{bold}{file}:{line}:{column}: {magenta}warning:{default} {message} [{id}]{reset}\\n{code}" always "{bold}{file}:{line}:{column}: {magenta}warning:{default} {message} [{id}]{reset}\\n{code}"
+Line 847
+  = always "{bold}{file}:{line}:{column}: {dim}note:{reset} {info}\\n{code}"
+  "{bold}{file}:{line}:{column}: {dim}note:{reset} {info}\\n{code}" always "{bold}{file}:{line}:{column}: {dim}note:{reset} {info}\\n{code}"
+Line 848
+  == always {!<=-1,!>=2}
+  "daca2" always "daca2"
+Line 849
+  = always 1
+  true always 1
+Line 850
+  = always "{file}:{line}:{column}: {severity}:{inconclusive:inconclusive:} {message} [{id}]"
+  "{file}:{line}:{column}: {severity}:{inconclusive:inconclusive:} {message} [{id}]" always "{file}:{line}:{column}: {severity}:{inconclusive:inconclusive:} {message} [{id}]"
+Line 851
+  = always "{file}:{line}:{column}: note: {info}"
+  "{file}:{line}:{column}: note: {info}" always "{file}:{line}:{column}: note: {info}"
+Line 852
+  == always {!<=-1,!>=2}
+  "vs" always "vs"
+Line 853
+  = always "{file}({line}): {severity}: {message}"
+  "{file}({line}): {severity}: {message}" always "{file}({line}): {severity}: {message}"
+Line 854
+  == always {!<=-1,!>=2}
+  "edit" always "edit"
+Line 855
+  = always "{file} +{line}: {severity}: {message}"
+  "{file} +{line}: {severity}: {message}" always "{file} +{line}: {severity}: {message}"
+Line 856
+  == always {!<=-1,!>=2}
+  "cppcheck1" always "cppcheck1"
+Line 857
+  = always "{callstack}: ({severity}{inconclusive:, inconclusive}) {message}"
+  "{callstack}: ({severity}{inconclusive:, inconclusive}) {message}" always "{callstack}: ({severity}{inconclusive:, inconclusive}) {message}"
+Line 858
+  == always {!<=-1,!>=2}
+  "selfcheck" always "selfcheck"
+Line 859
+  = always "{file}:{line}:{column}: {severity}:{inconclusive:inconclusive:} {message} [{id}]\\n{code}"
+  "{file}:{line}:{column}: {severity}:{inconclusive:inconclusive:} {message} [{id}]\\n{code}" always "{file}:{line}:{column}: {severity}:{inconclusive:inconclusive:} {message} [{id}]\\n{code}"
+Line 860
+  = always "{file}:{line}:{column}: note: {info}\\n{code}"
+  "{file}:{line}:{column}: note: {info}\\n{code}" always "{file}:{line}:{column}: note: {info}\\n{code}"
+Line 861
+  = always 1
+  true always 1
+Line 865
+  "--template-location" always "--template-location"
+  == always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+Line 866
+  "--template-location=" always "--template-location="
+  20 always 20
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 868
+  19 always 19
+  == always {!<=-1,!>=2}
+  '=' always 61
+Line 869
+  20 always 20
+Line 870
+  1 always 1
+  < always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  1 always 1
+  0 always 0
+  != always {!<=-1,!>=2}
+  '-' always 45
+Line 874
+  "argument to '--template' is missing." always "argument to '--template' is missing."
+Line 875
+  return always {!<=-1,!>=2}
+  false always 0
+Line 879
+  "-v" always "-v"
+  == always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+  "--verbose" always "--verbose"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 880
+  = always 1
+  true always 1
+Line 882
+  "--version" always "--version"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 883
+  mShowVersion always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 884
+  mExitAfterPrint always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 886
+  return always {!<=-1,!>=2}
+  true always 1
+Line 890
+  "--xml" always "--xml"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 891
+  = always 1
+  true always 1
+Line 894
+  "--xml-version=" always "--xml-version="
+  14 always 14
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 895
+  14 always 14
+Line 898
+  ! always {!<=-1,!>=2}
+Line 899
+  "argument to '--xml-version' is not a number." always "argument to '--xml-version' is not a number."
+Line 900
+  return always {!<=-1,!>=2}
+  false always 0
+Line 903
+  != always {!<=-1,!>=2}
+  2 always 2
+Line 905
+  "'--xml-version' can only be 2." always "'--xml-version' can only be 2."
+Line 906
+  return always {!<=-1,!>=2}
+  false always 0
+Line 910
+  = always 1
+  true always 1
+Line 914
+  "unrecognized command line option: \"" always "unrecognized command line option: \""
+Line 916
+  "\"." always "\"."
+Line 917
+  message always !<=size=1
+Line 918
+  return always {!<=-1,!>=2}
+  false always 0
+Line 931
+  = always "{bold}{file}:{line}:{column}: {red}{inconclusive:{magenta}}{severity}:{inconclusive: inconclusive:}{default} {message} [{id}]{reset}\\n{code}"
+  "{bold}{file}:{line}:{column}: {red}{inconclusive:{magenta}}{severity}:{inconclusive: inconclusive:}{default} {message} [{id}]{reset}\\n{code}" always "{bold}{file}:{line}:{column}: {red}{inconclusive:{magenta}}{severity}:{inconclusive: inconclusive:}{default} {message} [{id}]{reset}\\n{code}"
+Line 933
+  = always "{bold}{file}:{line}:{column}: {dim}note:{reset} {info}\\n{code}"
+  "{bold}{file}:{line}:{column}: {dim}note:{reset} {info}\\n{code}" always "{bold}{file}:{line}:{column}: {dim}note:{reset} {info}\\n{code}"
+Line 938
+  || always {!<=-1,!>=2}
+  maxconfigs always {!<=-1,!>=2}
+Line 939
+  = always 1
+  true always 1
+Line 944
+  def always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  maxconfigs always {!<=-1,!>=2}
+Line 945
+  = always 1
+  1U always 1
+Line 947
+  && always {!<=-1,!>=2}
+  > always {!<=-1,!>=2}
+  1 always 1
+Line 948
+  "unusedFunction check can't be used with '-j' option. Disabling unusedFunction check." always "unusedFunction check can't be used with '-j' option. Disabling unusedFunction check."
+Line 951
+  <= always {!<=-1,!>=2}
+  1 always 1
+Line 952
+  mShowHelp always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 953
+  mExitAfterPrint always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 956
+  mShowHelp always {!<=-1,!>=2}
+Line 958
+  return always {!<=-1,!>=2}
+  true always 1
+Line 962
+  ! always {!<=-1,!>=2}
+  mExitAfterPrint always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 963
+  "no C or C++ source files found." always "no C or C++ source files found."
+Line 964
+  return always {!<=-1,!>=2}
+  false always 0
+Line 968
+  && always {!<=-1,!>=2}
+Line 971
+  return always {!<=-1,!>=2}
+  true always 1
+Line 976
+  "Cppcheck - A tool for static C/C++ code analysis\n\nSyntax:\n    cppcheck [OPTIONS] [files or paths]\n\nIf a directory is given instead of a filename, *.cpp, *.cxx, *.cc, *.c++, *.c, *.ipp,\n*.ixx, *.tpp, and *.txx files are checked recursively from the given directory.\n\nOptions:\n    --addon=<addon>\n                         Execute addon. i.e. --addon=cert. If options must be\n                         provided a json configuration is needed.\n    --addon-python=<python interpreter>\n                         You can specify the python interpreter either in the\n                         addon json files or through this command line option.\n                         If not present, Cppcheck will try \"python3\" first and\n                         then \"python\".\n    --bug-hunting\n                         Enable noisy and soundy analysis. The normal Cppcheck\n                         analysis is turned off.\n    --cppcheck-build-dir=<dir>\n                         Cppcheck work folder. Advantages:\n                          * whole program analysis\n                          * faster analysis; Cppcheck will reuse the results if\n                            the hash for a file is unchanged.\n                          * some useful debug information, i.e. commands used to\n                            execute clang/clang-tidy/addons.\n    --check-config       Check cppcheck configuration. The normal code\n                         analysis is disabled by this flag.\n    --check-library      Show information messages when library files have\n                         incomplete info.\n    --clang=<path>       Experimental: Use Clang parser instead of the builtin Cppcheck\n                         parser. Takes the executable as optional parameter and\n                         defaults to `clang`. Cppcheck will run the given Clang\n                         executable, import the Clang AST and convert it into\n                         Cppcheck data. After that the normal Cppcheck analysis is\n                         used. You must have the executable in PATH if no path is\n                         given.\n    --config-exclude=<dir>\n                         Path (prefix) to be excluded from configuration\n                         checking. Preprocessor configurations defined in\n                         headers (but not sources) matching the prefix will not\n                         be considered for evaluation.\n    --config-excludes-file=<file>\n                         A file that contains a list of config-excludes\n    --dump               Dump xml data for each translation unit. The dump\n                         files have the extension .dump and contain ast,\n                         tokenlist, symboldatabase, valueflow.\n    -D<ID>               Define preprocessor symbol. Unless --max-configs or\n                         --force is used, Cppcheck will only check the given\n                         configuration when -D is used.\n                         Example: '-DDEBUG=1 -D__cplusplus'.\n    -E                   Print preprocessor output on stdout and don't do any\n                         further processing.\n    --enable=<id>        Enable additional checks. The available ids are:\n                          * all\n                                  Enable all checks. It is recommended to only\n                                  use --enable=all when the whole program is\n                                  scanned, because this enables unusedFunction.\n                          * warning\n                                  Enable warning messages\n                          * style\n                                  Enable all coding style checks. All messages\n                                  with the severities 'style', 'warning',\n                                  'performance' and 'portability' are enabled.\n                          * performance\n                                  Enable performance messages\n                          * portability\n                                  Enable portability messages\n                          * information\n                                  Enable information messages\n                          * unusedFunction\n                                  Check for unused functions. It is recommended\n                                  to only enable this when the whole program is\n                                  scanned.\n                          * missingInclude\n                                  Warn if there are missing includes. For\n                                  detailed information, use '--check-config'.\n                         Several ids can be given if you separate them with\n                         commas. See also --std\n    --error-exitcode=<n> If errors are found, integer [n] is returned instead of\n                         the default '0'. '" always "Cppcheck - A tool for static C/C++ code analysis\n\nSyntax:\n    cppcheck [OPTIONS] [files or paths]\n\nIf a directory is given instead of a filename, *.cpp, *.cxx, *.cc, *.c++, *.c, *.ipp,\n*.ixx, *.tpp, and *.txx files are checked recursively from the given directory.\n\nOptions:\n    --addon=<addon>\n                         Execute addon. i.e. --addon=cert. If options must be\n                         provided a json configuration is needed.\n    --addon-python=<python interpreter>\n                         You can specify the python interpreter either in the\n                         addon json files or through this command line option.\n                         If not present, Cppcheck will try \"python3\" first and\n                         then \"python\".\n    --bug-hunting\n                         Enable noisy and soundy analysis. The normal Cppcheck\n                         analysis is turned off.\n    --cppcheck-build-dir=<dir>\n                         Cppcheck work folder. Advantages:\n                          * whole program analysis\n                          * faster analysis; Cppcheck will reuse the results if\n                            the hash for a file is unchanged.\n                          * some useful debug information, i.e. commands used to\n                            execute clang/clang-tidy/addons.\n    --check-config       Check cppcheck configuration. The normal code\n                         analysis is disabled by this flag.\n    --check-library      Show information messages when library files have\n                         incomplete info.\n    --clang=<path>       Experimental: Use Clang parser instead of the builtin Cppcheck\n                         parser. Takes the executable as optional parameter and\n                         defaults to `clang`. Cppcheck will run the given Clang\n                         executable, import the Clang AST and convert it into\n                         Cppcheck data. After that the normal Cppcheck analysis is\n                         used. You must have the executable in PATH if no path is\n                         given.\n    --config-exclude=<dir>\n                         Path (prefix) to be excluded from configuration\n                         checking. Preprocessor configurations defined in\n                         headers (but not sources) matching the prefix will not\n                         be considered for evaluation.\n    --config-excludes-file=<file>\n                         A file that contains a list of config-excludes\n    --dump               Dump xml data for each translation unit. The dump\n                         files have the extension .dump and contain ast,\n                         tokenlist, symboldatabase, valueflow.\n    -D<ID>               Define preprocessor symbol. Unless --max-configs or\n                         --force is used, Cppcheck will only check the given\n                         configuration when -D is used.\n                         Example: '-DDEBUG=1 -D__cplusplus'.\n    -E                   Print preprocessor output on stdout and don't do any\n                         further processing.\n    --enable=<id>        Enable additional checks. The available ids are:\n                          * all\n                                  Enable all checks. It is recommended to only\n                                  use --enable=all when the whole program is\n                                  scanned, because this enables unusedFunction.\n                          * warning\n                                  Enable warning messages\n                          * style\n                                  Enable all coding style checks. All messages\n                                  with the severities 'style', 'warning',\n                                  'performance' and 'portability' are enabled.\n                          * performance\n                                  Enable performance messages\n                          * portability\n                                  Enable portability messages\n                          * information\n                                  Enable information messages\n                          * unusedFunction\n                                  Check for unused functions. It is recommended\n                                  to only enable this when the whole program is\n                                  scanned.\n                          * missingInclude\n                                  Warn if there are missing includes. For\n                                  detailed information, use '--check-config'.\n                         Several ids can be given if you separate them with\n                         commas. See also --std\n    --error-exitcode=<n> If errors are found, integer [n] is returned instead of\n                         the default '0'. '"
+Line 1056
+  "' is returned\n                         if arguments are not valid or if no input files are\n                         provided. Note that your operating system can modify\n                         this value, e.g. '256' can become '0'.\n    --errorlist          Print a list of all the error messages in XML format.\n    --exitcode-suppressions=<file>\n                         Used when certain messages should be displayed but\n                         should not cause a non-zero exitcode.\n    --file-filter=<str>  Analyze only those files matching the given filter str\n                         Can be used multiple times\n                         Example: --file-filter=*bar.cpp analyzes only files\n                                  that end with bar.cpp.\n    --file-list=<file>   Specify the files to check in a text file. Add one\n                         filename per line. When file is '-,' the file list will\n                         be read from standard input.\n    -f, --force          Force checking of all configurations in files. If used\n                         together with '--max-configs=', the last option is the\n                         one that is effective.\n    -h, --help           Print this help.\n    -I <dir>             Give path to search for include files. Give several -I\n                         parameters to give several paths. First given path is\n                         searched for contained header files first. If paths are\n                         relative to source files, this is not needed.\n    --includes-file=<file>\n                         Specify directory paths to search for included header\n                         files in a text file. Add one include path per line.\n                         First given path is searched for contained header\n                         files first. If paths are relative to source files,\n                         this is not needed.\n    --include=<file>\n                         Force inclusion of a file before the checked file.\n    -i <dir or file>     Give a source file or source file directory to exclude\n                         from the check. This applies only to source files so\n                         header files included by source files are not matched.\n                         Directory name is matched to all parts of the path.\n    --inconclusive       Allow that Cppcheck reports even though the analysis is\n                         inconclusive.\n                         There are false positives with this option. Each result\n                         must be carefully investigated before you know if it is\n                         good or bad.\n    --inline-suppr       Enable inline suppressions. Use them by placing one or\n                         more comments, like: '// cppcheck-suppress warningId'\n                         on the lines before the warning to suppress.\n    -j <jobs>            Start <jobs> threads to do the checking simultaneously.\n    --language=<language>, -x <language>\n                         Forces cppcheck to check all files as the given\n                         language. Valid values are: c, c++\n    --library=<cfg>      Load file <cfg> that contains information about types\n                         and functions. With such information Cppcheck\n                         understands your code better and therefore you\n                         get better results. The std.cfg file that is\n                         distributed with Cppcheck is loaded automatically.\n                         For more information about library files, read the\n                         manual.\n    --max-ctu-depth=N    Max depth in whole program analysis. The default value\n                         is 2. A larger value will mean more errors can be found\n                         but also means the analysis will be slower.\n    --output-file=<file> Write results to file, rather than standard error.\n    --project=<file>     Run Cppcheck on project. The <file> can be a Visual\n                         Studio Solution (*.sln), Visual Studio Project\n                         (*.vcxproj), compile database (compile_commands.json),\n                         or Borland C++ Builder 6 (*.bpr). The files to analyse,\n                         include paths, defines, platform and undefines in\n                         the specified file will be used.\n    --project-configuration=<config>\n                         If used together with a Visual Studio Solution (*.sln)\n                         or Visual Studio Project (*.vcxproj) you can limit\n                         the configuration cppcheck should check.\n                         For example: '--project-configuration=Release|Win32'\n    --max-configs=<limit>\n                         Maximum number of configurations to check in a file\n                         before skipping it. Default is '12'. If used together\n                         with '--force', the last option is the one that is\n                         effective.\n    --platform=<type>, --platform=<file>\n                         Specifies platform specific types and sizes. The\n                         available builtin platforms are:\n                          * unix32\n                                 32 bit unix variant\n                          * unix64\n                                 64 bit unix variant\n                          * win32A\n                                 32 bit Windows ASCII character encoding\n                          * win32W\n                                 32 bit Windows UNICODE character encoding\n                          * win64\n                                 64 bit Windows\n                          * avr8\n                                 8 bit AVR microcontrollers\n                          * elbrus-e1cp\n                                 Elbrus e1c+ architecture\n                          * pic8\n                                 8 bit PIC microcontrollers\n                                 Baseline and mid-range architectures\n                          * pic8-enhanced\n                                 8 bit PIC microcontrollers\n                                 Enhanced mid-range and high end (PIC18) architectures\n                          * pic16\n                                 16 bit PIC microcontrollers\n                          * mips32\n                                 32 bit MIPS microcontrollers\n                          * native\n                                 Type sizes of host system are assumed, but no\n                                 further assumptions.\n                          * unspecified\n                                 Unknown type sizes\n    --plist-output=<path>\n                         Generate Clang-plist output files in folder.\n    -q, --quiet          Do not show progress reports.\n    -rp=<paths>, --relative-paths=<paths>\n                         Use relative paths in output. When given, <paths> are\n                         used as base. You can separate multiple paths by ';'.\n                         Otherwise path where source files are searched is used.\n                         We use string comparison to create relative paths, so\n                         using e.g. ~ for home folder does not work. It is\n                         currently only possible to apply the base paths to\n                         files that are on a lower level in the directory tree.\n    --report-progress    Report progress messages while checking a file.\n    --std=<id>           Set standard.\n                         The available options are:\n                          * c89\n                                 C code is C89 compatible\n                          * c99\n                                 C code is C99 compatible\n                          * c11\n                                 C code is C11 compatible (default)\n                          * c++03\n                                 C++ code is C++03 compatible\n                          * c++11\n                                 C++ code is C++11 compatible\n                          * c++14\n                                 C++ code is C++14 compatible\n                          * c++17\n                                 C++ code is C++17 compatible\n                          * c++20\n                                 C++ code is C++20 compatible (default)\n    --suppress=<spec>    Suppress warnings that match <spec>. The format of\n                         <spec> is:\n                         [error id]:[filename]:[line]\n                         The [filename] and [line] are optional. If [error id]\n                         is a wildcard '*', all error ids match.\n    --suppressions-list=<file>\n                         Suppress warnings listed in the file. Each suppression\n                         is in the same format as <spec> above.\n    --suppress-xml=<file>\n                         Suppress warnings listed in a xml file. XML file should\n                         follow the manual.pdf format specified in section.\n                         `6.4 XML suppressions` .\n    --template='<text>'  Format the error messages. Available fields:\n                           {file}              file name\n                           {line}              line number\n                           {column}            column number\n                           {callstack}         show a callstack. Example:\n                                                 [file.c:1] -> [file.c:100]\n                           {inconclusive:text} if warning is inconclusive, text\n                                               is written\n                           {severity}          severity\n                           {message}           warning message\n                           {id}                warning id\n                           {cwe}               CWE id (Common Weakness Enumeration)\n                           {code}              show the real code\n                           \\t                 insert tab\n                           \\n                 insert newline\n                           \\r                 insert carriage return\n                         Example formats:\n                         '{file}:{line},{severity},{id},{message}' or\n                         '{file}({line}):({severity}) {message}' or\n                         '{callstack} {message}'\n                         Pre-defined templates: gcc (default), cppcheck1 (old default), vs, edit.\n    --template-location='<text>'\n                         Format error message location. If this is not provided\n                         then no extra location info is shown.\n                         Available fields:\n                           {file}      file name\n                           {line}      line number\n                           {column}    column number\n                           {info}      location info\n                           {code}      show the real code\n                           \\t         insert tab\n                           \\n         insert newline\n                           \\r         insert carriage return\n                         Example format (gcc-like):\n                         '{file}:{line}:{column}: note: {info}\\n{code}'\n    -U<ID>               Undefine preprocessor symbol. Use -U to explicitly\n                         hide certain #ifdef <ID> code paths from checking.\n                         Example: '-UDEBUG'\n    -v, --verbose        Output more detailed error information.\n    --version            Print out version number.\n    --xml                Write results in xml format to error stream (stderr).\n    --xml-version=<version>\n                         Select the XML file version. Also implies --xml.\n                         Currently only version 2 is available. The default version is 2.\n\nExample usage:\n  # Recursively check the current folder. Print the progress on the screen and\n  # write errors to a file:\n  cppcheck . 2> err.txt\n\n  # Recursively check ../myproject/ and don't print progress:\n  cppcheck --quiet ../myproject/\n\n  # Check test.cpp, enable all checks:\n  cppcheck --enable=all --inconclusive --library=posix test.cpp\n\n  # Check f.cpp and search include files from inc1/ and inc2/:\n  cppcheck -I inc1/ -I inc2/ f.cpp\n\nFor more information:\n    https://cppcheck.sourceforge.io/manual.pdf\n\nMany thanks to the 3rd party libraries we use:\n * tinyxml2 -- loading project/library/ctu files.\n * picojson -- loading compile database.\n * pcre -- rules.\n * qt -- used in GUI\n" always "' is returned\n                         if arguments are not valid or if no input files are\n                         provided. Note that your operating system can modify\n                         this value, e.g. '256' can become '0'.\n    --errorlist          Print a list of all the error messages in XML format.\n    --exitcode-suppressions=<file>\n                         Used when certain messages should be displayed but\n                         should not cause a non-zero exitcode.\n    --file-filter=<str>  Analyze only those files matching the given filter str\n                         Can be used multiple times\n                         Example: --file-filter=*bar.cpp analyzes only files\n                                  that end with bar.cpp.\n    --file-list=<file>   Specify the files to check in a text file. Add one\n                         filename per line. When file is '-,' the file list will\n                         be read from standard input.\n    -f, --force          Force checking of all configurations in files. If used\n                         together with '--max-configs=', the last option is the\n                         one that is effective.\n    -h, --help           Print this help.\n    -I <dir>             Give path to search for include files. Give several -I\n                         parameters to give several paths. First given path is\n                         searched for contained header files first. If paths are\n                         relative to source files, this is not needed.\n    --includes-file=<file>\n                         Specify directory paths to search for included header\n                         files in a text file. Add one include path per line.\n                         First given path is searched for contained header\n                         files first. If paths are relative to source files,\n                         this is not needed.\n    --include=<file>\n                         Force inclusion of a file before the checked file.\n    -i <dir or file>     Give a source file or source file directory to exclude\n                         from the check. This applies only to source files so\n                         header files included by source files are not matched.\n                         Directory name is matched to all parts of the path.\n    --inconclusive       Allow that Cppcheck reports even though the analysis is\n                         inconclusive.\n                         There are false positives with this option. Each result\n                         must be carefully investigated before you know if it is\n                         good or bad.\n    --inline-suppr       Enable inline suppressions. Use them by placing one or\n                         more comments, like: '// cppcheck-suppress warningId'\n                         on the lines before the warning to suppress.\n    -j <jobs>            Start <jobs> threads to do the checking simultaneously.\n    --language=<language>, -x <language>\n                         Forces cppcheck to check all files as the given\n                         language. Valid values are: c, c++\n    --library=<cfg>      Load file <cfg> that contains information about types\n                         and functions. With such information Cppcheck\n                         understands your code better and therefore you\n                         get better results. The std.cfg file that is\n                         distributed with Cppcheck is loaded automatically.\n                         For more information about library files, read the\n                         manual.\n    --max-ctu-depth=N    Max depth in whole program analysis. The default value\n                         is 2. A larger value will mean more errors can be found\n                         but also means the analysis will be slower.\n    --output-file=<file> Write results to file, rather than standard error.\n    --project=<file>     Run Cppcheck on project. The <file> can be a Visual\n                         Studio Solution (*.sln), Visual Studio Project\n                         (*.vcxproj), compile database (compile_commands.json),\n                         or Borland C++ Builder 6 (*.bpr). The files to analyse,\n                         include paths, defines, platform and undefines in\n                         the specified file will be used.\n    --project-configuration=<config>\n                         If used together with a Visual Studio Solution (*.sln)\n                         or Visual Studio Project (*.vcxproj) you can limit\n                         the configuration cppcheck should check.\n                         For example: '--project-configuration=Release|Win32'\n    --max-configs=<limit>\n                         Maximum number of configurations to check in a file\n                         before skipping it. Default is '12'. If used together\n                         with '--force', the last option is the one that is\n                         effective.\n    --platform=<type>, --platform=<file>\n                         Specifies platform specific types and sizes. The\n                         available builtin platforms are:\n                          * unix32\n                                 32 bit unix variant\n                          * unix64\n                                 64 bit unix variant\n                          * win32A\n                                 32 bit Windows ASCII character encoding\n                          * win32W\n                                 32 bit Windows UNICODE character encoding\n                          * win64\n                                 64 bit Windows\n                          * avr8\n                                 8 bit AVR microcontrollers\n                          * elbrus-e1cp\n                                 Elbrus e1c+ architecture\n                          * pic8\n                                 8 bit PIC microcontrollers\n                                 Baseline and mid-range architectures\n                          * pic8-enhanced\n                                 8 bit PIC microcontrollers\n                                 Enhanced mid-range and high end (PIC18) architectures\n                          * pic16\n                                 16 bit PIC microcontrollers\n                          * mips32\n                                 32 bit MIPS microcontrollers\n                          * native\n                                 Type sizes of host system are assumed, but no\n                                 further assumptions.\n                          * unspecified\n                                 Unknown type sizes\n    --plist-output=<path>\n                         Generate Clang-plist output files in folder.\n    -q, --quiet          Do not show progress reports.\n    -rp=<paths>, --relative-paths=<paths>\n                         Use relative paths in output. When given, <paths> are\n                         used as base. You can separate multiple paths by ';'.\n                         Otherwise path where source files are searched is used.\n                         We use string comparison to create relative paths, so\n                         using e.g. ~ for home folder does not work. It is\n                         currently only possible to apply the base paths to\n                         files that are on a lower level in the directory tree.\n    --report-progress    Report progress messages while checking a file.\n    --std=<id>           Set standard.\n                         The available options are:\n                          * c89\n                                 C code is C89 compatible\n                          * c99\n                                 C code is C99 compatible\n                          * c11\n                                 C code is C11 compatible (default)\n                          * c++03\n                                 C++ code is C++03 compatible\n                          * c++11\n                                 C++ code is C++11 compatible\n                          * c++14\n                                 C++ code is C++14 compatible\n                          * c++17\n                                 C++ code is C++17 compatible\n                          * c++20\n                                 C++ code is C++20 compatible (default)\n    --suppress=<spec>    Suppress warnings that match <spec>. The format of\n                         <spec> is:\n                         [error id]:[filename]:[line]\n                         The [filename] and [line] are optional. If [error id]\n                         is a wildcard '*', all error ids match.\n    --suppressions-list=<file>\n                         Suppress warnings listed in the file. Each suppression\n                         is in the same format as <spec> above.\n    --suppress-xml=<file>\n                         Suppress warnings listed in a xml file. XML file should\n                         follow the manual.pdf format specified in section.\n                         `6.4 XML suppressions` .\n    --template='<text>'  Format the error messages. Available fields:\n                           {file}              file name\n                           {line}              line number\n                           {column}            column number\n                           {callstack}         show a callstack. Example:\n                                                 [file.c:1] -> [file.c:100]\n                           {inconclusive:text} if warning is inconclusive, text\n                                               is written\n                           {severity}          severity\n                           {message}           warning message\n                           {id}                warning id\n                           {cwe}               CWE id (Common Weakness Enumeration)\n                           {code}              show the real code\n                           \\t                 insert tab\n                           \\n                 insert newline\n                           \\r                 insert carriage return\n                         Example formats:\n                         '{file}:{line},{severity},{id},{message}' or\n                         '{file}({line}):({severity}) {message}' or\n                         '{callstack} {message}'\n                         Pre-defined templates: gcc (default), cppcheck1 (old default), vs, edit.\n    --template-location='<text>'\n                         Format error message location. If this is not provided\n                         then no extra location info is shown.\n                         Available fields:\n                           {file}      file name\n                           {line}      line number\n                           {column}    column number\n                           {info}      location info\n                           {code}      show the real code\n                           \\t         insert tab\n                           \\n         insert newline\n                           \\r         insert carriage return\n                         Example format (gcc-like):\n                         '{file}:{line}:{column}: note: {info}\\n{code}'\n    -U<ID>               Undefine preprocessor symbol. Use -U to explicitly\n                         hide certain #ifdef <ID> code paths from checking.\n                         Example: '-UDEBUG'\n    -v, --verbose        Output more detailed error information.\n    --version            Print out version number.\n    --xml                Write results in xml format to error stream (stderr).\n    --xml-version=<version>\n                         Select the XML file version. Also implies --xml.\n                         Currently only version 2 is available. The default version is 2.\n\nExample usage:\n  # Recursively check the current folder. Print the progress on the screen and\n  # write errors to a file:\n  cppcheck . 2> err.txt\n\n  # Recursively check ../myproject/ and don't print progress:\n  cppcheck --quiet ../myproject/\n\n  # Check test.cpp, enable all checks:\n  cppcheck --enable=all --inconclusive --library=posix test.cpp\n\n  # Check f.cpp and search include files from inc1/ and inc2/:\n  cppcheck -I inc1/ -I inc2/ f.cpp\n\nFor more information:\n    https://cppcheck.sourceforge.io/manual.pdf\n\nMany thanks to the 3rd party libraries we use:\n * tinyxml2 -- loading project/library/ctu files.\n * picojson -- loading compile database.\n * pcre -- rules.\n * qt -- used in GUI\n"

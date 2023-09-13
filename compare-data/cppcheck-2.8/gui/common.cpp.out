@@ -1,0 +1,128 @@
+
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type@var1 ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type@var2 , const QString & value@var3 ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters@var4 , bool addAllSupported@var5 = true , bool addAll@var6 = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/common.cpp
+
+1:
+|
+27:
+28: QString getPath ( const QString & type@var7 )
+29: {
+30: QSettings settings@var8 ;
+31: QString path@var9 ; path@var9 =@expr1073741845 settings@var8 .@expr22 value (@expr1073741847 type@var7 , QString (@expr24 ) ) .@expr1073741849 toString (@expr1073741850 ) ;
+32: if (@expr27 path@var9 .@expr28 isEmpty (@expr29 ) ) {
+33:
+34: path@var9 =@expr1073741854 settings@var8 .@expr22 value (@expr1073741856 $"Last check path" , QString (@expr24 ) ) .@expr1073741858 toString (@expr1073741859 ) ;
+35: if (@expr27 path@var9 .@expr28 isEmpty (@expr29 ) ) {
+36:
+37: return QDir ::@expr1073741863 homePath (@expr1073741864 ) ; }
+38: }
+39: return path@var9 ;
+40: }
+41:
+42: void setPath ( const QString & type@var10 , const QString & value@var11 )
+43: {
+44: QSettings settings@var12 ;
+45: settings@var12 .@expr1073741865 setValue (@expr1073741866 type@var10 , value@var11 ) ;
+46: }
+47:
+48: QString toFilterString ( const QMap < QString , QString > & filters@var13 , bool addAllSupported@var14 , bool addAll@var15 )
+49: {
+50: QStringList entries@var16 ;
+51:
+52: if (@expr1073741867 addAllSupported@var14 ) {
+53: entries@var16 <<@expr1073741868 QCoreApplication ::@expr45 translate (@expr1073741870 "toFilterString" , "All supported files (%1)" )
+54: .@expr1073741871 arg (@expr1073741872 QStringList (@expr1073741873 filters@var13 .@expr1073741874 values (@expr1073741875 ) ) .@expr1073741876 join (@expr1073741877 " " ) ) ;
+55: }
+56:
+57: if (@expr1073741878 addAll@var15 ) {
+58: entries@var16 <<@expr1073741879 QCoreApplication ::@expr45 translate (@expr1073741881 "toFilterString" , "All files (%1)" ) .@expr1073741882 arg (@expr1073741883 "*.*" ) ;
+59: }
+60:
+|
+63:
+64: for (@expr1073741884 const auto &@expr1073741885 k@var17 :@expr1073741886 filters@var13 .@expr1073741887 keys (@expr1073741888 ) ) {
+65: entries@var16 <<@expr1073741889 QString (@expr1073741890 "%1 (%2)" ) .@expr1073741891 arg (@expr1073741892 k@var17 ) .@expr1073741893 arg (@expr1073741894 filters@var13 .@expr1073741895 value (@expr1073741896 k@var17 ) ) ;
+66: }
+67:
+68: return entries@var16 .@expr1073741897 join (@expr1073741898 ";;" ) ;
+69: }
+70:
+71: QString getDataDir ( )
+72: {
+73: QSettings settings@var18 ;
+74: const QString dataDir@var19 =@expr1073741900 settings@var18 .@expr1073741901 value (@expr1073741902 "DATADIR" , QString (@expr1073741903 ) ) .@expr1073741904 toString (@expr1073741905 ) ;
+75: if (@expr1073741906 !@expr1073741907 dataDir@var19 .@expr1073741908 isEmpty (@expr1073741909 ) ) {
+76: return dataDir@var19 ; }
+77: const QString appPath@var20 =@expr1073741910 QFileInfo (@expr1073741911 QCoreApplication ::@expr1073741912 applicationFilePath (@expr1073741913 ) ) .@expr1073741914 canonicalPath (@expr1073741915 ) ;
+78: if (@expr1073741916 QFileInfo (@expr1073741917 appPath@var20 +@expr1073741918 "/std.cfg" ) .@expr1073741919 exists (@expr1073741920 ) ) {
+79: return appPath@var20 ; }
+80: if (@expr1073741921 appPath@var20 .@expr98 indexOf (@expr99 "/cppcheck/" , 0 , Qt ::@expr100 CaseInsensitive@expr75 ) >@expr1073741925 0 ) {
+81: return appPath@var20 .@expr1073741926 left (@expr1073741927 appPath@var20 .@expr98 indexOf (@expr99 "/cppcheck/" , 0 , Qt ::@expr100 CaseInsensitive@expr75 ) +@expr1073741931 9 ) ; }
+82: return appPath@var20 ;
+83: }
+
+
+
+##Value flow
+Line 148
+  = always 1
+  true always 1
+  , always 1
+  = always 1
+  true always 1
+Line 34
+  "Last check path" always "Last check path"
+Line 48
+  addAllSupported always {!<=-1,!>=2}
+  addAll always {!<=-1,!>=2}
+Line 52
+  addAllSupported always {!<=-1,!>=2}
+Line 53
+  "toFilterString" always "toFilterString"
+  "All supported files (%1)" always "All supported files (%1)"
+Line 54
+  " " always " "
+Line 57
+  addAll always {!<=-1,!>=2}
+Line 58
+  "toFilterString" always "toFilterString"
+  "All files (%1)" always "All files (%1)"
+  "*.*" always "*.*"
+Line 65
+  "%1 (%2)" always "%1 (%2)"
+Line 68
+  ";;" always ";;"
+Line 74
+  "DATADIR" always "DATADIR"
+Line 75
+  ! always {!<=-1,!>=2}
+Line 78
+  "/std.cfg" always "/std.cfg"
+Line 80
+  "/cppcheck/" always "/cppcheck/"
+  0 always 0
+  > always {!<=-1,!>=2}
+  0 always 0
+Line 81
+  "/cppcheck/" always "/cppcheck/"
+  0 always 0
+  9 always 9

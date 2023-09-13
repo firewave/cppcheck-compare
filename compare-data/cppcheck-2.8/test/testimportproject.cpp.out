@@ -1,0 +1,1375 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073742008 expected@var22 !=@expr1073742009 actual@var23 ) {
+62: std ::@expr1073742010 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073742011 expected@var22 ;
+64: std ::@expr1073742012 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073742013 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073742014 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073742015 str (@expr1073742016 ) , actualStr@var26 .@expr1073742017 str (@expr1073742018 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073742019 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073742020 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073742021 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073742022 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testimportproject.cpp
+
+1:
+|
+29:
+30: class TestImporter : public ImportProject {
+31: public:
+32: using ImportProject :: importCompileCommands ;
+33:
+34:
+35: bool sourceFileExists ( const std :: string & ) override {
+36: return true ;
+37: }
+38: } ;
+39:
+40:
+41: class TestImportProject : public TestFixture {
+42: public:
+43: TestImportProject ( ) : TestFixture ( "TestImportProject" ) { }
+44:
+45: private:
+46:
+47: void run ( ) override {
+48: $do ${ $if $(@expr1073742023 $prepareTest $(@expr1073742024 "setDefines" $) $) ${ $setVerbose $(@expr1073742025 $false $) $; setDefines $(@expr1073742026 $) $; $} $} $while $(@expr1073742027 $false $) ;
+49: $do ${ $if $(@expr1073742028 $prepareTest $(@expr1073742029 "setIncludePaths1" $) $) ${ $setVerbose $(@expr1073742030 $false $) $; setIncludePaths1 $(@expr1073742031 $) $; $} $} $while $(@expr1073742032 $false $) ;
+50: $do ${ $if $(@expr1073742033 $prepareTest $(@expr1073742034 "setIncludePaths2" $) $) ${ $setVerbose $(@expr1073742035 $false $) $; setIncludePaths2 $(@expr1073742036 $) $; $} $} $while $(@expr1073742037 $false $) ;
+51: $do ${ $if $(@expr1073742038 $prepareTest $(@expr1073742039 "setIncludePaths3" $) $) ${ $setVerbose $(@expr1073742040 $false $) $; setIncludePaths3 $(@expr1073742041 $) $; $} $} $while $(@expr1073742042 $false $) ;
+52: $do ${ $if $(@expr1073742043 $prepareTest $(@expr1073742044 "importCompileCommands1" $) $) ${ $setVerbose $(@expr1073742045 $false $) $; importCompileCommands1 $(@expr1073742046 $) $; $} $} $while $(@expr1073742047 $false $) ;
+53: $do ${ $if $(@expr1073742048 $prepareTest $(@expr1073742049 "importCompileCommands2" $) $) ${ $setVerbose $(@expr1073742050 $false $) $; importCompileCommands2 $(@expr1073742051 $) $; $} $} $while $(@expr1073742052 $false $) ;
+54: $do ${ $if $(@expr1073742053 $prepareTest $(@expr1073742054 "importCompileCommands3" $) $) ${ $setVerbose $(@expr1073742055 $false $) $; importCompileCommands3 $(@expr1073742056 $) $; $} $} $while $(@expr1073742057 $false $) ;
+55: $do ${ $if $(@expr1073742058 $prepareTest $(@expr1073742059 "importCompileCommands4" $) $) ${ $setVerbose $(@expr1073742060 $false $) $; importCompileCommands4 $(@expr1073742061 $) $; $} $} $while $(@expr1073742062 $false $) ;
+56: $do ${ $if $(@expr1073742063 $prepareTest $(@expr1073742064 "importCompileCommands5" $) $) ${ $setVerbose $(@expr1073742065 $false $) $; importCompileCommands5 $(@expr1073742066 $) $; $} $} $while $(@expr1073742067 $false $) ;
+57: $do ${ $if $(@expr1073742068 $prepareTest $(@expr1073742069 "importCompileCommands6" $) $) ${ $setVerbose $(@expr1073742070 $false $) $; importCompileCommands6 $(@expr1073742071 $) $; $} $} $while $(@expr1073742072 $false $) ;
+58: $do ${ $if $(@expr1073742073 $prepareTest $(@expr1073742074 "importCompileCommands7" $) $) ${ $setVerbose $(@expr1073742075 $false $) $; importCompileCommands7 $(@expr1073742076 $) $; $} $} $while $(@expr1073742077 $false $) ;
+59: $do ${ $if $(@expr1073742078 $prepareTest $(@expr1073742079 "importCompileCommands8" $) $) ${ $setVerbose $(@expr1073742080 $false $) $; importCompileCommands8 $(@expr1073742081 $) $; $} $} $while $(@expr1073742082 $false $) ;
+60: $do ${ $if $(@expr1073742083 $prepareTest $(@expr1073742084 "importCompileCommands9" $) $) ${ $setVerbose $(@expr1073742085 $false $) $; importCompileCommands9 $(@expr1073742086 $) $; $} $} $while $(@expr1073742087 $false $) ;
+61: $do ${ $if $(@expr1073742088 $prepareTest $(@expr1073742089 "importCompileCommands10" $) $) ${ $setVerbose $(@expr1073742090 $false $) $; importCompileCommands10 $(@expr1073742091 $) $; $} $} $while $(@expr1073742092 $false $) ;
+62: $do ${ $if $(@expr1073742093 $prepareTest $(@expr1073742094 "importCompileCommands11" $) $) ${ $setVerbose $(@expr1073742095 $false $) $; importCompileCommands11 $(@expr1073742096 $) $; $} $} $while $(@expr1073742097 $false $) ;
+63: $do ${ $if $(@expr1073742098 $prepareTest $(@expr1073742099 "importCompileCommandsArgumentsSection" $) $) ${ $setVerbose $(@expr1073742100 $false $) $; importCompileCommandsArgumentsSection $(@expr1073742101 $) $; $} $} $while $(@expr1073742102 $false $) ;
+64: $do ${ $if $(@expr1073742103 $prepareTest $(@expr1073742104 "importCompileCommandsNoCommandSection" $) $) ${ $setVerbose $(@expr1073742105 $false $) $; importCompileCommandsNoCommandSection $(@expr1073742106 $) $; $} $} $while $(@expr1073742107 $false $) ;
+65: $do ${ $if $(@expr1073742108 $prepareTest $(@expr1073742109 "importCppcheckGuiProject" $) $) ${ $setVerbose $(@expr1073742110 $false $) $; importCppcheckGuiProject $(@expr1073742111 $) $; $} $} $while $(@expr1073742112 $false $) ;
+66: $do ${ $if $(@expr1073742113 $prepareTest $(@expr1073742114 "ignorePaths" $) $) ${ $setVerbose $(@expr1073742115 $false $) $; ignorePaths $(@expr1073742116 $) $; $} $} $while $(@expr1073742117 $false $) ;
+67: }
+68:
+69: void setDefines ( ) const {
+70: ImportProject ::@expr1073742118 FileSettings fs@var102 ;
+71:
+72: fs@var102 .@expr295 setDefines (@expr1073742120 "A" ) ;
+73: $if $(@expr1073742121 $!@expr1073742122 $assertEquals $(@expr1073742123 "cppcheck-2.8/test/testimportproject.cpp" $, 73 $, "A=1" $, fs@var102 .@expr300 defines@var103 $) $) { $return ; }
+74:
+75: fs@var102 .@expr295 setDefines (@expr1073742126 "A;B;" ) ;
+76: $if $(@expr1073742127 $!@expr1073742128 $assertEquals $(@expr1073742129 "cppcheck-2.8/test/testimportproject.cpp" $, 76 $, "A=1;B=1" $, fs@var102 .@expr300 defines@var103 $) $) { $return ; }
+77:
+78: fs@var102 .@expr295 setDefines (@expr1073742132 "A;;B;" ) ;
+79: $if $(@expr1073742133 $!@expr1073742134 $assertEquals $(@expr1073742135 "cppcheck-2.8/test/testimportproject.cpp" $, 79 $, "A=1;B=1" $, fs@var102 .@expr300 defines@var103 $) $) { $return ; }
+80:
+81: fs@var102 .@expr295 setDefines (@expr1073742138 "A;;B" ) ;
+82: $if $(@expr1073742139 $!@expr1073742140 $assertEquals $(@expr1073742141 "cppcheck-2.8/test/testimportproject.cpp" $, 82 $, "A=1;B=1" $, fs@var102 .@expr300 defines@var103 $) $) { $return ; }
+83: }
+84:
+85: void setIncludePaths1 ( ) const {
+86: ImportProject ::@expr1073742143 FileSettings fs@var104 ;
+87: std ::@expr1073742144 list < std ::@expr321 string > in@var105 (@expr1073742146 1 , "../include" ) ;
+88: std ::@expr1073742147 map < std ::@expr321 string , std ::@expr321 string , cppcheck ::@expr321 stricmp > variables@var106 ;
+89: fs@var104 .@expr1073742151 setIncludePaths (@expr1073742152 "abc/def/" , in@var105 , variables@var106 ) ;
+90: $if $(@expr1073742153 $!@expr1073742154 $assertEquals $(@expr1073742155 "cppcheck-2.8/test/testimportproject.cpp" $, 90 $, 1U $, fs@var104 .@expr332 includePaths@var107 .@expr1073742157 size (@expr1073742158 ) $) $) { $return ; }
+91: $if $(@expr1073742159 $!@expr1073742160 $assertEquals $(@expr1073742161 "cppcheck-2.8/test/testimportproject.cpp" $, 91 $, "abc/include/" $, fs@var104 .@expr332 includePaths@var107 .@expr1073742163 front (@expr1073742164 ) $) $) { $return ; }
+92: }
+93:
+94: void setIncludePaths2 ( ) const {
+95: ImportProject ::@expr1073742165 FileSettings fs@var108 ;
+96: std ::@expr1073742166 list < std ::@expr343 string > in@var109 (@expr1073742168 1 , "$(SolutionDir)other" ) ;
+97: std ::@expr1073742169 map < std ::@expr343 string , std ::@expr343 string , cppcheck ::@expr343 stricmp > variables@var110 ;
+98: variables@var110 [@expr1073742173 "SolutionDir" ] =@expr1073742174 "c:/abc/" ;
+99: fs@var108 .@expr1073742175 setIncludePaths (@expr1073742176 "/home/fred" , in@var109 , variables@var110 ) ;
+100: $if $(@expr1073742177 $!@expr1073742178 $assertEquals $(@expr1073742179 "cppcheck-2.8/test/testimportproject.cpp" $, 100 $, 1U $, fs@var108 .@expr356 includePaths@var111 .@expr1073742181 size (@expr1073742182 ) $) $) { $return ; }
+101: $if $(@expr1073742183 $!@expr1073742184 $assertEquals $(@expr1073742185 "cppcheck-2.8/test/testimportproject.cpp" $, 101 $, "c:/abc/other/" $, fs@var108 .@expr356 includePaths@var111 .@expr1073742187 front (@expr1073742188 ) $) $) { $return ; }
+102: }
+103:
+104: void setIncludePaths3 ( ) const {
+105: ImportProject ::@expr1073742189 FileSettings fs@var112 ;
+106: std ::@expr1073742190 list < std ::@expr367 string > in@var113 (@expr1073742192 1 , "$(SOLUTIONDIR)other" ) ;
+107: std ::@expr1073742193 map < std ::@expr367 string , std ::@expr367 string , cppcheck ::@expr367 stricmp > variables@var114 ;
+108: variables@var114 [@expr1073742197 "SolutionDir" ] =@expr1073742198 "c:/abc/" ;
+109: fs@var112 .@expr1073742199 setIncludePaths (@expr1073742200 "/home/fred" , in@var113 , variables@var114 ) ;
+110: $if $(@expr1073742201 $!@expr1073742202 $assertEquals $(@expr1073742203 "cppcheck-2.8/test/testimportproject.cpp" $, 110 $, 1U $, fs@var112 .@expr380 includePaths@var115 .@expr1073742205 size (@expr1073742206 ) $) $) { $return ; }
+111: $if $(@expr1073742207 $!@expr1073742208 $assertEquals $(@expr1073742209 "cppcheck-2.8/test/testimportproject.cpp" $, 111 $, "c:/abc/other/" $, fs@var112 .@expr380 includePaths@var115 .@expr1073742211 front (@expr1073742212 ) $) $) { $return ; }
+112: }
+113:
+114: void importCompileCommands1 ( ) const {
+115: const char json@var116 [@expr1073742214 248 ] =@expr1073742215 "[{
+                                   \"directory\": \"/tmp\",
+                                   \"command\": \"gcc -DTEST1 -DTEST2=2 -o /tmp/src.o -c /tmp/src.c\",
+                                   \"file\": \"/tmp/src.c\"
+                               }]"
+116:
+117:
+118:
+119: ;
+120: std ::@expr1073742216 istringstream istr@var117 (@expr1073742217 json@var116 ) ;
+121: TestImporter importer@var118 ;
+122: $if $(@expr1073742218 $!@expr1073742219 $assertEquals $(@expr1073742220 "cppcheck-2.8/test/testimportproject.cpp" $, 122 $, true $, importer@var118 .@expr1073742221 importCompileCommands (@expr1073742222 istr@var117 ) $) $) { $return ; }
+123: $if $(@expr1073742223 $!@expr1073742224 $assertEquals $(@expr1073742225 "cppcheck-2.8/test/testimportproject.cpp" $, 123 $, 1 $, importer@var118 .@expr402 fileSettings@var119 .@expr1073742227 size (@expr1073742228 ) $) $) { $return ; }
+124: $if $(@expr1073742229 $!@expr1073742230 $assertEquals $(@expr1073742231 "cppcheck-2.8/test/testimportproject.cpp" $, 124 $, "TEST1=1;TEST2=2" $, importer@var118 .@expr402 fileSettings@var119 .@expr1073742233 begin (@expr1073742234 ) .@expr1073742235 defines@expr1073742213 $) $) { $return ; }
+125: }
+126:
+127: void importCompileCommands2 ( ) const {
+128:
+|
+140:
+141: const char json@var120 [@expr1073742237 207 ] =@expr1073742238 "[{
+                                   \"directory\": \"/foo\",
+                                   \"command\": \"gcc -c bar.c\",
+                                   \"file\": \"/bar.c\"
+                               }]"
+142:
+143:
+144:
+145: ;
+146: std ::@expr1073742239 istringstream istr@var121 (@expr1073742240 json@var120 ) ;
+147: TestImporter importer@var122 ;
+148: $if $(@expr1073742241 $!@expr1073742242 $assertEquals $(@expr1073742243 "cppcheck-2.8/test/testimportproject.cpp" $, 148 $, true $, importer@var122 .@expr1073742244 importCompileCommands (@expr1073742245 istr@var121 ) $) $) { $return ; }
+149: $if $(@expr1073742246 $!@expr1073742247 $assertEquals $(@expr1073742248 "cppcheck-2.8/test/testimportproject.cpp" $, 149 $, 1 $, importer@var122 .@expr425 fileSettings@var123 .@expr1073742250 size (@expr1073742251 ) $) $) { $return ; }
+150: $if $(@expr1073742252 $!@expr1073742253 $assertEquals $(@expr1073742254 "cppcheck-2.8/test/testimportproject.cpp" $, 150 $, "/bar.c" $, importer@var122 .@expr425 fileSettings@var123 .@expr1073742256 begin (@expr1073742257 ) .@expr1073742258 filename@expr1073742236 $) $) { $return ; }
+151:
+152: }
+153:
+154: void importCompileCommands3 ( ) const {
+155: const char json@var124 [@expr1073742260 210 ] =@expr1073742261 "[{
+                                    \"directory\": \"/tmp/\",
+                                    \"command\": \"gcc -c src.c\",
+                                    \"file\": \"src.c\"
+                               }]"
+156:
+157:
+158:
+159: ;
+160: std ::@expr1073742262 istringstream istr@var125 (@expr1073742263 json@var124 ) ;
+161: TestImporter importer@var126 ;
+162: $if $(@expr1073742264 $!@expr1073742265 $assertEquals $(@expr1073742266 "cppcheck-2.8/test/testimportproject.cpp" $, 162 $, true $, importer@var126 .@expr1073742267 importCompileCommands (@expr1073742268 istr@var125 ) $) $) { $return ; }
+163: $if $(@expr1073742269 $!@expr1073742270 $assertEquals $(@expr1073742271 "cppcheck-2.8/test/testimportproject.cpp" $, 163 $, 1 $, importer@var126 .@expr448 fileSettings@var127 .@expr1073742273 size (@expr1073742274 ) $) $) { $return ; }
+164: $if $(@expr1073742275 $!@expr1073742276 $assertEquals $(@expr1073742277 "cppcheck-2.8/test/testimportproject.cpp" $, 164 $, "/tmp/src.c" $, importer@var126 .@expr448 fileSettings@var127 .@expr1073742279 begin (@expr1073742280 ) .@expr1073742281 filename@expr1073742259 $) $) { $return ; }
+165: }
+166:
+167: void importCompileCommands4 ( ) const {
+168: const char json@var128 [@expr1073742282 212 ] =@expr1073742283 "[{
+                                    \"directory\": \"/tmp/\",
+                                    \"command\": \"gcc -c src.mm\",
+                                    \"file\": \"src.mm\"
+                               }]"
+169:
+170:
+171:
+172: ;
+173: std ::@expr1073742284 istringstream istr@var129 (@expr1073742285 json@var128 ) ;
+174: TestImporter importer@var130 ;
+175: $if $(@expr1073742286 $!@expr1073742287 $assertEquals $(@expr1073742288 "cppcheck-2.8/test/testimportproject.cpp" $, 175 $, true $, importer@var130 .@expr1073742289 importCompileCommands (@expr1073742290 istr@var129 ) $) $) { $return ; }
+176: $if $(@expr1073742291 $!@expr1073742292 $assertEquals $(@expr1073742293 "cppcheck-2.8/test/testimportproject.cpp" $, 176 $, 0 $, importer@var130 .@expr1073742294 fileSettings@var131 .@expr1073742295 size (@expr1073742296 ) $) $) { $return ; }
+177: }
+178:
+179: void importCompileCommands5 ( ) const {
+180: const char json@var132 [@expr1073742297 1290 ] =@expr1073742298
+181: "[{
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomylib\\\\CMakeFiles\\\\mylib.dir\\\\src\\\\foobar\\\\mylib.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\"
+             },
+             {
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src -Imyapp -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomyapp\\\\CMakeFiles\\\\myapp.dir\\\\src\\\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\"
+             }]"
+182:
+|
+189:
+190: ;
+191: std ::@expr1073742299 istringstream istr@var133 (@expr1073742300 json@var132 ) ;
+192: TestImporter importer@var134 ;
+193: $if $(@expr1073742301 $!@expr1073742302 $assertEquals $(@expr1073742303 "cppcheck-2.8/test/testimportproject.cpp" $, 193 $, true $, importer@var134 .@expr1073742304 importCompileCommands (@expr1073742305 istr@var133 ) $) $) { $return ; }
+194: $if $(@expr1073742306 $!@expr1073742307 $assertEquals $(@expr1073742308 "cppcheck-2.8/test/testimportproject.cpp" $, 194 $, 2 $, importer@var134 .@expr485 fileSettings@var135 .@expr1073742310 size (@expr1073742311 ) $) $) { $return ; }
+195: $if $(@expr1073742312 $!@expr1073742313 $assertEquals $(@expr1073742314 "cppcheck-2.8/test/testimportproject.cpp" $, 195 $, "C:/Users/dan/git/test-cppcheck/mylib/src/" $, importer@var134 .@expr485 fileSettings@var135 .@expr1073742316 begin (@expr1073742317 ) .@expr1073742318 includePaths .@expr1073742319 front (@expr1073742320 ) $) $) { $return ; }
+196: }
+197:
+198: void importCompileCommands6 ( ) const {
+199: const char json@var136 [@expr1073742321 1348 ] =@expr1073742322
+200: "[{
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src -I\\\"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\second src\\\" /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomylib\\\\CMakeFiles\\\\mylib.dir\\\\src\\\\foobar\\\\mylib.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\"
+            },
+            {
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src -Imyapp -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomyapp\\\\CMakeFiles\\\\myapp.dir\\\\src\\\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\"
+             }]"
+201:
+|
+208:
+209: ;
+210: std ::@expr1073742323 istringstream istr@var137 (@expr1073742324 json@var136 ) ;
+211: TestImporter importer@var138 ;
+212: $if $(@expr1073742325 $!@expr1073742326 $assertEquals $(@expr1073742327 "cppcheck-2.8/test/testimportproject.cpp" $, 212 $, true $, importer@var138 .@expr1073742328 importCompileCommands (@expr1073742329 istr@var137 ) $) $) { $return ; }
+213: $if $(@expr1073742330 $!@expr1073742331 $assertEquals $(@expr1073742332 "cppcheck-2.8/test/testimportproject.cpp" $, 213 $, 2 $, importer@var138 .@expr509 fileSettings@var139 .@expr1073742334 size (@expr1073742335 ) $) $) { $return ; }
+214: $if $(@expr1073742336 $!@expr1073742337 $assertEquals $(@expr1073742338 "cppcheck-2.8/test/testimportproject.cpp" $, 214 $, "C:/Users/dan/git/test-cppcheck/mylib/src/" $, importer@var138 .@expr509 fileSettings@var139 .@expr516 begin (@expr517 ) .@expr518 includePaths .@expr1073742343 front (@expr1073742344 ) $) $) { $return ; }
+215: $if $(@expr1073742345 $!@expr1073742346 $assertEquals $(@expr1073742347 "cppcheck-2.8/test/testimportproject.cpp" $, 215 $, "C:/Users/dan/git/test-cppcheck/mylib/second src/" $, importer@var138 .@expr509 fileSettings@var139 .@expr516 begin (@expr517 ) .@expr518 includePaths .@expr1073742352 back (@expr1073742353 ) $) $) { $return ; }
+216: }
+217:
+218:
+219: void importCompileCommands7 ( ) const {
+220:
+221: const char json@var140 [@expr1073742355 354 ] =@expr1073742356
+222: "[{
+                \"directory\": \"/home/danielm/cppcheck 2/b/lib\",
+                \"command\": \"/usr/bin/c++  -DFILESDIR=\\\\\\\"/some/path\\\\\\\" -I\\\"/home/danielm/cppcheck 2/b/lib\\\" -isystem \\\"/home/danielm/cppcheck 2/externals\\\" \\\"/home/danielm/cppcheck 2/lib/astutils.cpp\\\"\",
+                \"file\": \"/home/danielm/cppcheck 2/lib/astutils.cpp\"
+            }]"
+223:
+224:
+225:
+226: ;
+227: std ::@expr1073742357 istringstream istr@var141 (@expr1073742358 json@var140 ) ;
+228: TestImporter importer@var142 ;
+229: $if $(@expr1073742359 $!@expr1073742360 $assertEquals $(@expr1073742361 "cppcheck-2.8/test/testimportproject.cpp" $, 229 $, true $, importer@var142 .@expr1073742362 importCompileCommands (@expr1073742363 istr@var141 ) $) $) { $return ; }
+230: $if $(@expr1073742364 $!@expr1073742365 $assertEquals $(@expr1073742366 "cppcheck-2.8/test/testimportproject.cpp" $, 230 $, 1 $, importer@var142 .@expr543 fileSettings@var143 .@expr1073742368 size (@expr1073742369 ) $) $) { $return ; }
+231: $if $(@expr1073742370 $!@expr1073742371 $assertEquals $(@expr1073742372 "cppcheck-2.8/test/testimportproject.cpp" $, 231 $, "FILESDIR=\"/some/path\"" $, importer@var142 .@expr543 fileSettings@var143 .@expr550 begin (@expr551 ) .@expr1073742376 defines@expr1073742354 $) $) { $return ; }
+232: $if $(@expr1073742377 $!@expr1073742378 $assertEquals $(@expr1073742379 "cppcheck-2.8/test/testimportproject.cpp" $, 232 $, 1 $, importer@var142 .@expr543 fileSettings@var143 .@expr550 begin (@expr551 ) .@expr559 includePaths .@expr1073742384 size (@expr1073742385 ) $) $) { $return ; }
+233: $if $(@expr1073742386 $!@expr1073742387 $assertEquals $(@expr1073742388 "cppcheck-2.8/test/testimportproject.cpp" $, 233 $, "/home/danielm/cppcheck 2/b/lib/" $, importer@var142 .@expr543 fileSettings@var143 .@expr550 begin (@expr551 ) .@expr559 includePaths .@expr1073742393 front (@expr1073742394 ) $) $) { $return ; }
+234: $todoAssertEquals $(@expr1073742395 "cppcheck-2.8/test/testimportproject.cpp" $, 234 $, "/home/danielm/cppcheck 2/externals/" $, "/home/danielm/cppcheck 2/b/lib/" $, importer@var142 .@expr543 fileSettings@var143 .@expr550 begin (@expr551 ) .@expr559 includePaths .@expr1073742400 back (@expr1073742401 ) $)
+235:
+236: ;
+237: }
+238:
+239: void importCompileCommands8 ( ) const {
+240:
+241: const char json@var144 [@expr1073742402 468 ] =@expr1073742403
+242: "[{
+              \"directory\": \"C:/Users/danielm/cppcheck/build/lib\",
+              \"command\": \"C:\\\\PROGRA~2\\\\MICROS~2\\\\2017\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1412~1.258\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe  /nologo /TP -DFILESDIR=\\\"\\\\\\\"C:\\\\Program Files\\\\Cppcheck\\\\\\\"\\\" -IC:\\\\Users\\\\danielm\\\\cppcheck\\\\build\\\\lib -IC:\\\\Users\\\\danielm\\\\cppcheck\\\\lib -c C:\\\\Users\\\\danielm\\\\cppcheck\\\\lib\\\\astutils.cpp\",
+              \"file\": \"C:/Users/danielm/cppcheck/lib/astutils.cpp\"
+            }]"
+243:
+244:
+245:
+246: ;
+247: std ::@expr1073742404 istringstream istr@var145 (@expr1073742405 json@var144 ) ;
+248: TestImporter importer@var146 ;
+249: $if $(@expr1073742406 $!@expr1073742407 $assertEquals $(@expr1073742408 "cppcheck-2.8/test/testimportproject.cpp" $, 249 $, true $, importer@var146 .@expr1073742409 importCompileCommands (@expr1073742410 istr@var145 ) $) $) { $return ; }
+250: }
+251:
+252: void importCompileCommands9 ( ) const {
+253:
+254: const char json@var147 [@expr1073742411 516 ] =@expr1073742412
+255: "[{
+              \"arguments\" : [
+                 \"powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -File d:\\\\Projekte\\\\xyz\\\\firmware\\\\app\\\\xyz-lib\\\\build.ps1 -IAR -COMPILER_PATH \\\"c:\\\\Program Files (x86)\\\\IAR Systems\\\\Embedded Workbench 9.0\\\" -CONTROLLER CC1310F128 -LIB LIB_PERMANENT -COMPILER_DEFINES \\\"CC1310_HFXO_FREQ=24000000 DEBUG\\\"\"
+              ],
+              \"directory\" : \"d:\\\\Projekte\\\\xyz\\\\firmware\\\\app\",
+              \"type\" : \"PRE\",
+              \"file\": \"1.c\"
+            }]"
+256:
+|
+261:
+262: ;
+263: std ::@expr1073742413 istringstream istr@var148 (@expr1073742414 json@var147 ) ;
+264: TestImporter importer@var149 ;
+265: $if $(@expr1073742415 $!@expr1073742416 $assertEquals $(@expr1073742417 "cppcheck-2.8/test/testimportproject.cpp" $, 265 $, true $, importer@var149 .@expr1073742418 importCompileCommands (@expr1073742419 istr@var148 ) $) $) { $return ; }
+266: }
+267:
+268: void importCompileCommands10 ( ) const {
+269: const char json@var150 [@expr1073742420 279 ] =@expr1073742421
+270: "[{
+               \"file\": \"/home/danielm/cppcheck/1/test folder/1.c\" ,
+               \"directory\": \"\",
+               \"arguments\": [
+                   \"iccavr.exe\",
+                   \"-I\",
+                   \"/home/danielm/cppcheck/test folder\"
+               ]
+            }]"
+271:
+|
+277:
+278: ;
+279: std ::@expr1073742422 istringstream istr@var151 (@expr1073742423 json@var150 ) ;
+280: TestImporter importer@var152 ;
+281: $if $(@expr1073742424 $!@expr1073742425 $assertEquals $(@expr1073742426 "cppcheck-2.8/test/testimportproject.cpp" $, 281 $, true $, importer@var152 .@expr1073742427 importCompileCommands (@expr1073742428 istr@var151 ) $) $) { $return ; }
+282: $if $(@expr1073742429 $!@expr1073742430 $assertEquals $(@expr1073742431 "cppcheck-2.8/test/testimportproject.cpp" $, 282 $, 1 $, importer@var152 .@expr608 fileSettings@var153 .@expr1073742433 size (@expr1073742434 ) $) $) { $return ; }
+283: const ImportProject ::@expr1073742435 FileSettings &@expr1073742436 fs@var154 =@expr1073742437 importer@var152 .@expr608 fileSettings@var153 .@expr1073742439 front (@expr1073742440 ) ;
+284: $if $(@expr1073742441 $!@expr1073742442 $assertEquals $(@expr1073742443 "cppcheck-2.8/test/testimportproject.cpp" $, 284 $, "/home/danielm/cppcheck/test folder/" $, fs@var154 .@expr1073742444 includePaths@var155 .@expr1073742445 front (@expr1073742446 ) $) $) { $return ; }
+285: }
+286:
+287: void importCompileCommands11 ( ) const {
+288: const char json@var156 [@expr1073742447 256 ] =@expr1073742448
+289: "[{
+               \"file\": \"1.c\" ,
+               \"directory\": \"/x\",
+               \"arguments\": [
+                   \"cc\",
+                   \"-I\",
+                   \"def\",
+                   \"-I\",
+                   \"abc\"
+               ]
+            }]"
+290:
+|
+298:
+299: ;
+300: std ::@expr1073742449 istringstream istr@var157 (@expr1073742450 json@var156 ) ;
+301: TestImporter importer@var158 ;
+302: $if $(@expr1073742451 $!@expr1073742452 $assertEquals $(@expr1073742453 "cppcheck-2.8/test/testimportproject.cpp" $, 302 $, true $, importer@var158 .@expr1073742454 importCompileCommands (@expr1073742455 istr@var157 ) $) $) { $return ; }
+303: $if $(@expr1073742456 $!@expr1073742457 $assertEquals $(@expr1073742458 "cppcheck-2.8/test/testimportproject.cpp" $, 303 $, 1 $, importer@var158 .@expr635 fileSettings@var159 .@expr1073742460 size (@expr1073742461 ) $) $) { $return ; }
+304: const ImportProject ::@expr1073742462 FileSettings &@expr1073742463 fs@var160 =@expr1073742464 importer@var158 .@expr635 fileSettings@var159 .@expr1073742466 front (@expr1073742467 ) ;
+305: $if $(@expr1073742468 $!@expr1073742469 $assertEquals $(@expr1073742470 "cppcheck-2.8/test/testimportproject.cpp" $, 305 $, "/x/def/" $, fs@var160 .@expr647 includePaths@var161 .@expr1073742472 front (@expr1073742473 ) $) $) { $return ; }
+306: $if $(@expr1073742474 $!@expr1073742475 $assertEquals $(@expr1073742476 "cppcheck-2.8/test/testimportproject.cpp" $, 306 $, "/x/abc/" $, fs@var160 .@expr647 includePaths@var161 .@expr1073742478 back (@expr1073742479 ) $) $) { $return ; }
+307: }
+308:
+309: void importCompileCommandsArgumentsSection ( ) const {
+310: const char json@var162 [@expr1073742481 81 ] =@expr1073742482 "[ { \"directory\": \"/tmp/\",\"arguments\": [\"gcc\", \"-c\", \"src.c\"],\"file\": \"src.c\" } ]"
+311:
+312: ;
+313: std ::@expr1073742483 istringstream istr@var163 (@expr1073742484 json@var162 ) ;
+314: TestImporter importer@var164 ;
+315: $if $(@expr1073742485 $!@expr1073742486 $assertEquals $(@expr1073742487 "cppcheck-2.8/test/testimportproject.cpp" $, 315 $, true $, importer@var164 .@expr1073742488 importCompileCommands (@expr1073742489 istr@var163 ) $) $) { $return ; }
+316: $if $(@expr1073742490 $!@expr1073742491 $assertEquals $(@expr1073742492 "cppcheck-2.8/test/testimportproject.cpp" $, 316 $, 1 $, importer@var164 .@expr669 fileSettings@var165 .@expr1073742494 size (@expr1073742495 ) $) $) { $return ; }
+317: $if $(@expr1073742496 $!@expr1073742497 $assertEquals $(@expr1073742498 "cppcheck-2.8/test/testimportproject.cpp" $, 317 $, "/tmp/src.c" $, importer@var164 .@expr669 fileSettings@var165 .@expr1073742500 begin (@expr1073742501 ) .@expr1073742502 filename@expr1073742480 $) $) { $return ; }
+318: }
+319:
+320: void importCompileCommandsNoCommandSection ( ) const {
+321: const char json@var166 [@expr1073742503 46 ] =@expr1073742504 "[ { \"directory\": \"/tmp/\",\"file\": \"src.mm\" } ]"
+322: ;
+323: std ::@expr1073742505 istringstream istr@var167 (@expr1073742506 json@var166 ) ;
+324: TestImporter importer@var168 ;
+325: $if $(@expr1073742507 $!@expr1073742508 $assertEquals $(@expr1073742509 "cppcheck-2.8/test/testimportproject.cpp" $, 325 $, false $, importer@var168 .@expr1073742510 importCompileCommands (@expr1073742511 istr@var167 ) $) $) { $return ; }
+326: $if $(@expr1073742512 $!@expr1073742513 $assertEquals $(@expr1073742514 "cppcheck-2.8/test/testimportproject.cpp" $, 326 $, 0 $, importer@var168 .@expr1073742515 fileSettings@var169 .@expr1073742516 size (@expr1073742517 ) $) $) { $return ; }
+327: }
+328:
+329: void importCppcheckGuiProject ( ) const {
+330: const char xml@var170 [@expr1073742518 358 ] =@expr1073742519 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"1\">\n    <root name=\".\"/>\n    <builddir>out1</builddir>\n    <analyze-all-vs-configs>true</analyze-all-vs-configs>\n    <includedir>\n        <dir name=\"lib/\"/>\n    </includedir>\n    <paths>\n        <dir name=\"cli/\"/>\n    </paths>\n    <exclude>\n        <path name=\"gui/temp/\"/>\n    </exclude>\n</project>\n"
+331:
+|
+343:
+344: ;
+345: std ::@expr1073742520 istringstream istr@var171 (@expr1073742521 xml@var170 ) ;
+346: Settings s@var172 ;
+347: TestImporter project@var173 ;
+348: $if $(@expr1073742522 $!@expr1073742523 $assertEquals $(@expr1073742524 "cppcheck-2.8/test/testimportproject.cpp" $, 348 $, true $, $(@expr1073742525 project@var173 .@expr1073742526 importCppcheckGuiProject (@expr1073742527 istr@var171 , &@expr1073742528 s@var172 ) $) $) $) { $return ; }
+349: $if $(@expr1073742529 $!@expr1073742530 $assertEquals $(@expr1073742531 "cppcheck-2.8/test/testimportproject.cpp" $, 349 $, 1 $, project@var173 .@expr708 guiProject@var174 .@expr709 pathNames@var175 .@expr1073742534 size (@expr1073742535 ) $) $) { $return ; }
+350: $if $(@expr1073742536 $!@expr1073742537 $assertEquals $(@expr1073742538 "cppcheck-2.8/test/testimportproject.cpp" $, 350 $, "cli/" $, project@var173 .@expr708 guiProject@var174 .@expr709 pathNames@var175 [@expr1073742541 0 ] $) $) { $return ; }
+351: $if $(@expr1073742542 $!@expr1073742543 $assertEquals $(@expr1073742544 "cppcheck-2.8/test/testimportproject.cpp" $, 351 $, 1 $, s@var172 .@expr721 includePaths@var176 .@expr1073742546 size (@expr1073742547 ) $) $) { $return ; }
+352: $if $(@expr1073742548 $!@expr1073742549 $assertEquals $(@expr1073742550 "cppcheck-2.8/test/testimportproject.cpp" $, 352 $, "lib/" $, s@var172 .@expr721 includePaths@var176 .@expr1073742552 front (@expr1073742553 ) $) $) { $return ; }
+353: }
+354:
+355: void ignorePaths ( ) {
+356: ImportProject ::@expr1073742555 FileSettings fs1@var177 ; ImportProject ::@expr1073742556 FileSettings fs2@var178 ;
+357: fs1@var177 .@expr1073742557 filename@var179 =@expr1073742558 "foo/bar" ;
+358: fs2@var178 .@expr1073742559 filename@var180 =@expr1073742560 "qwe/rty" ;
+359: TestImporter project@var181 ;
+360: project@var181 .@expr737 fileSettings@var182 =@expr1073742562 {@expr1073742563 fs1@var177 , fs2@var178 } ;
+361:
+362: project@var181 .@expr740 ignorePaths (@expr1073742565 {@expr1073742566 "*foo" , "bar*" } ) ;
+363: $if $(@expr1073742567 $!@expr1073742568 $assertEquals $(@expr1073742569 "cppcheck-2.8/test/testimportproject.cpp" $, 363 $, 2 $, project@var181 .@expr737 fileSettings@var182 .@expr747 size (@expr748 ) $) $) { $return ; }
+364:
+365: project@var181 .@expr740 ignorePaths (@expr1073742574 {@expr1073742575 "foo/*" } ) ;
+366: $if $(@expr1073742576 $!@expr1073742577 $assertEquals $(@expr1073742578 "cppcheck-2.8/test/testimportproject.cpp" $, 366 $, 1 $, project@var181 .@expr737 fileSettings@var182 .@expr747 size (@expr748 ) $) $) { $return ; }
+367: $if $(@expr1073742582 $!@expr1073742583 $assertEquals $(@expr1073742584 "cppcheck-2.8/test/testimportproject.cpp" $, 367 $, "qwe/rty" $, project@var181 .@expr737 fileSettings@var182 .@expr1073742586 front (@expr1073742587 ) .@expr1073742588 filename@expr1073742554 $) $) { $return ; }
+368:
+369: project@var181 .@expr740 ignorePaths (@expr1073742590 {@expr1073742591 "*e/r*" } ) ;
+370: $if $(@expr1073742592 $!@expr1073742593 $assertEquals $(@expr1073742594 "cppcheck-2.8/test/testimportproject.cpp" $, 370 $, 0 $, project@var181 .@expr737 fileSettings@var182 .@expr747 size (@expr748 ) $) $) { $return ; }
+371: }
+372: } ;
+373:
+374: $namespace ${ TestImportProject instance_TestImportProject@var183 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@1}
+  v {!<=-1,!>=2,0@1}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 35
+  ( always {!<=-1,!>=2}
+Line 36
+  return always {!<=-1,!>=2}
+  true always 1
+Line 43
+  "TestImportProject" always "TestImportProject"
+Line 48
+  ( always {!<=-1,!>=2}
+  "setDefines" always "setDefines"
+  false always 0
+  false always 0
+Line 49
+  ( always {!<=-1,!>=2}
+  "setIncludePaths1" always "setIncludePaths1"
+  false always 0
+  false always 0
+Line 50
+  ( always {!<=-1,!>=2}
+  "setIncludePaths2" always "setIncludePaths2"
+  false always 0
+  false always 0
+Line 51
+  ( always {!<=-1,!>=2}
+  "setIncludePaths3" always "setIncludePaths3"
+  false always 0
+  false always 0
+Line 52
+  ( always {!<=-1,!>=2}
+  "importCompileCommands1" always "importCompileCommands1"
+  false always 0
+  false always 0
+Line 53
+  ( always {!<=-1,!>=2}
+  "importCompileCommands2" always "importCompileCommands2"
+  false always 0
+  false always 0
+Line 54
+  ( always {!<=-1,!>=2}
+  "importCompileCommands3" always "importCompileCommands3"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "importCompileCommands4" always "importCompileCommands4"
+  false always 0
+  false always 0
+Line 56
+  ( always {!<=-1,!>=2}
+  "importCompileCommands5" always "importCompileCommands5"
+  false always 0
+  false always 0
+Line 57
+  ( always {!<=-1,!>=2}
+  "importCompileCommands6" always "importCompileCommands6"
+  false always 0
+  false always 0
+Line 58
+  ( always {!<=-1,!>=2}
+  "importCompileCommands7" always "importCompileCommands7"
+  false always 0
+  false always 0
+Line 59
+  ( always {!<=-1,!>=2}
+  "importCompileCommands8" always "importCompileCommands8"
+  false always 0
+  false always 0
+Line 60
+  ( always {!<=-1,!>=2}
+  "importCompileCommands9" always "importCompileCommands9"
+  false always 0
+  false always 0
+Line 61
+  ( always {!<=-1,!>=2}
+  "importCompileCommands10" always "importCompileCommands10"
+  false always 0
+  false always 0
+Line 62
+  ( always {!<=-1,!>=2}
+  "importCompileCommands11" always "importCompileCommands11"
+  false always 0
+  false always 0
+Line 63
+  ( always {!<=-1,!>=2}
+  "importCompileCommandsArgumentsSection" always "importCompileCommandsArgumentsSection"
+  false always 0
+  false always 0
+Line 64
+  ( always {!<=-1,!>=2}
+  "importCompileCommandsNoCommandSection" always "importCompileCommandsNoCommandSection"
+  false always 0
+  false always 0
+Line 65
+  ( always {!<=-1,!>=2}
+  "importCppcheckGuiProject" always "importCppcheckGuiProject"
+  false always 0
+  false always 0
+Line 66
+  ( always {!<=-1,!>=2}
+  "ignorePaths" always "ignorePaths"
+  false always 0
+  false always 0
+Line 72
+  "A" always "A"
+Line 73
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  73 always 73
+  "A=1" always "A=1"
+Line 75
+  "A;B;" always "A;B;"
+Line 76
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  76 always 76
+  "A=1;B=1" always "A=1;B=1"
+Line 78
+  "A;;B;" always "A;;B;"
+Line 79
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  79 always 79
+  "A=1;B=1" always "A=1;B=1"
+Line 81
+  "A;;B" always "A;;B"
+Line 82
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  82 always 82
+  "A=1;B=1" always "A=1;B=1"
+Line 87
+  1 always 1
+  "../include" always "../include"
+Line 89
+  "abc/def/" always "abc/def/"
+  in always size=1
+  variables always size=0
+Line 90
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  90 always 90
+  1U always 1
+Line 91
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  91 always 91
+  "abc/include/" always "abc/include/"
+Line 96
+  1 always 1
+  "$(SolutionDir)other" always "$(SolutionDir)other"
+Line 98
+  variables always size=0
+  "SolutionDir" always "SolutionDir"
+  = always "c:/abc/"
+  "c:/abc/" always "c:/abc/"
+Line 99
+  "/home/fred" always "/home/fred"
+  in always size=1
+Line 100
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  100 always 100
+  1U always 1
+Line 101
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  101 always 101
+  "c:/abc/other/" always "c:/abc/other/"
+Line 106
+  1 always 1
+  "$(SOLUTIONDIR)other" always "$(SOLUTIONDIR)other"
+Line 108
+  variables always size=0
+  "SolutionDir" always "SolutionDir"
+  = always "c:/abc/"
+  "c:/abc/" always "c:/abc/"
+Line 109
+  "/home/fred" always "/home/fred"
+  in always size=1
+Line 110
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  110 always 110
+  1U always 1
+Line 111
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  111 always 111
+  "c:/abc/other/" always "c:/abc/other/"
+Line 115
+  248 always 248
+  = always "[{
+                                   \"directory\": \"/tmp\",
+                                   \"command\": \"gcc -DTEST1 -DTEST2=2 -o /tmp/src.o -c /tmp/src.c\",
+                                   \"file\": \"/tmp/src.c\"
+                               }]"
+  "[{
+                                   \"directory\": \"/tmp\",
+                                   \"command\": \"gcc -DTEST1 -DTEST2=2 -o /tmp/src.o -c /tmp/src.c\",
+                                   \"file\": \"/tmp/src.c\"
+                               }]" always "[{
+                                   \"directory\": \"/tmp\",
+                                   \"command\": \"gcc -DTEST1 -DTEST2=2 -o /tmp/src.o -c /tmp/src.c\",
+                                   \"file\": \"/tmp/src.c\"
+                               }]"
+Line 120
+  json always "[{
+                                   \"directory\": \"/tmp\",
+                                   \"command\": \"gcc -DTEST1 -DTEST2=2 -o /tmp/src.o -c /tmp/src.c\",
+                                   \"file\": \"/tmp/src.c\"
+                               }]"
+Line 122
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  122 always 122
+  true always 1
+Line 123
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  123 always 123
+  1 always 1
+Line 124
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  124 always 124
+  "TEST1=1;TEST2=2" always "TEST1=1;TEST2=2"
+Line 141
+  207 always 207
+  = always "[{
+                                   \"directory\": \"/foo\",
+                                   \"command\": \"gcc -c bar.c\",
+                                   \"file\": \"/bar.c\"
+                               }]"
+  "[{
+                                   \"directory\": \"/foo\",
+                                   \"command\": \"gcc -c bar.c\",
+                                   \"file\": \"/bar.c\"
+                               }]" always "[{
+                                   \"directory\": \"/foo\",
+                                   \"command\": \"gcc -c bar.c\",
+                                   \"file\": \"/bar.c\"
+                               }]"
+Line 146
+  json always "[{
+                                   \"directory\": \"/foo\",
+                                   \"command\": \"gcc -c bar.c\",
+                                   \"file\": \"/bar.c\"
+                               }]"
+Line 148
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  148 always 148
+  true always 1
+Line 149
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  149 always 149
+  1 always 1
+Line 150
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  150 always 150
+  "/bar.c" always "/bar.c"
+Line 155
+  210 always 210
+  = always "[{
+                                    \"directory\": \"/tmp/\",
+                                    \"command\": \"gcc -c src.c\",
+                                    \"file\": \"src.c\"
+                               }]"
+  "[{
+                                    \"directory\": \"/tmp/\",
+                                    \"command\": \"gcc -c src.c\",
+                                    \"file\": \"src.c\"
+                               }]" always "[{
+                                    \"directory\": \"/tmp/\",
+                                    \"command\": \"gcc -c src.c\",
+                                    \"file\": \"src.c\"
+                               }]"
+Line 160
+  json always "[{
+                                    \"directory\": \"/tmp/\",
+                                    \"command\": \"gcc -c src.c\",
+                                    \"file\": \"src.c\"
+                               }]"
+Line 162
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  162 always 162
+  true always 1
+Line 163
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  163 always 163
+  1 always 1
+Line 164
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  164 always 164
+  "/tmp/src.c" always "/tmp/src.c"
+Line 168
+  212 always 212
+  = always "[{
+                                    \"directory\": \"/tmp/\",
+                                    \"command\": \"gcc -c src.mm\",
+                                    \"file\": \"src.mm\"
+                               }]"
+  "[{
+                                    \"directory\": \"/tmp/\",
+                                    \"command\": \"gcc -c src.mm\",
+                                    \"file\": \"src.mm\"
+                               }]" always "[{
+                                    \"directory\": \"/tmp/\",
+                                    \"command\": \"gcc -c src.mm\",
+                                    \"file\": \"src.mm\"
+                               }]"
+Line 173
+  json always "[{
+                                    \"directory\": \"/tmp/\",
+                                    \"command\": \"gcc -c src.mm\",
+                                    \"file\": \"src.mm\"
+                               }]"
+Line 175
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  175 always 175
+  true always 1
+Line 176
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  176 always 176
+  0 always 0
+Line 180
+  1290 always 1290
+  = always "[{
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomylib\\\\CMakeFiles\\\\mylib.dir\\\\src\\\\foobar\\\\mylib.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\"
+             },
+             {
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src -Imyapp -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomyapp\\\\CMakeFiles\\\\myapp.dir\\\\src\\\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\"
+             }]"
+Line 181
+  "[{
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomylib\\\\CMakeFiles\\\\mylib.dir\\\\src\\\\foobar\\\\mylib.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\"
+             },
+             {
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src -Imyapp -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomyapp\\\\CMakeFiles\\\\myapp.dir\\\\src\\\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\"
+             }]" always "[{
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomylib\\\\CMakeFiles\\\\mylib.dir\\\\src\\\\foobar\\\\mylib.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\"
+             },
+             {
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src -Imyapp -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomyapp\\\\CMakeFiles\\\\myapp.dir\\\\src\\\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\"
+             }]"
+Line 191
+  json always "[{
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomylib\\\\CMakeFiles\\\\mylib.dir\\\\src\\\\foobar\\\\mylib.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\"
+             },
+             {
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src -Imyapp -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomyapp\\\\CMakeFiles\\\\myapp.dir\\\\src\\\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\"
+             }]"
+Line 193
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  193 always 193
+  true always 1
+Line 194
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  194 always 194
+  2 always 2
+Line 195
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  195 always 195
+  "C:/Users/dan/git/test-cppcheck/mylib/src/" always "C:/Users/dan/git/test-cppcheck/mylib/src/"
+Line 199
+  1348 always 1348
+  = always "[{
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src -I\\\"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\second src\\\" /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomylib\\\\CMakeFiles\\\\mylib.dir\\\\src\\\\foobar\\\\mylib.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\"
+            },
+            {
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src -Imyapp -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomyapp\\\\CMakeFiles\\\\myapp.dir\\\\src\\\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\"
+             }]"
+Line 200
+  "[{
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src -I\\\"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\second src\\\" /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomylib\\\\CMakeFiles\\\\mylib.dir\\\\src\\\\foobar\\\\mylib.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\"
+            },
+            {
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src -Imyapp -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomyapp\\\\CMakeFiles\\\\myapp.dir\\\\src\\\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\"
+             }]" always "[{
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src -I\\\"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\second src\\\" /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomylib\\\\CMakeFiles\\\\mylib.dir\\\\src\\\\foobar\\\\mylib.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\"
+            },
+            {
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src -Imyapp -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomyapp\\\\CMakeFiles\\\\myapp.dir\\\\src\\\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\"
+             }]"
+Line 210
+  json always "[{
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src -I\\\"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\second src\\\" /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomylib\\\\CMakeFiles\\\\mylib.dir\\\\src\\\\foobar\\\\mylib.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src\\\\foobar\\\\mylib.cpp\"
+            },
+            {
+                \"directory\": \"C:/Users/dan/git/build-test-cppcheck-Desktop_Qt_5_15_0_MSVC2019_64bit-Debug\",
+                \"command\": \"C:\\\\PROGRA~2\\\\MICROS~1\\\\2019\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1427~1.291\\\\bin\\\\HostX64\\\\x64\\\\cl.exe /nologo /TP -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src -Imyapp -IC:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\mylib\\\\src /DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd -std:c++17 /Fomyapp\\\\CMakeFiles\\\\myapp.dir\\\\src\\\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\",
+                \"file\": \"C:\\\\Users\\\\dan\\\\git\\\\test-cppcheck\\\\myapp\\\\src\\\\main.cpp\"
+             }]"
+Line 212
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  212 always 212
+  true always 1
+Line 213
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  213 always 213
+  2 always 2
+Line 214
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  214 always 214
+  "C:/Users/dan/git/test-cppcheck/mylib/src/" always "C:/Users/dan/git/test-cppcheck/mylib/src/"
+Line 215
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  215 always 215
+  "C:/Users/dan/git/test-cppcheck/mylib/second src/" always "C:/Users/dan/git/test-cppcheck/mylib/second src/"
+Line 221
+  354 always 354
+  = always "[{
+                \"directory\": \"/home/danielm/cppcheck 2/b/lib\",
+                \"command\": \"/usr/bin/c++  -DFILESDIR=\\\\\\\"/some/path\\\\\\\" -I\\\"/home/danielm/cppcheck 2/b/lib\\\" -isystem \\\"/home/danielm/cppcheck 2/externals\\\" \\\"/home/danielm/cppcheck 2/lib/astutils.cpp\\\"\",
+                \"file\": \"/home/danielm/cppcheck 2/lib/astutils.cpp\"
+            }]"
+Line 222
+  "[{
+                \"directory\": \"/home/danielm/cppcheck 2/b/lib\",
+                \"command\": \"/usr/bin/c++  -DFILESDIR=\\\\\\\"/some/path\\\\\\\" -I\\\"/home/danielm/cppcheck 2/b/lib\\\" -isystem \\\"/home/danielm/cppcheck 2/externals\\\" \\\"/home/danielm/cppcheck 2/lib/astutils.cpp\\\"\",
+                \"file\": \"/home/danielm/cppcheck 2/lib/astutils.cpp\"
+            }]" always "[{
+                \"directory\": \"/home/danielm/cppcheck 2/b/lib\",
+                \"command\": \"/usr/bin/c++  -DFILESDIR=\\\\\\\"/some/path\\\\\\\" -I\\\"/home/danielm/cppcheck 2/b/lib\\\" -isystem \\\"/home/danielm/cppcheck 2/externals\\\" \\\"/home/danielm/cppcheck 2/lib/astutils.cpp\\\"\",
+                \"file\": \"/home/danielm/cppcheck 2/lib/astutils.cpp\"
+            }]"
+Line 227
+  json always "[{
+                \"directory\": \"/home/danielm/cppcheck 2/b/lib\",
+                \"command\": \"/usr/bin/c++  -DFILESDIR=\\\\\\\"/some/path\\\\\\\" -I\\\"/home/danielm/cppcheck 2/b/lib\\\" -isystem \\\"/home/danielm/cppcheck 2/externals\\\" \\\"/home/danielm/cppcheck 2/lib/astutils.cpp\\\"\",
+                \"file\": \"/home/danielm/cppcheck 2/lib/astutils.cpp\"
+            }]"
+Line 229
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  229 always 229
+  true always 1
+Line 230
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  230 always 230
+  1 always 1
+Line 231
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  231 always 231
+  "FILESDIR=\"/some/path\"" always "FILESDIR=\"/some/path\""
+Line 232
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  232 always 232
+  1 always 1
+Line 233
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  233 always 233
+  "/home/danielm/cppcheck 2/b/lib/" always "/home/danielm/cppcheck 2/b/lib/"
+Line 234
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  234 always 234
+  "/home/danielm/cppcheck 2/externals/" always "/home/danielm/cppcheck 2/externals/"
+  "/home/danielm/cppcheck 2/b/lib/" always "/home/danielm/cppcheck 2/b/lib/"
+Line 241
+  468 always 468
+  = always "[{
+              \"directory\": \"C:/Users/danielm/cppcheck/build/lib\",
+              \"command\": \"C:\\\\PROGRA~2\\\\MICROS~2\\\\2017\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1412~1.258\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe  /nologo /TP -DFILESDIR=\\\"\\\\\\\"C:\\\\Program Files\\\\Cppcheck\\\\\\\"\\\" -IC:\\\\Users\\\\danielm\\\\cppcheck\\\\build\\\\lib -IC:\\\\Users\\\\danielm\\\\cppcheck\\\\lib -c C:\\\\Users\\\\danielm\\\\cppcheck\\\\lib\\\\astutils.cpp\",
+              \"file\": \"C:/Users/danielm/cppcheck/lib/astutils.cpp\"
+            }]"
+Line 242
+  "[{
+              \"directory\": \"C:/Users/danielm/cppcheck/build/lib\",
+              \"command\": \"C:\\\\PROGRA~2\\\\MICROS~2\\\\2017\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1412~1.258\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe  /nologo /TP -DFILESDIR=\\\"\\\\\\\"C:\\\\Program Files\\\\Cppcheck\\\\\\\"\\\" -IC:\\\\Users\\\\danielm\\\\cppcheck\\\\build\\\\lib -IC:\\\\Users\\\\danielm\\\\cppcheck\\\\lib -c C:\\\\Users\\\\danielm\\\\cppcheck\\\\lib\\\\astutils.cpp\",
+              \"file\": \"C:/Users/danielm/cppcheck/lib/astutils.cpp\"
+            }]" always "[{
+              \"directory\": \"C:/Users/danielm/cppcheck/build/lib\",
+              \"command\": \"C:\\\\PROGRA~2\\\\MICROS~2\\\\2017\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1412~1.258\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe  /nologo /TP -DFILESDIR=\\\"\\\\\\\"C:\\\\Program Files\\\\Cppcheck\\\\\\\"\\\" -IC:\\\\Users\\\\danielm\\\\cppcheck\\\\build\\\\lib -IC:\\\\Users\\\\danielm\\\\cppcheck\\\\lib -c C:\\\\Users\\\\danielm\\\\cppcheck\\\\lib\\\\astutils.cpp\",
+              \"file\": \"C:/Users/danielm/cppcheck/lib/astutils.cpp\"
+            }]"
+Line 247
+  json always "[{
+              \"directory\": \"C:/Users/danielm/cppcheck/build/lib\",
+              \"command\": \"C:\\\\PROGRA~2\\\\MICROS~2\\\\2017\\\\COMMUN~1\\\\VC\\\\Tools\\\\MSVC\\\\1412~1.258\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe  /nologo /TP -DFILESDIR=\\\"\\\\\\\"C:\\\\Program Files\\\\Cppcheck\\\\\\\"\\\" -IC:\\\\Users\\\\danielm\\\\cppcheck\\\\build\\\\lib -IC:\\\\Users\\\\danielm\\\\cppcheck\\\\lib -c C:\\\\Users\\\\danielm\\\\cppcheck\\\\lib\\\\astutils.cpp\",
+              \"file\": \"C:/Users/danielm/cppcheck/lib/astutils.cpp\"
+            }]"
+Line 249
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  249 always 249
+  true always 1
+Line 254
+  516 always 516
+  = always "[{
+              \"arguments\" : [
+                 \"powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -File d:\\\\Projekte\\\\xyz\\\\firmware\\\\app\\\\xyz-lib\\\\build.ps1 -IAR -COMPILER_PATH \\\"c:\\\\Program Files (x86)\\\\IAR Systems\\\\Embedded Workbench 9.0\\\" -CONTROLLER CC1310F128 -LIB LIB_PERMANENT -COMPILER_DEFINES \\\"CC1310_HFXO_FREQ=24000000 DEBUG\\\"\"
+              ],
+              \"directory\" : \"d:\\\\Projekte\\\\xyz\\\\firmware\\\\app\",
+              \"type\" : \"PRE\",
+              \"file\": \"1.c\"
+            }]"
+Line 255
+  "[{
+              \"arguments\" : [
+                 \"powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -File d:\\\\Projekte\\\\xyz\\\\firmware\\\\app\\\\xyz-lib\\\\build.ps1 -IAR -COMPILER_PATH \\\"c:\\\\Program Files (x86)\\\\IAR Systems\\\\Embedded Workbench 9.0\\\" -CONTROLLER CC1310F128 -LIB LIB_PERMANENT -COMPILER_DEFINES \\\"CC1310_HFXO_FREQ=24000000 DEBUG\\\"\"
+              ],
+              \"directory\" : \"d:\\\\Projekte\\\\xyz\\\\firmware\\\\app\",
+              \"type\" : \"PRE\",
+              \"file\": \"1.c\"
+            }]" always "[{
+              \"arguments\" : [
+                 \"powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -File d:\\\\Projekte\\\\xyz\\\\firmware\\\\app\\\\xyz-lib\\\\build.ps1 -IAR -COMPILER_PATH \\\"c:\\\\Program Files (x86)\\\\IAR Systems\\\\Embedded Workbench 9.0\\\" -CONTROLLER CC1310F128 -LIB LIB_PERMANENT -COMPILER_DEFINES \\\"CC1310_HFXO_FREQ=24000000 DEBUG\\\"\"
+              ],
+              \"directory\" : \"d:\\\\Projekte\\\\xyz\\\\firmware\\\\app\",
+              \"type\" : \"PRE\",
+              \"file\": \"1.c\"
+            }]"
+Line 263
+  json always "[{
+              \"arguments\" : [
+                 \"powershell.exe -WindowStyle Hidden -NoProfile -ExecutionPolicy Bypass -File d:\\\\Projekte\\\\xyz\\\\firmware\\\\app\\\\xyz-lib\\\\build.ps1 -IAR -COMPILER_PATH \\\"c:\\\\Program Files (x86)\\\\IAR Systems\\\\Embedded Workbench 9.0\\\" -CONTROLLER CC1310F128 -LIB LIB_PERMANENT -COMPILER_DEFINES \\\"CC1310_HFXO_FREQ=24000000 DEBUG\\\"\"
+              ],
+              \"directory\" : \"d:\\\\Projekte\\\\xyz\\\\firmware\\\\app\",
+              \"type\" : \"PRE\",
+              \"file\": \"1.c\"
+            }]"
+Line 265
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  265 always 265
+  true always 1
+Line 269
+  279 always 279
+  = always "[{
+               \"file\": \"/home/danielm/cppcheck/1/test folder/1.c\" ,
+               \"directory\": \"\",
+               \"arguments\": [
+                   \"iccavr.exe\",
+                   \"-I\",
+                   \"/home/danielm/cppcheck/test folder\"
+               ]
+            }]"
+Line 270
+  "[{
+               \"file\": \"/home/danielm/cppcheck/1/test folder/1.c\" ,
+               \"directory\": \"\",
+               \"arguments\": [
+                   \"iccavr.exe\",
+                   \"-I\",
+                   \"/home/danielm/cppcheck/test folder\"
+               ]
+            }]" always "[{
+               \"file\": \"/home/danielm/cppcheck/1/test folder/1.c\" ,
+               \"directory\": \"\",
+               \"arguments\": [
+                   \"iccavr.exe\",
+                   \"-I\",
+                   \"/home/danielm/cppcheck/test folder\"
+               ]
+            }]"
+Line 279
+  json always "[{
+               \"file\": \"/home/danielm/cppcheck/1/test folder/1.c\" ,
+               \"directory\": \"\",
+               \"arguments\": [
+                   \"iccavr.exe\",
+                   \"-I\",
+                   \"/home/danielm/cppcheck/test folder\"
+               ]
+            }]"
+Line 281
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  281 always 281
+  true always 1
+Line 282
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  282 always 282
+  1 always 1
+Line 284
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  284 always 284
+  "/home/danielm/cppcheck/test folder/" always "/home/danielm/cppcheck/test folder/"
+Line 288
+  256 always 256
+  = always "[{
+               \"file\": \"1.c\" ,
+               \"directory\": \"/x\",
+               \"arguments\": [
+                   \"cc\",
+                   \"-I\",
+                   \"def\",
+                   \"-I\",
+                   \"abc\"
+               ]
+            }]"
+Line 289
+  "[{
+               \"file\": \"1.c\" ,
+               \"directory\": \"/x\",
+               \"arguments\": [
+                   \"cc\",
+                   \"-I\",
+                   \"def\",
+                   \"-I\",
+                   \"abc\"
+               ]
+            }]" always "[{
+               \"file\": \"1.c\" ,
+               \"directory\": \"/x\",
+               \"arguments\": [
+                   \"cc\",
+                   \"-I\",
+                   \"def\",
+                   \"-I\",
+                   \"abc\"
+               ]
+            }]"
+Line 300
+  json always "[{
+               \"file\": \"1.c\" ,
+               \"directory\": \"/x\",
+               \"arguments\": [
+                   \"cc\",
+                   \"-I\",
+                   \"def\",
+                   \"-I\",
+                   \"abc\"
+               ]
+            }]"
+Line 302
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  302 always 302
+  true always 1
+Line 303
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  303 always 303
+  1 always 1
+Line 305
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  305 always 305
+  "/x/def/" always "/x/def/"
+Line 306
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  306 always 306
+  "/x/abc/" always "/x/abc/"
+Line 310
+  81 always 81
+  = always "[ { \"directory\": \"/tmp/\",\"arguments\": [\"gcc\", \"-c\", \"src.c\"],\"file\": \"src.c\" } ]"
+  "[ { \"directory\": \"/tmp/\",\"arguments\": [\"gcc\", \"-c\", \"src.c\"],\"file\": \"src.c\" } ]" always "[ { \"directory\": \"/tmp/\",\"arguments\": [\"gcc\", \"-c\", \"src.c\"],\"file\": \"src.c\" } ]"
+Line 313
+  json always "[ { \"directory\": \"/tmp/\",\"arguments\": [\"gcc\", \"-c\", \"src.c\"],\"file\": \"src.c\" } ]"
+Line 315
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  315 always 315
+  true always 1
+Line 316
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  316 always 316
+  1 always 1
+Line 317
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  317 always 317
+  "/tmp/src.c" always "/tmp/src.c"
+Line 321
+  46 always 46
+  = always "[ { \"directory\": \"/tmp/\",\"file\": \"src.mm\" } ]"
+  "[ { \"directory\": \"/tmp/\",\"file\": \"src.mm\" } ]" always "[ { \"directory\": \"/tmp/\",\"file\": \"src.mm\" } ]"
+Line 323
+  json always "[ { \"directory\": \"/tmp/\",\"file\": \"src.mm\" } ]"
+Line 325
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  325 always 325
+  false always 0
+Line 326
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  326 always 326
+  0 always 0
+Line 330
+  358 always 358
+  = always "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"1\">\n    <root name=\".\"/>\n    <builddir>out1</builddir>\n    <analyze-all-vs-configs>true</analyze-all-vs-configs>\n    <includedir>\n        <dir name=\"lib/\"/>\n    </includedir>\n    <paths>\n        <dir name=\"cli/\"/>\n    </paths>\n    <exclude>\n        <path name=\"gui/temp/\"/>\n    </exclude>\n</project>\n"
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"1\">\n    <root name=\".\"/>\n    <builddir>out1</builddir>\n    <analyze-all-vs-configs>true</analyze-all-vs-configs>\n    <includedir>\n        <dir name=\"lib/\"/>\n    </includedir>\n    <paths>\n        <dir name=\"cli/\"/>\n    </paths>\n    <exclude>\n        <path name=\"gui/temp/\"/>\n    </exclude>\n</project>\n" always "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"1\">\n    <root name=\".\"/>\n    <builddir>out1</builddir>\n    <analyze-all-vs-configs>true</analyze-all-vs-configs>\n    <includedir>\n        <dir name=\"lib/\"/>\n    </includedir>\n    <paths>\n        <dir name=\"cli/\"/>\n    </paths>\n    <exclude>\n        <path name=\"gui/temp/\"/>\n    </exclude>\n</project>\n"
+Line 345
+  xml always "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"1\">\n    <root name=\".\"/>\n    <builddir>out1</builddir>\n    <analyze-all-vs-configs>true</analyze-all-vs-configs>\n    <includedir>\n        <dir name=\"lib/\"/>\n    </includedir>\n    <paths>\n        <dir name=\"cli/\"/>\n    </paths>\n    <exclude>\n        <path name=\"gui/temp/\"/>\n    </exclude>\n</project>\n"
+Line 348
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  348 always 348
+  true always 1
+  & {lifetime[Address]=(s),!0}
+Line 349
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  349 always 349
+  1 always 1
+Line 350
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  350 always 350
+  "cli/" always "cli/"
+  0 always 0
+Line 351
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  351 always 351
+  1 always 1
+Line 352
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  352 always 352
+  "lib/" always "lib/"
+Line 357
+  = always "foo/bar"
+  "foo/bar" always "foo/bar"
+Line 358
+  = always "qwe/rty"
+  "qwe/rty" always "qwe/rty"
+Line 362
+  "*foo" always "*foo"
+  "bar*" always "bar*"
+Line 363
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  363 always 363
+  2 always 2
+Line 365
+  "foo/*" always "foo/*"
+Line 366
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  366 always 366
+  1 always 1
+Line 367
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  367 always 367
+  "qwe/rty" always "qwe/rty"
+Line 369
+  "*e/r*" always "*e/r*"
+Line 370
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testimportproject.cpp" always "cppcheck-2.8/test/testimportproject.cpp"
+  370 always 370
+  0 always 0

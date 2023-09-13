@@ -1,0 +1,284 @@
+
+
+##file cppcheck-2.8/cli/filelister.h
+
+1:
+|
+26:
+27: class PathMatch ;
+28:
+|
+32:
+33: class FileLister {
+34: public:
+35:
+|
+44:
+45: static std :: string recursiveAddFiles ( std :: map < std :: string , unsigned long > & files@var1 , const std :: string & path@var2 , const PathMatch & ignored@var3 ) {
+46: const std ::@expr1073741874 set < std ::@expr1073741875 string > extra@var4 ;
+47: return recursiveAddFiles (@expr1073741876 files@var1 , path@var2 , extra@var4 , ignored@var3 ) ;
+48: }
+49:
+|
+60:
+61: static std :: string recursiveAddFiles ( std :: map < std :: string , unsigned long > & files@var5 , const std :: string & path@var6 , const std :: set < std :: string > & extra@var7 , const PathMatch & ignored@var8 ) ;
+62:
+|
+74:
+75: static std :: string addFiles ( std :: map < std :: string , unsigned long > & files@var9 , const std :: string & path@var10 , const std :: set < std :: string > & extra@var11 , bool recursive@var12 , const PathMatch & ignored@var13 ) ;
+76:
+|
+80:
+81: static bool isDirectory ( const std :: string & path@var14 ) ;
+82:
+|
+86:
+87: static bool fileExists ( const std :: string & path@var15 ) ;
+88: } ;
+
+##file cppcheck-2.8/cli/filelister.cpp
+
+1:
+|
+191:
+192: static std :: string addFiles2 ( std :: map < std :: string , unsigned long > & files@var16 ,
+193: const std :: string & path@var17 ,
+194: const std :: set < std :: string > & extra@var18 ,
+195: bool recursive@var19 ,
+196: const PathMatch & ignored@var20
+197: )
+198: {
+199: struct stat file_stat@var21 ;
+200: if (@expr1073741880 stat (@expr1073741881 path@var17 .@expr58 c_str (@expr59 ) , &@expr60 file_stat@var21 ) !=@expr1073741885 -1 ) {
+201: if (@expr1073741886 (@expr1073741887 file_stat@var21 .@expr1073741888 st_mode@var22 &@expr1073741889 S_IFMT@expr1073741877 ) ==@expr1073741890 S_IFDIR@expr1073741878 ) {
+202: DIR * dir@var23 ; dir@var23 =@expr1073741891 opendir (@expr1073741892 path@var17 .@expr58 c_str (@expr59 ) ) ;
+203: if (@expr1073741895 !@expr1073741896 dir@var23 ) {
+204: return "" ; }
+205:
+206: dirent * dir_result@var24 ;
+207:
+|
+216:
+217: union Anonymous0 {
+218: dirent entry@var25 ;
+219: char buf@var26 [@expr1073741897 sizeof (@expr1073741898 *@expr1073741899 dir_result@var24 ) +@expr1073741900 (@expr1073741901 sizeof (@expr1073741902 dir_result@var24 .@expr79 d_name@var27 ) >@expr1073741904 1 ?@expr1073741905 0 :@expr1073741906 NAME_MAX +@expr1073741907 1 ) ] ;
+220: } ; union Anonymous0 dir_result_buffer@var28 ;
+221:
+222: (@expr1073741908 void ) dir_result_buffer@var28 .@expr1073741909 buf@var29 ;
+223: std ::@expr1073741910 string new_path@var30 ;
+224: new_path@var30 .@expr1073741911 reserve (@expr1073741912 path@var17 .@expr1073741913 length (@expr1073741914 ) +@expr1073741915 100 ) ;
+225:
+226:
+227: while (@expr1073741916 (@expr1073741917 SUPPRESS_DEPRECATED_WARNING (@expr1073741918 readdir_r (@expr1073741919 dir@var23 , &@expr1073741920 dir_result_buffer@var28 .@expr1073741921 entry@var31 , &@expr1073741922 dir_result@var24 ) ) ==@expr1073741923 0 ) &&@expr1073741924 (@expr1073741925 dir_result@var24 !=@expr1073741926 nullptr ) ) {
+228: if (@expr1073741927 (@expr1073741928 std ::@expr105 strcmp (@expr1073741930 dir_result@var24 .@expr79 d_name@var27 , "." ) ==@expr1073741932 0 ) ||@expr1073741933
+229: (@expr1073741934 std ::@expr105 strcmp (@expr1073741936 dir_result@var24 .@expr79 d_name@var27 , ".." ) ==@expr1073741938 0 ) ) {
+230: continue ; }
+231:
+232: new_path@var30 =@expr1073741939 path@var17 +@expr1073741940 '/' +@expr1073741941 dir_result@var24 .@expr79 d_name@var27 ;
+233:
+|
+236:
+237: bool path_is_directory@var32 ; path_is_directory@var32 =@expr1073741943 FileLister ::@expr1073741944 isDirectory (@expr1073741945 new_path@var30 ) ;
+238:
+239: if (@expr1073741946 path_is_directory@var32 ) {
+240: if (@expr1073741947 recursive@var19 &&@expr1073741948 !@expr125 ignored@var20 .@expr126 match (@expr127 new_path@var30 ) ) {
+241: std ::@expr1073741952 string err@var33 ; err@var33 =@expr1073741953 addFiles2 (@expr1073741954 files@var16 , new_path@var30 , extra@var18 , recursive@var19 , ignored@var20 ) ;
+242: if (@expr1073741955 !@expr1073741956 err@var33 .@expr1073741957 empty (@expr1073741958 ) ) {
+243: return err@var33 ; }
+244: }
+245: } else {
+246: if (@expr1073741959 Path ::@expr1073741960 acceptFile (@expr1073741961 new_path@var30 , extra@var18 ) &&@expr1073741962 !@expr125 ignored@var20 .@expr126 match (@expr127 new_path@var30 ) ) {
+247: if (@expr1073741966 stat (@expr1073741967 new_path@var30 .@expr1073741968 c_str (@expr1073741969 ) , &@expr60 file_stat@var21 ) !=@expr1073741971 -1 ) {
+248: files@var16 [@expr1073741972 new_path@var30 ] =@expr1073741973 file_stat@var21 .@expr150 st_size@var34 ; }
+249: else {
+250: return "Can't stat " +@expr1073741975 new_path@var30 +@expr1073741976 " errno: " +@expr1073741977 std ::@expr1073741978 to_string (@expr1073741979 errno@expr1073741879 ) ; }
+251: }
+252: }
+253: }
+254: closedir (@expr1073741980 dir@var23 ) ;
+255: } else {
+256: files@var16 [@expr1073741981 path@var17 ] =@expr1073741982 file_stat@var21 .@expr150 st_size@var34 ; }
+257: }
+258: return "" ;
+259: }
+260:
+261: std :: string FileLister :: recursiveAddFiles ( std :: map < std :: string , unsigned long > & files@var35 , const std :: string & path@var36 , const std :: set < std :: string > & extra@var37 , const PathMatch & ignored@var38 )
+262: {
+263: return addFiles (@expr1073741984 files@var35 , path@var36 , extra@var37 , true , ignored@var38 ) ;
+264: }
+265:
+266: std :: string FileLister :: addFiles ( std :: map < std :: string , unsigned long > & files@var39 , const std :: string & path@var40 , const std :: set < std :: string > & extra@var41 , bool recursive@var42 , const PathMatch & ignored@var43 )
+267: {
+268: if (@expr1073741985 !@expr1073741986 path@var40 .@expr1073741987 empty (@expr1073741988 ) ) {
+269: std ::@expr1073741989 string corrected_path@var44 ; corrected_path@var44 =@expr1073741990 path@var40 ;
+270: if (@expr1073741991 endsWith (@expr1073741992 corrected_path@var44 , '/' ) ) {
+271: corrected_path@var44 .@expr1073741993 erase (@expr1073741994 corrected_path@var44 .@expr1073741995 end (@expr1073741996 ) -@expr1073741997 1 ) ; }
+272:
+273: return addFiles2 (@expr1073741998 files@var39 , corrected_path@var44 , extra@var41 , recursive@var42 , ignored@var43 ) ;
+274: }
+275:
+276: return "" ;
+277: }
+278:
+279: bool FileLister :: isDirectory ( const std :: string & path@var45 )
+280: {
+281: struct stat file_stat@var46 ;
+282: return (@expr177 stat (@expr1073742002 path@var45 .@expr1073742003 c_str (@expr1073742004 ) , &@expr1073742005 file_stat@var46 ) !=@expr1073742006 -1 &&@expr1073742007 (@expr177 file_stat@var46 .@expr1073742009 st_mode@var47 &@expr1073742010 S_IFMT@expr1073741999 ) ==@expr1073742011 S_IFDIR@expr1073742000 ) ;
+283: }
+284:
+285: bool FileLister :: fileExists ( const std :: string & path@var48 )
+286: {
+287: struct stat file_stat@var49 ;
+288: return (@expr190 stat (@expr1073742015 path@var48 .@expr1073742016 c_str (@expr1073742017 ) , &@expr1073742018 file_stat@var49 ) !=@expr1073742019 -1 &&@expr1073742020 (@expr190 file_stat@var49 .@expr1073742022 st_mode@var50 &@expr1073742023 S_IFMT@expr1073742012 ) ==@expr1073742024 S_IFREG@expr1073742013 ) ;
+289: }
+
+
+
+##Value flow
+Line 47
+  extra always size=0
+Line 81
+  ( always {!<=-1,!>=2}
+Line 87
+  ( always {!<=-1,!>=2}
+Line 194
+  , always {!<=-1,!>=2}
+Line 195
+  recursive always {!<=-1,!>=2}
+Line 200
+  ( {lifetime[Object]=(path),!0}
+  & {lifetime[Address]=(file_stat),!0}
+  != always {!<=-1,!>=2}
+  -1 always -1
+Line 201
+  == always {!<=-1,!>=2}
+Line 202
+  ( {lifetime[Object]=(path),!0}
+Line 203
+  ! always {!<=-1,!>=2}
+Line 204
+  "" always ""
+Line 219
+  ( always !<=-1
+  ( always !<=-1
+  > always {!<=-1,!>=2}
+  1 always 1
+  0 always 0
+  : always 0
+  1 always 1
+Line 222
+  buf possible lifetime[Object]=(buf)
+Line 224
+  new_path always size=0
+  ( always !<=-1
+  + always !<=99
+  100 always 100
+Line 227
+  & {lifetime[Address]=(entry),!0}
+  & {lifetime[Address]=(dir_result),!0,Uninit*}
+  dir_result possible Uninit
+  == always {!<=-1,!>=2}
+  0 always 0
+  && always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+  nullptr always 0
+Line 228
+  dir_result always !0
+  "." always "."
+  == always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+Line 229
+  dir_result always !0
+  ".." always ".."
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 232
+  '/' always 47
+  dir_result always !0
+Line 237
+  path_is_directory always {!<=-1,!>=2}
+  path_is_directory always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  new_path always symbolic=(path+'/'+dir_result->d_name)
+Line 239
+  path_is_directory {symbolic=(FileLister::isDirectory(new_path)),!<=-1,!>=2}
+Line 240
+  recursive always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  new_path always symbolic=(path+'/'+dir_result->d_name)
+Line 241
+  recursive always 1
+Line 242
+  ! {!<=-1,!>=2,0}
+  err possible size=0
+  ( {!<=-1,!>=2,1}
+Line 243
+  err always !size=0
+Line 246
+  new_path always symbolic=(path+'/'+dir_result->d_name)
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+Line 247
+  ( {lifetime[Object]=(new_path),!0}
+  & {lifetime[Address]=(file_stat),!0}
+  != always {!<=-1,!>=2}
+  -1 always -1
+Line 248
+  [ always !<=-1
+  = always !<=-1
+Line 250
+  "Can't stat " always "Can't stat "
+  " errno: " always " errno: "
+Line 256
+  [ always !<=-1
+  = always !<=-1
+Line 258
+  "" always ""
+Line 263
+  extra possible size=0@5
+  true always 1
+Line 266
+  , always {!<=-1,!>=2}
+  recursive always {!<=-1,!>=2}
+Line 268
+  ! {!<=-1,!>=2,0}
+  path possible size=0
+  ( {!<=-1,!>=2,1}
+Line 269
+  = always !size=0
+  path always !size=0
+Line 270
+  corrected_path {symbolic=(path),!size=0}
+  '/' always 47
+Line 271
+  ( {lifetime[Iterator]=(corrected_path),end=0}
+  - {lifetime[Iterator]=(corrected_path),end=-1}
+  1 always 1
+Line 273
+  recursive always {!<=-1,!>=2}
+Line 276
+  "" always ""
+Line 279
+  ( always {!<=-1,!>=2}
+Line 282
+  return always {!<=-1,!>=2}
+  path possible symbolic=(path+'/'+dir_result->d_name)@3
+  ( {lifetime[Object]=(path),!0}
+  & {lifetime[Address]=(file_stat),!0}
+  != always {!<=-1,!>=2}
+  -1 always -1
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 285
+  ( always {!<=-1,!>=2}
+Line 288
+  return always {!<=-1,!>=2}
+  ( {lifetime[Object]=(path),!0}
+  & {lifetime[Address]=(file_stat),!0}
+  != always {!<=-1,!>=2}
+  -1 always -1
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}

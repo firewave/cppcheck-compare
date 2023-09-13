@@ -1,0 +1,315 @@
+
+
+##file cppcheck-2.8/gui/threadresult.h
+
+1:
+|
+33:
+34: class ErrorItem ;
+35:
+|
+42:
+43: class ThreadResult : public QObject , public ErrorLogger {
+44: Q_OBJECT
+45: public:
+46: ThreadResult ( ) ;
+47: ~ ThreadResult ( ) override ;
+48:
+|
+52:
+53: QString getNextFile ( ) ;
+54:
+55: ImportProject :: FileSettings getNextFileSettings ( ) ;
+56:
+|
+60:
+61: void setFiles ( const QStringList & files ) ;
+62:
+63: void setProject ( const ImportProject & prj ) ;
+64:
+|
+68:
+69: void clearFiles ( ) ;
+70:
+|
+74:
+75: int getFileCount ( ) const ;
+76:
+|
+79:
+80: void reportOut ( const std :: string & outmsg , Color c = Color :: Reset ) override ;
+81: void reportErr ( const ErrorMessage & msg ) override ;
+82:
+83: public slots :
+84:
+|
+88:
+89: void fileChecked ( const QString & file ) ;
+90: signals :
+91:
+|
+95:
+96: void progress ( int value , const QString & description ) ;
+97:
+|
+102:
+103: void error ( const ErrorItem & item ) ;
+104:
+|
+109:
+110: void log ( const QString & logline ) ;
+111:
+|
+116:
+117: void debugError ( const ErrorItem & item ) ;
+118:
+119: protected:
+120:
+|
+124:
+125: mutable QMutex mutex ;
+126:
+|
+130:
+131: QStringList mFiles ;
+132:
+133: std :: list < ImportProject :: FileSettings > mFileSettings ;
+134:
+|
+138:
+139: quint64 mMaxProgress ;
+140:
+|
+144:
+145: quint64 mProgress ;
+146:
+|
+150:
+151: unsigned long mFilesChecked ;
+152:
+|
+156:
+157: unsigned long mTotalFiles ;
+158: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type , const QString & value ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters , bool addAllSupported = true , bool addAll = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/erroritem.h
+
+1:
+|
+36:
+37: class GuiSeverity {
+38: public:
+39: static QString toString ( Severity :: SeverityType severity ) {
+40: return QString :: fromStdString ( Severity :: toString ( severity ) ) ;
+41: }
+42:
+43: static Severity :: SeverityType fromString ( const QString & severity ) {
+44: return Severity :: fromString ( severity . toStdString ( ) ) ;
+45: }
+46: } ;
+47:
+|
+50:
+51: class QErrorPathItem {
+52: public:
+53: QErrorPathItem ( ) : line ( 0 ) , column ( -1 ) { }
+54: explicit QErrorPathItem ( const ErrorMessage :: FileLocation & loc ) ;
+55: QString file ;
+56: int line ;
+57: int column ;
+58: QString info ;
+59: } ;
+60:
+61: bool operator == ( const QErrorPathItem & i1 , const QErrorPathItem & i2 ) ;
+62:
+|
+70:
+71: class ErrorItem {
+72: public:
+73: ErrorItem ( ) ;
+74: explicit ErrorItem ( const ErrorMessage & errmsg ) ;
+75:
+|
+79:
+80: QString toString ( ) const ;
+81: QString tool ( ) const ;
+82:
+83: QString file0 ;
+84: QString function ;
+85: QString errorId ;
+86: Severity :: SeverityType severity ;
+87: bool incomplete ;
+88: bool inconclusive ;
+89: QString summary ;
+90: QString message ;
+91: int cwe ;
+92: unsigned long long hash ;
+93: QList < QErrorPathItem > errorPath ;
+94: QString symbolNames ;
+95:
+96:
+97: QString sinceDate ;
+98: QString tags ;
+99:
+|
+102:
+103: static bool sameCID ( const ErrorItem & errorItem1 , const ErrorItem & errorItem2 ) ;
+104: } ;
+105:
+|
+110:
+111: class ErrorLine {
+112: public:
+113: QString file ;
+114: int line ;
+115: QString file0 ;
+116: QString errorId ;
+117: bool incomplete ;
+118: int cwe ;
+119: unsigned long long hash ;
+120: bool inconclusive ;
+121: Severity :: SeverityType severity ;
+122: QString summary ;
+123: QString message ;
+124: QString sinceDate ;
+125: QString tags ;
+126: } ;
+
+##file cppcheck-2.8/gui/threadresult.cpp
+
+1:
+|
+27:
+28: ThreadResult :: ThreadResult ( ) : QObject ( ) , ErrorLogger ( ) , mMaxProgress ( 0 ) , mProgress ( 0 ) , mFilesChecked ( 0 ) , mTotalFiles ( 0 )
+29: {
+30:
+31: }
+32:
+33: ThreadResult :: ~ ThreadResult ( )
+34: {
+35:
+36: }
+37:
+38: void ThreadResult :: reportOut ( const std :: string & outmsg , Color )
+39: {
+40: emit log ( QString :: fromStdString ( outmsg ) ) ;
+41: }
+42:
+43: void ThreadResult :: fileChecked ( const QString & file )
+44: {
+45: QMutexLocker locker ( & mutex ) ;
+46:
+47: mProgress += QFile ( file ) . size ( ) ;
+48: mFilesChecked ++ ;
+49:
+50: if ( mMaxProgress > 0 ) {
+51: const int value = static_cast < int > ( $1024.0 * mProgress / mMaxProgress ) ;
+52: const QString description = tr ( "%1 of %2 files checked" ) . arg ( mFilesChecked ) . arg ( mTotalFiles ) ;
+53:
+54: emit progress ( value , description ) ;
+55: }
+56: }
+57:
+58: void ThreadResult :: reportErr ( const ErrorMessage & msg )
+59: {
+60: QMutexLocker locker ( & mutex ) ;
+61: const ErrorItem item ( msg ) ;
+62: if ( msg . severity != Severity :: debug ) {
+63: emit error ( item ) ; }
+64: else {
+65: emit debugError ( item ) ; }
+66: }
+67:
+68: QString ThreadResult :: getNextFile ( )
+69: {
+70: QMutexLocker locker ( & mutex ) ;
+71: if ( mFiles . isEmpty ( ) ) {
+72: return QString ( ) ;
+73: }
+74:
+75: return mFiles . takeFirst ( ) ;
+76: }
+77:
+78: ImportProject :: FileSettings ThreadResult :: getNextFileSettings ( )
+79: {
+80: QMutexLocker locker ( & mutex ) ;
+81: if ( mFileSettings . empty ( ) ) {
+82: return ImportProject :: FileSettings ( ) ;
+83: }
+84: const ImportProject :: FileSettings fs = mFileSettings . front ( ) ;
+85: mFileSettings . pop_front ( ) ;
+86: return fs ;
+87: }
+88:
+89: void ThreadResult :: setFiles ( const QStringList & files )
+90: {
+91: QMutexLocker locker ( & mutex ) ;
+92: mFiles = files ;
+93: mProgress = 0 ;
+94: mFilesChecked = 0 ;
+95: mTotalFiles = files . size ( ) ;
+96:
+97:
+98:
+99: quint64 sizeOfFiles ; sizeOfFiles = 0 ;
+100: for ( const QString & file : files ) {
+101: sizeOfFiles += QFile ( file ) . size ( ) ;
+102: }
+103: mMaxProgress = sizeOfFiles ;
+104: }
+105:
+106: void ThreadResult :: setProject ( const ImportProject & prj )
+107: {
+108: QMutexLocker locker ( & mutex ) ;
+109: mFiles . clear ( ) ;
+110: mFileSettings = prj . fileSettings ;
+111: mProgress = 0 ;
+112: mFilesChecked = 0 ;
+113: mTotalFiles = prj . fileSettings . size ( ) ;
+114:
+115:
+116:
+117: quint64 sizeOfFiles ; sizeOfFiles = 0 ;
+118: for ( const ImportProject :: FileSettings & fs : prj . fileSettings ) {
+119: sizeOfFiles += QFile ( QString :: fromStdString ( fs . filename ) ) . size ( ) ;
+120: }
+121: mMaxProgress = sizeOfFiles ;
+122: }
+123:
+124: void ThreadResult :: clearFiles ( )
+125: {
+126: QMutexLocker locker ( & mutex ) ;
+127: mFiles . clear ( ) ;
+128: mFileSettings . clear ( ) ;
+129: mFilesChecked = 0 ;
+130: mTotalFiles = 0 ;
+131: }
+132:
+133: int ThreadResult :: getFileCount ( ) const
+134: {
+135: QMutexLocker locker ( & mutex ) ;
+136: return mFiles . size ( ) + mFileSettings . size ( ) ;
+137: }
+
+
+
+##Value flow

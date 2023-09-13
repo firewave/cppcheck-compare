@@ -1,0 +1,1447 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741954 expected@var22 !=@expr1073741955 actual@var23 ) {
+62: std ::@expr1073741956 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741957 expected@var22 ;
+64: std ::@expr1073741958 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741959 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741960 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741961 str (@expr1073741962 ) , actualStr@var26 .@expr1073741963 str (@expr1073741964 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741965 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741966 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741967 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741968 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testtype.cpp
+
+1:
+|
+29:
+30: class TestType : public TestFixture {
+31: public:
+32: TestType ( ) : TestFixture ( "TestType" ) { }
+33:
+34: private:
+35:
+36:
+37: void run ( ) override {
+38: $do ${ $if $(@expr1073741969 $prepareTest $(@expr1073741970 "checkTooBigShift_Unix32" $) $) ${ $setVerbose $(@expr1073741971 $false $) $; checkTooBigShift_Unix32 $(@expr1073741972 $) $; $} $} $while $(@expr1073741973 $false $) ;
+39: $do ${ $if $(@expr1073741974 $prepareTest $(@expr1073741975 "checkIntegerOverflow" $) $) ${ $setVerbose $(@expr1073741976 $false $) $; checkIntegerOverflow $(@expr1073741977 $) $; $} $} $while $(@expr1073741978 $false $) ;
+40: $do ${ $if $(@expr1073741979 $prepareTest $(@expr1073741980 "signConversion" $) $) ${ $setVerbose $(@expr1073741981 $false $) $; signConversion $(@expr1073741982 $) $; $} $} $while $(@expr1073741983 $false $) ;
+41: $do ${ $if $(@expr1073741984 $prepareTest $(@expr1073741985 "longCastAssign" $) $) ${ $setVerbose $(@expr1073741986 $false $) $; longCastAssign $(@expr1073741987 $) $; $} $} $while $(@expr1073741988 $false $) ;
+42: $do ${ $if $(@expr1073741989 $prepareTest $(@expr1073741990 "longCastReturn" $) $) ${ $setVerbose $(@expr1073741991 $false $) $; longCastReturn $(@expr1073741992 $) $; $} $} $while $(@expr1073741993 $false $) ;
+43: $do ${ $if $(@expr1073741994 $prepareTest $(@expr1073741995 "checkFloatToIntegerOverflow" $) $) ${ $setVerbose $(@expr1073741996 $false $) $; checkFloatToIntegerOverflow $(@expr1073741997 $) $; $} $} $while $(@expr1073741998 $false $) ;
+44: }
+45:
+46:
+47: void check_ ( const char * file@var102 , int line@var103 , const char code@var104 [ ] , Settings * settings@var105 = nullptr , const char filename@var106 [ 9 ] = "test.cpp" , const std :: string & standard@var107 = "c++11" ) {
+48:
+49: errout@var100 .@expr1073742001 str (@expr1073742002 "" ) ;
+50:
+51: if (@expr1073742003 !@expr1073742004 settings@var105 ) {
+52: static Settings _settings@var108 ;
+53: settings@var105 =@expr1073742005 &@expr1073742006 _settings@var108 ;
+54: }
+55: settings@var105 .@expr183 severity@var109 .@expr184 enable (@expr1073742009 Severity ::@expr1073742010 warning@expr1073741999 ) ;
+56: settings@var105 .@expr183 severity@var109 .@expr184 enable (@expr1073742013 Severity ::@expr1073742014 portability@expr1073742000 ) ;
+57: settings@var105 .@expr1073742015 standards@var110 .@expr1073742016 setCPP (@expr1073742017 standard@var107 ) ;
+58:
+59:
+60: Tokenizer tokenizer@var111 (@expr1073742018 settings@var105 , this@expr195 ) ;
+61: std ::@expr1073742020 istringstream istr@var112 (@expr1073742021 code@var104 ) ;
+62: $assert_ $(@expr1073742022 file@var102 $, line@var103 $, $(@expr1073742023 tokenizer@var111 .@expr1073742024 tokenize (@expr1073742025 istr@var112 , filename@var106 ) $) $) ;
+63:
+64:
+65: CheckType checkType@var113 (@expr1073742026 &@expr203 tokenizer@var111 , settings@var105 , this@expr195 ) ;
+66: checkType@var113 .@expr1073742028 runChecks (@expr1073742029 &@expr203 tokenizer@var111 , settings@var105 , this@expr195 ) ;
+67: }
+68:
+69: void checkTooBigShift_Unix32 ( ) {
+70: Settings settings@var114 ;
+71: settings@var114 .@expr1073742032 platform (@expr1073742033 Settings ::@expr1073742034 Unix32@expr1073742031 ) ;
+72:
+73:
+74:
+75: {
+76: const std ::@expr1073742035 string types@var115 [@expr1073742036 6 ] =@expr1073742037 {@expr1073742038 "unsigned char" , "char" , "bool" , "unsigned short" , "unsigned int" , "unsigned long" } ;
+77: for (@expr1073742039 const std ::@expr216 string &@expr217 type@var116 :@expr1073742042 types@var115 ) {
+78: $check_ $(@expr1073742043 "cppcheck-2.8/test/testtype.cpp" $, 78 $, (@expr1073742044 type@var116 +@expr221 " f(" +@expr222 type@var116 +@expr1073742047 " x) { return x << 31; }" ) .@expr1073742048 c_str (@expr1073742049 ) , &@expr226 settings@var114 $) ;
+79: $if $(@expr1073742051 $!@expr1073742052 $assertEquals $(@expr1073742053 "cppcheck-2.8/test/testtype.cpp" $, 79 $, "" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+80: $check_ $(@expr1073742056 "cppcheck-2.8/test/testtype.cpp" $, 80 $, (@expr1073742057 type@var116 +@expr221 " f(" +@expr222 type@var116 +@expr1073742060 " x) { return x << 33; }" ) .@expr1073742061 c_str (@expr1073742062 ) , &@expr226 settings@var114 $) ;
+81: $if $(@expr1073742064 $!@expr1073742065 $assertEquals $(@expr1073742066 "cppcheck-2.8/test/testtype.cpp" $, 81 $, "[test.cpp:1]: (error) Shifting 32-bit value by 33 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+82: $check_ $(@expr1073742069 "cppcheck-2.8/test/testtype.cpp" $, 82 $, (@expr1073742070 type@var116 +@expr1073742071 " f(int x) { return (x = (" +@expr1073742072 type@var116 +@expr1073742073 ")x << 32); }" ) .@expr1073742074 c_str (@expr1073742075 ) , &@expr226 settings@var114 $) ;
+83: $if $(@expr1073742077 $!@expr1073742078 $assertEquals $(@expr1073742079 "cppcheck-2.8/test/testtype.cpp" $, 83 $, "[test.cpp:1]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+84: $check_ $(@expr1073742082 "cppcheck-2.8/test/testtype.cpp" $, 84 $, (@expr1073742083 type@var116 +@expr1073742084 " foo(" +@expr1073742085 type@var116 +@expr1073742086 " x) { return x << 31; }" ) .@expr1073742087 c_str (@expr1073742088 ) , &@expr226 settings@var114 $) ;
+85: $if $(@expr1073742090 $!@expr1073742091 $assertEquals $(@expr1073742092 "cppcheck-2.8/test/testtype.cpp" $, 85 $, "" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+86: }
+87: }
+88:
+89:
+90: {
+91: const std ::@expr1073742095 string types@var117 [@expr1073742096 8 ] =@expr1073742097 {@expr1073742098 "signed char" , "signed short" , "short" , "wchar_t" , "int" , "signed int" , "long" , "signed long" } ;
+92: for (@expr1073742099 const std ::@expr216 string &@expr217 type@var118 :@expr1073742102 types@var117 ) {
+93:
+94: $check_ $(@expr1073742103 "cppcheck-2.8/test/testtype.cpp" $, 94 $, (@expr1073742104 type@var118 +@expr1073742105 " f(" +@expr1073742106 type@var118 +@expr1073742107 " x) { return x << 33; }" ) .@expr1073742108 c_str (@expr1073742109 ) , &@expr226 settings@var114 $) ;
+95: $if $(@expr1073742111 $!@expr1073742112 $assertEquals $(@expr1073742113 "cppcheck-2.8/test/testtype.cpp" $, 95 $, "[test.cpp:1]: (error) Shifting 32-bit value by 33 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+96: $check_ $(@expr1073742116 "cppcheck-2.8/test/testtype.cpp" $, 96 $, (@expr1073742117 type@var118 +@expr294 " f(int x) { return (x = (" +@expr295 type@var118 +@expr296 ")x << 32); }" ) .@expr297 c_str (@expr298 ) , &@expr226 settings@var114 $) ;
+97: $if $(@expr1073742124 $!@expr1073742125 $assertEquals $(@expr1073742126 "cppcheck-2.8/test/testtype.cpp" $, 97 $, "[test.cpp:1]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+98: $check_ $(@expr1073742129 "cppcheck-2.8/test/testtype.cpp" $, 98 $, (@expr1073742130 type@var118 +@expr307 " foo(" +@expr308 type@var118 +@expr309 " x) { return x << 31; }" ) .@expr310 c_str (@expr311 ) , &@expr226 settings@var114 $) ;
+99: $if $(@expr1073742137 $!@expr1073742138 $assertEquals $(@expr1073742139 "cppcheck-2.8/test/testtype.cpp" $, 99 $, "[test.cpp:1]: (error) Shifting signed 32-bit value by 31 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+100: $check_ $(@expr1073742142 "cppcheck-2.8/test/testtype.cpp" $, 100 $, (@expr1073742143 type@var118 +@expr307 " foo(" +@expr308 type@var118 +@expr1073742146 " x) { return x << 30; }" ) .@expr1073742147 c_str (@expr1073742148 ) , &@expr226 settings@var114 $) ;
+101: $if $(@expr1073742150 $!@expr1073742151 $assertEquals $(@expr1073742152 "cppcheck-2.8/test/testtype.cpp" $, 101 $, "" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+102:
+103:
+104: $check_ $(@expr1073742155 "cppcheck-2.8/test/testtype.cpp" $, 104 $, (@expr1073742156 type@var118 +@expr307 " foo(" +@expr308 type@var118 +@expr309 " x) { return x << 31; }" ) .@expr310 c_str (@expr311 ) , &@expr226 settings@var114 , "test.cpp" , "c++14" $) ;
+105: $if $(@expr1073742163 $!@expr1073742164 $assertEquals $(@expr1073742165 "cppcheck-2.8/test/testtype.cpp" $, 105 $, "[test.cpp:1]: (portability) Shifting signed 32-bit value by 31 bits is implementation-defined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+106: $check_ $(@expr1073742168 "cppcheck-2.8/test/testtype.cpp" $, 106 $, (@expr1073742169 type@var118 +@expr294 " f(int x) { return (x = (" +@expr295 type@var118 +@expr296 ")x << 32); }" ) .@expr297 c_str (@expr298 ) , &@expr226 settings@var114 , "test.cpp" , "c++14" $) ;
+107: $if $(@expr1073742176 $!@expr1073742177 $assertEquals $(@expr1073742178 "cppcheck-2.8/test/testtype.cpp" $, 107 $, "[test.cpp:1]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+108: }
+109: }
+110:
+111: {
+112:
+113: $check_ $(@expr1073742181 "cppcheck-2.8/test/testtype.cpp" $, 113 $, "unsigned long long foo(unsigned long long x) { return x << 64; }" , &@expr226 settings@var114 $) ;
+114: $if $(@expr1073742183 $!@expr1073742184 $assertEquals $(@expr1073742185 "cppcheck-2.8/test/testtype.cpp" $, 114 $, "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+115: $check_ $(@expr1073742188 "cppcheck-2.8/test/testtype.cpp" $, 115 $, "unsigned long long f(int x) { return (x = (unsigned long long)x << 64); }" , &@expr226 settings@var114 $) ;
+116: $if $(@expr1073742190 $!@expr1073742191 $assertEquals $(@expr1073742192 "cppcheck-2.8/test/testtype.cpp" $, 116 $, "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+117: $check_ $(@expr1073742195 "cppcheck-2.8/test/testtype.cpp" $, 117 $, "unsigned long long f(unsigned long long x) { return x << 63; }" , &@expr226 settings@var114 $) ;
+118: $if $(@expr1073742197 $!@expr1073742198 $assertEquals $(@expr1073742199 "cppcheck-2.8/test/testtype.cpp" $, 118 $, "" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+119:
+120: $check_ $(@expr1073742202 "cppcheck-2.8/test/testtype.cpp" $, 120 $, "long long foo(long long x) { return x << 64; }" , &@expr226 settings@var114 $) ;
+121: $if $(@expr1073742204 $!@expr1073742205 $assertEquals $(@expr1073742206 "cppcheck-2.8/test/testtype.cpp" $, 121 $, "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+122: $check_ $(@expr1073742209 "cppcheck-2.8/test/testtype.cpp" $, 122 $, "long long f(int x) { return (x = (long long)x << 64); }" , &@expr226 settings@var114 $) ;
+123: $if $(@expr1073742211 $!@expr1073742212 $assertEquals $(@expr1073742213 "cppcheck-2.8/test/testtype.cpp" $, 123 $, "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+124: $check_ $(@expr1073742216 "cppcheck-2.8/test/testtype.cpp" $, 124 $, "long long f(long long x) { return x << 63; }" , &@expr226 settings@var114 $) ;
+125: $if $(@expr1073742218 $!@expr1073742219 $assertEquals $(@expr1073742220 "cppcheck-2.8/test/testtype.cpp" $, 125 $, "[test.cpp:1]: (error) Shifting signed 64-bit value by 63 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+126: $check_ $(@expr1073742223 "cppcheck-2.8/test/testtype.cpp" $, 126 $, "long long f(long long x) { return x << 62; }" , &@expr226 settings@var114 $) ;
+127: $if $(@expr1073742225 $!@expr1073742226 $assertEquals $(@expr1073742227 "cppcheck-2.8/test/testtype.cpp" $, 127 $, "" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+128:
+129: $check_ $(@expr1073742230 "cppcheck-2.8/test/testtype.cpp" $, 129 $, "signed long long foo(signed long long x) { return x << 64; }" , &@expr226 settings@var114 $) ;
+130: $if $(@expr1073742232 $!@expr1073742233 $assertEquals $(@expr1073742234 "cppcheck-2.8/test/testtype.cpp" $, 130 $, "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+131: $check_ $(@expr1073742237 "cppcheck-2.8/test/testtype.cpp" $, 131 $, "signed long long f(long long x) { return (x = (signed long long)x << 64); }" , &@expr226 settings@var114 $) ;
+132: $if $(@expr1073742239 $!@expr1073742240 $assertEquals $(@expr1073742241 "cppcheck-2.8/test/testtype.cpp" $, 132 $, "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+133: $check_ $(@expr1073742244 "cppcheck-2.8/test/testtype.cpp" $, 133 $, "signed long long f(signed long long x) { return x << 63; }" , &@expr226 settings@var114 $) ;
+134: $if $(@expr1073742246 $!@expr1073742247 $assertEquals $(@expr1073742248 "cppcheck-2.8/test/testtype.cpp" $, 134 $, "[test.cpp:1]: (error) Shifting signed 64-bit value by 63 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+135: $check_ $(@expr1073742251 "cppcheck-2.8/test/testtype.cpp" $, 135 $, "signed long long f(signed long long x) { return x << 62; }" , &@expr226 settings@var114 $) ;
+136: $if $(@expr1073742253 $!@expr1073742254 $assertEquals $(@expr1073742255 "cppcheck-2.8/test/testtype.cpp" $, 136 $, "" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+137:
+138:
+139: $check_ $(@expr1073742258 "cppcheck-2.8/test/testtype.cpp" $, 139 $, "signed long long foo(signed long long x) { return x << 64; }" , &@expr226 settings@var114 , "test.cpp" , "c++14" $) ;
+140: $if $(@expr1073742260 $!@expr1073742261 $assertEquals $(@expr1073742262 "cppcheck-2.8/test/testtype.cpp" $, 140 $, "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+141: $check_ $(@expr1073742265 "cppcheck-2.8/test/testtype.cpp" $, 141 $, "signed long long f(long long x) { return (x = (signed long long)x << 64); }" , &@expr226 settings@var114 , "test.cpp" , "c++14" $) ;
+142: $if $(@expr1073742267 $!@expr1073742268 $assertEquals $(@expr1073742269 "cppcheck-2.8/test/testtype.cpp" $, 142 $, "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+143: $check_ $(@expr1073742272 "cppcheck-2.8/test/testtype.cpp" $, 143 $, "signed long long f(signed long long x) { return x << 63; }" , &@expr226 settings@var114 , "test.cpp" , "c++14" $) ;
+144: $if $(@expr1073742274 $!@expr1073742275 $assertEquals $(@expr1073742276 "cppcheck-2.8/test/testtype.cpp" $, 144 $, "[test.cpp:1]: (portability) Shifting signed 64-bit value by 63 bits is implementation-defined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+145: $check_ $(@expr1073742279 "cppcheck-2.8/test/testtype.cpp" $, 145 $, "signed long long f(signed long long x) { return x << 62; }" , &@expr226 settings@var114 $) ;
+146: $if $(@expr1073742281 $!@expr1073742282 $assertEquals $(@expr1073742283 "cppcheck-2.8/test/testtype.cpp" $, 146 $, "" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+147: }
+148:
+149: $check_ $(@expr1073742286 "cppcheck-2.8/test/testtype.cpp" $, 149 $, "void f() { int x; x = 1 >> 64; }" , &@expr226 settings@var114 $) ;
+150: $if $(@expr1073742288 $!@expr1073742289 $assertEquals $(@expr1073742290 "cppcheck-2.8/test/testtype.cpp" $, 150 $, "[test.cpp:1]: (error) Shifting 32-bit value by 64 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+151:
+152: $check_ $(@expr1073742293 "cppcheck-2.8/test/testtype.cpp" $, 152 $, "void foo() {\n  QList<int> someList;\n  someList << 300;\n}" , &@expr226 settings@var114 $)
+153:
+154:
+155: ;
+156: $if $(@expr1073742295 $!@expr1073742296 $assertEquals $(@expr1073742297 "cppcheck-2.8/test/testtype.cpp" $, 156 $, "" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+157:
+158:
+159: $check_ $(@expr1073742300 "cppcheck-2.8/test/testtype.cpp" $, 159 $, "template<unsigned int I> int foo(unsigned int x) { return x << I; }\nconst unsigned int f = foo<31>(0);\nconst unsigned int g = foo<100>(0);\ntemplate<unsigned int I> int hoo(unsigned int x) { return x << 32; }\nconst unsigned int h = hoo<100>(0);" , &@expr226 settings@var114 $)
+160:
+161:
+162:
+163: ;
+164: $if $(@expr1073742302 $!@expr1073742303 $assertEquals $(@expr1073742304 "cppcheck-2.8/test/testtype.cpp" $, 164 $, "[test.cpp:4]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n[test.cpp:1]: (error) Shifting 32-bit value by 100 bits is undefined behaviour\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return
+165: ; }
+166:
+167:
+168: $check_ $(@expr1073742307 "cppcheck-2.8/test/testtype.cpp" $, 168 $, "void f(unsigned int x) {\n    UINFO(x << 1234);\n}" $)
+169:
+170: ;
+171: $if $(@expr1073742308 $!@expr1073742309 $assertEquals $(@expr1073742310 "cppcheck-2.8/test/testtype.cpp" $, 171 $, "" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+172:
+173:
+174: $check_ $(@expr1073742313 "cppcheck-2.8/test/testtype.cpp" $, 174 $, "int f (void)\n{\n    constexpr const int a = 1;\n    constexpr const int shift[1] = {32};\n    constexpr const int ret = a << shift[0];\n    return ret;\n}" $)
+175:
+|
+179:
+180: ;
+181: $if $(@expr1073742314 $!@expr1073742315 $assertEquals $(@expr1073742316 "cppcheck-2.8/test/testtype.cpp" $, 181 $, "[test.cpp:5]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n[test.cpp:5]: (error) Signed integer overflow for expression 'a<<shift[0]'.\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return
+182: ; }
+183:
+184:
+185: $check_ $(@expr1073742319 "cppcheck-2.8/test/testtype.cpp" $, 185 $, "int f(int k, int rm) {\n  if (k == 32)\n    return 0;\n  if (k > 32)\n    return 0;\n  return rm>> k;\n}" $)
+186:
+|
+190:
+191: ;
+192: $if $(@expr1073742320 $!@expr1073742321 $assertEquals $(@expr1073742322 "cppcheck-2.8/test/testtype.cpp" $, 192 $, "[test.cpp:4] -> [test.cpp:6]: (warning) Shifting signed 32-bit value by 31 bits is undefined behaviour. See condition at line 4.\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return
+193:
+194: ; }
+195:
+196: $check_ $(@expr1073742325 "cppcheck-2.8/test/testtype.cpp" $, 196 $, "int f(int k, int rm) {\n  if (k == 0 || k == 32)\n    return 0;\n  else if (k > 32)\n    return 0;\n  else\n    return rm>> k;\n}" $)
+197:
+|
+202:
+203: ;
+204: $if $(@expr1073742326 $!@expr1073742327 $assertEquals $(@expr1073742328 "cppcheck-2.8/test/testtype.cpp" $, 204 $, "[test.cpp:4] -> [test.cpp:7]: (warning) Shifting signed 32-bit value by 31 bits is undefined behaviour. See condition at line 4.\n" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return
+205:
+206: ; }
+207:
+208: $check_ $(@expr1073742331 "cppcheck-2.8/test/testtype.cpp" $, 208 $, "int f(int k, int rm) {\n  if (k == 0 || k == 32 || k == 31)\n    return 0;\n  else if (k > 32)\n    return 0;\n  else\n    return rm>> k;\n}" $)
+209:
+|
+214:
+215: ;
+216: $if $(@expr1073742332 $!@expr1073742333 $assertEquals $(@expr1073742334 "cppcheck-2.8/test/testtype.cpp" $, 216 $, "" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+217:
+218: $check_ $(@expr1073742337 "cppcheck-2.8/test/testtype.cpp" $, 218 $, "static long long f(int x, long long y) {\n    if (x >= 64)\n        return 0;\n    return -(y << (x-1));\n}" $)
+219:
+220:
+221:
+222: ;
+223: $if $(@expr1073742338 $!@expr1073742339 $assertEquals $(@expr1073742340 "cppcheck-2.8/test/testtype.cpp" $, 223 $, "" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+224:
+225: $check_ $(@expr1073742343 "cppcheck-2.8/test/testtype.cpp" $, 225 $, "bool f() {\n    std::ofstream outfile;\n    outfile << vec_points[0](0) << static_cast<int>(d) << ' ';\n}" $)
+226:
+227:
+228: ;
+229: $if $(@expr1073742344 $!@expr1073742345 $assertEquals $(@expr1073742346 "cppcheck-2.8/test/testtype.cpp" $, 229 $, "" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+230:
+231: $check_ $(@expr1073742349 "cppcheck-2.8/test/testtype.cpp" $, 231 $, "void f(unsigned b, int len, unsigned char rem) {\n    int bits = 0;\n    while (len > 8) {\n        b = b >> rem;\n        bits += 8 - rem;\n        if (bits == 512)\n            len -= 8;\n    }\n}\n" $)
+232:
+|
+238:
+239: ;
+240: $if $(@expr1073742350 $!@expr1073742351 $assertEquals $(@expr1073742352 "cppcheck-2.8/test/testtype.cpp" $, 240 $, "" $, errout@var100 .@expr230 str (@expr231 ) $) $) { $return ; }
+241: }
+242:
+243: void checkIntegerOverflow ( ) {
+244: Settings settings@var119 ;
+245: settings@var119 .@expr1073742357 platform (@expr1073742358 Settings ::@expr1073742359 Unix32@expr1073742355 ) ;
+246: settings@var119 .@expr1073742360 severity@var120 .@expr1073742361 enable (@expr1073742362 Severity ::@expr1073742363 warning@expr1073742356 ) ;
+247:
+248: $check_ $(@expr1073742364 "cppcheck-2.8/test/testtype.cpp" $, 248 $, "x = (int)0x10000 * (int)0x10000;" , &@expr541 settings@var119 $) ;
+249: $if $(@expr1073742366 $!@expr1073742367 $assertEquals $(@expr1073742368 "cppcheck-2.8/test/testtype.cpp" $, 249 $, "[test.cpp:1]: (error) Signed integer overflow for expression '(int)0x10000*(int)0x10000'.\n" $, errout@var100 .@expr545 str (@expr546 ) $) $) { $return ; }
+250:
+251: $check_ $(@expr1073742371 "cppcheck-2.8/test/testtype.cpp" $, 251 $, "x = (long)0x10000 * (long)0x10000;" , &@expr541 settings@var119 $) ;
+252: $if $(@expr1073742373 $!@expr1073742374 $assertEquals $(@expr1073742375 "cppcheck-2.8/test/testtype.cpp" $, 252 $, "[test.cpp:1]: (error) Signed integer overflow for expression '(long)0x10000*(long)0x10000'.\n" $, errout@var100 .@expr545 str (@expr546 ) $) $) { $return ; }
+253:
+254: $check_ $(@expr1073742378 "cppcheck-2.8/test/testtype.cpp" $, 254 $, "void foo() {\n    int intmax = 0x7fffffff;\n    return intmax + 1;\n}" , &@expr541 settings@var119 $)
+255:
+256:
+257: ;
+258: $if $(@expr1073742380 $!@expr1073742381 $assertEquals $(@expr1073742382 "cppcheck-2.8/test/testtype.cpp" $, 258 $, "[test.cpp:3]: (error) Signed integer overflow for expression 'intmax+1'.\n" $, errout@var100 .@expr545 str (@expr546 ) $) $) { $return ; }
+259:
+260: $check_ $(@expr1073742385 "cppcheck-2.8/test/testtype.cpp" $, 260 $, "void foo() {\n    int intmax = 0x7fffffff;\n    return intmax - 1;\n}" , &@expr541 settings@var119 $)
+261:
+262:
+263: ;
+264: $if $(@expr1073742387 $!@expr1073742388 $assertEquals $(@expr1073742389 "cppcheck-2.8/test/testtype.cpp" $, 264 $, "" $, errout@var100 .@expr545 str (@expr546 ) $) $) { $return ; }
+265:
+266: $check_ $(@expr1073742392 "cppcheck-2.8/test/testtype.cpp" $, 266 $, "int foo(signed int x) {\n   if (x==123456) {}\n   return x * x;\n}" , &@expr541 settings@var119 $)
+267:
+268:
+269: ;
+270: $if $(@expr1073742394 $!@expr1073742395 $assertEquals $(@expr1073742396 "cppcheck-2.8/test/testtype.cpp" $, 270 $, "[test.cpp:2] -> [test.cpp:3]: (warning) Either the condition 'x==123456' is redundant or there is signed integer overflow for expression 'x*x'.\n" $, errout@var100 .@expr545 str (@expr546 ) $) $) { $return ; }
+271:
+272: $check_ $(@expr1073742399 "cppcheck-2.8/test/testtype.cpp" $, 272 $, "int foo(signed int x) {\n   if (x==123456) {}\n   return -123456 * x;\n}" , &@expr541 settings@var119 $)
+273:
+274:
+275: ;
+276: $if $(@expr1073742401 $!@expr1073742402 $assertEquals $(@expr1073742403 "cppcheck-2.8/test/testtype.cpp" $, 276 $, "[test.cpp:2] -> [test.cpp:3]: (warning) Either the condition 'x==123456' is redundant or there is signed integer overflow for expression '-123456*x'.\n" $, errout@var100 .@expr545 str (@expr546 ) $) $) { $return ; }
+277:
+278: $check_ $(@expr1073742406 "cppcheck-2.8/test/testtype.cpp" $, 278 $, "int foo(signed int x) {\n   if (x==123456) {}\n   return 123456U * x;\n}" , &@expr541 settings@var119 $)
+279:
+280:
+281: ;
+282: $if $(@expr1073742408 $!@expr1073742409 $assertEquals $(@expr1073742410 "cppcheck-2.8/test/testtype.cpp" $, 282 $, "" $, errout@var100 .@expr545 str (@expr546 ) $) $) { $return ; }
+283: }
+284:
+285: void signConversion ( ) {
+286: Settings settings@var121 ;
+287: settings@var121 .@expr1073742414 platform (@expr1073742415 Settings ::@expr1073742416 Unix64@expr1073742413 ) ;
+288: $check_ $(@expr1073742417 "cppcheck-2.8/test/testtype.cpp" $, 288 $, "x = -4 * (unsigned)y;" $) ;
+289: $if $(@expr1073742418 $!@expr1073742419 $assertEquals $(@expr1073742420 "cppcheck-2.8/test/testtype.cpp" $, 289 $, "[test.cpp:1]: (warning) Expression '-4' has a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n" $, errout@var100 .@expr597 str (@expr598 ) $) $) { $return ; }
+290:
+291: $check_ $(@expr1073742423 "cppcheck-2.8/test/testtype.cpp" $, 291 $, "x = (unsigned)y * -4;" $) ;
+292: $if $(@expr1073742424 $!@expr1073742425 $assertEquals $(@expr1073742426 "cppcheck-2.8/test/testtype.cpp" $, 292 $, "[test.cpp:1]: (warning) Expression '-4' has a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n" $, errout@var100 .@expr597 str (@expr598 ) $) $) { $return ; }
+293:
+294: $check_ $(@expr1073742429 "cppcheck-2.8/test/testtype.cpp" $, 294 $, "unsigned int dostuff(int x) {\n  if (x==0) {}\n  return (x-1)*sizeof(int);\n}" , &@expr1073742430 settings@var121 $)
+295:
+296:
+297: ;
+298: $if $(@expr1073742431 $!@expr1073742432 $assertEquals $(@expr1073742433 "cppcheck-2.8/test/testtype.cpp" $, 298 $, "[test.cpp:2] -> [test.cpp:3]: (warning) Expression 'x-1' can have a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n" $, errout@var100 .@expr597 str (@expr598 ) $) $) { $return ; }
+299:
+300: $check_ $(@expr1073742436 "cppcheck-2.8/test/testtype.cpp" $, 300 $, "unsigned int f1(signed int x, unsigned int y) {  return x * y;\n}\nvoid f2() { f1(-4,4); }" $)
+301:
+302:
+303: ;
+304: $if $(@expr1073742437 $!@expr1073742438 $assertEquals $(@expr1073742439 "cppcheck-2.8/test/testtype.cpp" $, 304 $, "[test.cpp:1]: (warning) Expression 'x' can have a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n" $, errout@var100 .@expr597 str (@expr598 ) $) $) { $return
+305:
+306: ; }
+307:
+308: $check_ $(@expr1073742442 "cppcheck-2.8/test/testtype.cpp" $, 308 $, "unsigned int f1(int x) {  return x * 5U;\n}\nvoid f2() { f1(-4); }" $)
+309:
+310:
+311: ;
+312: $if $(@expr1073742443 $!@expr1073742444 $assertEquals $(@expr1073742445 "cppcheck-2.8/test/testtype.cpp" $, 312 $, "[test.cpp:1]: (warning) Expression 'x' can have a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n" $, errout@var100 .@expr597 str (@expr598 ) $) $) { $return
+313:
+314: ; }
+315:
+316: $check_ $(@expr1073742448 "cppcheck-2.8/test/testtype.cpp" $, 316 $, "unsigned int f1(int x) {  return 5U * (1234 - x);\n}\nvoid f2() { f1(-4); }" $)
+317:
+318:
+319: ;
+320: $if $(@expr1073742449 $!@expr1073742450 $assertEquals $(@expr1073742451 "cppcheck-2.8/test/testtype.cpp" $, 320 $, "" $, errout@var100 .@expr597 str (@expr598 ) $) $) { $return ; }
+321:
+322:
+323: $check_ $(@expr1073742454 "cppcheck-2.8/test/testtype.cpp" $, 323 $, "void f1(int x) {  a = x + 5U;\n}\nvoid f2() { f1(-4); }" $)
+324:
+325:
+326: ;
+327: $if $(@expr1073742455 $!@expr1073742456 $assertEquals $(@expr1073742457 "cppcheck-2.8/test/testtype.cpp" $, 327 $, "" $, errout@var100 .@expr597 str (@expr598 ) $) $) { $return ; }
+328:
+329: $check_ $(@expr1073742460 "cppcheck-2.8/test/testtype.cpp" $, 329 $, "size_t foo(size_t x) {\n return -2 * x;\n}" $)
+330:
+331: ;
+332: $if $(@expr1073742461 $!@expr1073742462 $assertEquals $(@expr1073742463 "cppcheck-2.8/test/testtype.cpp" $, 332 $, "[test.cpp:2]: (warning) Expression '-2' has a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n" $, errout@var100 .@expr597 str (@expr598 ) $) $) { $return ; }
+333: }
+334:
+335: void longCastAssign ( ) {
+336: Settings settings@var122 ;
+337: settings@var122 .@expr1073742468 severity@var123 .@expr1073742469 enable (@expr1073742470 Severity ::@expr1073742471 style@expr1073742466 ) ;
+338: settings@var122 .@expr1073742472 platform (@expr1073742473 Settings ::@expr1073742474 Unix64@expr1073742467 ) ;
+339:
+340: $check_ $(@expr1073742475 "cppcheck-2.8/test/testtype.cpp" $, 340 $, "long f(int x, int y) {\n  const long ret = x * y;\n  return ret;\n}\n" , &@expr652 settings@var122 $)
+341:
+342:
+343: ;
+344: $if $(@expr1073742477 $!@expr1073742478 $assertEquals $(@expr1073742479 "cppcheck-2.8/test/testtype.cpp" $, 344 $, "[test.cpp:2]: (style) int result is assigned to long variable. If the variable is long to avoid loss of information, then you have loss of information.\n" $, errout@var100 .@expr656 str (@expr657 ) $) $) { $return ; }
+345:
+346: $check_ $(@expr1073742482 "cppcheck-2.8/test/testtype.cpp" $, 346 $, "long f() {\n  const long long ret = 256 * (1 << 10);\n  return ret;\n}\n" , &@expr652 settings@var122 $)
+347:
+348:
+349: ;
+350: $if $(@expr1073742484 $!@expr1073742485 $assertEquals $(@expr1073742486 "cppcheck-2.8/test/testtype.cpp" $, 350 $, "" $, errout@var100 .@expr656 str (@expr657 ) $) $) { $return ; }
+351:
+352:
+353: $check_ $(@expr1073742489 "cppcheck-2.8/test/testtype.cpp" $, 353 $, "long f(int x, int y) {\n  const size_t ret = x * y;\n  return ret;\n}\n" , &@expr652 settings@var122 $)
+354:
+355:
+356: ;
+357: $if $(@expr1073742491 $!@expr1073742492 $assertEquals $(@expr1073742493 "cppcheck-2.8/test/testtype.cpp" $, 357 $, "" $, errout@var100 .@expr656 str (@expr657 ) $) $) { $return ; }
+358:
+359:
+360: $check_ $(@expr1073742496 "cppcheck-2.8/test/testtype.cpp" $, 360 $, "long f(int x, int y) {\n  const long ret = (long)x * y;\n  return ret;\n}\n" , &@expr652 settings@var122 $)
+361:
+362:
+363: ;
+364: $if $(@expr1073742498 $!@expr1073742499 $assertEquals $(@expr1073742500 "cppcheck-2.8/test/testtype.cpp" $, 364 $, "" $, errout@var100 .@expr656 str (@expr657 ) $) $) { $return ; }
+365: }
+366:
+367: void longCastReturn ( ) {
+368: Settings settings@var124 ;
+369: settings@var124 .@expr1073742504 severity@var125 .@expr1073742505 enable (@expr1073742506 Severity ::@expr1073742507 style@expr1073742503 ) ;
+370:
+371: $check_ $(@expr1073742508 "cppcheck-2.8/test/testtype.cpp" $, 371 $, "long f(int x, int y) {\n  return x * y;\n}\n" , &@expr685 settings@var124 $)
+372:
+373: ;
+374: $if $(@expr1073742510 $!@expr1073742511 $assertEquals $(@expr1073742512 "cppcheck-2.8/test/testtype.cpp" $, 374 $, "[test.cpp:2]: (style) int result is returned as long value. If the return value is long to avoid loss of information, then you have loss of information.\n" $, errout@var100 .@expr689 str (@expr690 ) $) $) { $return ; }
+375:
+376:
+377: $check_ $(@expr1073742515 "cppcheck-2.8/test/testtype.cpp" $, 377 $, "size_t f(int x, int y) {\n  return x * y;\n}\n" , &@expr685 settings@var124 $)
+378:
+379: ;
+380: $if $(@expr1073742517 $!@expr1073742518 $assertEquals $(@expr1073742519 "cppcheck-2.8/test/testtype.cpp" $, 380 $, "" $, errout@var100 .@expr689 str (@expr690 ) $) $) { $return ; }
+381: }
+382:
+383:
+384:
+385: static std :: string removeFloat ( const std :: string & msg@var126 ) {
+386: const std ::@expr699 string ::@expr699 size_type pos1@var127 =@expr1073742525 msg@var126 .@expr702 find (@expr1073742527 "float (" ) ;
+387: const std ::@expr699 string ::@expr699 size_type pos2@var128 =@expr1073742530 msg@var126 .@expr702 find (@expr1073742532 ") to integer conversion" ) ;
+388: if (@expr1073742533 pos1@var127 ==@expr1073742534 std ::@expr711 string ::@expr712 npos@expr698 ||@expr1073742537 pos2@var128 ==@expr1073742538 std ::@expr711 string ::@expr712 npos@expr698 ||@expr1073742541 pos1@var127 >@expr1073742542 pos2@var128 ) {
+389: return msg@var126 ; }
+390: return msg@var126 .@expr719 substr (@expr1073742544 0 , pos1@var127 +@expr1073742545 7 ) +@expr1073742546 msg@var126 .@expr719 substr (@expr1073742548 pos2@var128 ) ;
+391: }
+392:
+393: void checkFloatToIntegerOverflow ( ) {
+394: $check_ $(@expr1073742549 "cppcheck-2.8/test/testtype.cpp" $, 394 $, "x = (int)1E100;" $) ;
+395: $if $(@expr1073742550 $!@expr1073742551 $assertEquals $(@expr1073742552 "cppcheck-2.8/test/testtype.cpp" $, 395 $, "[test.cpp:1]: (error) Undefined behaviour: float () to integer conversion overflow.\n" $, removeFloat (@expr729 errout@var100 .@expr730 str (@expr731 ) ) $) $) { $return ; }
+396:
+397: $check_ $(@expr1073742556 "cppcheck-2.8/test/testtype.cpp" $, 397 $, "void f(void) {\n  return (int)1E100;\n}" $)
+398:
+399: ;
+400: $if $(@expr1073742557 $!@expr1073742558 $assertEquals $(@expr1073742559 "cppcheck-2.8/test/testtype.cpp" $, 400 $, "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n" $, removeFloat (@expr729 errout@var100 .@expr730 str (@expr731 ) ) $) $) { $return ; }
+401:
+402: $check_ $(@expr1073742563 "cppcheck-2.8/test/testtype.cpp" $, 402 $, "void f(void) {\n  return (int)-1E100;\n}" $)
+403:
+404: ;
+405: $if $(@expr1073742564 $!@expr1073742565 $assertEquals $(@expr1073742566 "cppcheck-2.8/test/testtype.cpp" $, 405 $, "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n" $, removeFloat (@expr729 errout@var100 .@expr730 str (@expr731 ) ) $) $) { $return ; }
+406:
+407: $check_ $(@expr1073742570 "cppcheck-2.8/test/testtype.cpp" $, 407 $, "void f(void) {\n  return (short)1E6;\n}" $)
+408:
+409: ;
+410: $if $(@expr1073742571 $!@expr1073742572 $assertEquals $(@expr1073742573 "cppcheck-2.8/test/testtype.cpp" $, 410 $, "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n" $, removeFloat (@expr729 errout@var100 .@expr730 str (@expr731 ) ) $) $) { $return ; }
+411:
+412: $check_ $(@expr1073742577 "cppcheck-2.8/test/testtype.cpp" $, 412 $, "void f(void) {\n  return (unsigned char)256.0;\n}" $)
+413:
+414: ;
+415: $if $(@expr1073742578 $!@expr1073742579 $assertEquals $(@expr1073742580 "cppcheck-2.8/test/testtype.cpp" $, 415 $, "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n" $, removeFloat (@expr729 errout@var100 .@expr730 str (@expr731 ) ) $) $) { $return ; }
+416:
+417: $check_ $(@expr1073742584 "cppcheck-2.8/test/testtype.cpp" $, 417 $, "void f(void) {\n  return (unsigned char)255.5;\n}" $)
+418:
+419: ;
+420: $if $(@expr1073742585 $!@expr1073742586 $assertEquals $(@expr1073742587 "cppcheck-2.8/test/testtype.cpp" $, 420 $, "" $, removeFloat (@expr729 errout@var100 .@expr730 str (@expr731 ) ) $) $) { $return ; }
+421:
+422: $check_ $(@expr1073742591 "cppcheck-2.8/test/testtype.cpp" $, 422 $, "void f(void) {\n  char c = 1234.5;\n}" $)
+423:
+424: ;
+425: $if $(@expr1073742592 $!@expr1073742593 $assertEquals $(@expr1073742594 "cppcheck-2.8/test/testtype.cpp" $, 425 $, "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n" $, removeFloat (@expr729 errout@var100 .@expr730 str (@expr731 ) ) $) $) { $return ; }
+426:
+427: $check_ $(@expr1073742598 "cppcheck-2.8/test/testtype.cpp" $, 427 $, "char f(void) {\n  return 1234.5;\n}" $)
+428:
+429: ;
+430: $if $(@expr1073742599 $!@expr1073742600 $assertEquals $(@expr1073742601 "cppcheck-2.8/test/testtype.cpp" $, 430 $, "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n" $, removeFloat (@expr729 errout@var100 .@expr730 str (@expr731 ) ) $) $) { $return ; }
+431: }
+432: } ;
+433:
+434: $namespace ${ TestType instance_TestType@var129 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@74}
+  v {!<=-1,!>=2,0@74}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 32
+  "TestType" always "TestType"
+Line 38
+  ( always {!<=-1,!>=2}
+  "checkTooBigShift_Unix32" always "checkTooBigShift_Unix32"
+  false always 0
+  false always 0
+Line 39
+  ( always {!<=-1,!>=2}
+  "checkIntegerOverflow" always "checkIntegerOverflow"
+  false always 0
+  false always 0
+Line 40
+  ( always {!<=-1,!>=2}
+  "signConversion" always "signConversion"
+  false always 0
+  false always 0
+Line 41
+  ( always {!<=-1,!>=2}
+  "longCastAssign" always "longCastAssign"
+  false always 0
+  false always 0
+Line 42
+  ( always {!<=-1,!>=2}
+  "longCastReturn" always "longCastReturn"
+  false always 0
+  false always 0
+Line 43
+  ( always {!<=-1,!>=2}
+  "checkFloatToIntegerOverflow" always "checkFloatToIntegerOverflow"
+  false always 0
+  false always 0
+Line 47
+  , always 0
+  = always 0
+  nullptr always 0
+  , always "test.cpp"
+  9 always 9
+  = always "test.cpp"
+  "test.cpp" always "test.cpp"
+  , always "c++11"
+  = always "c++11"
+  "c++11" always "c++11"
+Line 49
+  "" always ""
+Line 51
+  ! always {!<=-1,!>=2}
+  settings possible {lifetime[Address]=(settings)@17,lifetime[Address]=(settings)@18,lifetime[Address]=(settings)@19,lifetime[Address]=(settings)@20,lifetime[Address]=(settings)@21,lifetime[Address]=(settings)@22,lifetime[Address]=(settings)@25,lifetime[Address]=(settings)@31,lifetime[Address]=(settings)@32,lifetime[Address]=(settings)@33}
+Line 53
+  = {&,lifetime[Address]=(_settings),!0}
+  & {&,lifetime[Address]=(_settings),!0}
+Line 55
+  settings possible {lifetime[Address]=(_settings),symbolic=(&_settings),&,lifetime[Address]=(settings)@17,lifetime[Address]=(settings)@18,lifetime[Address]=(settings)@19,lifetime[Address]=(settings)@20,lifetime[Address]=(settings)@21,lifetime[Address]=(settings)@22,lifetime[Address]=(settings)@25}
+Line 56
+  settings possible {lifetime[Address]=(_settings),&,lifetime[Address]=(settings)@17,lifetime[Address]=(settings)@18,lifetime[Address]=(settings)@19,lifetime[Address]=(settings)@20,lifetime[Address]=(settings)@21,lifetime[Address]=(settings)@22,lifetime[Address]=(settings)@25,lifetime[Address]=(settings)@31}
+Line 57
+  settings possible {lifetime[Address]=(_settings),&,lifetime[Address]=(settings)@17,lifetime[Address]=(settings)@18,lifetime[Address]=(settings)@19,lifetime[Address]=(settings)@20,lifetime[Address]=(settings)@21,lifetime[Address]=(settings)@22,lifetime[Address]=(settings)@25,lifetime[Address]=(settings)@31}
+  standard possible {"c++14"@46,"c++14"@47,"c++14"@59,"c++14"@60,"c++14"@61}
+Line 60
+  settings possible {lifetime[Address]=(_settings),&,lifetime[Address]=(settings)@17,lifetime[Address]=(settings)@18,lifetime[Address]=(settings)@19,lifetime[Address]=(settings)@20,lifetime[Address]=(settings)@21,lifetime[Address]=(settings)@22,lifetime[Address]=(settings)@25,lifetime[Address]=(settings)@31}
+  this always !0
+Line 61
+  code {"x = (int)1E100;"@1,"void f(void) {\n  return (int)1E100;\n}"@3,"void f(void) {\n  return (int)-1E100;\n}"@5,"void f(void) {\n  return (short)1E6;\n}"@7,"void f(void) {\n  return (unsigned char)256.0;\n}"@9,"void f(void) {\n  return (unsigned char)255.5;\n}"@11,"void f(void) {\n  char c = 1234.5;\n}"@13,"char f(void) {\n  return 1234.5;\n}"@15,"long f(int x, int y) {\n  return x * y;\n}\n"@17,"size_t f(int x, int y) {\n  return x * y;\n}\n"@18}
+Line 62
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testtype.cpp"@1,"cppcheck-2.8/test/testtype.cpp"@3,"cppcheck-2.8/test/testtype.cpp"@5,"cppcheck-2.8/test/testtype.cpp"@7,"cppcheck-2.8/test/testtype.cpp"@9,"cppcheck-2.8/test/testtype.cpp"@11,"cppcheck-2.8/test/testtype.cpp"@13,"cppcheck-2.8/test/testtype.cpp"@15,"cppcheck-2.8/test/testtype.cpp"@17,"cppcheck-2.8/test/testtype.cpp"@18}
+  line inconclusive {394@1,397@3,402@5,407@7,412@9,417@11,422@13,427@15,371@17,377@18}
+  filename inconclusive {"test.cpp"@46,"test.cpp"@47,"test.cpp"@59,"test.cpp"@60,"test.cpp"@61}
+Line 65
+  & {lifetime[Address]=(tokenizer),!0}
+  settings inconclusive {lifetime[Address]=(_settings),&,lifetime[Address]=(settings)@17,lifetime[Address]=(settings)@18,lifetime[Address]=(settings)@19,lifetime[Address]=(settings)@20,lifetime[Address]=(settings)@21,lifetime[Address]=(settings)@22,lifetime[Address]=(settings)@25,lifetime[Address]=(settings)@31}
+  this always !0
+Line 66
+  & {lifetime[Address]=(tokenizer),!0}
+  settings inconclusive {lifetime[Address]=(_settings),&,lifetime[Address]=(settings)@17,lifetime[Address]=(settings)@18,lifetime[Address]=(settings)@19,lifetime[Address]=(settings)@20,lifetime[Address]=(settings)@21,lifetime[Address]=(settings)@22,lifetime[Address]=(settings)@25,lifetime[Address]=(settings)@31}
+  this always !0
+Line 76
+  6 always 6
+  "unsigned char" always "unsigned char"
+  "char" always "char"
+  "bool" always "bool"
+  "unsigned short" always "unsigned short"
+  "unsigned int" always "unsigned int"
+  "unsigned long" always "unsigned long"
+Line 77
+  : always {
+  types always {
+Line 78
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  78 always 78
+  " f(" always " f("
+  " x) { return x << 31; }" always " x) { return x << 31; }"
+  ( {lifetime[Object]=(type+" f("+type+" x) { return x << 31; }"),!0}
+  & {lifetime[Address]=(settings),!0}
+Line 79
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  79 always 79
+  "" always ""
+Line 80
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  80 always 80
+  " f(" always " f("
+  " x) { return x << 33; }" always " x) { return x << 33; }"
+  ( {lifetime[Object]=(type+" f("+type+" x) { return x << 33; }"),!0}
+  & {lifetime[Address]=(settings),!0}
+Line 81
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  81 always 81
+  "[test.cpp:1]: (error) Shifting 32-bit value by 33 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 32-bit value by 33 bits is undefined behaviour\n"
+Line 82
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  82 always 82
+  " f(int x) { return (x = (" always " f(int x) { return (x = ("
+  ")x << 32); }" always ")x << 32); }"
+  ( {lifetime[Object]=(type+" f(int x) { return (x = ("+type+")x << 32); }"),!0}
+  & {lifetime[Address]=(settings),!0}
+Line 83
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  83 always 83
+  "[test.cpp:1]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n"
+Line 84
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  84 always 84
+  " foo(" always " foo("
+  " x) { return x << 31; }" always " x) { return x << 31; }"
+  ( {lifetime[Object]=(type+" foo("+type+" x) { return x << 31; }"),!0}
+  & {lifetime[Address]=(settings),!0}
+Line 85
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  85 always 85
+  "" always ""
+Line 91
+  8 always 8
+  "signed char" always "signed char"
+  "signed short" always "signed short"
+  "short" always "short"
+  "wchar_t" always "wchar_t"
+  "int" always "int"
+  "signed int" always "signed int"
+  "long" always "long"
+  "signed long" always "signed long"
+Line 92
+  : always {
+  types always {
+Line 94
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  94 always 94
+  " f(" always " f("
+  " x) { return x << 33; }" always " x) { return x << 33; }"
+  ( {lifetime[Object]=(type+" f("+type+" x) { return x << 33; }"),!0}
+  & {lifetime[Address]=(settings),!0}
+Line 95
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  95 always 95
+  "[test.cpp:1]: (error) Shifting 32-bit value by 33 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 32-bit value by 33 bits is undefined behaviour\n"
+Line 96
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  96 always 96
+  " f(int x) { return (x = (" always " f(int x) { return (x = ("
+  ")x << 32); }" always ")x << 32); }"
+  ( {lifetime[Object]=(type+" f(int x) { return (x = ("+type+")x << 32); }"),!0}
+  & {lifetime[Address]=(settings),!0}
+Line 97
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  97 always 97
+  "[test.cpp:1]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n"
+Line 98
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  98 always 98
+  " foo(" always " foo("
+  " x) { return x << 31; }" always " x) { return x << 31; }"
+  ( {lifetime[Object]=(type+" foo("+type+" x) { return x << 31; }"),!0}
+  & {lifetime[Address]=(settings),!0}
+Line 99
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  99 always 99
+  "[test.cpp:1]: (error) Shifting signed 32-bit value by 31 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting signed 32-bit value by 31 bits is undefined behaviour\n"
+Line 100
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  100 always 100
+  " foo(" always " foo("
+  " x) { return x << 30; }" always " x) { return x << 30; }"
+  ( {lifetime[Object]=(type+" foo("+type+" x) { return x << 30; }"),!0}
+  & {lifetime[Address]=(settings),!0}
+Line 101
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  101 always 101
+  "" always ""
+Line 104
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  104 always 104
+  " foo(" always " foo("
+  " x) { return x << 31; }" always " x) { return x << 31; }"
+  ( {lifetime[Object]=(type+" foo("+type+" x) { return x << 31; }"),!0}
+  & {lifetime[Address]=(settings),!0}
+  "test.cpp" always "test.cpp"
+  "c++14" always "c++14"
+Line 105
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  105 always 105
+  "[test.cpp:1]: (portability) Shifting signed 32-bit value by 31 bits is implementation-defined behaviour\n" always "[test.cpp:1]: (portability) Shifting signed 32-bit value by 31 bits is implementation-defined behaviour\n"
+Line 106
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  106 always 106
+  " f(int x) { return (x = (" always " f(int x) { return (x = ("
+  ")x << 32); }" always ")x << 32); }"
+  ( {lifetime[Object]=(type+" f(int x) { return (x = ("+type+")x << 32); }"),!0}
+  & {lifetime[Address]=(settings),!0}
+  "test.cpp" always "test.cpp"
+  "c++14" always "c++14"
+Line 107
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  107 always 107
+  "[test.cpp:1]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n"
+Line 113
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  113 always 113
+  "unsigned long long foo(unsigned long long x) { return x << 64; }" always "unsigned long long foo(unsigned long long x) { return x << 64; }"
+  & {lifetime[Address]=(settings),!0}
+Line 114
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  114 always 114
+  "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n"
+Line 115
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  115 always 115
+  "unsigned long long f(int x) { return (x = (unsigned long long)x << 64); }" always "unsigned long long f(int x) { return (x = (unsigned long long)x << 64); }"
+  & {lifetime[Address]=(settings),!0}
+Line 116
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  116 always 116
+  "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n"
+Line 117
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  117 always 117
+  "unsigned long long f(unsigned long long x) { return x << 63; }" always "unsigned long long f(unsigned long long x) { return x << 63; }"
+  & {lifetime[Address]=(settings),!0}
+Line 118
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  118 always 118
+  "" always ""
+Line 120
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  120 always 120
+  "long long foo(long long x) { return x << 64; }" always "long long foo(long long x) { return x << 64; }"
+  & {lifetime[Address]=(settings),!0}
+Line 121
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  121 always 121
+  "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n"
+Line 122
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  122 always 122
+  "long long f(int x) { return (x = (long long)x << 64); }" always "long long f(int x) { return (x = (long long)x << 64); }"
+  & {lifetime[Address]=(settings),!0}
+Line 123
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  123 always 123
+  "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n"
+Line 124
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  124 always 124
+  "long long f(long long x) { return x << 63; }" always "long long f(long long x) { return x << 63; }"
+  & {lifetime[Address]=(settings),!0}
+Line 125
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  125 always 125
+  "[test.cpp:1]: (error) Shifting signed 64-bit value by 63 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting signed 64-bit value by 63 bits is undefined behaviour\n"
+Line 126
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  126 always 126
+  "long long f(long long x) { return x << 62; }" always "long long f(long long x) { return x << 62; }"
+  & {lifetime[Address]=(settings),!0}
+Line 127
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  127 always 127
+  "" always ""
+Line 129
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  129 always 129
+  "signed long long foo(signed long long x) { return x << 64; }" always "signed long long foo(signed long long x) { return x << 64; }"
+  & {lifetime[Address]=(settings),!0}
+Line 130
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  130 always 130
+  "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n"
+Line 131
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  131 always 131
+  "signed long long f(long long x) { return (x = (signed long long)x << 64); }" always "signed long long f(long long x) { return (x = (signed long long)x << 64); }"
+  & {lifetime[Address]=(settings),!0}
+Line 132
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  132 always 132
+  "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n"
+Line 133
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  133 always 133
+  "signed long long f(signed long long x) { return x << 63; }" always "signed long long f(signed long long x) { return x << 63; }"
+  & {lifetime[Address]=(settings),!0}
+Line 134
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  134 always 134
+  "[test.cpp:1]: (error) Shifting signed 64-bit value by 63 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting signed 64-bit value by 63 bits is undefined behaviour\n"
+Line 135
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  135 always 135
+  "signed long long f(signed long long x) { return x << 62; }" always "signed long long f(signed long long x) { return x << 62; }"
+  & {lifetime[Address]=(settings),!0}
+Line 136
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  136 always 136
+  "" always ""
+Line 139
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  139 always 139
+  "signed long long foo(signed long long x) { return x << 64; }" always "signed long long foo(signed long long x) { return x << 64; }"
+  & {lifetime[Address]=(settings),!0}
+  "test.cpp" always "test.cpp"
+  "c++14" always "c++14"
+Line 140
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  140 always 140
+  "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n"
+Line 141
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  141 always 141
+  "signed long long f(long long x) { return (x = (signed long long)x << 64); }" always "signed long long f(long long x) { return (x = (signed long long)x << 64); }"
+  & {lifetime[Address]=(settings),!0}
+  "test.cpp" always "test.cpp"
+  "c++14" always "c++14"
+Line 142
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  142 always 142
+  "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 64-bit value by 64 bits is undefined behaviour\n"
+Line 143
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  143 always 143
+  "signed long long f(signed long long x) { return x << 63; }" always "signed long long f(signed long long x) { return x << 63; }"
+  & {lifetime[Address]=(settings),!0}
+  "test.cpp" always "test.cpp"
+  "c++14" always "c++14"
+Line 144
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  144 always 144
+  "[test.cpp:1]: (portability) Shifting signed 64-bit value by 63 bits is implementation-defined behaviour\n" always "[test.cpp:1]: (portability) Shifting signed 64-bit value by 63 bits is implementation-defined behaviour\n"
+Line 145
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  145 always 145
+  "signed long long f(signed long long x) { return x << 62; }" always "signed long long f(signed long long x) { return x << 62; }"
+  & {lifetime[Address]=(settings),!0}
+Line 146
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  146 always 146
+  "" always ""
+Line 149
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  149 always 149
+  "void f() { int x; x = 1 >> 64; }" always "void f() { int x; x = 1 >> 64; }"
+  & {lifetime[Address]=(settings),!0}
+Line 150
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  150 always 150
+  "[test.cpp:1]: (error) Shifting 32-bit value by 64 bits is undefined behaviour\n" always "[test.cpp:1]: (error) Shifting 32-bit value by 64 bits is undefined behaviour\n"
+Line 152
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  152 always 152
+  "void foo() {\n  QList<int> someList;\n  someList << 300;\n}" always "void foo() {\n  QList<int> someList;\n  someList << 300;\n}"
+  & {lifetime[Address]=(settings),!0}
+Line 156
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  156 always 156
+  "" always ""
+Line 159
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  159 always 159
+  "template<unsigned int I> int foo(unsigned int x) { return x << I; }\nconst unsigned int f = foo<31>(0);\nconst unsigned int g = foo<100>(0);\ntemplate<unsigned int I> int hoo(unsigned int x) { return x << 32; }\nconst unsigned int h = hoo<100>(0);" always "template<unsigned int I> int foo(unsigned int x) { return x << I; }\nconst unsigned int f = foo<31>(0);\nconst unsigned int g = foo<100>(0);\ntemplate<unsigned int I> int hoo(unsigned int x) { return x << 32; }\nconst unsigned int h = hoo<100>(0);"
+  & {lifetime[Address]=(settings),!0}
+Line 164
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  164 always 164
+  "[test.cpp:4]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n[test.cpp:1]: (error) Shifting 32-bit value by 100 bits is undefined behaviour\n" always "[test.cpp:4]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n[test.cpp:1]: (error) Shifting 32-bit value by 100 bits is undefined behaviour\n"
+Line 168
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  168 always 168
+  "void f(unsigned int x) {\n    UINFO(x << 1234);\n}" always "void f(unsigned int x) {\n    UINFO(x << 1234);\n}"
+Line 171
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  171 always 171
+  "" always ""
+Line 174
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  174 always 174
+  "int f (void)\n{\n    constexpr const int a = 1;\n    constexpr const int shift[1] = {32};\n    constexpr const int ret = a << shift[0];\n    return ret;\n}" always "int f (void)\n{\n    constexpr const int a = 1;\n    constexpr const int shift[1] = {32};\n    constexpr const int ret = a << shift[0];\n    return ret;\n}"
+Line 181
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  181 always 181
+  "[test.cpp:5]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n[test.cpp:5]: (error) Signed integer overflow for expression 'a<<shift[0]'.\n" always "[test.cpp:5]: (error) Shifting 32-bit value by 32 bits is undefined behaviour\n[test.cpp:5]: (error) Signed integer overflow for expression 'a<<shift[0]'.\n"
+Line 185
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  185 always 185
+  "int f(int k, int rm) {\n  if (k == 32)\n    return 0;\n  if (k > 32)\n    return 0;\n  return rm>> k;\n}" always "int f(int k, int rm) {\n  if (k == 32)\n    return 0;\n  if (k > 32)\n    return 0;\n  return rm>> k;\n}"
+Line 192
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  192 always 192
+  "[test.cpp:4] -> [test.cpp:6]: (warning) Shifting signed 32-bit value by 31 bits is undefined behaviour. See condition at line 4.\n" always "[test.cpp:4] -> [test.cpp:6]: (warning) Shifting signed 32-bit value by 31 bits is undefined behaviour. See condition at line 4.\n"
+Line 196
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  196 always 196
+  "int f(int k, int rm) {\n  if (k == 0 || k == 32)\n    return 0;\n  else if (k > 32)\n    return 0;\n  else\n    return rm>> k;\n}" always "int f(int k, int rm) {\n  if (k == 0 || k == 32)\n    return 0;\n  else if (k > 32)\n    return 0;\n  else\n    return rm>> k;\n}"
+Line 204
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  204 always 204
+  "[test.cpp:4] -> [test.cpp:7]: (warning) Shifting signed 32-bit value by 31 bits is undefined behaviour. See condition at line 4.\n" always "[test.cpp:4] -> [test.cpp:7]: (warning) Shifting signed 32-bit value by 31 bits is undefined behaviour. See condition at line 4.\n"
+Line 208
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  208 always 208
+  "int f(int k, int rm) {\n  if (k == 0 || k == 32 || k == 31)\n    return 0;\n  else if (k > 32)\n    return 0;\n  else\n    return rm>> k;\n}" always "int f(int k, int rm) {\n  if (k == 0 || k == 32 || k == 31)\n    return 0;\n  else if (k > 32)\n    return 0;\n  else\n    return rm>> k;\n}"
+Line 216
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  216 always 216
+  "" always ""
+Line 218
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  218 always 218
+  "static long long f(int x, long long y) {\n    if (x >= 64)\n        return 0;\n    return -(y << (x-1));\n}" always "static long long f(int x, long long y) {\n    if (x >= 64)\n        return 0;\n    return -(y << (x-1));\n}"
+Line 223
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  223 always 223
+  "" always ""
+Line 225
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  225 always 225
+  "bool f() {\n    std::ofstream outfile;\n    outfile << vec_points[0](0) << static_cast<int>(d) << ' ';\n}" always "bool f() {\n    std::ofstream outfile;\n    outfile << vec_points[0](0) << static_cast<int>(d) << ' ';\n}"
+Line 229
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  229 always 229
+  "" always ""
+Line 231
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  231 always 231
+  "void f(unsigned b, int len, unsigned char rem) {\n    int bits = 0;\n    while (len > 8) {\n        b = b >> rem;\n        bits += 8 - rem;\n        if (bits == 512)\n            len -= 8;\n    }\n}\n" always "void f(unsigned b, int len, unsigned char rem) {\n    int bits = 0;\n    while (len > 8) {\n        b = b >> rem;\n        bits += 8 - rem;\n        if (bits == 512)\n            len -= 8;\n    }\n}\n"
+Line 240
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  240 always 240
+  "" always ""
+Line 248
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  248 always 248
+  "x = (int)0x10000 * (int)0x10000;" always "x = (int)0x10000 * (int)0x10000;"
+  & {lifetime[Address]=(settings),!0}
+Line 249
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  249 always 249
+  "[test.cpp:1]: (error) Signed integer overflow for expression '(int)0x10000*(int)0x10000'.\n" always "[test.cpp:1]: (error) Signed integer overflow for expression '(int)0x10000*(int)0x10000'.\n"
+Line 251
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  251 always 251
+  "x = (long)0x10000 * (long)0x10000;" always "x = (long)0x10000 * (long)0x10000;"
+  & {lifetime[Address]=(settings),!0}
+Line 252
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  252 always 252
+  "[test.cpp:1]: (error) Signed integer overflow for expression '(long)0x10000*(long)0x10000'.\n" always "[test.cpp:1]: (error) Signed integer overflow for expression '(long)0x10000*(long)0x10000'.\n"
+Line 254
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  254 always 254
+  "void foo() {\n    int intmax = 0x7fffffff;\n    return intmax + 1;\n}" always "void foo() {\n    int intmax = 0x7fffffff;\n    return intmax + 1;\n}"
+  & {lifetime[Address]=(settings),!0}
+Line 258
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  258 always 258
+  "[test.cpp:3]: (error) Signed integer overflow for expression 'intmax+1'.\n" always "[test.cpp:3]: (error) Signed integer overflow for expression 'intmax+1'.\n"
+Line 260
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  260 always 260
+  "void foo() {\n    int intmax = 0x7fffffff;\n    return intmax - 1;\n}" always "void foo() {\n    int intmax = 0x7fffffff;\n    return intmax - 1;\n}"
+  & {lifetime[Address]=(settings),!0}
+Line 264
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  264 always 264
+  "" always ""
+Line 266
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  266 always 266
+  "int foo(signed int x) {\n   if (x==123456) {}\n   return x * x;\n}" always "int foo(signed int x) {\n   if (x==123456) {}\n   return x * x;\n}"
+  & {lifetime[Address]=(settings),!0}
+Line 270
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  270 always 270
+  "[test.cpp:2] -> [test.cpp:3]: (warning) Either the condition 'x==123456' is redundant or there is signed integer overflow for expression 'x*x'.\n" always "[test.cpp:2] -> [test.cpp:3]: (warning) Either the condition 'x==123456' is redundant or there is signed integer overflow for expression 'x*x'.\n"
+Line 272
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  272 always 272
+  "int foo(signed int x) {\n   if (x==123456) {}\n   return -123456 * x;\n}" always "int foo(signed int x) {\n   if (x==123456) {}\n   return -123456 * x;\n}"
+  & {lifetime[Address]=(settings),!0}
+Line 276
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  276 always 276
+  "[test.cpp:2] -> [test.cpp:3]: (warning) Either the condition 'x==123456' is redundant or there is signed integer overflow for expression '-123456*x'.\n" always "[test.cpp:2] -> [test.cpp:3]: (warning) Either the condition 'x==123456' is redundant or there is signed integer overflow for expression '-123456*x'.\n"
+Line 278
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  278 always 278
+  "int foo(signed int x) {\n   if (x==123456) {}\n   return 123456U * x;\n}" always "int foo(signed int x) {\n   if (x==123456) {}\n   return 123456U * x;\n}"
+  & {lifetime[Address]=(settings),!0}
+Line 282
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  282 always 282
+  "" always ""
+Line 288
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  288 always 288
+  "x = -4 * (unsigned)y;" always "x = -4 * (unsigned)y;"
+Line 289
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  289 always 289
+  "[test.cpp:1]: (warning) Expression '-4' has a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n" always "[test.cpp:1]: (warning) Expression '-4' has a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n"
+Line 291
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  291 always 291
+  "x = (unsigned)y * -4;" always "x = (unsigned)y * -4;"
+Line 292
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  292 always 292
+  "[test.cpp:1]: (warning) Expression '-4' has a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n" always "[test.cpp:1]: (warning) Expression '-4' has a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n"
+Line 294
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  294 always 294
+  "unsigned int dostuff(int x) {\n  if (x==0) {}\n  return (x-1)*sizeof(int);\n}" always "unsigned int dostuff(int x) {\n  if (x==0) {}\n  return (x-1)*sizeof(int);\n}"
+  & {lifetime[Address]=(settings),!0}
+Line 298
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  298 always 298
+  "[test.cpp:2] -> [test.cpp:3]: (warning) Expression 'x-1' can have a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n" always "[test.cpp:2] -> [test.cpp:3]: (warning) Expression 'x-1' can have a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n"
+Line 300
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  300 always 300
+  "unsigned int f1(signed int x, unsigned int y) {  return x * y;\n}\nvoid f2() { f1(-4,4); }" always "unsigned int f1(signed int x, unsigned int y) {  return x * y;\n}\nvoid f2() { f1(-4,4); }"
+Line 304
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  304 always 304
+  "[test.cpp:1]: (warning) Expression 'x' can have a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n" always "[test.cpp:1]: (warning) Expression 'x' can have a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n"
+Line 308
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  308 always 308
+  "unsigned int f1(int x) {  return x * 5U;\n}\nvoid f2() { f1(-4); }" always "unsigned int f1(int x) {  return x * 5U;\n}\nvoid f2() { f1(-4); }"
+Line 312
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  312 always 312
+  "[test.cpp:1]: (warning) Expression 'x' can have a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n" always "[test.cpp:1]: (warning) Expression 'x' can have a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n"
+Line 316
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  316 always 316
+  "unsigned int f1(int x) {  return 5U * (1234 - x);\n}\nvoid f2() { f1(-4); }" always "unsigned int f1(int x) {  return 5U * (1234 - x);\n}\nvoid f2() { f1(-4); }"
+Line 320
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  320 always 320
+  "" always ""
+Line 323
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  323 always 323
+  "void f1(int x) {  a = x + 5U;\n}\nvoid f2() { f1(-4); }" always "void f1(int x) {  a = x + 5U;\n}\nvoid f2() { f1(-4); }"
+Line 327
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  327 always 327
+  "" always ""
+Line 329
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  329 always 329
+  "size_t foo(size_t x) {\n return -2 * x;\n}" always "size_t foo(size_t x) {\n return -2 * x;\n}"
+Line 332
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  332 always 332
+  "[test.cpp:2]: (warning) Expression '-2' has a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n" always "[test.cpp:2]: (warning) Expression '-2' has a negative value. That is converted to an unsigned value and used in an unsigned calculation.\n"
+Line 340
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  340 always 340
+  "long f(int x, int y) {\n  const long ret = x * y;\n  return ret;\n}\n" always "long f(int x, int y) {\n  const long ret = x * y;\n  return ret;\n}\n"
+  & {lifetime[Address]=(settings),!0}
+Line 344
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  344 always 344
+  "[test.cpp:2]: (style) int result is assigned to long variable. If the variable is long to avoid loss of information, then you have loss of information.\n" always "[test.cpp:2]: (style) int result is assigned to long variable. If the variable is long to avoid loss of information, then you have loss of information.\n"
+Line 346
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  346 always 346
+  "long f() {\n  const long long ret = 256 * (1 << 10);\n  return ret;\n}\n" always "long f() {\n  const long long ret = 256 * (1 << 10);\n  return ret;\n}\n"
+  & {lifetime[Address]=(settings),!0}
+Line 350
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  350 always 350
+  "" always ""
+Line 353
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  353 always 353
+  "long f(int x, int y) {\n  const size_t ret = x * y;\n  return ret;\n}\n" always "long f(int x, int y) {\n  const size_t ret = x * y;\n  return ret;\n}\n"
+  & {lifetime[Address]=(settings),!0}
+Line 357
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  357 always 357
+  "" always ""
+Line 360
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  360 always 360
+  "long f(int x, int y) {\n  const long ret = (long)x * y;\n  return ret;\n}\n" always "long f(int x, int y) {\n  const long ret = (long)x * y;\n  return ret;\n}\n"
+  & {lifetime[Address]=(settings),!0}
+Line 364
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  364 always 364
+  "" always ""
+Line 371
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  371 always 371
+  "long f(int x, int y) {\n  return x * y;\n}\n" always "long f(int x, int y) {\n  return x * y;\n}\n"
+  & {lifetime[Address]=(settings),!0}
+Line 374
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  374 always 374
+  "[test.cpp:2]: (style) int result is returned as long value. If the return value is long to avoid loss of information, then you have loss of information.\n" always "[test.cpp:2]: (style) int result is returned as long value. If the return value is long to avoid loss of information, then you have loss of information.\n"
+Line 377
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  377 always 377
+  "size_t f(int x, int y) {\n  return x * y;\n}\n" always "size_t f(int x, int y) {\n  return x * y;\n}\n"
+  & {lifetime[Address]=(settings),!0}
+Line 380
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  380 always 380
+  "" always ""
+Line 386
+  pos1 always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  "float (" always "float ("
+Line 387
+  pos2 always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  ") to integer conversion" always ") to integer conversion"
+Line 388
+  pos1 {!<=-1,>=symbolic=(pos2+1),<=symbolic=(pos2)}
+  == always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  pos2 always !<=-1
+  == always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  pos1 always !<=-1
+  > always {!<=-1,!>=2}
+  pos2 always !<=-1
+Line 390
+  0 always 0
+  pos1 {!<=-1,!>=symbolic=(pos2+1),<=symbolic=(pos2)}
+  + always !<=6
+  7 always 7
+  pos2 {!<=-1,!<=symbolic=(pos1-1),>=symbolic=(pos1)}
+Line 394
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  394 always 394
+  "x = (int)1E100;" always "x = (int)1E100;"
+Line 395
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  395 always 395
+  "[test.cpp:1]: (error) Undefined behaviour: float () to integer conversion overflow.\n" always "[test.cpp:1]: (error) Undefined behaviour: float () to integer conversion overflow.\n"
+Line 397
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  397 always 397
+  "void f(void) {\n  return (int)1E100;\n}" always "void f(void) {\n  return (int)1E100;\n}"
+Line 400
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  400 always 400
+  "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n" always "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n"
+Line 402
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  402 always 402
+  "void f(void) {\n  return (int)-1E100;\n}" always "void f(void) {\n  return (int)-1E100;\n}"
+Line 405
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  405 always 405
+  "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n" always "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n"
+Line 407
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  407 always 407
+  "void f(void) {\n  return (short)1E6;\n}" always "void f(void) {\n  return (short)1E6;\n}"
+Line 410
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  410 always 410
+  "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n" always "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n"
+Line 412
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  412 always 412
+  "void f(void) {\n  return (unsigned char)256.0;\n}" always "void f(void) {\n  return (unsigned char)256.0;\n}"
+Line 415
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  415 always 415
+  "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n" always "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n"
+Line 417
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  417 always 417
+  "void f(void) {\n  return (unsigned char)255.5;\n}" always "void f(void) {\n  return (unsigned char)255.5;\n}"
+Line 420
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  420 always 420
+  "" always ""
+Line 422
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  422 always 422
+  "void f(void) {\n  char c = 1234.5;\n}" always "void f(void) {\n  char c = 1234.5;\n}"
+Line 425
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  425 always 425
+  "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n" always "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n"
+Line 427
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  427 always 427
+  "char f(void) {\n  return 1234.5;\n}" always "char f(void) {\n  return 1234.5;\n}"
+Line 430
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtype.cpp" always "cppcheck-2.8/test/testtype.cpp"
+  430 always 430
+  "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n" always "[test.cpp:2]: (error) Undefined behaviour: float () to integer conversion overflow.\n"

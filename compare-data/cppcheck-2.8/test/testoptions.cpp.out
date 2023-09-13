@@ -1,0 +1,616 @@
+
+
+##file cppcheck-2.8/test/options.h
+
+1:
+|
+27:
+28: class options {
+29: public:
+30:
+31: options ( int argc@var1 , const char * const argv@var2 [ ] ) ;
+32:
+33: bool quiet ( ) const ;
+34:
+35: bool help ( ) const ;
+36:
+37: const std :: set < std :: string > & which_test ( ) const ;
+38:
+39: const std :: string & exe ( ) const ;
+40:
+41: private:
+42: options ( ) ;
+43: options ( const options & non_copy@var3 ) ;
+44: const options & operator= ( const options & non_assign@var4 ) ;
+45:
+46: private:
+47: std :: set < std :: string > mWhichTests@var5 ;
+48: const bool mQuiet@var6 ;
+49: const bool mHelp@var7 ;
+50: std :: string mExe@var8 ;
+51: } ;
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var9 ;
+37: static unsigned int countTests@var10 ;
+38: static unsigned long fails_counter@var11 ;
+39: static unsigned long todos_counter@var12 ;
+40: static unsigned long succeeded_todos_counter@var13 ;
+41: static std :: set < std :: string > missingLibs@var14 ;
+42: bool mVerbose@var15 ;
+43: std :: string mTemplateFormat@var16 ;
+44: std :: string mTemplateLocation@var17 ;
+45: std :: string mTestname@var18 ;
+46:
+47: protected:
+48: std :: string exename@var19 ;
+49: std :: string testToRun@var20 ;
+50: bool quiet_tests@var21 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var22 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var23 , const unsigned int linenr@var24 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var25 , const unsigned int linenr@var26 , const bool condition@var27 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var28 , const unsigned int linenr@var29 , const T & expected@var30 , const U & actual@var31 , const std :: string & msg@var32 = emptyString ) const {
+61: if (@expr1073741960 expected@var30 !=@expr1073741961 actual@var31 ) {
+62: std ::@expr1073741962 ostringstream expectedStr@var33 ;
+63: expectedStr@var33 <<@expr1073741963 expected@var30 ;
+64: std ::@expr1073741964 ostringstream actualStr@var34 ;
+65: actualStr@var34 <<@expr1073741965 actual@var31 ;
+66:
+67: assertEqualsFailed (@expr1073741966 filename@var28 , linenr@var29 , expectedStr@var33 .@expr1073741967 str (@expr1073741968 ) , actualStr@var34 .@expr1073741969 str (@expr1073741970 ) , msg@var32 ) ;
+68: }
+69: return expected@var30 ==@expr1073741971 actual@var31 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var35 , const unsigned int linenr@var36 , const std :: string & expected@var37 , const std :: string & actual@var38 , const std :: string & msg@var39 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var40 , const unsigned int linenr@var41 , const std :: string & expected@var42 , const std :: string & actual@var43 , const std :: string & msg@var44 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var45 , const unsigned int linenr@var46 , const std :: string & expected@var47 , const std :: string & actual@var48 , const std :: string & msg@var49 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var50 , const unsigned int linenr@var51 , const char expected@var52 [ ] , const std :: string & actual@var53 , const std :: string & msg@var54 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var55 , const unsigned int linenr@var56 , const char expected@var57 [ ] , const char actual@var58 [ ] , const std :: string & msg@var59 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var60 , const unsigned int linenr@var61 , const std :: string & expected@var62 , const char actual@var63 [ ] , const std :: string & msg@var64 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var65 , const unsigned int linenr@var66 , const long long expected@var67 , const long long actual@var68 , const std :: string & msg@var69 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var70 , const unsigned int linenr@var71 , const double expected@var72 , const double actual@var73 , const double tolerance@var74 , const std :: string & msg@var75 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var76 , const unsigned int linenr@var77 , const std :: string & wanted@var78 ,
+85: const std :: string & current@var79 , const std :: string & actual@var80 ) const ;
+86: void todoAssertEquals ( const char * const filename@var81 , const unsigned int linenr@var82 , const char wanted@var83 [ ] ,
+87: const char current@var84 [ ] , const std :: string & actual@var85 ) const ;
+88: void todoAssertEquals ( const char * const filename@var86 , const unsigned int linenr@var87 , const long long wanted@var88 ,
+89: const long long current@var89 , const long long actual@var90 ) const ;
+90: void assertThrow ( const char * const filename@var91 , const unsigned int linenr@var92 ) const ;
+91: void assertThrowFail ( const char * const filename@var93 , const unsigned int linenr@var94 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var95 , const unsigned int linenr@var96 ) const ;
+93: static void complainMissingLib ( const char * const libname@var97 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var98 ) ;
+95:
+96: void setVerbose ( bool v@var99 ) {
+97: mVerbose@var15 =@expr1073741972 v@var99 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var16 =@expr1073741973 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var17 =@expr1073741974 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var100 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var101 , Color c@var102 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var103 ) override ;
+109: void run ( const std :: string & str@var104 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var105 ;
+112:
+113: explicit TestFixture ( const char * const _name@var106 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var107 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var108 ;
+120: extern std :: ostringstream output@var109 ;
+
+##file cppcheck-2.8/test/testoptions.cpp
+
+1:
+|
+23:
+24: class TestOptions : public TestFixture {
+25: public:
+26: TestOptions ( )
+27: : TestFixture ( "TestOptions" ) { }
+28:
+29:
+30: private:
+31: void run ( ) override {
+32: $do ${ $if $(@expr1073741975 $prepareTest $(@expr1073741976 "which_test" $) $) ${ $setVerbose $(@expr1073741977 $false $) $; which_test $(@expr1073741978 $) $; $} $} $while $(@expr1073741979 $false $) ;
+33: $do ${ $if $(@expr1073741980 $prepareTest $(@expr1073741981 "which_test_method" $) $) ${ $setVerbose $(@expr1073741982 $false $) $; which_test_method $(@expr1073741983 $) $; $} $} $while $(@expr1073741984 $false $) ;
+34: $do ${ $if $(@expr1073741985 $prepareTest $(@expr1073741986 "no_test_method" $) $) ${ $setVerbose $(@expr1073741987 $false $) $; no_test_method $(@expr1073741988 $) $; $} $} $while $(@expr1073741989 $false $) ;
+35: $do ${ $if $(@expr1073741990 $prepareTest $(@expr1073741991 "not_quiet" $) $) ${ $setVerbose $(@expr1073741992 $false $) $; not_quiet $(@expr1073741993 $) $; $} $} $while $(@expr1073741994 $false $) ;
+36: $do ${ $if $(@expr1073741995 $prepareTest $(@expr1073741996 "quiet" $) $) ${ $setVerbose $(@expr1073741997 $false $) $; quiet $(@expr1073741998 $) $; $} $} $while $(@expr1073741999 $false $) ;
+37: $do ${ $if $(@expr1073742000 $prepareTest $(@expr1073742001 "not_help" $) $) ${ $setVerbose $(@expr1073742002 $false $) $; not_help $(@expr1073742003 $) $; $} $} $while $(@expr1073742004 $false $) ;
+38: $do ${ $if $(@expr1073742005 $prepareTest $(@expr1073742006 "help" $) $) ${ $setVerbose $(@expr1073742007 $false $) $; help $(@expr1073742008 $) $; $} $} $while $(@expr1073742009 $false $) ;
+39: $do ${ $if $(@expr1073742010 $prepareTest $(@expr1073742011 "help_long" $) $) ${ $setVerbose $(@expr1073742012 $false $) $; help_long $(@expr1073742013 $) $; $} $} $while $(@expr1073742014 $false $) ;
+40: $do ${ $if $(@expr1073742015 $prepareTest $(@expr1073742016 "multiple_testcases" $) $) ${ $setVerbose $(@expr1073742017 $false $) $; multiple_testcases $(@expr1073742018 $) $; $} $} $while $(@expr1073742019 $false $) ;
+41: $do ${ $if $(@expr1073742020 $prepareTest $(@expr1073742021 "multiple_testcases_ignore_duplicates" $) $) ${ $setVerbose $(@expr1073742022 $false $) $; multiple_testcases_ignore_duplicates $(@expr1073742023 $) $; $} $} $while $(@expr1073742024 $false $) ;
+42: $do ${ $if $(@expr1073742025 $prepareTest $(@expr1073742026 "invalid_switches" $) $) ${ $setVerbose $(@expr1073742027 $false $) $; invalid_switches $(@expr1073742028 $) $; $} $} $while $(@expr1073742029 $false $) ;
+43: }
+44:
+45:
+46: void which_test ( ) const {
+47: const char * argv@var110 [@expr1073742030 2 ] =@expr1073742031 {@expr1073742032 "./test_runner" , "TestClass" } ;
+48: options args@var111 (@expr1073742033 sizeof (@expr1073742034 argv@var110 ) /@expr1073742035 sizeof (@expr1073742036 argv@var110 [@expr1073742037 0 ] ) , argv@var110 ) ;
+49: $if $(@expr1073742038 $!@expr1073742039 $assert_ $(@expr1073742040 "cppcheck-2.8/test/testoptions.cpp" $, 49 $, std ::@expr1073742041 set < std ::@expr1073742042 string > {@expr1073742043 "TestClass" } ==@expr1073742044 args@var111 .@expr1073742045 which_test (@expr1073742046 ) $) $) { $return ; }
+50: }
+51:
+52:
+53: void which_test_method ( ) const {
+54: const char * argv@var112 [@expr1073742047 2 ] =@expr1073742048 {@expr1073742049 "./test_runner" , "TestClass::TestMethod" } ;
+55: options args@var113 (@expr1073742050 sizeof (@expr1073742051 argv@var112 ) /@expr1073742052 sizeof (@expr1073742053 argv@var112 [@expr1073742054 0 ] ) , argv@var112 ) ;
+56: $if $(@expr1073742055 $!@expr1073742056 $assert_ $(@expr1073742057 "cppcheck-2.8/test/testoptions.cpp" $, 56 $, std ::@expr1073742058 set < std ::@expr1073742059 string > {@expr1073742060 "TestClass::TestMethod" } ==@expr1073742061 args@var113 .@expr1073742062 which_test (@expr1073742063 ) $) $) { $return ; }
+57: }
+58:
+59:
+60: void no_test_method ( ) const {
+61: const char * argv@var114 [@expr1073742064 1 ] =@expr1073742065 {@expr1073742066 "./test_runner" } ;
+62: options args@var115 (@expr1073742067 sizeof (@expr1073742068 argv@var114 ) /@expr1073742069 sizeof (@expr1073742070 argv@var114 [@expr1073742071 0 ] ) , argv@var114 ) ;
+63: $if $(@expr1073742072 $!@expr1073742073 $assert_ $(@expr1073742074 "cppcheck-2.8/test/testoptions.cpp" $, 63 $, std ::@expr1073742075 set < std ::@expr1073742076 string > {@expr1073742077 "" } ==@expr1073742078 args@var115 .@expr1073742079 which_test (@expr1073742080 ) $) $) { $return ; }
+64: }
+65:
+66:
+67: void not_quiet ( ) const {
+68: const char * argv@var116 [@expr1073742081 3 ] =@expr1073742082 {@expr1073742083 "./test_runner" , "TestClass::TestMethod" , "-v" } ;
+69: options args@var117 (@expr1073742084 sizeof (@expr1073742085 argv@var116 ) /@expr1073742086 sizeof (@expr1073742087 argv@var116 [@expr1073742088 0 ] ) , argv@var116 ) ;
+70: $if $(@expr1073742089 $!@expr1073742090 $assertEquals $(@expr1073742091 "cppcheck-2.8/test/testoptions.cpp" $, 70 $, false $, args@var117 .@expr1073742092 quiet (@expr1073742093 ) $) $) { $return ; }
+71: }
+72:
+73:
+74: void quiet ( ) const {
+75: const char * argv@var118 [@expr1073742094 3 ] =@expr1073742095 {@expr1073742096 "./test_runner" , "TestClass::TestMethod" , "-q" } ;
+76: options args@var119 (@expr1073742097 sizeof (@expr1073742098 argv@var118 ) /@expr1073742099 sizeof (@expr1073742100 argv@var118 [@expr1073742101 0 ] ) , argv@var118 ) ;
+77: $if $(@expr1073742102 $!@expr1073742103 $assertEquals $(@expr1073742104 "cppcheck-2.8/test/testoptions.cpp" $, 77 $, true $, args@var119 .@expr1073742105 quiet (@expr1073742106 ) $) $) { $return ; }
+78: }
+79:
+80: void not_help ( ) const {
+81: const char * argv@var120 [@expr1073742107 3 ] =@expr1073742108 {@expr1073742109 "./test_runner" , "TestClass::TestMethod" , "-v" } ;
+82: options args@var121 (@expr1073742110 sizeof (@expr1073742111 argv@var120 ) /@expr1073742112 sizeof (@expr1073742113 argv@var120 [@expr1073742114 0 ] ) , argv@var120 ) ;
+83: $if $(@expr1073742115 $!@expr1073742116 $assertEquals $(@expr1073742117 "cppcheck-2.8/test/testoptions.cpp" $, 83 $, false $, args@var121 .@expr1073742118 help (@expr1073742119 ) $) $) { $return ; }
+84: }
+85:
+86:
+87: void help ( ) const {
+88: const char * argv@var122 [@expr1073742120 3 ] =@expr1073742121 {@expr1073742122 "./test_runner" , "TestClass::TestMethod" , "-h" } ;
+89: options args@var123 (@expr1073742123 sizeof (@expr1073742124 argv@var122 ) /@expr1073742125 sizeof (@expr1073742126 argv@var122 [@expr1073742127 0 ] ) , argv@var122 ) ;
+90: $if $(@expr1073742128 $!@expr1073742129 $assertEquals $(@expr1073742130 "cppcheck-2.8/test/testoptions.cpp" $, 90 $, true $, args@var123 .@expr1073742131 help (@expr1073742132 ) $) $) { $return ; }
+91: }
+92:
+93:
+94: void help_long ( ) const {
+95: const char * argv@var124 [@expr1073742133 3 ] =@expr1073742134 {@expr1073742135 "./test_runner" , "TestClass::TestMethod" , "--help" } ;
+96: options args@var125 (@expr1073742136 sizeof (@expr1073742137 argv@var124 ) /@expr1073742138 sizeof (@expr1073742139 argv@var124 [@expr1073742140 0 ] ) , argv@var124 ) ;
+97: $if $(@expr1073742141 $!@expr1073742142 $assertEquals $(@expr1073742143 "cppcheck-2.8/test/testoptions.cpp" $, 97 $, true $, args@var125 .@expr1073742144 help (@expr1073742145 ) $) $) { $return ; }
+98: }
+99:
+100: void multiple_testcases ( ) const {
+101: const char * argv@var126 [@expr1073742146 3 ] =@expr1073742147 {@expr1073742148 "./test_runner" , "TestClass::TestMethod" , "TestClass::AnotherTestMethod" } ;
+102: options args@var127 (@expr1073742149 sizeof (@expr1073742150 argv@var126 ) /@expr1073742151 sizeof (@expr1073742152 argv@var126 [@expr1073742153 0 ] ) , argv@var126 ) ;
+103: std ::@expr330 set < std ::@expr330 string > expected@var128 {@expr1073742156 "TestClass::TestMethod" , "TestClass::AnotherTestMethod" } ;
+104: $if $(@expr1073742157 $!@expr1073742158 $assert_ $(@expr1073742159 "cppcheck-2.8/test/testoptions.cpp" $, 104 $, expected@var128 ==@expr1073742160 args@var127 .@expr1073742161 which_test (@expr1073742162 ) $) $) { $return ; }
+105: }
+106:
+107: void multiple_testcases_ignore_duplicates ( ) const {
+108: const char * argv@var129 [@expr1073742163 3 ] =@expr1073742164 {@expr1073742165 "./test_runner" , "TestClass::TestMethod" , "TestClass" } ;
+109: options args@var130 (@expr1073742166 sizeof (@expr1073742167 argv@var129 ) /@expr1073742168 sizeof (@expr1073742169 argv@var129 [@expr1073742170 0 ] ) , argv@var129 ) ;
+110: std ::@expr347 set < std ::@expr347 string > expected@var131 {@expr1073742173 "TestClass" } ;
+111: $if $(@expr1073742174 $!@expr1073742175 $assert_ $(@expr1073742176 "cppcheck-2.8/test/testoptions.cpp" $, 111 $, expected@var131 ==@expr1073742177 args@var130 .@expr1073742178 which_test (@expr1073742179 ) $) $) { $return ; }
+112: }
+113:
+114: void invalid_switches ( ) const {
+115: const char * argv@var132 [@expr1073742180 5 ] =@expr1073742181 {@expr1073742182 "./test_runner" , "TestClass::TestMethod" , "-a" , "-v" , "-q" } ;
+116: options args@var133 (@expr1073742183 sizeof (@expr1073742184 argv@var132 ) /@expr1073742185 sizeof (@expr1073742186 argv@var132 [@expr1073742187 0 ] ) , argv@var132 ) ;
+117: std ::@expr364 set < std ::@expr364 string > expected@var134 {@expr1073742190 "TestClass::TestMethod" } ;
+118: $if $(@expr1073742191 $!@expr1073742192 $assert_ $(@expr1073742193 "cppcheck-2.8/test/testoptions.cpp" $, 118 $, expected@var134 ==@expr1073742194 args@var133 .@expr1073742195 which_test (@expr1073742196 ) $) $) { $return ; }
+119: $if $(@expr1073742197 $!@expr1073742198 $assertEquals $(@expr1073742199 "cppcheck-2.8/test/testoptions.cpp" $, 119 $, true $, args@var133 .@expr1073742200 quiet (@expr1073742201 ) $) $) { $return ; }
+120: }
+121: } ;
+122:
+123: $namespace ${ TestOptions instance_TestOptions@var135 $; $}
+
+
+
+##Value flow
+Line 33
+  ( always {!<=-1,!>=2}
+Line 35
+  ( always {!<=-1,!>=2}
+Line 48
+  mQuiet always {!<=-1,!>=2}
+Line 49
+  mHelp always {!<=-1,!>=2}
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@1}
+  v {!<=-1,!>=2,0@1}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 27
+  "TestOptions" always "TestOptions"
+Line 32
+  ( always {!<=-1,!>=2}
+  "which_test" always "which_test"
+  false always 0
+  false always 0
+Line 33
+  ( always {!<=-1,!>=2}
+  "which_test_method" always "which_test_method"
+  false always 0
+  false always 0
+Line 34
+  ( always {!<=-1,!>=2}
+  "no_test_method" always "no_test_method"
+  false always 0
+  false always 0
+Line 35
+  ( always {!<=-1,!>=2}
+  "not_quiet" always "not_quiet"
+  false always 0
+  false always 0
+Line 36
+  ( always {!<=-1,!>=2}
+  "quiet" always "quiet"
+  false always 0
+  false always 0
+Line 37
+  ( always {!<=-1,!>=2}
+  "not_help" always "not_help"
+  false always 0
+  false always 0
+Line 38
+  ( always {!<=-1,!>=2}
+  "help" always "help"
+  false always 0
+  false always 0
+Line 39
+  ( always {!<=-1,!>=2}
+  "help_long" always "help_long"
+  false always 0
+  false always 0
+Line 40
+  ( always {!<=-1,!>=2}
+  "multiple_testcases" always "multiple_testcases"
+  false always 0
+  false always 0
+Line 41
+  ( always {!<=-1,!>=2}
+  "multiple_testcases_ignore_duplicates" always "multiple_testcases_ignore_duplicates"
+  false always 0
+  false always 0
+Line 42
+  ( always {!<=-1,!>=2}
+  "invalid_switches" always "invalid_switches"
+  false always 0
+  false always 0
+Line 47
+  2 always 2
+  "./test_runner" always "./test_runner"
+  "TestClass" always "TestClass"
+Line 48
+  ( always !<=-1
+  / always 2
+  ( always !<=-1
+  argv possible lifetime[Object]=(argv)
+  argv possible lifetime[Object]=(argv)
+Line 49
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testoptions.cpp" always "cppcheck-2.8/test/testoptions.cpp"
+  49 always 49
+  { always {size=1,{}
+  "TestClass" always "TestClass"
+  == always {!<=-1,!>=2}
+Line 54
+  2 always 2
+  "./test_runner" always "./test_runner"
+  "TestClass::TestMethod" always "TestClass::TestMethod"
+Line 55
+  ( always !<=-1
+  / always 2
+  ( always !<=-1
+  argv possible lifetime[Object]=(argv)
+  argv possible lifetime[Object]=(argv)
+Line 56
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testoptions.cpp" always "cppcheck-2.8/test/testoptions.cpp"
+  56 always 56
+  { always {size=1,{}
+  "TestClass::TestMethod" always "TestClass::TestMethod"
+  == always {!<=-1,!>=2}
+Line 61
+  1 always 1
+  "./test_runner" always "./test_runner"
+Line 62
+  ( always !<=-1
+  / always 1
+  ( always !<=-1
+  argv possible lifetime[Object]=(argv)
+  argv possible lifetime[Object]=(argv)
+Line 63
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testoptions.cpp" always "cppcheck-2.8/test/testoptions.cpp"
+  63 always 63
+  { always {size=1,{}
+  "" always ""
+  == always {!<=-1,!>=2}
+Line 68
+  3 always 3
+  "./test_runner" always "./test_runner"
+  "TestClass::TestMethod" always "TestClass::TestMethod"
+  "-v" always "-v"
+Line 69
+  ( always !<=-1
+  / always 3
+  ( always !<=-1
+  argv possible lifetime[Object]=(argv)
+  argv possible lifetime[Object]=(argv)
+Line 70
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testoptions.cpp" always "cppcheck-2.8/test/testoptions.cpp"
+  70 always 70
+  false always 0
+  ( always {!<=-1,!>=2}
+Line 75
+  3 always 3
+  "./test_runner" always "./test_runner"
+  "TestClass::TestMethod" always "TestClass::TestMethod"
+  "-q" always "-q"
+Line 76
+  ( always !<=-1
+  / always 3
+  ( always !<=-1
+  argv possible lifetime[Object]=(argv)
+  argv possible lifetime[Object]=(argv)
+Line 77
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testoptions.cpp" always "cppcheck-2.8/test/testoptions.cpp"
+  77 always 77
+  true always 1
+  ( always {!<=-1,!>=2}
+Line 81
+  3 always 3
+  "./test_runner" always "./test_runner"
+  "TestClass::TestMethod" always "TestClass::TestMethod"
+  "-v" always "-v"
+Line 82
+  ( always !<=-1
+  / always 3
+  ( always !<=-1
+  argv possible lifetime[Object]=(argv)
+  argv possible lifetime[Object]=(argv)
+Line 83
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testoptions.cpp" always "cppcheck-2.8/test/testoptions.cpp"
+  83 always 83
+  false always 0
+  ( always {!<=-1,!>=2}
+Line 88
+  3 always 3
+  "./test_runner" always "./test_runner"
+  "TestClass::TestMethod" always "TestClass::TestMethod"
+  "-h" always "-h"
+Line 89
+  ( always !<=-1
+  / always 3
+  ( always !<=-1
+  argv possible lifetime[Object]=(argv)
+  argv possible lifetime[Object]=(argv)
+Line 90
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testoptions.cpp" always "cppcheck-2.8/test/testoptions.cpp"
+  90 always 90
+  true always 1
+  ( always {!<=-1,!>=2}
+Line 95
+  3 always 3
+  "./test_runner" always "./test_runner"
+  "TestClass::TestMethod" always "TestClass::TestMethod"
+  "--help" always "--help"
+Line 96
+  ( always !<=-1
+  / always 3
+  ( always !<=-1
+  argv possible lifetime[Object]=(argv)
+  argv possible lifetime[Object]=(argv)
+Line 97
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testoptions.cpp" always "cppcheck-2.8/test/testoptions.cpp"
+  97 always 97
+  true always 1
+  ( always {!<=-1,!>=2}
+Line 101
+  3 always 3
+  "./test_runner" always "./test_runner"
+  "TestClass::TestMethod" always "TestClass::TestMethod"
+  "TestClass::AnotherTestMethod" always "TestClass::AnotherTestMethod"
+Line 102
+  ( always !<=-1
+  / always 3
+  ( always !<=-1
+  argv possible lifetime[Object]=(argv)
+  argv possible lifetime[Object]=(argv)
+Line 103
+  "TestClass::TestMethod" always "TestClass::TestMethod"
+  "TestClass::AnotherTestMethod" always "TestClass::AnotherTestMethod"
+Line 104
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testoptions.cpp" always "cppcheck-2.8/test/testoptions.cpp"
+  104 always 104
+  expected always {
+  == always {!<=-1,!>=2}
+Line 108
+  3 always 3
+  "./test_runner" always "./test_runner"
+  "TestClass::TestMethod" always "TestClass::TestMethod"
+  "TestClass" always "TestClass"
+Line 109
+  ( always !<=-1
+  / always 3
+  ( always !<=-1
+  argv possible lifetime[Object]=(argv)
+  argv possible lifetime[Object]=(argv)
+Line 110
+  "TestClass" always "TestClass"
+Line 111
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testoptions.cpp" always "cppcheck-2.8/test/testoptions.cpp"
+  111 always 111
+  expected always {{,size=1}
+  == always {!<=-1,!>=2}
+Line 115
+  5 always 5
+  "./test_runner" always "./test_runner"
+  "TestClass::TestMethod" always "TestClass::TestMethod"
+  "-a" always "-a"
+  "-v" always "-v"
+  "-q" always "-q"
+Line 116
+  ( always !<=-1
+  / always 5
+  ( always !<=-1
+  argv possible lifetime[Object]=(argv)
+  argv possible lifetime[Object]=(argv)
+Line 117
+  "TestClass::TestMethod" always "TestClass::TestMethod"
+Line 118
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testoptions.cpp" always "cppcheck-2.8/test/testoptions.cpp"
+  118 always 118
+  expected always {{,size=1}
+  == always {!<=-1,!>=2}
+Line 119
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testoptions.cpp" always "cppcheck-2.8/test/testoptions.cpp"
+  119 always 119
+  true always 1
+  ( always {!<=-1,!>=2}

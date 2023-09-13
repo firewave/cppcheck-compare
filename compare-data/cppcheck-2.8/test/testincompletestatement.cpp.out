@@ -1,0 +1,1639 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741939 expected@var22 !=@expr1073741940 actual@var23 ) {
+62: std ::@expr1073741941 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741942 expected@var22 ;
+64: std ::@expr1073741943 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741944 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741945 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741946 str (@expr1073741947 ) , actualStr@var26 .@expr1073741948 str (@expr1073741949 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741950 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741951 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741952 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741953 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testincompletestatement.cpp
+
+1:
+|
+32:
+33: class TestIncompleteStatement : public TestFixture {
+34: public:
+35: TestIncompleteStatement ( ) : TestFixture ( "TestIncompleteStatement" ) { }
+36:
+37: private:
+38: Settings settings@var102 ;
+39:
+40: void check ( const char code@var103 [ ] , bool inconclusive@var104 = false ) {
+41:
+42: errout@var100 .@expr1073741955 str (@expr1073741956 "" ) ;
+43:
+44: settings@var102 .@expr1073741957 certainty@var105 .@expr1073741958 setEnabled (@expr1073741959 Certainty ::@expr1073741960 inconclusive@expr1073741954 , inconclusive@var104 ) ;
+45:
+46:
+47: std ::@expr1073741961 vector < std ::@expr138 string > files@var106 (@expr1073741963 1 , "test.cpp" ) ;
+48: std ::@expr1073741964 istringstream istr@var107 (@expr1073741965 code@var103 ) ;
+49: const simplecpp ::@expr1073741966 TokenList tokens1@var108 (@expr1073741967 istr@var107 , files@var106 , files@var106 [@expr1073741968 0 ] ) ;
+50:
+51:
+52: simplecpp ::@expr1073741969 TokenList tokens2@var109 (@expr1073741970 files@var106 ) ;
+53: std ::@expr1073741971 map < std ::@expr138 string , simplecpp ::@expr138 TokenList *@expr1073741974 > filedata@var110 ;
+54: simplecpp ::@expr1073741975 preprocess (@expr1073741976 tokens2@var109 , tokens1@var108 , files@var106 , filedata@var110 , simplecpp ::@expr1073741977 DUI (@expr1073741978 ) ) ;
+55:
+56:
+57: Tokenizer tokenizer@var111 (@expr1073741979 &@expr156 settings@var102 , this@expr157 ) ;
+58: tokenizer@var111 .@expr1073741982 createTokens (@expr1073741983 std ::@expr1073741984 move (@expr1073741985 tokens2@var109 ) ) ;
+59: tokenizer@var111 .@expr1073741986 simplifyTokens1 (@expr1073741987 "" ) ;
+60:
+61:
+62: CheckOther checkOther@var112 (@expr1073741988 &@expr1073741989 tokenizer@var111 , &@expr156 settings@var102 , this@expr157 ) ;
+63: checkOther@var112 .@expr1073741991 checkIncompleteStatement (@expr1073741992 ) ;
+64: }
+65:
+66: void run ( ) override {
+67: settings@var102 .@expr1073741994 severity@var113 .@expr1073741995 enable (@expr1073741996 Severity ::@expr1073741997 warning@expr1073741993 ) ;
+68:
+69: $do ${ $if $(@expr1073741998 $prepareTest $(@expr1073741999 "test1" $) $) ${ $setVerbose $(@expr1073742000 $false $) $; test1 $(@expr1073742001 $) $; $} $} $while $(@expr1073742002 $false $) ;
+70: $do ${ $if $(@expr1073742003 $prepareTest $(@expr1073742004 "test2" $) $) ${ $setVerbose $(@expr1073742005 $false $) $; test2 $(@expr1073742006 $) $; $} $} $while $(@expr1073742007 $false $) ;
+71: $do ${ $if $(@expr1073742008 $prepareTest $(@expr1073742009 "test3" $) $) ${ $setVerbose $(@expr1073742010 $false $) $; test3 $(@expr1073742011 $) $; $} $} $while $(@expr1073742012 $false $) ;
+72: $do ${ $if $(@expr1073742013 $prepareTest $(@expr1073742014 "test4" $) $) ${ $setVerbose $(@expr1073742015 $false $) $; test4 $(@expr1073742016 $) $; $} $} $while $(@expr1073742017 $false $) ;
+73: $do ${ $if $(@expr1073742018 $prepareTest $(@expr1073742019 "test5" $) $) ${ $setVerbose $(@expr1073742020 $false $) $; test5 $(@expr1073742021 $) $; $} $} $while $(@expr1073742022 $false $) ;
+74: $do ${ $if $(@expr1073742023 $prepareTest $(@expr1073742024 "test6" $) $) ${ $setVerbose $(@expr1073742025 $false $) $; test6 $(@expr1073742026 $) $; $} $} $while $(@expr1073742027 $false $) ;
+75: $do ${ $if $(@expr1073742028 $prepareTest $(@expr1073742029 "test7" $) $) ${ $setVerbose $(@expr1073742030 $false $) $; test7 $(@expr1073742031 $) $; $} $} $while $(@expr1073742032 $false $) ;
+76: $do ${ $if $(@expr1073742033 $prepareTest $(@expr1073742034 "test_numeric" $) $) ${ $setVerbose $(@expr1073742035 $false $) $; test_numeric $(@expr1073742036 $) $; $} $} $while $(@expr1073742037 $false $) ;
+77: $do ${ $if $(@expr1073742038 $prepareTest $(@expr1073742039 "void0" $) $) ${ $setVerbose $(@expr1073742040 $false $) $; void0 $(@expr1073742041 $) $; $} $} $while $(@expr1073742042 $false $) ;
+78: $do ${ $if $(@expr1073742043 $prepareTest $(@expr1073742044 "intarray" $) $) ${ $setVerbose $(@expr1073742045 $false $) $; intarray $(@expr1073742046 $) $; $} $} $while $(@expr1073742047 $false $) ;
+79: $do ${ $if $(@expr1073742048 $prepareTest $(@expr1073742049 "structarraynull" $) $) ${ $setVerbose $(@expr1073742050 $false $) $; structarraynull $(@expr1073742051 $) $; $} $} $while $(@expr1073742052 $false $) ;
+80: $do ${ $if $(@expr1073742053 $prepareTest $(@expr1073742054 "structarray" $) $) ${ $setVerbose $(@expr1073742055 $false $) $; structarray $(@expr1073742056 $) $; $} $} $while $(@expr1073742057 $false $) ;
+81: $do ${ $if $(@expr1073742058 $prepareTest $(@expr1073742059 "conditionalcall" $) $) ${ $setVerbose $(@expr1073742060 $false $) $; conditionalcall $(@expr1073742061 $) $; $} $} $while $(@expr1073742062 $false $) ;
+82: $do ${ $if $(@expr1073742063 $prepareTest $(@expr1073742064 "structinit" $) $) ${ $setVerbose $(@expr1073742065 $false $) $; structinit $(@expr1073742066 $) $; $} $} $while $(@expr1073742067 $false $) ;
+83: $do ${ $if $(@expr1073742068 $prepareTest $(@expr1073742069 "returnstruct" $) $) ${ $setVerbose $(@expr1073742070 $false $) $; returnstruct $(@expr1073742071 $) $; $} $} $while $(@expr1073742072 $false $) ;
+84: $do ${ $if $(@expr1073742073 $prepareTest $(@expr1073742074 "cast" $) $) ${ $setVerbose $(@expr1073742075 $false $) $; cast $(@expr1073742076 $) $; $} $} $while $(@expr1073742077 $false $) ;
+85: $do ${ $if $(@expr1073742078 $prepareTest $(@expr1073742079 "increment" $) $) ${ $setVerbose $(@expr1073742080 $false $) $; increment $(@expr1073742081 $) $; $} $} $while $(@expr1073742082 $false $) ;
+86: $do ${ $if $(@expr1073742083 $prepareTest $(@expr1073742084 "cpp11init" $) $) ${ $setVerbose $(@expr1073742085 $false $) $; cpp11init $(@expr1073742086 $) $; $} $} $while $(@expr1073742087 $false $) ;
+87: $do ${ $if $(@expr1073742088 $prepareTest $(@expr1073742089 "cpp11init2" $) $) ${ $setVerbose $(@expr1073742090 $false $) $; cpp11init2 $(@expr1073742091 $) $; $} $} $while $(@expr1073742092 $false $) ;
+88: $do ${ $if $(@expr1073742093 $prepareTest $(@expr1073742094 "cpp11init3" $) $) ${ $setVerbose $(@expr1073742095 $false $) $; cpp11init3 $(@expr1073742096 $) $; $} $} $while $(@expr1073742097 $false $) ;
+89: $do ${ $if $(@expr1073742098 $prepareTest $(@expr1073742099 "block" $) $) ${ $setVerbose $(@expr1073742100 $false $) $; block $(@expr1073742101 $) $; $} $} $while $(@expr1073742102 $false $) ;
+90: $do ${ $if $(@expr1073742103 $prepareTest $(@expr1073742104 "mapindex" $) $) ${ $setVerbose $(@expr1073742105 $false $) $; mapindex $(@expr1073742106 $) $; $} $} $while $(@expr1073742107 $false $) ;
+91: $do ${ $if $(@expr1073742108 $prepareTest $(@expr1073742109 "commaoperator1" $) $) ${ $setVerbose $(@expr1073742110 $false $) $; commaoperator1 $(@expr1073742111 $) $; $} $} $while $(@expr1073742112 $false $) ;
+92: $do ${ $if $(@expr1073742113 $prepareTest $(@expr1073742114 "commaoperator2" $) $) ${ $setVerbose $(@expr1073742115 $false $) $; commaoperator2 $(@expr1073742116 $) $; $} $} $while $(@expr1073742117 $false $) ;
+93: $do ${ $if $(@expr1073742118 $prepareTest $(@expr1073742119 "redundantstmts" $) $) ${ $setVerbose $(@expr1073742120 $false $) $; redundantstmts $(@expr1073742121 $) $; $} $} $while $(@expr1073742122 $false $) ;
+94: $do ${ $if $(@expr1073742123 $prepareTest $(@expr1073742124 "vardecl" $) $) ${ $setVerbose $(@expr1073742125 $false $) $; vardecl $(@expr1073742126 $) $; $} $} $while $(@expr1073742127 $false $) ;
+95: $do ${ $if $(@expr1073742128 $prepareTest $(@expr1073742129 "archive" $) $) ${ $setVerbose $(@expr1073742130 $false $) $; archive $(@expr1073742131 $) $; $} $} $while $(@expr1073742132 $false $) ;
+96: $do ${ $if $(@expr1073742133 $prepareTest $(@expr1073742134 "ast" $) $) ${ $setVerbose $(@expr1073742135 $false $) $; ast $(@expr1073742136 $) $; $} $} $while $(@expr1073742137 $false $) ;
+97: $do ${ $if $(@expr1073742138 $prepareTest $(@expr1073742139 "oror" $) $) ${ $setVerbose $(@expr1073742140 $false $) $; oror $(@expr1073742141 $) $; $} $} $while $(@expr1073742142 $false $) ;
+98: }
+99:
+100: void test1 ( ) {
+101: check (@expr1073742143 "void foo()\n{\n    const char def[] =\n    \"abc\";\n}"
+102:
+103:
+104:
+105: ) ;
+106:
+107: $if $(@expr1073742144 $!@expr1073742145 $assertEquals $(@expr1073742146 "cppcheck-2.8/test/testincompletestatement.cpp" $, 107 $, "" $, errout@var100 .@expr1073742147 str (@expr1073742148 ) $) $) { $return ; }
+108: }
+109:
+110: void test2 ( ) {
+111: check (@expr1073742149 "void foo()\n{\n    \"abc\";\n}"
+112:
+113:
+114: ) ;
+115:
+116: $if $(@expr1073742150 $!@expr1073742151 $assertEquals $(@expr1073742152 "cppcheck-2.8/test/testincompletestatement.cpp" $, 116 $, "[test.cpp:3]: (warning) Redundant code: Found a statement that begins with string constant.\n" $, errout@var100 .@expr1073742153 str (@expr1073742154 ) $) $) { $return ; }
+117: }
+118:
+119: void test3 ( ) {
+120: check (@expr1073742155 "void foo()\n{\n    const char *str[] = { \"abc\" };\n}"
+121:
+122:
+123: ) ;
+124:
+125: $if $(@expr1073742156 $!@expr1073742157 $assertEquals $(@expr1073742158 "cppcheck-2.8/test/testincompletestatement.cpp" $, 125 $, "" $, errout@var100 .@expr1073742159 str (@expr1073742160 ) $) $) { $return ; }
+126: }
+127:
+128: void test4 ( ) {
+129: check (@expr1073742161 "void foo()\n{\nconst char *a =\n{\n\"hello \"\n\"more \"\n\"world\"\n};\n}"
+130:
+|
+136:
+137: ) ;
+138:
+139: $if $(@expr1073742162 $!@expr1073742163 $assertEquals $(@expr1073742164 "cppcheck-2.8/test/testincompletestatement.cpp" $, 139 $, "" $, errout@var100 .@expr1073742165 str (@expr1073742166 ) $) $) { $return ; }
+140: }
+141:
+142: void test5 ( ) {
+143: check (@expr1073742167 "void foo()\n{\n    50;\n}"
+144:
+145:
+146: ) ;
+147:
+148: $if $(@expr1073742168 $!@expr1073742169 $assertEquals $(@expr1073742170 "cppcheck-2.8/test/testincompletestatement.cpp" $, 148 $, "[test.cpp:3]: (warning) Redundant code: Found a statement that begins with numeric constant.\n" $, errout@var100 .@expr1073742171 str (@expr1073742172 ) $) $) { $return ; }
+149: }
+150:
+151: void test6 ( ) {
+152:
+153: check (@expr1073742173 "void f() {\n  1 == (two + three);\n  2 != (two + three);\n  (one + two) != (two + three);\n}"
+154:
+155:
+156:
+157: ) ;
+158: }
+159:
+160: void test7 ( ) {
+161: check (@expr1073742174 "namespace { std::string S = \"\"; }\n\nclass C {\npublic:\n  explicit C(const std::string& s);\n};\n\nvoid f() {\n  for (C c(S); ; ) {\n    (void)c;\n  }\n}"
+162:
+|
+171:
+172: ) ;
+173: $if $(@expr1073742175 $!@expr1073742176 $assertEquals $(@expr1073742177 "cppcheck-2.8/test/testincompletestatement.cpp" $, 173 $, "" $, errout@var100 .@expr1073742178 str (@expr1073742179 ) $) $) { $return ; }
+174: }
+175:
+176: void test_numeric ( ) {
+177: check (@expr1073742180 "struct P {\n    double a;\n    double b;\n};\nvoid f() {\n    const P values[2] =\n    {\n        { 346.1,114.1 }, { 347.1,111.1 }\n    };\n}"
+178:
+|
+185:
+186: ) ;
+187:
+188: $if $(@expr1073742181 $!@expr1073742182 $assertEquals $(@expr1073742183 "cppcheck-2.8/test/testincompletestatement.cpp" $, 188 $, "" $, errout@var100 .@expr1073742184 str (@expr1073742185 ) $) $) { $return ; }
+189: }
+190:
+191: void void0 ( ) {
+192: check (@expr1073742186 "void f() { (void*)0; }" ) ;
+193: $if $(@expr1073742187 $!@expr1073742188 $assertEquals $(@expr1073742189 "cppcheck-2.8/test/testincompletestatement.cpp" $, 193 $, "" $, errout@var100 .@expr366 str (@expr367 ) $) $) { $return ; }
+194:
+195: check (@expr1073742192 "#define X  0\nvoid f() { X; }"
+196: ) ;
+197: $if $(@expr1073742193 $!@expr1073742194 $assertEquals $(@expr1073742195 "cppcheck-2.8/test/testincompletestatement.cpp" $, 197 $, "" $, errout@var100 .@expr366 str (@expr367 ) $) $) { $return ; }
+198: }
+199:
+200: void intarray ( ) {
+201: check (@expr1073742198 "int arr[] = { 100/2, 1*100 };" ) ;
+202: $if $(@expr1073742199 $!@expr1073742200 $assertEquals $(@expr1073742201 "cppcheck-2.8/test/testincompletestatement.cpp" $, 202 $, "" $, errout@var100 .@expr1073742202 str (@expr1073742203 ) $) $) { $return ; }
+203: }
+204:
+205: void structarraynull ( ) {
+206: check (@expr1073742204 "struct st arr[] = {\n    { 100/2, 1*100 }\n    { 90, 70 }\n}"
+207:
+208:
+209: ) ;
+210: $if $(@expr1073742205 $!@expr1073742206 $assertEquals $(@expr1073742207 "cppcheck-2.8/test/testincompletestatement.cpp" $, 210 $, "" $, errout@var100 .@expr1073742208 str (@expr1073742209 ) $) $) { $return ; }
+211: }
+212:
+213: void structarray ( ) {
+214: check (@expr1073742210 "struct st arr[] = {\n    { 100/2, 1*100 }\n    { 90, 70 }\n};"
+215:
+216:
+217: ) ;
+218: $if $(@expr1073742211 $!@expr1073742212 $assertEquals $(@expr1073742213 "cppcheck-2.8/test/testincompletestatement.cpp" $, 218 $, "" $, errout@var100 .@expr1073742214 str (@expr1073742215 ) $) $) { $return ; }
+219: }
+220:
+221: void conditionalcall ( ) {
+222: check (@expr1073742216 "void f() {\n    0==x ? X() : Y();\n}"
+223:
+224: ) ;
+225: $if $(@expr1073742217 $!@expr1073742218 $assertEquals $(@expr1073742219 "cppcheck-2.8/test/testincompletestatement.cpp" $, 225 $, "" $, errout@var100 .@expr1073742220 str (@expr1073742221 ) $) $) { $return ; }
+226: }
+227:
+228: void structinit ( ) {
+229:
+230: check (@expr1073742222 "void f() {\n    ABC abc{1,2,3};\n}"
+231:
+232: ) ;
+233: $if $(@expr1073742223 $!@expr1073742224 $assertEquals $(@expr1073742225 "cppcheck-2.8/test/testincompletestatement.cpp" $, 233 $, "" $, errout@var100 .@expr402 str (@expr403 ) $) $) { $return ; }
+234:
+235:
+236: check (@expr1073742228 "void foo() {\n    static const char* a[][2] {\n        {\"b\", \"\"},\n    };\n}"
+237:
+238:
+239:
+240: ) ;
+241: $if $(@expr1073742229 $!@expr1073742230 $assertEquals $(@expr1073742231 "cppcheck-2.8/test/testincompletestatement.cpp" $, 241 $, "" $, errout@var100 .@expr402 str (@expr403 ) $) $) { $return ; }
+242:
+243:
+244: check (@expr1073742234 "struct A {};" ) ;
+245: $if $(@expr1073742235 $!@expr1073742236 $assertEquals $(@expr1073742237 "cppcheck-2.8/test/testincompletestatement.cpp" $, 245 $, "" $, errout@var100 .@expr402 str (@expr403 ) $) $) { $return ; }
+246:
+247:
+248: check (@expr1073742240 "A::A() : abc{0} {}" ) ;
+249: $if $(@expr1073742241 $!@expr1073742242 $assertEquals $(@expr1073742243 "cppcheck-2.8/test/testincompletestatement.cpp" $, 249 $, "" $, errout@var100 .@expr402 str (@expr403 ) $) $) { $return ; }
+250:
+251:
+252: check (@expr1073742246 "A::A() : abc::def<int>{0} {}" ) ;
+253: $if $(@expr1073742247 $!@expr1073742248 $assertEquals $(@expr1073742249 "cppcheck-2.8/test/testincompletestatement.cpp" $, 253 $, "" $, errout@var100 .@expr402 str (@expr403 ) $) $) { $return ; }
+254:
+255:
+256: check (@expr1073742252 "void f() { vector<int> v{1}; }" ) ;
+257: $if $(@expr1073742253 $!@expr1073742254 $assertEquals $(@expr1073742255 "cppcheck-2.8/test/testincompletestatement.cpp" $, 257 $, "" $, errout@var100 .@expr402 str (@expr403 ) $) $) { $return ; }
+258: }
+259:
+260: void returnstruct ( ) {
+261: check (@expr1073742258 "struct s foo() {\n    return (struct s){0,0};\n}"
+262:
+263: ) ;
+264: $if $(@expr1073742259 $!@expr1073742260 $assertEquals $(@expr1073742261 "cppcheck-2.8/test/testincompletestatement.cpp" $, 264 $, "" $, errout@var100 .@expr438 str (@expr439 ) $) $) { $return ; }
+265:
+266:
+267: check (@expr1073742264 "unordered_map<string, string>  foo() {\n    return {\n        {\"hi\", \"there\"},\n        {\"happy\", \"sad\"}\n    };\n}"
+268:
+|
+271:
+272: ) ;
+273: $if $(@expr1073742265 $!@expr1073742266 $assertEquals $(@expr1073742267 "cppcheck-2.8/test/testincompletestatement.cpp" $, 273 $, "" $, errout@var100 .@expr438 str (@expr439 ) $) $) { $return ; }
+274:
+275: check (@expr1073742270 "struct s foo() {\n  return (struct s){0};\n}"
+276:
+277: ) ;
+278: $if $(@expr1073742271 $!@expr1073742272 $assertEquals $(@expr1073742273 "cppcheck-2.8/test/testincompletestatement.cpp" $, 278 $, "" $, errout@var100 .@expr438 str (@expr439 ) $) $) { $return ; }
+279: }
+280:
+281: void cast ( ) {
+282: check (@expr1073742276 "void f() {\n    ((struct foo *)(0x1234))->xy = 1;\n}"
+283:
+284: ) ;
+285: $if $(@expr1073742277 $!@expr1073742278 $assertEquals $(@expr1073742279 "cppcheck-2.8/test/testincompletestatement.cpp" $, 285 $, "" $, errout@var100 .@expr456 str (@expr457 ) $) $) { $return ; }
+286:
+287: check (@expr1073742282 "bool f(const std::exception& e) {\n    try {\n        dynamic_cast<const InvalidTypeException&>(e);\n        return true;\n    }\n    catch (...) {\n        return false;\n    }\n}\n"
+288:
+|
+294:
+295: ) ;
+296: $if $(@expr1073742283 $!@expr1073742284 $assertEquals $(@expr1073742285 "cppcheck-2.8/test/testincompletestatement.cpp" $, 296 $, "" $, errout@var100 .@expr456 str (@expr457 ) $) $) { $return ; }
+297: }
+298:
+299: void increment ( ) {
+300: check (@expr1073742288 "void f() {\n    int x = 1;\n    x++, x++;\n}"
+301:
+302:
+303: ) ;
+304: $if $(@expr1073742289 $!@expr1073742290 $assertEquals $(@expr1073742291 "cppcheck-2.8/test/testincompletestatement.cpp" $, 304 $, "" $, errout@var100 .@expr1073742292 str (@expr1073742293 ) $) $) { $return ; }
+305: }
+306:
+307: void cpp11init ( ) {
+308: check (@expr1073742294 "void f() {\n    int x{1};\n}"
+309:
+310: ) ;
+311: $if $(@expr1073742295 $!@expr1073742296 $assertEquals $(@expr1073742297 "cppcheck-2.8/test/testincompletestatement.cpp" $, 311 $, "" $, errout@var100 .@expr474 str (@expr475 ) $) $) { $return ; }
+312:
+313: check (@expr1073742300 "std::vector<int> f(int* p) {\n    return std::vector<int>({ p[0] });\n}\n"
+314:
+315: ) ;
+316: $if $(@expr1073742301 $!@expr1073742302 $assertEquals $(@expr1073742303 "cppcheck-2.8/test/testincompletestatement.cpp" $, 316 $, "" $, errout@var100 .@expr474 str (@expr475 ) $) $) { $return ; }
+317: }
+318:
+319: void cpp11init2 ( ) {
+320: check (@expr1073742306 "x<string> handlers{\n  { \"mode2\", []() { return 2; } },\n};"
+321:
+322: ) ;
+323: $if $(@expr1073742307 $!@expr1073742308 $assertEquals $(@expr1073742309 "cppcheck-2.8/test/testincompletestatement.cpp" $, 323 $, "" $, errout@var100 .@expr1073742310 str (@expr1073742311 ) $) $) { $return ; }
+324: }
+325:
+326: void cpp11init3 ( ) {
+327: check (@expr1073742312 "struct A { void operator()(int); };\nvoid f() {\nA{}(0);\n}"
+328:
+329:
+330: ) ;
+331: $if $(@expr1073742313 $!@expr1073742314 $assertEquals $(@expr1073742315 "cppcheck-2.8/test/testincompletestatement.cpp" $, 331 $, "" $, errout@var100 .@expr492 str (@expr493 ) $) $) { $return ; }
+332:
+333: check (@expr1073742318 "template<class> struct A { void operator()(int); };\nvoid f() {\nA<int>{}(0);\n}"
+334:
+335:
+336: ) ;
+337: $if $(@expr1073742319 $!@expr1073742320 $assertEquals $(@expr1073742321 "cppcheck-2.8/test/testincompletestatement.cpp" $, 337 $, "" $, errout@var100 .@expr492 str (@expr493 ) $) $) { $return ; }
+338: }
+339:
+340: void block ( ) {
+341: check (@expr1073742324 "void f() {\n    ({ do_something(); 0; });\n}"
+342:
+343: ) ;
+344: $if $(@expr1073742325 $!@expr1073742326 $assertEquals $(@expr1073742327 "cppcheck-2.8/test/testincompletestatement.cpp" $, 344 $, "" $, errout@var100 .@expr504 str (@expr505 ) $) $) { $return ; }
+345:
+346: check (@expr1073742330 "void f() {\nout:\n    ({ do_something(); 0; });\n}"
+347:
+348:
+349: ) ;
+350: $if $(@expr1073742331 $!@expr1073742332 $assertEquals $(@expr1073742333 "cppcheck-2.8/test/testincompletestatement.cpp" $, 350 $, "" $, errout@var100 .@expr504 str (@expr505 ) $) $) { $return ; }
+351: }
+352:
+353: void mapindex ( ) {
+354: check (@expr1073742336 "void f() {\n  map[{\"1\",\"2\"}]=0;\n}"
+355:
+356: ) ;
+357: $if $(@expr1073742337 $!@expr1073742338 $assertEquals $(@expr1073742339 "cppcheck-2.8/test/testincompletestatement.cpp" $, 357 $, "" $, errout@var100 .@expr1073742340 str (@expr1073742341 ) $) $) { $return ; }
+358: }
+359:
+360:
+361: void commaoperator1 ( ) {
+362: check (@expr1073742342 "void foo(int,const char*,int);\nvoid f(int value) {\n    foo(42,\"test\",42),(value&42);\n}"
+363:
+364:
+365: ) ;
+366: $if $(@expr1073742343 $!@expr1073742344 $assertEquals $(@expr1073742345 "cppcheck-2.8/test/testincompletestatement.cpp" $, 366 $, "[test.cpp:3]: (warning) Found suspicious operator ',', result is not used.\n" $, errout@var100 .@expr1073742346 str (@expr1073742347 ) $) $) { $return ; }
+367: }
+368:
+369: void commaoperator2 ( ) {
+370: check (@expr1073742348 "void f() {\n    for(unsigned int a=0, b; a<10; a++ ) {}\n}\n"
+371:
+372: ) ;
+373: $if $(@expr1073742349 $!@expr1073742350 $assertEquals $(@expr1073742351 "cppcheck-2.8/test/testincompletestatement.cpp" $, 373 $, "" $, errout@var100 .@expr528 str (@expr529 ) $) $) { $return ; }
+374:
+375: check (@expr1073742354 "void g();\nbool f() {\n    return (void)g(), false;\n}\n"
+376:
+377:
+378: ) ;
+379: $if $(@expr1073742355 $!@expr1073742356 $assertEquals $(@expr1073742357 "cppcheck-2.8/test/testincompletestatement.cpp" $, 379 $, "" $, errout@var100 .@expr528 str (@expr529 ) $) $) { $return ; }
+380:
+381: check (@expr1073742360 "void f(int a, int b, int c, int d) {\n    Eigen::Vector4d V;\n    V << a, b, c, d;\n}\n"
+382:
+383:
+384: ) ;
+385: $if $(@expr1073742361 $!@expr1073742362 $assertEquals $(@expr1073742363 "cppcheck-2.8/test/testincompletestatement.cpp" $, 385 $, "" $, errout@var100 .@expr528 str (@expr529 ) $) $) { $return ; }
+386:
+387: check (@expr1073742366 "struct S { Eigen::Vector4d V; };\nstruct T { int a, int b, int c, int d; };\nvoid f(S& s, const T& t) {\n    s.V << t.a, t.b, t.c, t.d;\n}\n"
+388:
+389:
+390:
+391: ) ;
+392: $if $(@expr1073742367 $!@expr1073742368 $assertEquals $(@expr1073742369 "cppcheck-2.8/test/testincompletestatement.cpp" $, 392 $, "" $, errout@var100 .@expr528 str (@expr529 ) $) $) { $return ; }
+393:
+394: check (@expr1073742372 "struct S { Eigen::Vector4d V[2]; };\nvoid f(int a, int b, int c, int d) {\n    S s[1];\n    s[0].V[1] << a, b, c, d;\n}\n"
+395:
+396:
+397:
+398: ) ;
+399: $if $(@expr1073742373 $!@expr1073742374 $assertEquals $(@expr1073742375 "cppcheck-2.8/test/testincompletestatement.cpp" $, 399 $, "" $, errout@var100 .@expr528 str (@expr529 ) $) $) { $return ; }
+400:
+401: check (@expr1073742378 "void f() {\n    a.b[4][3].c()->d << x , y, z;\n}\n"
+402:
+403: ) ;
+404: $if $(@expr1073742379 $!@expr1073742380 $assertEquals $(@expr1073742381 "cppcheck-2.8/test/testincompletestatement.cpp" $, 404 $, "" $, errout@var100 .@expr528 str (@expr529 ) $) $) { $return ; }
+405:
+406: check (@expr1073742384 "struct V {\n    Eigen::Vector3d& operator[](int i) { return v[i]; }\n    void f(int a, int b, int c);\n    Eigen::Vector3d v[1];\n};\nvoid V::f(int a, int b, int c) {\n    (*this)[0] << a, b, c;\n}\n"
+407:
+|
+412:
+413: ) ;
+414: $if $(@expr1073742385 $!@expr1073742386 $assertEquals $(@expr1073742387 "cppcheck-2.8/test/testincompletestatement.cpp" $, 414 $, "" $, errout@var100 .@expr528 str (@expr529 ) $) $) { $return ; }
+415: }
+416:
+417:
+418: void redundantstmts ( ) {
+419: check (@expr1073742390 "void f1(int x) {\n    1;\n    (1);\n    (char)1;\n    ((char)1);\n    !x;\n    (!x);\n    (unsigned int)!x;\n    ~x;\n}\n"
+420:
+|
+427:
+428: , true ) ;
+429: $if $(@expr1073742391 $!@expr1073742392 $assertEquals $(@expr1073742393 "cppcheck-2.8/test/testincompletestatement.cpp" $, 429 $, "[test.cpp:2]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:3]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:4]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:5]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:6]: (warning, inconclusive) Found suspicious operator '!', result is not used.\n[test.cpp:7]: (warning, inconclusive) Found suspicious operator '!', result is not used.\n[test.cpp:8]: (warning) Redundant code: Found unused cast of expression '!x'.\n[test.cpp:9]: (warning, inconclusive) Found suspicious operator '~', result is not used.\n" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return
+430:
+|
+436:
+437: ; }
+438:
+439: check (@expr1073742396 "void f1(int x) { x; }" , true ) ;
+440: $if $(@expr1073742397 $!@expr1073742398 $assertEquals $(@expr1073742399 "cppcheck-2.8/test/testincompletestatement.cpp" $, 440 $, "[test.cpp:1]: (warning) Unused variable value 'x'\n" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+441:
+442: check (@expr1073742402 "void f() { if (Type t; g(t)) {} }" ) ;
+443: $if $(@expr1073742403 $!@expr1073742404 $assertEquals $(@expr1073742405 "cppcheck-2.8/test/testincompletestatement.cpp" $, 443 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+444:
+445: check (@expr1073742408 "void f(int x) { static_cast<unsigned>(x); }" ) ;
+446: $if $(@expr1073742409 $!@expr1073742410 $assertEquals $(@expr1073742411 "cppcheck-2.8/test/testincompletestatement.cpp" $, 446 $, "[test.cpp:1]: (warning) Redundant code: Found unused cast of expression 'x'.\n" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+447:
+448: check (@expr1073742414 "void f(int x, int* p) {\n    static_cast<void>(x);\n    (void)x;\n    static_cast<void*>(p);\n    (void*)p;\n}\n"
+449:
+|
+452:
+453: ) ;
+454: $if $(@expr1073742415 $!@expr1073742416 $assertEquals $(@expr1073742417 "cppcheck-2.8/test/testincompletestatement.cpp" $, 454 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+455:
+456: check (@expr1073742420 "void f() { false; }" ) ;
+457: $if $(@expr1073742421 $!@expr1073742422 $assertEquals $(@expr1073742423 "cppcheck-2.8/test/testincompletestatement.cpp" $, 457 $, "[test.cpp:1]: (warning) Redundant code: Found a statement that begins with bool constant.\n" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+458:
+459: check (@expr1073742426 "void f(int i) {\n    (float)(char)i;\n    static_cast<float>((char)i);\n    (char)static_cast<float>(i);\n}\n"
+460:
+461:
+462:
+463: ) ;
+464: $if $(@expr1073742427 $!@expr1073742428 $assertEquals $(@expr1073742429 "cppcheck-2.8/test/testincompletestatement.cpp" $, 464 $, "[test.cpp:2]: (warning) Redundant code: Found unused cast of expression 'i'.\n[test.cpp:3]: (warning) Redundant code: Found unused cast of expression 'i'.\n[test.cpp:4]: (warning) Redundant code: Found unused cast of expression 'i'.\n" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return
+465:
+466:
+467: ; }
+468:
+469: check (@expr1073742432 "namespace M {\n    namespace N { typedef char T; }\n}\nvoid f(int i) {\n    (M::N::T)i;\n}\n"
+470:
+|
+473:
+474: ) ;
+475: $if $(@expr1073742433 $!@expr1073742434 $assertEquals $(@expr1073742435 "cppcheck-2.8/test/testincompletestatement.cpp" $, 475 $, "[test.cpp:5]: (warning) Redundant code: Found unused cast of expression 'i'.\n" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+476:
+477: check (@expr1073742438 "void f(int (g)(int a, int b)) {\n    int p = 0, q = 1;\n    (g)(p, q);\n}\nvoid f() {\n  char buf[10];\n  (sprintf)(buf, \"%d\", 42);\n  (printf)(\"abc\");\n}\n"
+478:
+|
+484:
+485: ) ;
+486: $if $(@expr1073742439 $!@expr1073742440 $assertEquals $(@expr1073742441 "cppcheck-2.8/test/testincompletestatement.cpp" $, 486 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+487:
+488: check (@expr1073742444 "struct S; struct T; struct U;\nvoid f() {\n    T t;\n    (S)(U)t;\n    (S)static_cast<U>(t);\n    static_cast<S>((U)t);\n}\n"
+489:
+|
+493:
+494: ) ;
+495: $if $(@expr1073742445 $!@expr1073742446 $assertEquals $(@expr1073742447 "cppcheck-2.8/test/testincompletestatement.cpp" $, 495 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+496:
+497: check (@expr1073742450 "void f(bool b) { b ? true : false; }\n" ) ;
+498: $if $(@expr1073742451 $!@expr1073742452 $assertEquals $(@expr1073742453 "cppcheck-2.8/test/testincompletestatement.cpp" $, 498 $, "[test.cpp:1]: (warning) Redundant code: Found unused result of ternary operator.\n" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+499:
+500: check (@expr1073742456 "struct S { void (*f)() = nullptr; };\nvoid g(S* s) {\n    (s->f == nullptr) ? nullptr : (s->f(), nullptr);\n}\n"
+501:
+502:
+503: ) ;
+504: $if $(@expr1073742457 $!@expr1073742458 $assertEquals $(@expr1073742459 "cppcheck-2.8/test/testincompletestatement.cpp" $, 504 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+505:
+506: check (@expr1073742462 "void f(bool b) {\n    g() ? true : false;\n    true ? g() : false;\n    false ? true : g();\n    g(b ? true : false, 1);\n    C c{ b ? true : false, 1 };\n    b = (b ? true : false);\n}\n"
+507:
+|
+512:
+513: ) ;
+514: $if $(@expr1073742463 $!@expr1073742464 $assertEquals $(@expr1073742465 "cppcheck-2.8/test/testincompletestatement.cpp" $, 514 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+515:
+516: check (@expr1073742468 "void f(int i) {\n    for (i; ;) {}\n    for ((long)i; ;) {}\n    for (1; ;) {}\n    for (true; ;) {}\n    for ('a'; ;) {}\n    for (L'b'; ;) {}\n    for (\"x\"; ;) {}\n    for (L\"y\"; ;) {}\n}\n"
+517:
+|
+524:
+525: ) ;
+526: $if $(@expr1073742469 $!@expr1073742470 $assertEquals $(@expr1073742471 "cppcheck-2.8/test/testincompletestatement.cpp" $, 526 $, "[test.cpp:2]: (warning) Unused variable value 'i'\n[test.cpp:3]: (warning) Redundant code: Found unused cast of expression 'i'.\n[test.cpp:4]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:5]: (warning) Redundant code: Found a statement that begins with bool constant.\n[test.cpp:6]: (warning) Redundant code: Found a statement that begins with character constant.\n[test.cpp:7]: (warning) Redundant code: Found a statement that begins with character constant.\n[test.cpp:8]: (warning) Redundant code: Found a statement that begins with string constant.\n[test.cpp:9]: (warning) Redundant code: Found a statement that begins with string constant.\n" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return
+527:
+|
+533:
+534: ; }
+535:
+536: check (@expr1073742474 "struct S { bool b{}; };\nstruct T {\n    S s[2];\n    void g();\n};\nvoid f(const S& r, const S* p) {\n    r.b;\n    p->b;\n    S s;\n    (s.b);\n    T t, u[2];\n    t.s[1].b;\n    t.g();\n    u[0].g();\n    u[1].s[0].b;\n}\n"
+537:
+|
+550:
+551: ) ;
+552: $if $(@expr1073742475 $!@expr1073742476 $assertEquals $(@expr1073742477 "cppcheck-2.8/test/testincompletestatement.cpp" $, 552 $, "[test.cpp:7]: (warning) Redundant code: Found unused member access.\n[test.cpp:8]: (warning) Redundant code: Found unused member access.\n[test.cpp:10]: (warning) Redundant code: Found unused member access.\n[test.cpp:12]: (warning) Redundant code: Found unused member access.\n[test.cpp:15]: (warning) Redundant code: Found unused member access.\n" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return
+553:
+|
+556:
+557: ; }
+558:
+559: check (@expr1073742480 "struct S { int a[2]{}; };\nstruct T { S s; };\nvoid f() {\n    int i[2];\n    i[0] = 0;\n    i[0];\n    S s[1];\n    s[0].a[1];\n    T t;\n    t.s.a[1];\n    int j[2][2][1] = {};\n    j[0][0][0];\n}\n"
+560:
+|
+570:
+571: ) ;
+572: $if $(@expr1073742481 $!@expr1073742482 $assertEquals $(@expr1073742483 "cppcheck-2.8/test/testincompletestatement.cpp" $, 572 $, "[test.cpp:6]: (warning) Redundant code: Found unused array access.\n[test.cpp:8]: (warning) Redundant code: Found unused array access.\n[test.cpp:10]: (warning) Redundant code: Found unused array access.\n[test.cpp:12]: (warning) Redundant code: Found unused array access.\n" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return
+573:
+574:
+575:
+576: ; }
+577:
+578: check (@expr1073742486 "void g(std::map<std::string, std::string>& map) {\n    int j[2]{};\n    int k[2] = {};\n    int l[]{ 1, 2 };\n    int m[] = { 1, 2 };\n    h(0, j[0], 1);\n    C c{ 0, j[0], 1 };\n    c[0];\n    int j[2][2][2] = {};\n    j[h()][0][0];\n    j[0][h()][0];\n    j[0][0][h()];\n    std::map<std::string, int> M;\n    M[\"abc\"];\n    map[\"abc\"];\n    std::auto_ptr<Int> app[4];}\n"
+579:
+|
+593:
+594: ) ;
+595: $if $(@expr1073742487 $!@expr1073742488 $assertEquals $(@expr1073742489 "cppcheck-2.8/test/testincompletestatement.cpp" $, 595 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+596:
+597: check (@expr1073742492 "struct S { void* p; };\nvoid f(S s) {\n    delete (int*)s.p;\n}\n"
+598:
+599:
+600: ) ;
+601: $if $(@expr1073742493 $!@expr1073742494 $assertEquals $(@expr1073742495 "cppcheck-2.8/test/testincompletestatement.cpp" $, 601 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+602:
+603: check (@expr1073742498 "struct T {\n    T* p;\n};\nvoid f(T* t) {\n    for (decltype(t->p) (c) = t->p; ;) {}\n}\n"
+604:
+|
+607:
+608: ) ;
+609: $if $(@expr1073742499 $!@expr1073742500 $assertEquals $(@expr1073742501 "cppcheck-2.8/test/testincompletestatement.cpp" $, 609 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+610:
+611: check (@expr1073742504 "void f(int i, std::vector<int*> v);\nvoid g() {\n    f(1, { static_cast<int*>(nullptr) });\n}\n"
+612:
+613:
+614: ) ;
+615: $if $(@expr1073742505 $!@expr1073742506 $assertEquals $(@expr1073742507 "cppcheck-2.8/test/testincompletestatement.cpp" $, 615 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+616:
+617: check (@expr1073742510 "struct S { int i; };\nenum E {};\nvoid f(const S* s) {\n    E e = (E)!s->i;\n}\n"
+618:
+619:
+620:
+621: ) ;
+622: $if $(@expr1073742511 $!@expr1073742512 $assertEquals $(@expr1073742513 "cppcheck-2.8/test/testincompletestatement.cpp" $, 622 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+623:
+624: check (@expr1073742516 "void f(int* p) {\n    int& r(*p[0]);\n}\n"
+625:
+626: ) ;
+627: $if $(@expr1073742517 $!@expr1073742518 $assertEquals $(@expr1073742519 "cppcheck-2.8/test/testincompletestatement.cpp" $, 627 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+628:
+629: check (@expr1073742522 "struct S { int i; };\nbool f(S s) {\n    return [](int i) { return i > 0; }(s.i);\n}\n"
+630:
+631:
+632: ) ;
+633: $if $(@expr1073742523 $!@expr1073742524 $assertEquals $(@expr1073742525 "cppcheck-2.8/test/testincompletestatement.cpp" $, 633 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+634:
+635: check (@expr1073742528 "extern int (*p);\nvoid f() {\n    for (int i = 0; ;) {}\n}\n"
+636:
+637:
+638: ) ;
+639: $if $(@expr1073742529 $!@expr1073742530 $assertEquals $(@expr1073742531 "cppcheck-2.8/test/testincompletestatement.cpp" $, 639 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+640:
+641: check (@expr1073742534 "class T {};\nvoid f() {\n    auto g = [](const T* t) -> int {\n        const T* u{}, * v{};\n        return 0;\n    };\n}\n"
+642:
+|
+646:
+647: ) ;
+648: $if $(@expr1073742535 $!@expr1073742536 $assertEquals $(@expr1073742537 "cppcheck-2.8/test/testincompletestatement.cpp" $, 648 $, "" $, errout@var100 .@expr570 str (@expr571 ) $) $) { $return ; }
+649: }
+650:
+651: void vardecl ( ) {
+652:
+653: check (@expr1073742540 "void f() { a::b *c = d(); }" , true ) ;
+654: $if $(@expr1073742541 $!@expr1073742542 $assertEquals $(@expr1073742543 "cppcheck-2.8/test/testincompletestatement.cpp" $, 654 $, "" $, errout@var100 .@expr720 str (@expr721 ) $) $) { $return ; }
+655:
+656: check (@expr1073742546 "void f() { std::vector<b> *c; }" , true ) ;
+657: $if $(@expr1073742547 $!@expr1073742548 $assertEquals $(@expr1073742549 "cppcheck-2.8/test/testincompletestatement.cpp" $, 657 $, "" $, errout@var100 .@expr720 str (@expr721 ) $) $) { $return ; }
+658:
+659: check (@expr1073742552 "void f() { a::b &c = d(); }" , true ) ;
+660: $if $(@expr1073742553 $!@expr1073742554 $assertEquals $(@expr1073742555 "cppcheck-2.8/test/testincompletestatement.cpp" $, 660 $, "" $, errout@var100 .@expr720 str (@expr721 ) $) $) { $return ; }
+661:
+662: check (@expr1073742558 "void f() { std::vector<b> &c; }" , true ) ;
+663: $if $(@expr1073742559 $!@expr1073742560 $assertEquals $(@expr1073742561 "cppcheck-2.8/test/testincompletestatement.cpp" $, 663 $, "" $, errout@var100 .@expr720 str (@expr721 ) $) $) { $return ; }
+664:
+665: check (@expr1073742564 "void f() { a::b &&c = d(); }" , true ) ;
+666: $if $(@expr1073742565 $!@expr1073742566 $assertEquals $(@expr1073742567 "cppcheck-2.8/test/testincompletestatement.cpp" $, 666 $, "" $, errout@var100 .@expr720 str (@expr721 ) $) $) { $return ; }
+667:
+668: check (@expr1073742570 "void f() { std::vector<b> &&c; }" , true ) ;
+669: $if $(@expr1073742571 $!@expr1073742572 $assertEquals $(@expr1073742573 "cppcheck-2.8/test/testincompletestatement.cpp" $, 669 $, "" $, errout@var100 .@expr720 str (@expr721 ) $) $) { $return ; }
+670:
+671: check (@expr1073742576 "void f() { char * const * a, * const * b; }" , true ) ;
+672: $if $(@expr1073742577 $!@expr1073742578 $assertEquals $(@expr1073742579 "cppcheck-2.8/test/testincompletestatement.cpp" $, 672 $, "" $, errout@var100 .@expr720 str (@expr721 ) $) $) { $return ; }
+673:
+674: check (@expr1073742582 "void f() { char * const * a = 0, * volatile restrict * b; }" , true ) ;
+675: $if $(@expr1073742583 $!@expr1073742584 $assertEquals $(@expr1073742585 "cppcheck-2.8/test/testincompletestatement.cpp" $, 675 $, "" $, errout@var100 .@expr720 str (@expr721 ) $) $) { $return ; }
+676:
+677: check (@expr1073742588 "void f() { char * const * a = 0, * volatile const * b; }" , true ) ;
+678: $if $(@expr1073742589 $!@expr1073742590 $assertEquals $(@expr1073742591 "cppcheck-2.8/test/testincompletestatement.cpp" $, 678 $, "" $, errout@var100 .@expr720 str (@expr721 ) $) $) { $return ; }
+679: }
+680:
+681: void archive ( ) {
+682: check (@expr1073742594 "void f(Archive &ar) {\n  ar & x;\n}"
+683:
+684: , true ) ;
+685: $if $(@expr1073742595 $!@expr1073742596 $assertEquals $(@expr1073742597 "cppcheck-2.8/test/testincompletestatement.cpp" $, 685 $, "" $, errout@var100 .@expr774 str (@expr775 ) $) $) { $return ; }
+686:
+687: check (@expr1073742600 "void f(int ar) {\n  ar & x;\n}"
+688:
+689: , true ) ;
+690: $if $(@expr1073742601 $!@expr1073742602 $assertEquals $(@expr1073742603 "cppcheck-2.8/test/testincompletestatement.cpp" $, 690 $, "[test.cpp:2]: (warning, inconclusive) Found suspicious operator '&', result is not used.\n" $, errout@var100 .@expr774 str (@expr775 ) $) $) { $return ; }
+691: }
+692:
+693: void ast ( ) {
+694: check (@expr1073742606 "struct c { void a() const { for (int x=0; x;); } };" , true ) ;
+695: $if $(@expr1073742607 $!@expr1073742608 $assertEquals $(@expr1073742609 "cppcheck-2.8/test/testincompletestatement.cpp" $, 695 $, "" $, errout@var100 .@expr1073742610 str (@expr1073742611 ) $) $) { $return ; }
+696: }
+697:
+698: void oror ( ) {
+699: check (@expr1073742612 "void foo() {\n    params_given (params, \"overrides\") || (overrides = \"1\");\n}"
+700:
+701: , true ) ;
+702: $if $(@expr1073742613 $!@expr1073742614 $assertEquals $(@expr1073742615 "cppcheck-2.8/test/testincompletestatement.cpp" $, 702 $, "" $, errout@var100 .@expr792 str (@expr793 ) $) $) { $return ; }
+703:
+704: check (@expr1073742618 "void f(std::ifstream& file) {\n    int a{}, b{};\n    (file >> a) || (file >> b);\n    (file >> a) && (file >> b);\n}\n"
+705:
+706:
+707:
+708: , true ) ;
+709: $if $(@expr1073742619 $!@expr1073742620 $assertEquals $(@expr1073742621 "cppcheck-2.8/test/testincompletestatement.cpp" $, 709 $, "" $, errout@var100 .@expr792 str (@expr793 ) $) $) { $return ; }
+710: }
+711: } ;
+712:
+713: $namespace ${ TestIncompleteStatement instance_TestIncompleteStatement@var114 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@82}
+  v {!<=-1,!>=2,0@82}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 35
+  "TestIncompleteStatement" always "TestIncompleteStatement"
+Line 40
+  , always 0
+  inconclusive always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 42
+  "" always ""
+Line 44
+  inconclusive {!<=-1,!>=2,1@1}
+Line 47
+  1 always 1
+  "test.cpp" always "test.cpp"
+Line 48
+  code inconclusive {"void foo() {\n    params_given (params, \"overrides\") || (overrides = \"1\");\n}"@1,"void f(std::ifstream& file) {\n    int a{}, b{};\n    (file >> a) || (file >> b);\n    (file >> a) && (file >> b);\n}\n"@2,"struct c { void a() const { for (int x=0; x;); } };"@3,"void f(Archive &ar) {\n  ar & x;\n}"@4,"void f(int ar) {\n  ar & x;\n}"@5,"void f() { a::b *c = d(); }"@6,"void f() { std::vector<b> *c; }"@7,"void f() { a::b &c = d(); }"@8,"void f() { std::vector<b> &c; }"@9,"void f() { a::b &&c = d(); }"@10}
+Line 49
+  files always size=1
+  0 always 0
+Line 54
+  filedata always size=0
+Line 57
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 59
+  "" always ""
+Line 62
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 69
+  ( always {!<=-1,!>=2}
+  "test1" always "test1"
+  false always 0
+  false always 0
+Line 70
+  ( always {!<=-1,!>=2}
+  "test2" always "test2"
+  false always 0
+  false always 0
+Line 71
+  ( always {!<=-1,!>=2}
+  "test3" always "test3"
+  false always 0
+  false always 0
+Line 72
+  ( always {!<=-1,!>=2}
+  "test4" always "test4"
+  false always 0
+  false always 0
+Line 73
+  ( always {!<=-1,!>=2}
+  "test5" always "test5"
+  false always 0
+  false always 0
+Line 74
+  ( always {!<=-1,!>=2}
+  "test6" always "test6"
+  false always 0
+  false always 0
+Line 75
+  ( always {!<=-1,!>=2}
+  "test7" always "test7"
+  false always 0
+  false always 0
+Line 76
+  ( always {!<=-1,!>=2}
+  "test_numeric" always "test_numeric"
+  false always 0
+  false always 0
+Line 77
+  ( always {!<=-1,!>=2}
+  "void0" always "void0"
+  false always 0
+  false always 0
+Line 78
+  ( always {!<=-1,!>=2}
+  "intarray" always "intarray"
+  false always 0
+  false always 0
+Line 79
+  ( always {!<=-1,!>=2}
+  "structarraynull" always "structarraynull"
+  false always 0
+  false always 0
+Line 80
+  ( always {!<=-1,!>=2}
+  "structarray" always "structarray"
+  false always 0
+  false always 0
+Line 81
+  ( always {!<=-1,!>=2}
+  "conditionalcall" always "conditionalcall"
+  false always 0
+  false always 0
+Line 82
+  ( always {!<=-1,!>=2}
+  "structinit" always "structinit"
+  false always 0
+  false always 0
+Line 83
+  ( always {!<=-1,!>=2}
+  "returnstruct" always "returnstruct"
+  false always 0
+  false always 0
+Line 84
+  ( always {!<=-1,!>=2}
+  "cast" always "cast"
+  false always 0
+  false always 0
+Line 85
+  ( always {!<=-1,!>=2}
+  "increment" always "increment"
+  false always 0
+  false always 0
+Line 86
+  ( always {!<=-1,!>=2}
+  "cpp11init" always "cpp11init"
+  false always 0
+  false always 0
+Line 87
+  ( always {!<=-1,!>=2}
+  "cpp11init2" always "cpp11init2"
+  false always 0
+  false always 0
+Line 88
+  ( always {!<=-1,!>=2}
+  "cpp11init3" always "cpp11init3"
+  false always 0
+  false always 0
+Line 89
+  ( always {!<=-1,!>=2}
+  "block" always "block"
+  false always 0
+  false always 0
+Line 90
+  ( always {!<=-1,!>=2}
+  "mapindex" always "mapindex"
+  false always 0
+  false always 0
+Line 91
+  ( always {!<=-1,!>=2}
+  "commaoperator1" always "commaoperator1"
+  false always 0
+  false always 0
+Line 92
+  ( always {!<=-1,!>=2}
+  "commaoperator2" always "commaoperator2"
+  false always 0
+  false always 0
+Line 93
+  ( always {!<=-1,!>=2}
+  "redundantstmts" always "redundantstmts"
+  false always 0
+  false always 0
+Line 94
+  ( always {!<=-1,!>=2}
+  "vardecl" always "vardecl"
+  false always 0
+  false always 0
+Line 95
+  ( always {!<=-1,!>=2}
+  "archive" always "archive"
+  false always 0
+  false always 0
+Line 96
+  ( always {!<=-1,!>=2}
+  "ast" always "ast"
+  false always 0
+  false always 0
+Line 97
+  ( always {!<=-1,!>=2}
+  "oror" always "oror"
+  false always 0
+  false always 0
+Line 101
+  "void foo()\n{\n    const char def[] =\n    \"abc\";\n}" always "void foo()\n{\n    const char def[] =\n    \"abc\";\n}"
+Line 107
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  107 always 107
+  "" always ""
+Line 111
+  "void foo()\n{\n    \"abc\";\n}" always "void foo()\n{\n    \"abc\";\n}"
+Line 116
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  116 always 116
+  "[test.cpp:3]: (warning) Redundant code: Found a statement that begins with string constant.\n" always "[test.cpp:3]: (warning) Redundant code: Found a statement that begins with string constant.\n"
+Line 120
+  "void foo()\n{\n    const char *str[] = { \"abc\" };\n}" always "void foo()\n{\n    const char *str[] = { \"abc\" };\n}"
+Line 125
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  125 always 125
+  "" always ""
+Line 129
+  "void foo()\n{\nconst char *a =\n{\n\"hello \"\n\"more \"\n\"world\"\n};\n}" always "void foo()\n{\nconst char *a =\n{\n\"hello \"\n\"more \"\n\"world\"\n};\n}"
+Line 139
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  139 always 139
+  "" always ""
+Line 143
+  "void foo()\n{\n    50;\n}" always "void foo()\n{\n    50;\n}"
+Line 148
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  148 always 148
+  "[test.cpp:3]: (warning) Redundant code: Found a statement that begins with numeric constant.\n" always "[test.cpp:3]: (warning) Redundant code: Found a statement that begins with numeric constant.\n"
+Line 153
+  "void f() {\n  1 == (two + three);\n  2 != (two + three);\n  (one + two) != (two + three);\n}" always "void f() {\n  1 == (two + three);\n  2 != (two + three);\n  (one + two) != (two + three);\n}"
+Line 161
+  "namespace { std::string S = \"\"; }\n\nclass C {\npublic:\n  explicit C(const std::string& s);\n};\n\nvoid f() {\n  for (C c(S); ; ) {\n    (void)c;\n  }\n}" always "namespace { std::string S = \"\"; }\n\nclass C {\npublic:\n  explicit C(const std::string& s);\n};\n\nvoid f() {\n  for (C c(S); ; ) {\n    (void)c;\n  }\n}"
+Line 173
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  173 always 173
+  "" always ""
+Line 177
+  "struct P {\n    double a;\n    double b;\n};\nvoid f() {\n    const P values[2] =\n    {\n        { 346.1,114.1 }, { 347.1,111.1 }\n    };\n}" always "struct P {\n    double a;\n    double b;\n};\nvoid f() {\n    const P values[2] =\n    {\n        { 346.1,114.1 }, { 347.1,111.1 }\n    };\n}"
+Line 188
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  188 always 188
+  "" always ""
+Line 192
+  "void f() { (void*)0; }" always "void f() { (void*)0; }"
+Line 193
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  193 always 193
+  "" always ""
+Line 195
+  "#define X  0\nvoid f() { X; }" always "#define X  0\nvoid f() { X; }"
+Line 197
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  197 always 197
+  "" always ""
+Line 201
+  "int arr[] = { 100/2, 1*100 };" always "int arr[] = { 100/2, 1*100 };"
+Line 202
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  202 always 202
+  "" always ""
+Line 206
+  "struct st arr[] = {\n    { 100/2, 1*100 }\n    { 90, 70 }\n}" always "struct st arr[] = {\n    { 100/2, 1*100 }\n    { 90, 70 }\n}"
+Line 210
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  210 always 210
+  "" always ""
+Line 214
+  "struct st arr[] = {\n    { 100/2, 1*100 }\n    { 90, 70 }\n};" always "struct st arr[] = {\n    { 100/2, 1*100 }\n    { 90, 70 }\n};"
+Line 218
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  218 always 218
+  "" always ""
+Line 222
+  "void f() {\n    0==x ? X() : Y();\n}" always "void f() {\n    0==x ? X() : Y();\n}"
+Line 225
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  225 always 225
+  "" always ""
+Line 230
+  "void f() {\n    ABC abc{1,2,3};\n}" always "void f() {\n    ABC abc{1,2,3};\n}"
+Line 233
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  233 always 233
+  "" always ""
+Line 236
+  "void foo() {\n    static const char* a[][2] {\n        {\"b\", \"\"},\n    };\n}" always "void foo() {\n    static const char* a[][2] {\n        {\"b\", \"\"},\n    };\n}"
+Line 241
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  241 always 241
+  "" always ""
+Line 244
+  "struct A {};" always "struct A {};"
+Line 245
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  245 always 245
+  "" always ""
+Line 248
+  "A::A() : abc{0} {}" always "A::A() : abc{0} {}"
+Line 249
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  249 always 249
+  "" always ""
+Line 252
+  "A::A() : abc::def<int>{0} {}" always "A::A() : abc::def<int>{0} {}"
+Line 253
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  253 always 253
+  "" always ""
+Line 256
+  "void f() { vector<int> v{1}; }" always "void f() { vector<int> v{1}; }"
+Line 257
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  257 always 257
+  "" always ""
+Line 261
+  "struct s foo() {\n    return (struct s){0,0};\n}" always "struct s foo() {\n    return (struct s){0,0};\n}"
+Line 264
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  264 always 264
+  "" always ""
+Line 267
+  "unordered_map<string, string>  foo() {\n    return {\n        {\"hi\", \"there\"},\n        {\"happy\", \"sad\"}\n    };\n}" always "unordered_map<string, string>  foo() {\n    return {\n        {\"hi\", \"there\"},\n        {\"happy\", \"sad\"}\n    };\n}"
+Line 273
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  273 always 273
+  "" always ""
+Line 275
+  "struct s foo() {\n  return (struct s){0};\n}" always "struct s foo() {\n  return (struct s){0};\n}"
+Line 278
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  278 always 278
+  "" always ""
+Line 282
+  "void f() {\n    ((struct foo *)(0x1234))->xy = 1;\n}" always "void f() {\n    ((struct foo *)(0x1234))->xy = 1;\n}"
+Line 285
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  285 always 285
+  "" always ""
+Line 287
+  "bool f(const std::exception& e) {\n    try {\n        dynamic_cast<const InvalidTypeException&>(e);\n        return true;\n    }\n    catch (...) {\n        return false;\n    }\n}\n" always "bool f(const std::exception& e) {\n    try {\n        dynamic_cast<const InvalidTypeException&>(e);\n        return true;\n    }\n    catch (...) {\n        return false;\n    }\n}\n"
+Line 296
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  296 always 296
+  "" always ""
+Line 300
+  "void f() {\n    int x = 1;\n    x++, x++;\n}" always "void f() {\n    int x = 1;\n    x++, x++;\n}"
+Line 304
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  304 always 304
+  "" always ""
+Line 308
+  "void f() {\n    int x{1};\n}" always "void f() {\n    int x{1};\n}"
+Line 311
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  311 always 311
+  "" always ""
+Line 313
+  "std::vector<int> f(int* p) {\n    return std::vector<int>({ p[0] });\n}\n" always "std::vector<int> f(int* p) {\n    return std::vector<int>({ p[0] });\n}\n"
+Line 316
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  316 always 316
+  "" always ""
+Line 320
+  "x<string> handlers{\n  { \"mode2\", []() { return 2; } },\n};" always "x<string> handlers{\n  { \"mode2\", []() { return 2; } },\n};"
+Line 323
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  323 always 323
+  "" always ""
+Line 327
+  "struct A { void operator()(int); };\nvoid f() {\nA{}(0);\n}" always "struct A { void operator()(int); };\nvoid f() {\nA{}(0);\n}"
+Line 331
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  331 always 331
+  "" always ""
+Line 333
+  "template<class> struct A { void operator()(int); };\nvoid f() {\nA<int>{}(0);\n}" always "template<class> struct A { void operator()(int); };\nvoid f() {\nA<int>{}(0);\n}"
+Line 337
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  337 always 337
+  "" always ""
+Line 341
+  "void f() {\n    ({ do_something(); 0; });\n}" always "void f() {\n    ({ do_something(); 0; });\n}"
+Line 344
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  344 always 344
+  "" always ""
+Line 346
+  "void f() {\nout:\n    ({ do_something(); 0; });\n}" always "void f() {\nout:\n    ({ do_something(); 0; });\n}"
+Line 350
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  350 always 350
+  "" always ""
+Line 354
+  "void f() {\n  map[{\"1\",\"2\"}]=0;\n}" always "void f() {\n  map[{\"1\",\"2\"}]=0;\n}"
+Line 357
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  357 always 357
+  "" always ""
+Line 362
+  "void foo(int,const char*,int);\nvoid f(int value) {\n    foo(42,\"test\",42),(value&42);\n}" always "void foo(int,const char*,int);\nvoid f(int value) {\n    foo(42,\"test\",42),(value&42);\n}"
+Line 366
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  366 always 366
+  "[test.cpp:3]: (warning) Found suspicious operator ',', result is not used.\n" always "[test.cpp:3]: (warning) Found suspicious operator ',', result is not used.\n"
+Line 370
+  "void f() {\n    for(unsigned int a=0, b; a<10; a++ ) {}\n}\n" always "void f() {\n    for(unsigned int a=0, b; a<10; a++ ) {}\n}\n"
+Line 373
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  373 always 373
+  "" always ""
+Line 375
+  "void g();\nbool f() {\n    return (void)g(), false;\n}\n" always "void g();\nbool f() {\n    return (void)g(), false;\n}\n"
+Line 379
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  379 always 379
+  "" always ""
+Line 381
+  "void f(int a, int b, int c, int d) {\n    Eigen::Vector4d V;\n    V << a, b, c, d;\n}\n" always "void f(int a, int b, int c, int d) {\n    Eigen::Vector4d V;\n    V << a, b, c, d;\n}\n"
+Line 385
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  385 always 385
+  "" always ""
+Line 387
+  "struct S { Eigen::Vector4d V; };\nstruct T { int a, int b, int c, int d; };\nvoid f(S& s, const T& t) {\n    s.V << t.a, t.b, t.c, t.d;\n}\n" always "struct S { Eigen::Vector4d V; };\nstruct T { int a, int b, int c, int d; };\nvoid f(S& s, const T& t) {\n    s.V << t.a, t.b, t.c, t.d;\n}\n"
+Line 392
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  392 always 392
+  "" always ""
+Line 394
+  "struct S { Eigen::Vector4d V[2]; };\nvoid f(int a, int b, int c, int d) {\n    S s[1];\n    s[0].V[1] << a, b, c, d;\n}\n" always "struct S { Eigen::Vector4d V[2]; };\nvoid f(int a, int b, int c, int d) {\n    S s[1];\n    s[0].V[1] << a, b, c, d;\n}\n"
+Line 399
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  399 always 399
+  "" always ""
+Line 401
+  "void f() {\n    a.b[4][3].c()->d << x , y, z;\n}\n" always "void f() {\n    a.b[4][3].c()->d << x , y, z;\n}\n"
+Line 404
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  404 always 404
+  "" always ""
+Line 406
+  "struct V {\n    Eigen::Vector3d& operator[](int i) { return v[i]; }\n    void f(int a, int b, int c);\n    Eigen::Vector3d v[1];\n};\nvoid V::f(int a, int b, int c) {\n    (*this)[0] << a, b, c;\n}\n" always "struct V {\n    Eigen::Vector3d& operator[](int i) { return v[i]; }\n    void f(int a, int b, int c);\n    Eigen::Vector3d v[1];\n};\nvoid V::f(int a, int b, int c) {\n    (*this)[0] << a, b, c;\n}\n"
+Line 414
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  414 always 414
+  "" always ""
+Line 419
+  "void f1(int x) {\n    1;\n    (1);\n    (char)1;\n    ((char)1);\n    !x;\n    (!x);\n    (unsigned int)!x;\n    ~x;\n}\n" always "void f1(int x) {\n    1;\n    (1);\n    (char)1;\n    ((char)1);\n    !x;\n    (!x);\n    (unsigned int)!x;\n    ~x;\n}\n"
+Line 428
+  true always 1
+Line 429
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  429 always 429
+  "[test.cpp:2]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:3]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:4]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:5]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:6]: (warning, inconclusive) Found suspicious operator '!', result is not used.\n[test.cpp:7]: (warning, inconclusive) Found suspicious operator '!', result is not used.\n[test.cpp:8]: (warning) Redundant code: Found unused cast of expression '!x'.\n[test.cpp:9]: (warning, inconclusive) Found suspicious operator '~', result is not used.\n" always "[test.cpp:2]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:3]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:4]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:5]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:6]: (warning, inconclusive) Found suspicious operator '!', result is not used.\n[test.cpp:7]: (warning, inconclusive) Found suspicious operator '!', result is not used.\n[test.cpp:8]: (warning) Redundant code: Found unused cast of expression '!x'.\n[test.cpp:9]: (warning, inconclusive) Found suspicious operator '~', result is not used.\n"
+Line 439
+  "void f1(int x) { x; }" always "void f1(int x) { x; }"
+  true always 1
+Line 440
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  440 always 440
+  "[test.cpp:1]: (warning) Unused variable value 'x'\n" always "[test.cpp:1]: (warning) Unused variable value 'x'\n"
+Line 442
+  "void f() { if (Type t; g(t)) {} }" always "void f() { if (Type t; g(t)) {} }"
+Line 443
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  443 always 443
+  "" always ""
+Line 445
+  "void f(int x) { static_cast<unsigned>(x); }" always "void f(int x) { static_cast<unsigned>(x); }"
+Line 446
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  446 always 446
+  "[test.cpp:1]: (warning) Redundant code: Found unused cast of expression 'x'.\n" always "[test.cpp:1]: (warning) Redundant code: Found unused cast of expression 'x'.\n"
+Line 448
+  "void f(int x, int* p) {\n    static_cast<void>(x);\n    (void)x;\n    static_cast<void*>(p);\n    (void*)p;\n}\n" always "void f(int x, int* p) {\n    static_cast<void>(x);\n    (void)x;\n    static_cast<void*>(p);\n    (void*)p;\n}\n"
+Line 454
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  454 always 454
+  "" always ""
+Line 456
+  "void f() { false; }" always "void f() { false; }"
+Line 457
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  457 always 457
+  "[test.cpp:1]: (warning) Redundant code: Found a statement that begins with bool constant.\n" always "[test.cpp:1]: (warning) Redundant code: Found a statement that begins with bool constant.\n"
+Line 459
+  "void f(int i) {\n    (float)(char)i;\n    static_cast<float>((char)i);\n    (char)static_cast<float>(i);\n}\n" always "void f(int i) {\n    (float)(char)i;\n    static_cast<float>((char)i);\n    (char)static_cast<float>(i);\n}\n"
+Line 464
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  464 always 464
+  "[test.cpp:2]: (warning) Redundant code: Found unused cast of expression 'i'.\n[test.cpp:3]: (warning) Redundant code: Found unused cast of expression 'i'.\n[test.cpp:4]: (warning) Redundant code: Found unused cast of expression 'i'.\n" always "[test.cpp:2]: (warning) Redundant code: Found unused cast of expression 'i'.\n[test.cpp:3]: (warning) Redundant code: Found unused cast of expression 'i'.\n[test.cpp:4]: (warning) Redundant code: Found unused cast of expression 'i'.\n"
+Line 469
+  "namespace M {\n    namespace N { typedef char T; }\n}\nvoid f(int i) {\n    (M::N::T)i;\n}\n" always "namespace M {\n    namespace N { typedef char T; }\n}\nvoid f(int i) {\n    (M::N::T)i;\n}\n"
+Line 475
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  475 always 475
+  "[test.cpp:5]: (warning) Redundant code: Found unused cast of expression 'i'.\n" always "[test.cpp:5]: (warning) Redundant code: Found unused cast of expression 'i'.\n"
+Line 477
+  "void f(int (g)(int a, int b)) {\n    int p = 0, q = 1;\n    (g)(p, q);\n}\nvoid f() {\n  char buf[10];\n  (sprintf)(buf, \"%d\", 42);\n  (printf)(\"abc\");\n}\n" always "void f(int (g)(int a, int b)) {\n    int p = 0, q = 1;\n    (g)(p, q);\n}\nvoid f() {\n  char buf[10];\n  (sprintf)(buf, \"%d\", 42);\n  (printf)(\"abc\");\n}\n"
+Line 486
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  486 always 486
+  "" always ""
+Line 488
+  "struct S; struct T; struct U;\nvoid f() {\n    T t;\n    (S)(U)t;\n    (S)static_cast<U>(t);\n    static_cast<S>((U)t);\n}\n" always "struct S; struct T; struct U;\nvoid f() {\n    T t;\n    (S)(U)t;\n    (S)static_cast<U>(t);\n    static_cast<S>((U)t);\n}\n"
+Line 495
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  495 always 495
+  "" always ""
+Line 497
+  "void f(bool b) { b ? true : false; }\n" always "void f(bool b) { b ? true : false; }\n"
+Line 498
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  498 always 498
+  "[test.cpp:1]: (warning) Redundant code: Found unused result of ternary operator.\n" always "[test.cpp:1]: (warning) Redundant code: Found unused result of ternary operator.\n"
+Line 500
+  "struct S { void (*f)() = nullptr; };\nvoid g(S* s) {\n    (s->f == nullptr) ? nullptr : (s->f(), nullptr);\n}\n" always "struct S { void (*f)() = nullptr; };\nvoid g(S* s) {\n    (s->f == nullptr) ? nullptr : (s->f(), nullptr);\n}\n"
+Line 504
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  504 always 504
+  "" always ""
+Line 506
+  "void f(bool b) {\n    g() ? true : false;\n    true ? g() : false;\n    false ? true : g();\n    g(b ? true : false, 1);\n    C c{ b ? true : false, 1 };\n    b = (b ? true : false);\n}\n" always "void f(bool b) {\n    g() ? true : false;\n    true ? g() : false;\n    false ? true : g();\n    g(b ? true : false, 1);\n    C c{ b ? true : false, 1 };\n    b = (b ? true : false);\n}\n"
+Line 514
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  514 always 514
+  "" always ""
+Line 516
+  "void f(int i) {\n    for (i; ;) {}\n    for ((long)i; ;) {}\n    for (1; ;) {}\n    for (true; ;) {}\n    for ('a'; ;) {}\n    for (L'b'; ;) {}\n    for (\"x\"; ;) {}\n    for (L\"y\"; ;) {}\n}\n" always "void f(int i) {\n    for (i; ;) {}\n    for ((long)i; ;) {}\n    for (1; ;) {}\n    for (true; ;) {}\n    for ('a'; ;) {}\n    for (L'b'; ;) {}\n    for (\"x\"; ;) {}\n    for (L\"y\"; ;) {}\n}\n"
+Line 526
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  526 always 526
+  "[test.cpp:2]: (warning) Unused variable value 'i'\n[test.cpp:3]: (warning) Redundant code: Found unused cast of expression 'i'.\n[test.cpp:4]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:5]: (warning) Redundant code: Found a statement that begins with bool constant.\n[test.cpp:6]: (warning) Redundant code: Found a statement that begins with character constant.\n[test.cpp:7]: (warning) Redundant code: Found a statement that begins with character constant.\n[test.cpp:8]: (warning) Redundant code: Found a statement that begins with string constant.\n[test.cpp:9]: (warning) Redundant code: Found a statement that begins with string constant.\n" always "[test.cpp:2]: (warning) Unused variable value 'i'\n[test.cpp:3]: (warning) Redundant code: Found unused cast of expression 'i'.\n[test.cpp:4]: (warning) Redundant code: Found a statement that begins with numeric constant.\n[test.cpp:5]: (warning) Redundant code: Found a statement that begins with bool constant.\n[test.cpp:6]: (warning) Redundant code: Found a statement that begins with character constant.\n[test.cpp:7]: (warning) Redundant code: Found a statement that begins with character constant.\n[test.cpp:8]: (warning) Redundant code: Found a statement that begins with string constant.\n[test.cpp:9]: (warning) Redundant code: Found a statement that begins with string constant.\n"
+Line 536
+  "struct S { bool b{}; };\nstruct T {\n    S s[2];\n    void g();\n};\nvoid f(const S& r, const S* p) {\n    r.b;\n    p->b;\n    S s;\n    (s.b);\n    T t, u[2];\n    t.s[1].b;\n    t.g();\n    u[0].g();\n    u[1].s[0].b;\n}\n" always "struct S { bool b{}; };\nstruct T {\n    S s[2];\n    void g();\n};\nvoid f(const S& r, const S* p) {\n    r.b;\n    p->b;\n    S s;\n    (s.b);\n    T t, u[2];\n    t.s[1].b;\n    t.g();\n    u[0].g();\n    u[1].s[0].b;\n}\n"
+Line 552
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  552 always 552
+  "[test.cpp:7]: (warning) Redundant code: Found unused member access.\n[test.cpp:8]: (warning) Redundant code: Found unused member access.\n[test.cpp:10]: (warning) Redundant code: Found unused member access.\n[test.cpp:12]: (warning) Redundant code: Found unused member access.\n[test.cpp:15]: (warning) Redundant code: Found unused member access.\n" always "[test.cpp:7]: (warning) Redundant code: Found unused member access.\n[test.cpp:8]: (warning) Redundant code: Found unused member access.\n[test.cpp:10]: (warning) Redundant code: Found unused member access.\n[test.cpp:12]: (warning) Redundant code: Found unused member access.\n[test.cpp:15]: (warning) Redundant code: Found unused member access.\n"
+Line 559
+  "struct S { int a[2]{}; };\nstruct T { S s; };\nvoid f() {\n    int i[2];\n    i[0] = 0;\n    i[0];\n    S s[1];\n    s[0].a[1];\n    T t;\n    t.s.a[1];\n    int j[2][2][1] = {};\n    j[0][0][0];\n}\n" always "struct S { int a[2]{}; };\nstruct T { S s; };\nvoid f() {\n    int i[2];\n    i[0] = 0;\n    i[0];\n    S s[1];\n    s[0].a[1];\n    T t;\n    t.s.a[1];\n    int j[2][2][1] = {};\n    j[0][0][0];\n}\n"
+Line 572
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  572 always 572
+  "[test.cpp:6]: (warning) Redundant code: Found unused array access.\n[test.cpp:8]: (warning) Redundant code: Found unused array access.\n[test.cpp:10]: (warning) Redundant code: Found unused array access.\n[test.cpp:12]: (warning) Redundant code: Found unused array access.\n" always "[test.cpp:6]: (warning) Redundant code: Found unused array access.\n[test.cpp:8]: (warning) Redundant code: Found unused array access.\n[test.cpp:10]: (warning) Redundant code: Found unused array access.\n[test.cpp:12]: (warning) Redundant code: Found unused array access.\n"
+Line 578
+  "void g(std::map<std::string, std::string>& map) {\n    int j[2]{};\n    int k[2] = {};\n    int l[]{ 1, 2 };\n    int m[] = { 1, 2 };\n    h(0, j[0], 1);\n    C c{ 0, j[0], 1 };\n    c[0];\n    int j[2][2][2] = {};\n    j[h()][0][0];\n    j[0][h()][0];\n    j[0][0][h()];\n    std::map<std::string, int> M;\n    M[\"abc\"];\n    map[\"abc\"];\n    std::auto_ptr<Int> app[4];}\n" always "void g(std::map<std::string, std::string>& map) {\n    int j[2]{};\n    int k[2] = {};\n    int l[]{ 1, 2 };\n    int m[] = { 1, 2 };\n    h(0, j[0], 1);\n    C c{ 0, j[0], 1 };\n    c[0];\n    int j[2][2][2] = {};\n    j[h()][0][0];\n    j[0][h()][0];\n    j[0][0][h()];\n    std::map<std::string, int> M;\n    M[\"abc\"];\n    map[\"abc\"];\n    std::auto_ptr<Int> app[4];}\n"
+Line 595
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  595 always 595
+  "" always ""
+Line 597
+  "struct S { void* p; };\nvoid f(S s) {\n    delete (int*)s.p;\n}\n" always "struct S { void* p; };\nvoid f(S s) {\n    delete (int*)s.p;\n}\n"
+Line 601
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  601 always 601
+  "" always ""
+Line 603
+  "struct T {\n    T* p;\n};\nvoid f(T* t) {\n    for (decltype(t->p) (c) = t->p; ;) {}\n}\n" always "struct T {\n    T* p;\n};\nvoid f(T* t) {\n    for (decltype(t->p) (c) = t->p; ;) {}\n}\n"
+Line 609
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  609 always 609
+  "" always ""
+Line 611
+  "void f(int i, std::vector<int*> v);\nvoid g() {\n    f(1, { static_cast<int*>(nullptr) });\n}\n" always "void f(int i, std::vector<int*> v);\nvoid g() {\n    f(1, { static_cast<int*>(nullptr) });\n}\n"
+Line 615
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  615 always 615
+  "" always ""
+Line 617
+  "struct S { int i; };\nenum E {};\nvoid f(const S* s) {\n    E e = (E)!s->i;\n}\n" always "struct S { int i; };\nenum E {};\nvoid f(const S* s) {\n    E e = (E)!s->i;\n}\n"
+Line 622
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  622 always 622
+  "" always ""
+Line 624
+  "void f(int* p) {\n    int& r(*p[0]);\n}\n" always "void f(int* p) {\n    int& r(*p[0]);\n}\n"
+Line 627
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  627 always 627
+  "" always ""
+Line 629
+  "struct S { int i; };\nbool f(S s) {\n    return [](int i) { return i > 0; }(s.i);\n}\n" always "struct S { int i; };\nbool f(S s) {\n    return [](int i) { return i > 0; }(s.i);\n}\n"
+Line 633
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  633 always 633
+  "" always ""
+Line 635
+  "extern int (*p);\nvoid f() {\n    for (int i = 0; ;) {}\n}\n" always "extern int (*p);\nvoid f() {\n    for (int i = 0; ;) {}\n}\n"
+Line 639
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  639 always 639
+  "" always ""
+Line 641
+  "class T {};\nvoid f() {\n    auto g = [](const T* t) -> int {\n        const T* u{}, * v{};\n        return 0;\n    };\n}\n" always "class T {};\nvoid f() {\n    auto g = [](const T* t) -> int {\n        const T* u{}, * v{};\n        return 0;\n    };\n}\n"
+Line 648
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  648 always 648
+  "" always ""
+Line 653
+  "void f() { a::b *c = d(); }" always "void f() { a::b *c = d(); }"
+  true always 1
+Line 654
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  654 always 654
+  "" always ""
+Line 656
+  "void f() { std::vector<b> *c; }" always "void f() { std::vector<b> *c; }"
+  true always 1
+Line 657
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  657 always 657
+  "" always ""
+Line 659
+  "void f() { a::b &c = d(); }" always "void f() { a::b &c = d(); }"
+  true always 1
+Line 660
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  660 always 660
+  "" always ""
+Line 662
+  "void f() { std::vector<b> &c; }" always "void f() { std::vector<b> &c; }"
+  true always 1
+Line 663
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  663 always 663
+  "" always ""
+Line 665
+  "void f() { a::b &&c = d(); }" always "void f() { a::b &&c = d(); }"
+  true always 1
+Line 666
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  666 always 666
+  "" always ""
+Line 668
+  "void f() { std::vector<b> &&c; }" always "void f() { std::vector<b> &&c; }"
+  true always 1
+Line 669
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  669 always 669
+  "" always ""
+Line 671
+  "void f() { char * const * a, * const * b; }" always "void f() { char * const * a, * const * b; }"
+  true always 1
+Line 672
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  672 always 672
+  "" always ""
+Line 674
+  "void f() { char * const * a = 0, * volatile restrict * b; }" always "void f() { char * const * a = 0, * volatile restrict * b; }"
+  true always 1
+Line 675
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  675 always 675
+  "" always ""
+Line 677
+  "void f() { char * const * a = 0, * volatile const * b; }" always "void f() { char * const * a = 0, * volatile const * b; }"
+  true always 1
+Line 678
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  678 always 678
+  "" always ""
+Line 682
+  "void f(Archive &ar) {\n  ar & x;\n}" always "void f(Archive &ar) {\n  ar & x;\n}"
+Line 684
+  true always 1
+Line 685
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  685 always 685
+  "" always ""
+Line 687
+  "void f(int ar) {\n  ar & x;\n}" always "void f(int ar) {\n  ar & x;\n}"
+Line 689
+  true always 1
+Line 690
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  690 always 690
+  "[test.cpp:2]: (warning, inconclusive) Found suspicious operator '&', result is not used.\n" always "[test.cpp:2]: (warning, inconclusive) Found suspicious operator '&', result is not used.\n"
+Line 694
+  "struct c { void a() const { for (int x=0; x;); } };" always "struct c { void a() const { for (int x=0; x;); } };"
+  true always 1
+Line 695
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  695 always 695
+  "" always ""
+Line 699
+  "void foo() {\n    params_given (params, \"overrides\") || (overrides = \"1\");\n}" always "void foo() {\n    params_given (params, \"overrides\") || (overrides = \"1\");\n}"
+Line 701
+  true always 1
+Line 702
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  702 always 702
+  "" always ""
+Line 704
+  "void f(std::ifstream& file) {\n    int a{}, b{};\n    (file >> a) || (file >> b);\n    (file >> a) && (file >> b);\n}\n" always "void f(std::ifstream& file) {\n    int a{}, b{};\n    (file >> a) || (file >> b);\n    (file >> a) && (file >> b);\n}\n"
+Line 708
+  true always 1
+Line 709
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testincompletestatement.cpp" always "cppcheck-2.8/test/testincompletestatement.cpp"
+  709 always 709
+  "" always ""

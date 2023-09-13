@@ -1,0 +1,703 @@
+
+
+##file cppcheck-2.8/gui/erroritem.h
+
+1:
+|
+36:
+37: class GuiSeverity {
+38: public:
+39: static QString toString ( Severity :: SeverityType severity@var1 ) {
+40: return QString ::@expr1073741936 fromStdString (@expr1073741937 Severity ::@expr1073741938 toString (@expr1073741939 severity@var1 ) ) ;
+41: }
+42:
+43: static Severity :: SeverityType fromString ( const QString & severity@var2 ) {
+44: return Severity ::@expr1073741940 fromString (@expr1073741941 severity@var2 .@expr1073741942 toStdString (@expr1073741943 ) ) ;
+45: }
+46: } ;
+47:
+|
+50:
+51: class QErrorPathItem {
+52: public:
+53: QErrorPathItem ( ) : line@var5 ( 0 ) , column@var6 ( -1 ) { }
+54: explicit QErrorPathItem ( const ErrorMessage :: FileLocation & loc@var3 ) ;
+55: QString file@var4 ;
+56: int line@var5 ;
+57: int column@var6 ;
+58: QString info@var7 ;
+59: } ;
+60:
+61: bool operator== ( const QErrorPathItem & i1@var8 , const QErrorPathItem & i2@var9 ) ;
+62:
+|
+70:
+71: class ErrorItem {
+72: public:
+73: ErrorItem ( ) ;
+74: explicit ErrorItem ( const ErrorMessage & errmsg@var10 ) ;
+75:
+|
+79:
+80: QString toString ( ) const ;
+81: QString tool ( ) const ;
+82:
+83: QString file0@var11 ;
+84: QString function@var12 ;
+85: QString errorId@var13 ;
+86: Severity :: SeverityType severity@var14 ;
+87: bool incomplete@var15 ;
+88: bool inconclusive@var16 ;
+89: QString summary@var17 ;
+90: QString message@var18 ;
+91: int cwe@var19 ;
+92: unsigned long long hash@var20 ;
+93: QList < QErrorPathItem > errorPath@var21 ;
+94: QString symbolNames@var22 ;
+95:
+96:
+97: QString sinceDate@var23 ;
+98: QString tags@var24 ;
+99:
+|
+102:
+103: static bool sameCID ( const ErrorItem & errorItem1@var25 , const ErrorItem & errorItem2@var26 ) ;
+104: } ;
+105:
+|
+110:
+111: class ErrorLine {
+112: public:
+113: QString file@var27 ;
+114: int line@var28 ;
+115: QString file0@var29 ;
+116: QString errorId@var30 ;
+117: bool incomplete@var31 ;
+118: int cwe@var32 ;
+119: unsigned long long hash@var33 ;
+120: bool inconclusive@var34 ;
+121: Severity :: SeverityType severity@var35 ;
+122: QString summary@var36 ;
+123: QString message@var37 ;
+124: QString sinceDate@var38 ;
+125: QString tags@var39 ;
+126: } ;
+
+##file cppcheck-2.8/gui/report.h
+
+1:
+|
+25:
+26: class ErrorItem ;
+27:
+|
+33:
+34: class Report : public QObject {
+35: public:
+36: enum Type {
+37: TXT ,
+38: XMLV2 ,
+39: CSV ,
+40: } ;
+41:
+42: explicit Report ( const QString & filename@var40 ) ;
+43: ~ Report ( ) override ;
+44:
+|
+48:
+49: virtual bool create ( ) ;
+50:
+|
+54:
+55: virtual bool open ( ) ;
+56:
+|
+59:
+60: void close ( ) ;
+61:
+|
+64:
+65: virtual void writeHeader ( ) = 0 ;
+66:
+|
+69:
+70: virtual void writeFooter ( ) = 0 ;
+71:
+|
+75:
+76: virtual void writeError ( const ErrorItem & error@var41 ) = 0 ;
+77:
+78: protected:
+79:
+|
+82:
+83: QFile * getFile ( ) ;
+84:
+85: private:
+86:
+|
+89:
+90: QString mFilename@var42 ;
+91:
+|
+94:
+95: QFile mFile@var43 ;
+96: } ;
+
+##file cppcheck-2.8/gui/xmlreport.h
+
+1:
+|
+26:
+27: class ErrorItem ;
+28:
+|
+35:
+36: class XmlReport : public Report {
+37: public:
+38: explicit XmlReport ( const QString & filename@var44 ) ;
+39:
+|
+42:
+43: virtual QList < ErrorItem > read ( ) = 0 ;
+44:
+|
+49:
+50: static QString quoteMessage ( const QString & message@var45 ) ;
+51:
+|
+56:
+57: static QString unquoteMessage ( const QString & message@var46 ) ;
+58:
+|
+63:
+64: static int determineVersion ( const QString & filename@var47 ) ;
+65: } ;
+
+##file cppcheck-2.8/gui/xmlreportv2.h
+
+1:
+|
+26:
+27: class QXmlStreamReader ;
+28: class QXmlStreamWriter ;
+29:
+|
+38:
+39: class XmlReportV2 : public XmlReport {
+40: public:
+41: explicit XmlReportV2 ( const QString & filename@var48 ) ;
+42: ~ XmlReportV2 ( ) override ;
+43:
+|
+47:
+48: virtual bool create ( ) override ;
+49:
+|
+52:
+53: virtual bool open ( ) override ;
+54:
+|
+57:
+58: virtual void writeHeader ( ) override ;
+59:
+|
+62:
+63: virtual void writeFooter ( ) override ;
+64:
+|
+68:
+69: virtual void writeError ( const ErrorItem & error@var49 ) override ;
+70:
+|
+73:
+74: virtual QList < ErrorItem > read ( ) override ;
+75:
+76: protected:
+77:
+|
+80:
+81: ErrorItem readError ( QXmlStreamReader * reader@var50 ) ;
+82:
+83: private:
+84:
+85:
+86:
+87: QXmlStreamReader * mXmlReader@var51 ;
+88:
+|
+91:
+92: QXmlStreamWriter * mXmlWriter@var52 ;
+93: } ;
+
+##file cppcheck-2.8/gui/xmlreportv2.cpp
+
+1:
+|
+29:
+30: static const QString ResultElementName@var53 = "results" ;
+31: static const QString CppcheckElementName@var54 = "cppcheck" ;
+32: static const QString ErrorElementName@var55 = "error" ;
+33: static const QString ErrorsElementName@var56 = "errors" ;
+34: static const QString LocationElementName@var57 = "location" ;
+35: static const QString CWEAttribute@var58 = "cwe" ;
+36: static const QString HashAttribute@var59 = "hash" ;
+37: static const QString SinceDateAttribute@var60 = "sinceDate" ;
+38: static const QString TagsAttribute@var61 = "tag" ;
+39: static const QString FilenameAttribute@var62 = "file" ;
+40: static const QString IncludedFromFilenameAttribute@var63 = "file0" ;
+41: static const QString InconclusiveAttribute@var64 = "inconclusive" ;
+42: static const QString InfoAttribute@var65 = "info" ;
+43: static const QString LineAttribute@var66 = "line" ;
+44: static const QString ColumnAttribute@var67 = "column" ;
+45: static const QString IdAttribute@var68 = "id" ;
+46: static const QString SeverityAttribute@var69 = "severity" ;
+47: static const QString MsgAttribute@var70 = "msg" ;
+48: static const QString VersionAttribute@var71 = "version" ;
+49: static const QString VerboseAttribute@var72 = "verbose" ;
+50:
+51: XmlReportV2 :: XmlReportV2 ( const QString & filename@var73 ) :
+52: XmlReport ( filename@var73 ) ,
+53: mXmlReader@var51 ( nullptr ) ,
+54: mXmlWriter@var52 ( nullptr )
+55: { }
+56:
+57: XmlReportV2 :: ~ XmlReportV2 ( )
+58: {
+59: delete mXmlReader@var51 ;
+60: delete mXmlWriter@var52 ;
+61: }
+62:
+63: bool XmlReportV2 :: create ( )
+64: {
+65: if (@expr1073741944 Report ::@expr1073741945 create (@expr1073741946 ) ) {
+66: mXmlWriter@var52 =@expr1073741947 new QXmlStreamWriter (@expr1073741948 Report ::@expr1073741949 getFile (@expr1073741950 ) ) ;
+67: return true ;
+68: }
+69: return false ;
+70: }
+71:
+72: bool XmlReportV2 :: open ( )
+73: {
+74: if (@expr1073741951 Report ::@expr1073741952 open (@expr1073741953 ) ) {
+75: mXmlReader@var51 =@expr1073741954 new QXmlStreamReader (@expr1073741955 Report ::@expr1073741956 getFile (@expr1073741957 ) ) ;
+76: return true ;
+77: }
+78: return false ;
+79: }
+80:
+81: void XmlReportV2 :: writeHeader ( )
+82: {
+83: mXmlWriter@var52 .@expr1073741958 setAutoFormatting (@expr1073741959 true ) ;
+84: mXmlWriter@var52 .@expr1073741960 writeStartDocument (@expr1073741961 ) ;
+85: mXmlWriter@var52 .@expr138 writeStartElement (@expr1073741963 ResultElementName@var53 ) ;
+86: mXmlWriter@var52 .@expr140 writeAttribute (@expr1073741965 VersionAttribute@var71 , QString ::@expr1073741966 number (@expr1073741967 2 ) ) ;
+87: mXmlWriter@var52 .@expr138 writeStartElement (@expr1073741969 CppcheckElementName@var54 ) ;
+88: mXmlWriter@var52 .@expr140 writeAttribute (@expr1073741971 VersionAttribute@var71 , QString (@expr1073741972 CppCheck ::@expr1073741973 version (@expr1073741974 ) ) ) ;
+89: mXmlWriter@var52 .@expr1073741975 writeEndElement (@expr1073741976 ) ;
+90: mXmlWriter@var52 .@expr138 writeStartElement (@expr1073741978 ErrorsElementName@var56 ) ;
+91: }
+92:
+93: void XmlReportV2 :: writeFooter ( )
+94: {
+95: mXmlWriter@var52 .@expr155 writeEndElement (@expr156 ) ;
+96: mXmlWriter@var52 .@expr155 writeEndElement (@expr156 ) ;
+97: mXmlWriter@var52 .@expr1073741983 writeEndDocument (@expr1073741984 ) ;
+98: }
+99:
+100: void XmlReportV2 :: writeError ( const ErrorItem & error@var74 )
+101: {
+102:
+|
+110:
+111: mXmlWriter@var52 .@expr165 writeStartElement (@expr1073741990 ErrorElementName@var55 ) ;
+112: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073741992 IdAttribute@var68 , error@var74 .@expr1073741993 errorId@var75 ) ;
+113:
+114:
+115: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073741995 SeverityAttribute@var69 , GuiSeverity ::@expr1073741996 toString (@expr1073741997 error@var74 .@expr1073741998 severity@var76 ) ) ;
+116: const QString summary@var77 =@expr1073741999 XmlReport ::@expr176 quoteMessage (@expr1073742001 error@var74 .@expr1073742002 summary@var78 ) ;
+117: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073742004 MsgAttribute@var70 , summary@var77 ) ;
+118: const QString message@var79 =@expr1073742005 XmlReport ::@expr176 quoteMessage (@expr1073742007 error@var74 .@expr1073742008 message@var80 ) ;
+119: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073742010 VerboseAttribute@var72 , message@var79 ) ;
+120: if (@expr1073742011 error@var74 .@expr1073742012 inconclusive@var81 ) {
+121: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073742014 InconclusiveAttribute@var64 , "true" ) ; }
+122: if (@expr1073742015 error@var74 .@expr192 cwe@var82 >@expr1073742017 0 ) {
+123: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073742019 CWEAttribute@var58 , QString ::@expr196 number (@expr1073742021 error@var74 .@expr192 cwe@var82 ) ) ; }
+124: if (@expr1073742023 error@var74 .@expr200 hash@var83 >@expr1073742025 0 ) {
+125: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073742027 HashAttribute@var59 , QString ::@expr196 number (@expr1073742029 error@var74 .@expr200 hash@var83 ) ) ; }
+126: if (@expr1073742031 !@expr1073742032 error@var74 .@expr209 file0@var84 .@expr1073742034 isEmpty (@expr1073742035 ) ) {
+127: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073742037 IncludedFromFilenameAttribute@var63 , quoteMessage (@expr1073742038 error@var74 .@expr209 file0@var84 ) ) ; }
+128: if (@expr1073742040 !@expr1073742041 error@var74 .@expr218 sinceDate@var85 .@expr1073742043 isEmpty (@expr1073742044 ) ) {
+129: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073742046 SinceDateAttribute@var60 , error@var74 .@expr218 sinceDate@var85 ) ; }
+130: if (@expr1073742048 !@expr1073742049 error@var74 .@expr226 tags@var86 .@expr1073742051 isEmpty (@expr1073742052 ) ) {
+131: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073742054 TagsAttribute@var61 , error@var74 .@expr226 tags@var86 ) ; }
+132:
+133: for (@expr1073742056 int i@var87 =@expr1073742057 error@var74 .@expr234 errorPath@var88 .@expr235 count (@expr236 ) -@expr1073742061 1 ; i@var87 >=@expr1073742062 0 ; i@var87 --@expr1073742063 ) {
+134: mXmlWriter@var52 .@expr165 writeStartElement (@expr1073742065 LocationElementName@var57 ) ;
+135:
+136: QString file@var89 ; file@var89 =@expr1073742066 QDir ::@expr1073742067 toNativeSeparators (@expr1073742068 error@var74 .@expr234 errorPath@var88 [@expr246 i@var87 ] .@expr1073742071 file@expr1073741985 ) ;
+137: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073742073 FilenameAttribute@var62 , XmlReport ::@expr176 quoteMessage (@expr1073742075 file@var89 ) ) ;
+138: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073742077 LineAttribute@var66 , QString ::@expr196 number (@expr1073742079 error@var74 .@expr234 errorPath@var88 [@expr246 i@var87 ] .@expr1073742082 line@expr1073741986 ) ) ;
+139: if (@expr1073742083 error@var74 .@expr234 errorPath@var88 [@expr246 i@var87 ] .@expr262 column@expr163 >@expr1073742087 0 ) {
+140: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073742089 ColumnAttribute@var67 , QString ::@expr196 number (@expr1073742091 error@var74 .@expr234 errorPath@var88 [@expr246 i@var87 ] .@expr262 column@expr163 ) ) ; }
+141: if (@expr1073742095 error@var74 .@expr234 errorPath@var88 .@expr235 count (@expr236 ) >@expr1073742099 1 ) {
+142: mXmlWriter@var52 .@expr167 writeAttribute (@expr1073742101 InfoAttribute@var65 , XmlReport ::@expr176 quoteMessage (@expr1073742103 error@var74 .@expr234 errorPath@var88 [@expr246 i@var87 ] .@expr1073742106 info@expr1073741988 ) ) ; }
+143:
+144: mXmlWriter@var52 .@expr283 writeEndElement (@expr284 ) ;
+145: }
+146:
+147: mXmlWriter@var52 .@expr283 writeEndElement (@expr284 ) ;
+148: }
+149:
+150: QList < ErrorItem > XmlReportV2 :: read ( )
+151: {
+152: QList < ErrorItem > errors@var90 ;
+153: bool insideResults@var91 ; insideResults@var91 =@expr1073742111 false ;
+154: if (@expr1073742112 !@expr1073742113 mXmlReader@var51 ) {
+155: qDebug (@expr1073742114 ) <<@expr1073742115 "You must Open() the file before reading it!" ;
+156: return errors@var90 ;
+157: }
+158: while (@expr1073742116 !@expr1073742117 mXmlReader@var51 .@expr1073742118 atEnd (@expr1073742119 ) ) {
+159: switch (@expr1073742120 mXmlReader@var51 .@expr1073742121 readNext (@expr1073742122 ) ) {
+160: case QXmlStreamReader ::@expr1073742123 StartElement :@expr300 ;
+161: if (@expr301 mXmlReader@var51 .@expr302 name (@expr303 ) ==@expr304 ResultElementName@var53 ) {
+162: insideResults@var91 =@expr1073742129 true ; }
+163:
+164:
+165: if (@expr1073742130 insideResults@var91 &&@expr1073742131 mXmlReader@var51 .@expr302 name (@expr303 ) ==@expr1073742134 ErrorElementName@var55 ) {
+166: ErrorItem item@var92 ; item@var92 =@expr1073742135 readError (@expr1073742136 mXmlReader@var51 ) ;
+167: errors@var90 .@expr1073742137 append (@expr1073742138 item@var92 ) ;
+168: }
+169: break ;
+170:
+171: case QXmlStreamReader ::@expr1073742139 EndElement :@expr300 ;
+172: if (@expr301 mXmlReader@var51 .@expr302 name (@expr303 ) ==@expr304 ResultElementName@var53 ) {
+173: insideResults@var91 =@expr1073742145 false ; }
+174: break ;
+175:
+176:
+177: case QXmlStreamReader ::@expr1073742146 NoToken :@expr300
+178: case QXmlStreamReader ::@expr1073742148 Invalid :@expr300
+179: case QXmlStreamReader ::@expr1073742150 StartDocument :@expr300
+180: case QXmlStreamReader ::@expr1073742152 EndDocument :@expr300
+181: case QXmlStreamReader ::@expr1073742154 Characters :@expr300
+182: case QXmlStreamReader ::@expr1073742156 Comment :@expr300
+183: case QXmlStreamReader ::@expr1073742158 DTD :@expr300
+184: case QXmlStreamReader ::@expr1073742160 EntityReference :@expr300
+185: case QXmlStreamReader ::@expr1073742162 ProcessingInstruction :@expr300 ;
+186: break ;
+187: }
+188: }
+189: return errors@var90 ;
+190: }
+191:
+192: ErrorItem XmlReportV2 :: readError ( QXmlStreamReader * reader@var93 )
+193: {
+194:
+|
+202:
+203: ErrorItem item@var94 ;
+204:
+205:
+206: if (@expr341 mXmlReader@var51 .@expr342 name (@expr343 ) ==@expr344 ErrorElementName@var55 ) {
+207: QXmlStreamAttributes attribs@var95 ; attribs@var95 =@expr1073742169 reader@var93 .@expr1073742170 attributes (@expr1073742171 ) ;
+208: item@var94 .@expr1073742172 errorId@var96 =@expr1073742173 attribs@var95 .@expr350 value (@expr1073742175 QString (@expr352 ) , IdAttribute@var68 ) .@expr1073742177 toString (@expr1073742178 ) ;
+209: item@var94 .@expr1073742179 severity@var97 =@expr1073742180 GuiSeverity ::@expr1073742181 fromString (@expr1073742182 attribs@var95 .@expr350 value (@expr1073742184 QString (@expr352 ) , SeverityAttribute@var69 ) .@expr1073742186 toString (@expr1073742187 ) ) ;
+210: const QString summary@var98 =@expr1073742188 attribs@var95 .@expr350 value (@expr1073742190 QString (@expr352 ) , MsgAttribute@var70 ) .@expr1073742192 toString (@expr1073742193 ) ;
+211: item@var94 .@expr1073742194 summary@var99 =@expr1073742195 XmlReport ::@expr372 unquoteMessage (@expr1073742197 summary@var98 ) ;
+212: const QString message@var100 =@expr1073742198 attribs@var95 .@expr350 value (@expr1073742200 QString (@expr352 ) , VerboseAttribute@var72 ) .@expr1073742202 toString (@expr1073742203 ) ;
+213: item@var94 .@expr380 message@var101 =@expr1073742205 XmlReport ::@expr372 unquoteMessage (@expr1073742207 message@var100 ) ;
+214: if (@expr1073742208 attribs@var95 .@expr385 hasAttribute (@expr1073742210 QString (@expr352 ) , InconclusiveAttribute@var64 ) ) {
+215: item@var94 .@expr1073742212 inconclusive@var102 =@expr1073742213 true ; }
+216: if (@expr1073742214 attribs@var95 .@expr385 hasAttribute (@expr1073742216 QString (@expr352 ) , CWEAttribute@var58 ) ) {
+217: item@var94 .@expr1073742218 cwe@var103 =@expr1073742219 attribs@var95 .@expr350 value (@expr1073742221 QString (@expr352 ) , CWEAttribute@var58 ) .@expr1073742223 toInt (@expr1073742224 ) ; }
+218: if (@expr1073742225 attribs@var95 .@expr385 hasAttribute (@expr1073742227 QString (@expr352 ) , HashAttribute@var59 ) ) {
+219: item@var94 .@expr1073742229 hash@var104 =@expr1073742230 attribs@var95 .@expr350 value (@expr1073742232 QString (@expr352 ) , HashAttribute@var59 ) .@expr1073742234 toULongLong (@expr1073742235 ) ; }
+220: if (@expr1073742236 attribs@var95 .@expr385 hasAttribute (@expr1073742238 QString (@expr352 ) , IncludedFromFilenameAttribute@var63 ) ) {
+221: item@var94 .@expr416 file0@var105 =@expr1073742241 attribs@var95 .@expr350 value (@expr1073742243 QString (@expr352 ) , IncludedFromFilenameAttribute@var63 ) .@expr1073742245 toString (@expr1073742246 ) ; }
+222: if (@expr1073742247 attribs@var95 .@expr385 hasAttribute (@expr1073742249 QString (@expr352 ) , SinceDateAttribute@var60 ) ) {
+223: item@var94 .@expr1073742251 sinceDate@var106 =@expr1073742252 attribs@var95 .@expr350 value (@expr1073742254 QString (@expr352 ) , SinceDateAttribute@var60 ) .@expr1073742256 toString (@expr1073742257 ) ; }
+224: if (@expr1073742258 attribs@var95 .@expr385 hasAttribute (@expr1073742260 QString (@expr352 ) , TagsAttribute@var61 ) ) {
+225: item@var94 .@expr1073742262 tags@var107 =@expr1073742263 attribs@var95 .@expr350 value (@expr1073742265 QString (@expr352 ) , TagsAttribute@var61 ) .@expr1073742267 toString (@expr1073742268 ) ; }
+226: }
+227:
+228: bool errorRead@var108 ; errorRead@var108 =@expr1073742269 false ;
+229: while (@expr1073742270 !@expr1073742271 errorRead@var108 &&@expr1073742272 !@expr1073742273 mXmlReader@var51 .@expr1073742274 atEnd (@expr1073742275 ) ) {
+230: switch (@expr1073742276 mXmlReader@var51 .@expr1073742277 readNext (@expr1073742278 ) ) {
+231: case QXmlStreamReader ::@expr1073742279 StartElement :@expr456 ;
+232:
+233:
+234: if (@expr1073742281 mXmlReader@var51 .@expr342 name (@expr343 ) ==@expr1073742284 LocationElementName@var57 ) {
+235: QXmlStreamAttributes attribs@var109 ; attribs@var109 =@expr1073742285 mXmlReader@var51 .@expr1073742286 attributes (@expr1073742287 ) ;
+236: QString file0@var110 ; file0@var110 =@expr1073742288 attribs@var109 .@expr465 value (@expr1073742290 QString (@expr352 ) , IncludedFromFilenameAttribute@var63 ) .@expr1073742292 toString (@expr1073742293 ) ;
+237: if (@expr1073742294 !@expr1073742295 file0@var110 .@expr1073742296 isEmpty (@expr1073742297 ) ) {
+238: item@var94 .@expr416 file0@var105 =@expr1073742299 XmlReport ::@expr372 unquoteMessage (@expr1073742301 file0@var110 ) ; }
+239: QErrorPathItem loc@var111 ;
+240: loc@var111 .@expr1073742302 file@var112 =@expr1073742303 XmlReport ::@expr372 unquoteMessage (@expr1073742305 attribs@var109 .@expr465 value (@expr1073742307 QString (@expr352 ) , FilenameAttribute@var62 ) .@expr1073742309 toString (@expr1073742310 ) ) ;
+241: loc@var111 .@expr1073742311 line@var113 =@expr1073742312 attribs@var109 .@expr465 value (@expr1073742314 QString (@expr352 ) , LineAttribute@var66 ) .@expr1073742316 toString (@expr1073742317 ) .@expr1073742318 toUInt (@expr1073742319 ) ;
+242: if (@expr1073742320 attribs@var109 .@expr497 hasAttribute (@expr1073742322 QString (@expr352 ) , ColumnAttribute@var67 ) ) {
+243: loc@var111 .@expr1073742324 column@var114 =@expr1073742325 attribs@var109 .@expr465 value (@expr1073742327 QString (@expr352 ) , ColumnAttribute@var67 ) .@expr1073742329 toString (@expr1073742330 ) .@expr1073742331 toInt (@expr1073742332 ) ; }
+244: if (@expr1073742333 attribs@var109 .@expr497 hasAttribute (@expr1073742335 QString (@expr352 ) , InfoAttribute@var65 ) ) {
+245: loc@var111 .@expr1073742337 info@var115 =@expr1073742338 XmlReport ::@expr372 unquoteMessage (@expr1073742340 attribs@var109 .@expr465 value (@expr1073742342 QString (@expr352 ) , InfoAttribute@var65 ) .@expr1073742344 toString (@expr1073742345 ) ) ; }
+246: item@var94 .@expr522 errorPath@var116 .@expr1073742347 push_front (@expr1073742348 loc@var111 ) ;
+247: }
+248: break ;
+249:
+250: case QXmlStreamReader ::@expr1073742349 EndElement :@expr456 ;
+251: if (@expr341 mXmlReader@var51 .@expr342 name (@expr343 ) ==@expr344 ErrorElementName@var55 ) {
+252: errorRead@var108 =@expr1073742355 true ; }
+253: break ;
+254:
+255:
+256: case QXmlStreamReader ::@expr1073742356 NoToken :@expr456
+257: case QXmlStreamReader ::@expr1073742358 Invalid :@expr456
+258: case QXmlStreamReader ::@expr1073742360 StartDocument :@expr456
+259: case QXmlStreamReader ::@expr1073742362 EndDocument :@expr456
+260: case QXmlStreamReader ::@expr1073742364 Characters :@expr456
+261: case QXmlStreamReader ::@expr1073742366 Comment :@expr456
+262: case QXmlStreamReader ::@expr1073742368 DTD :@expr456
+263: case QXmlStreamReader ::@expr1073742370 EntityReference :@expr456
+264: case QXmlStreamReader ::@expr1073742372 ProcessingInstruction :@expr456 ;
+265: break ;
+266: }
+267: }
+268:
+269: if (@expr1073742374 item@var94 .@expr522 errorPath@var116 .@expr1073742376 size (@expr1073742377 ) ==@expr1073742378 1 &&@expr1073742379 item@var94 .@expr522 errorPath@var116 [@expr557 0 ] .@expr558 info .@expr1073742383 isEmpty (@expr1073742384 ) ) {
+270: item@var94 .@expr522 errorPath@var116 [@expr557 0 ] .@expr558 info@expr1073742164 =@expr1073742388 item@var94 .@expr380 message@var101 ; }
+271:
+272: return item@var94 ;
+273: }
+
+
+
+##Value flow
+Line 53
+  0 always 0
+  -1 always -1
+Line 61
+  ( always {!<=-1,!>=2}
+Line 87
+  incomplete always {!<=-1,!>=2}
+Line 88
+  inconclusive always {!<=-1,!>=2}
+Line 92
+  hash always !<=-1
+Line 103
+  ( always {!<=-1,!>=2}
+Line 117
+  incomplete always {!<=-1,!>=2}
+Line 119
+  hash always !<=-1
+Line 120
+  inconclusive always {!<=-1,!>=2}
+Line 37
+  TXT always 0
+Line 38
+  XMLV2 always 1
+Line 39
+  CSV always 2
+Line 49
+  ( always {!<=-1,!>=2}
+Line 55
+  ( always {!<=-1,!>=2}
+Line 65
+  = always 0
+  0 always 0
+Line 70
+  = always 0
+  0 always 0
+Line 76
+  = always 0
+  0 always 0
+Line 43
+  = always 0
+  0 always 0
+Line 48
+  ( always {!<=-1,!>=2}
+Line 53
+  ( always {!<=-1,!>=2}
+Line 30
+  = always "results"
+  "results" always "results"
+Line 31
+  = always "cppcheck"
+  "cppcheck" always "cppcheck"
+Line 32
+  = always "error"
+  "error" always "error"
+Line 33
+  = always "errors"
+  "errors" always "errors"
+Line 34
+  = always "location"
+  "location" always "location"
+Line 35
+  = always "cwe"
+  "cwe" always "cwe"
+Line 36
+  = always "hash"
+  "hash" always "hash"
+Line 37
+  = always "sinceDate"
+  "sinceDate" always "sinceDate"
+Line 38
+  = always "tag"
+  "tag" always "tag"
+Line 39
+  = always "file"
+  "file" always "file"
+Line 40
+  = always "file0"
+  "file0" always "file0"
+Line 41
+  = always "inconclusive"
+  "inconclusive" always "inconclusive"
+Line 42
+  = always "info"
+  "info" always "info"
+Line 43
+  = always "line"
+  "line" always "line"
+Line 44
+  = always "column"
+  "column" always "column"
+Line 45
+  = always "id"
+  "id" always "id"
+Line 46
+  = always "severity"
+  "severity" always "severity"
+Line 47
+  = always "msg"
+  "msg" always "msg"
+Line 48
+  = always "version"
+  "version" always "version"
+Line 49
+  = always "verbose"
+  "verbose" always "verbose"
+Line 53
+  nullptr always 0
+Line 54
+  nullptr always 0
+Line 63
+  ( always {!<=-1,!>=2}
+Line 65
+  ( always {!<=-1,!>=2}
+Line 67
+  return always {!<=-1,!>=2}
+  true always 1
+Line 69
+  return always {!<=-1,!>=2}
+  false always 0
+Line 72
+  ( always {!<=-1,!>=2}
+Line 74
+  ( always {!<=-1,!>=2}
+Line 76
+  return always {!<=-1,!>=2}
+  true always 1
+Line 78
+  return always {!<=-1,!>=2}
+  false always 0
+Line 83
+  true always 1
+Line 86
+  2 always 2
+Line 120
+  . always {!<=-1,!>=2}
+  inconclusive always {!<=-1,!>=2}
+Line 121
+  "true" always "true"
+Line 122
+  > always {!<=-1,!>=2}
+  0 always 0
+Line 124
+  . always !<=-1
+  hash always !<=-1
+  > always {!<=-1,!>=2}
+  0 always 0
+Line 125
+  . always !<=-1
+  hash always !<=-1
+Line 126
+  ! always {!<=-1,!>=2}
+Line 128
+  ! always {!<=-1,!>=2}
+Line 130
+  ! always {!<=-1,!>=2}
+Line 133
+  1 always 1
+  >= always {!<=-1,!>=2}
+  0 always 0
+Line 139
+  > always {!<=-1,!>=2}
+  0 always 0
+Line 141
+  > always {!<=-1,!>=2}
+  1 always 1
+Line 153
+  insideResults always {!<=-1,!>=2}
+  insideResults always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 154
+  ! always {!<=-1,!>=2}
+Line 155
+  "You must Open() the file before reading it!" always "You must Open() the file before reading it!"
+Line 158
+  ! always {!<=-1,!>=2}
+Line 161
+  == always {!<=-1,!>=2}
+Line 162
+  insideResults always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 165
+  insideResults {!<=-1,!>=2,1}
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 172
+  == always {!<=-1,!>=2}
+Line 173
+  insideResults always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 206
+  == always {!<=-1,!>=2}
+Line 215
+  . always {!<=-1,!>=2}
+  inconclusive always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 219
+  . always !<=-1
+  hash always !<=-1
+  = always !<=-1
+Line 228
+  errorRead always {!<=-1,!>=2}
+  errorRead always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 229
+  ! {!<=-1,!>=2,1}
+  errorRead {!<=-1,!>=2,0}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+Line 234
+  == always {!<=-1,!>=2}
+Line 237
+  ! always {!<=-1,!>=2}
+Line 251
+  == always {!<=-1,!>=2}
+Line 252
+  errorRead always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 269
+  == always {!<=-1,!>=2}
+  1 always 1
+  && always {!<=-1,!>=2}
+  0 always 0
+Line 270
+  0 always 0

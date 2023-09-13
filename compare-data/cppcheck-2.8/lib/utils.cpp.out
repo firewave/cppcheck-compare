@@ -1,0 +1,596 @@
+
+
+##file cppcheck-2.8/lib/config.h
+
+1:
+|
+78:
+79: static const std :: string emptyString@var1 ;
+
+##file cppcheck-2.8/lib/utils.h
+
+1:
+|
+31:
+32: struct SelectMapKeys {
+33: template < class Pair >
+34: Pair :: first_type operator() ( const Pair & p@var2 ) const {
+35: return p@var2 .@expr1073741887 first@var3 ;
+36: }
+37: } ;
+38:
+39: struct SelectMapValues {
+40: template < class Pair >
+41: Pair :: second_type operator() ( const Pair & p@var4 ) const {
+42: return p@var4 .@expr1073741888 second@var5 ;
+43: }
+44: } ;
+45:
+46: template < class Range , class T >
+47: bool contains ( const Range & r@var6 , const T & x@var7 )
+48: {
+49: return std ::@expr1073741889 find (@expr1073741890 r@var6 .@expr1073741891 begin (@expr1073741892 ) , r@var6 .@expr69 end (@expr70 ) , x@var7 ) !=@expr1073741895 r@var6 .@expr69 end (@expr70 ) ;
+50: }
+51:
+52: template < class T >
+53: bool contains ( const std :: initializer_list < T > & r@var8 , const T & x@var9 )
+54: {
+55: return std ::@expr1073741898 find (@expr1073741899 r@var8 .@expr1073741900 begin (@expr1073741901 ) , r@var8 .@expr78 end (@expr79 ) , x@var9 ) !=@expr1073741904 r@var8 .@expr78 end (@expr79 ) ;
+56: }
+57:
+58: template < class T , class U >
+59: bool contains ( const std :: initializer_list < T > & r@var10 , const U & x@var11 )
+60: {
+61: return std ::@expr1073741907 find (@expr1073741908 r@var10 .@expr1073741909 begin (@expr1073741910 ) , r@var10 .@expr87 end (@expr88 ) , x@var11 ) !=@expr1073741913 r@var10 .@expr87 end (@expr88 ) ;
+62: }
+63:
+64:
+65: struct EnumClassHash {
+66: template < typename T >
+67: unsigned long operator() ( T t@var12 ) const
+68: {
+69: return static_cast < unsigned long > (@expr1073741916 t@var12 ) ;
+70: }
+71: } ;
+72:
+73: bool endsWith ( const std :: string & str@var13 , char c@var14 )
+74: {
+75: return !@expr1073741917 str@var13 .@expr1073741918 empty (@expr1073741919 ) &&@expr1073741920 str@var13 .@expr1073741921 back (@expr1073741922 ) ==@expr1073741923 c@var14 ;
+76: }
+77:
+78: bool endsWith ( const std :: string & str@var15 , const char end@var16 [ ] , unsigned long endlen@var17 )
+79: {
+80: return (@expr100 str@var15 .@expr101 size (@expr102 ) >=@expr1073741927 endlen@var17 ) &&@expr1073741928 (@expr100 str@var15 .@expr1073741930 compare (@expr1073741931 str@var15 .@expr101 size (@expr102 ) -@expr1073741934 endlen@var17 , endlen@var17 , end@var16 ) ==@expr1073741935 0 ) ;
+81: }
+82:
+83: template < unsigned long N >
+84: bool endsWith ( const std :: string & str@var18 , const char ( & end@var19 ) [ N ] )
+85: {
+86: return endsWith (@expr1073741937 str@var18 , end@var19 , N@expr1073741936 -@expr1073741938 1 ) ;
+87: }
+88:
+89: static bool isPrefixStringCharLiteral ( const std :: string & str@var20 , char q@var21 , const std :: string & p@var22 )
+90: {
+91: if (@expr1073741939 !@expr1073741940 endsWith (@expr1073741941 str@var20 , q@var21 ) ) {
+92: return false ; }
+93: if (@expr1073741942 (@expr1073741943 str@var20 .@expr1073741944 length (@expr1073741945 ) +@expr1073741946 1 ) >@expr1073741947 p@var22 .@expr1073741948 length (@expr1073741949 ) &&@expr1073741950 (@expr1073741951 str@var20 .@expr1073741952 compare (@expr1073741953 0 , p@var22 .@expr1073741954 size (@expr1073741955 ) +@expr1073741956 1 , p@var22 +@expr1073741957 q@var21 ) ==@expr1073741958 0 ) ) {
+94: return true ; }
+95: return false ;
+96: }
+97:
+98: static bool isStringCharLiteral ( const std :: string & str@var23 , char q@var24 )
+99: {
+100: static const std ::@expr135 vector < std ::@expr135 string > suffixes@var25 {@expr1073741961 "" , "u8" , "u" , "U" , "L" } ;
+101: for (@expr1073741962 const std ::@expr135 string &@expr1073741964 p@var26 :@expr1073741965 suffixes@var25 ) {
+102: if (@expr1073741966 isPrefixStringCharLiteral (@expr1073741967 str@var23 , q@var24 , p@var26 ) ) {
+103: return true ; }
+104: }
+105: return false ;
+106: }
+107:
+108: static bool isStringLiteral ( const std :: string & str@var27 )
+109: {
+110: return isStringCharLiteral (@expr1073741968 str@var27 , '"' ) ;
+111: }
+112:
+113: static bool isCharLiteral ( const std :: string & str@var28 )
+114: {
+115: return isStringCharLiteral (@expr1073741969 str@var28 , '\'' ) ;
+116: }
+117:
+118: static std :: string getStringCharLiteral ( const std :: string & str@var29 , char q@var30 )
+119: {
+120: const unsigned long quotePos@var31 =@expr1073741970 str@var29 .@expr1073741971 find (@expr1073741972 q@var30 ) ;
+121: return str@var29 .@expr1073741973 substr (@expr1073741974 quotePos@var31 +@expr1073741975 1U , str@var29 .@expr1073741976 size (@expr1073741977 ) -@expr1073741978 quotePos@var31 -@expr1073741979 2U ) ;
+122: }
+123:
+124: static std :: string getStringLiteral ( const std :: string & str@var32 )
+125: {
+126: if (@expr1073741980 isStringLiteral (@expr1073741981 str@var32 ) ) {
+127: return getStringCharLiteral (@expr1073741982 str@var32 , '"' ) ; }
+128: return "" ;
+129: }
+130:
+131: static std :: string getCharLiteral ( const std :: string & str@var33 )
+132: {
+133: if (@expr1073741983 isCharLiteral (@expr1073741984 str@var33 ) ) {
+134: return getStringCharLiteral (@expr1073741985 str@var33 , '\'' ) ; }
+135: return "" ;
+136: }
+137:
+138: static const char * getOrdinalText ( int i@var34 )
+139: {
+140: if (@expr1073741986 i@var34 ==@expr1073741987 1 ) {
+141: return "st" ; }
+142: if (@expr1073741988 i@var34 ==@expr1073741989 2 ) {
+143: return "nd" ; }
+144: if (@expr1073741990 i@var34 ==@expr1073741991 3 ) {
+145: return "rd" ; }
+146: return "th" ;
+147: }
+148:
+149: int caseInsensitiveStringCompare ( const std :: string & lhs@var35 , const std :: string & rhs@var36 ) ;
+150:
+151: bool isValidGlobPattern ( const std :: string & pattern@var37 ) ;
+152:
+153: bool matchglob ( const std :: string & pattern@var38 , const std :: string & name@var39 ) ;
+154:
+155: bool matchglobs ( const std :: vector < std :: string > & patterns@var40 , const std :: string & name@var41 ) ;
+156:
+157: void strTolower ( std :: string & str@var42 ) ;
+
+##file cppcheck-2.8/lib/utils.cpp
+
+1:
+|
+28:
+29: int caseInsensitiveStringCompare ( const std :: string & lhs@var43 , const std :: string & rhs@var44 )
+30: {
+31: if (@expr1073741992 lhs@var43 .@expr169 size (@expr170 ) !=@expr1073741995 rhs@var44 .@expr172 size (@expr173 ) ) {
+32: return (@expr174 lhs@var43 .@expr169 size (@expr170 ) <@expr1073742001 rhs@var44 .@expr172 size (@expr173 ) ) ?@expr1073742004 -1 :@expr181 1 ; }
+33: for (@expr1073742006 unsigned int i@var45 =@expr1073742007 0 ; i@var45 <@expr1073742008 lhs@var43 .@expr169 size (@expr170 ) ; ++@expr1073742011 i@var45 ) {
+34: const int c1@var46 =@expr1073742012 std ::@expr189 toupper (@expr1073742014 lhs@var43 [@expr1073742015 i@var45 ] ) ;
+35: const int c2@var47 =@expr1073742016 std ::@expr189 toupper (@expr1073742018 rhs@var44 [@expr1073742019 i@var45 ] ) ;
+36: if (@expr1073742020 c1@var46 !=@expr1073742021 c2@var47 ) {
+37: return (@expr174 c1@var46 <@expr1073742023 c2@var47 ) ?@expr1073742024 -1 :@expr181 1 ; }
+38: }
+39: return 0 ;
+40: }
+41:
+42: bool isValidGlobPattern ( const std :: string & pattern@var48 )
+43: {
+44: for (@expr1073742026 std ::@expr203 string ::@expr203 const_iterator i@var49 =@expr1073742029 pattern@var48 .@expr1073742030 begin (@expr1073742031 ) ; i@var49 !=@expr1073742032 pattern@var48 .@expr209 end (@expr210 ) ; ++@expr1073742035 i@var49 ) {
+45: if (@expr1073742036 *@expr213 i@var49 ==@expr1073742038 '*' ||@expr1073742039 *@expr213 i@var49 ==@expr1073742041 '?' ) {
+46: std ::@expr1073742042 string ::@expr1073742043 const_iterator j@var50 ; j@var50 =@expr1073742044 i@var49 +@expr1073742045 1 ;
+47: if (@expr1073742046 j@var50 !=@expr1073742047 pattern@var48 .@expr209 end (@expr210 ) &&@expr1073742050 (@expr1073742051 *@expr228 j@var50 ==@expr1073742053 '*' ||@expr1073742054 *@expr228 j@var50 ==@expr1073742056 '?' ) ) {
+48: return false ;
+49: }
+50: }
+51: }
+52: return true ;
+53: }
+54:
+55: bool matchglob ( const std :: string & pattern@var51 , const std :: string & name@var52 )
+56: {
+57: const char * p@var53 ; p@var53 =@expr1073742059 pattern@var51 .@expr1073742060 c_str (@expr1073742061 ) ;
+58: const char * n@var54 ; n@var54 =@expr1073742062 name@var52 .@expr1073742063 c_str (@expr1073742064 ) ;
+59: std ::@expr1073742065 stack < std ::@expr1073742066 pair < const char *@expr243 , const char *@expr243 > > backtrack@var55 ;
+60:
+61: for (@expr1073742069 ; ; ) {
+62: bool matching@var56 ; matching@var56 =@expr1073742070 true ;
+63: while (@expr1073742071 *@expr248 p@var53 !=@expr1073742073 '\0' &&@expr1073742074 matching@var56 ) {
+64: switch (@expr1073742075 *@expr248 p@var53 ) {
+65: case '*' :@expr253 ;
+66:
+67: while (@expr1073742078 *@expr255 n@var54 !=@expr256 '\0' &&@expr1073742081 *@expr255 n@var54 !=@expr1073742083 p@var53 [@expr1073742084 1 ] ) {
+68: n@var54 ++@expr1073742085 ;
+69: }
+70: if (@expr262 *@expr255 n@var54 !=@expr256 '\0' ) {
+71:
+72: backtrack@var55 .@expr1073742089 push (@expr1073742090 std ::@expr1073742091 make_pair (@expr1073742092 p@var53 , n@var54 ) ) ;
+73: }
+74: break ;
+75: case '?' :@expr253 ;
+76:
+77: if (@expr262 *@expr255 n@var54 !=@expr256 '\0' ) {
+78: n@var54 ++@expr1073742097 ;
+79: } else {
+80: matching@var56 =@expr1073742098 false ;
+81: }
+82: break ;
+83: default :@expr253 ;
+84:
+85: if (@expr1073742100 *@expr255 n@var54 ==@expr1073742102 *@expr248 p@var53 ) {
+86: n@var54 ++@expr1073742104 ;
+87: } else { if (@expr1073742105 *@expr255 n@var54 ==@expr1073742107 '\\' &&@expr1073742108 *@expr248 p@var53 ==@expr1073742110 '/' ) {
+88: n@var54 ++@expr1073742111 ;
+89: } else { if (@expr1073742112 *@expr255 n@var54 ==@expr1073742114 '/' &&@expr1073742115 *@expr248 p@var53 ==@expr1073742117 '\\' ) {
+90: n@var54 ++@expr1073742118 ;
+91: } else {
+92: matching@var56 =@expr1073742119 false ;
+93: } } }
+94: break ;
+95: }
+96: p@var53 ++@expr1073742120 ;
+97: }
+98:
+99:
+100: if (@expr1073742121 matching@var56 &&@expr1073742122 *@expr255 n@var54 ==@expr1073742124 '\0' ) {
+101: return true ;
+102: }
+103:
+104:
+105: if (@expr1073742125 backtrack@var55 .@expr1073742126 empty (@expr1073742127 ) ) {
+106: return false ;
+107: }
+108:
+109:
+110: p@var53 =@expr1073742128 backtrack@var55 .@expr305 top (@expr306 ) .@expr1073742131 first@expr1073742057 ;
+111: n@var54 =@expr1073742132 backtrack@var55 .@expr305 top (@expr306 ) .@expr1073742135 second@expr1073742058 ;
+112: backtrack@var55 .@expr1073742136 pop (@expr1073742137 ) ;
+113:
+114:
+115: n@var54 ++@expr1073742138 ;
+116: }
+117: }
+118:
+119: bool matchglobs ( const std :: vector < std :: string > & patterns@var57 , const std :: string & name@var58 ) {
+120: return std ::@expr1073742139 any_of (@expr1073742140 begin (@expr1073742141 patterns@var57 ) , end (@expr1073742142 patterns@var57 ) , [@expr1073742143 &@expr1073742144 name@var58 ] (@expr1073742145 const std ::@expr1073742146 string &@expr1073742147 pattern@var59 ) {
+121: return matchglob (@expr1073742148 pattern@var59 , name@var58 ) ;
+122: } ) ;
+123: }
+124:
+125: void strTolower ( std :: string & str@var60 )
+126: {
+127:
+128:
+129: static auto tolowerWrapper@var61 =@expr1073742149 [@expr1073742150 ] (@expr1073742151 int c@var62 ) {
+130: return std ::@expr1073742152 tolower (@expr1073742153 c@var62 ) ;
+131: } ;
+132: std ::@expr1073742154 transform (@expr1073742155 str@var60 .@expr332 begin (@expr333 ) , str@var60 .@expr1073742158 end (@expr1073742159 ) , str@var60 .@expr332 begin (@expr333 ) , tolowerWrapper@var61 ) ;
+133: }
+
+
+
+##Value flow
+Line 47
+  ( always {!<=-1,!>=2}
+Line 49
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+Line 53
+  ( always {!<=-1,!>=2}
+Line 55
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+Line 59
+  ( always {!<=-1,!>=2}
+Line 61
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+Line 67
+  ( always !<=-1
+Line 69
+  return always !<=-1
+  ( always !<=-1
+Line 73
+  ( always {!<=-1,!>=2}
+Line 75
+  return always {!<=-1,!>=2}
+  ! {!<=-1,!>=2,0}
+  str possible size=0
+  ( {!<=-1,!>=2,1}
+  && always {!<=-1,!>=2}
+  str always !size=0
+  == always {!<=-1,!>=2}
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  endlen always !<=-1
+Line 80
+  return always {!<=-1,!>=2}
+  ( always !<=-1
+  >= always {!<=-1,!>=2}
+  endlen always !<=-1
+  && always {!<=-1,!>=2}
+  ( {!<=-1,>=symbolic=(endlen),!<=symbolic=(endlen-1)}
+  - always !<=-1
+  endlen {!<=-1,<=symbolic=(str.size()),!>=symbolic=(str.size()+1)}
+  endlen {!<=-1,<=symbolic=(str.size()),!>=symbolic=(str.size()+1)}
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 84
+  ( always {!<=-1,!>=2}
+  ( always !0
+  & always !0
+Line 86
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  1 always 1
+Line 89
+  ( always {!<=-1,!>=2}
+Line 91
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  q possible {39@1544,34@1800}
+Line 92
+  return always {!<=-1,!>=2}
+  false always 0
+Line 93
+  ( always !<=-1
+  + always !<=0
+  1 always 1
+  > always {!<=-1,!>=2}
+  ( always !<=-1
+  && always {!<=-1,!>=2}
+  0 always 0
+  ( always !<=-1
+  + always !<=0
+  1 always 1
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 94
+  return always {!<=-1,!>=2}
+  true always 1
+Line 95
+  return always {!<=-1,!>=2}
+  false always 0
+Line 98
+  ( always {!<=-1,!>=2}
+Line 100
+  "" always ""
+  "u8" always "u8"
+  "u" always "u"
+  "U" always "U"
+  "L" always "L"
+Line 102
+  ( always {!<=-1,!>=2}
+  q possible {39@6,34@7}
+Line 103
+  return always {!<=-1,!>=2}
+  true always 1
+Line 105
+  return always {!<=-1,!>=2}
+  false always 0
+Line 108
+  ( always {!<=-1,!>=2}
+Line 110
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  '"' always 34
+Line 113
+  ( always {!<=-1,!>=2}
+Line 115
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  '\'' always 39
+Line 120
+  quotePos always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  q possible {39@3,34@5}
+Line 121
+  quotePos {symbolic=(str.find(q)),!<=-1}
+  + always !<=0
+  1U always 1
+  ( always !<=-1
+  - always !<=-1
+  quotePos {symbolic=(str.find(q)),!<=-1}
+  - always !<=-1
+  2U always 2
+Line 126
+  ( always {!<=-1,!>=2}
+Line 127
+  '"' always 34
+Line 128
+  "" always ""
+Line 133
+  ( always {!<=-1,!>=2}
+Line 134
+  '\'' always 39
+Line 135
+  "" always ""
+Line 140
+  i possible {2,3}
+  == {!<=-1,!>=2,0}
+  1 always 1
+Line 141
+  "st" always "st"
+Line 142
+  i {3,!1}
+  == {!<=-1,!>=2,0}
+  2 always 2
+Line 143
+  "nd" always "nd"
+Line 144
+  i always {!1,!2}
+  == always {!<=-1,!>=2}
+  3 always 3
+Line 145
+  "rd" always "rd"
+Line 146
+  "th" always "th"
+Line 151
+  ( always {!<=-1,!>=2}
+Line 153
+  ( always {!<=-1,!>=2}
+Line 155
+  ( always {!<=-1,!>=2}
+Line 31
+  ( always !<=-1
+  != always {!<=-1,!>=2}
+  ( always !<=-1
+Line 32
+  ( always {!<=-1,!symbolic=(rhs.size())}
+  < always {!<=-1,!>=2}
+  ( always {!<=-1,!symbolic=(lhs.size())}
+  -1 always -1
+  : always 1
+  1 always 1
+Line 33
+  i always !<=-1
+  = always 0
+  0 always 0
+  i {!<=-1,0}
+  < always {!<=-1,!>=2}
+  ( {!<=-1,symbolic=(lhs.size()),symbolic=(rhs.size())}
+  ++ always !<=0
+  i always !<=-1
+Line 34
+  i {!<=-1,<=symbolic=(lhs.size()-1),!>=symbolic=(lhs.size()),!symbolic=(rhs.size())}
+Line 35
+  i {!<=-1,<=symbolic=(lhs.size()-1),!>=symbolic=(lhs.size()),!symbolic=(rhs.size())}
+Line 36
+  != always {!<=-1,!>=2}
+Line 37
+  c1 always !symbolic=(c2)
+  < always {!<=-1,!>=2}
+  c2 always !symbolic=(c1)
+  -1 always -1
+  : always 1
+  1 always 1
+Line 39
+  0 always 0
+Line 42
+  ( always {!<=-1,!>=2}
+Line 44
+  = {lifetime[Iterator]=(pattern),start=0}
+  ( {lifetime[Iterator]=(pattern),start=0}
+  i possible {lifetime[Iterator]=(pattern),symbolic=(pattern.end()-1),end=-1,start=0}
+  != {!<=-1,!>=2,1}
+  ( {lifetime[Iterator]=(pattern),end=0}
+  i possible lifetime[Iterator]=(pattern)
+Line 45
+  * possible 63
+  i {lifetime[Iterator]=(pattern),symbolic=(pattern.end()-1),!symbolic=(pattern.end()),end=-1,!end=0}
+  == {!<=-1,!>=2,0}
+  '*' always 42
+  || always {!<=-1,!>=2}
+  i {lifetime[Iterator]=(pattern),!symbolic=(pattern.end()),!end=0}
+  == always {!<=-1,!>=2}
+  '?' always 63
+Line 46
+  = always !end=1
+  i {lifetime[Iterator]=(pattern),!symbolic=(pattern.end()),!end=0}
+  + always !end=1
+  1 always 1
+Line 47
+  j {symbolic=(i+1),!end=1}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(pattern),end=0}
+  && always {!<=-1,!>=2}
+  j {symbolic=(i+1),!symbolic=(pattern.end()),!end=0,!end=1}
+  == always {!<=-1,!>=2}
+  '*' always 42
+  || always {!<=-1,!>=2}
+  j {symbolic=(i+1),!symbolic=(pattern.end()),!end=0,!end=1}
+  == always {!<=-1,!>=2}
+  '?' always 63
+Line 48
+  return always {!<=-1,!>=2}
+  false always 0
+Line 52
+  return always {!<=-1,!>=2}
+  true always 1
+Line 55
+  ( always {!<=-1,!>=2}
+Line 57
+  = {lifetime[Object]=(pattern),!0}
+  ( {lifetime[Object]=(pattern),!0}
+Line 58
+  = {lifetime[Object]=(name),!0}
+  ( {lifetime[Object]=(name),!0}
+Line 62
+  matching always {!<=-1,!>=2}
+  matching always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 63
+  p inconclusive {lifetime[Object]=(pattern),symbolic=(pattern.c_str())}
+  != always {!<=-1,!>=2}
+  '\0' always 0
+  && always {!<=-1,!>=2}
+  matching always {!<=-1,!>=2}
+Line 64
+  * always !0
+  p inconclusive {lifetime[Object]=(pattern),symbolic=(pattern.c_str())}
+Line 65
+  '*' always 42
+Line 67
+  * possible 0
+  != {!<=-1,!>=2,0}
+  '\0' always 0
+  && always {!<=-1,!>=2}
+  * always !0
+  != always {!<=-1,!>=2}
+  1 always 1
+Line 70
+  * possible {symbolic=(p[1]),0}
+  != {!<=-1,!>=2,0}
+  '\0' always 0
+Line 75
+  '?' always 63
+Line 77
+  != always {!<=-1,!>=2}
+  '\0' always 0
+Line 80
+  matching always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 85
+  * possible {92,47}
+  == {!<=-1,!>=2,0,1}
+  * possible {47,92}
+Line 87
+  * {!symbolic=(*p),47}
+  == {!<=-1,!>=2,0}
+  '\\' always 92
+  && always {!<=-1,!>=2}
+  * always !symbolic=(*n)
+  == always {!<=-1,!>=2}
+  '/' always 47
+Line 89
+  * always !symbolic=(*p)
+  == always {!<=-1,!>=2}
+  '/' always 47
+  && always {!<=-1,!>=2}
+  * always !symbolic=(*n)
+  == always {!<=-1,!>=2}
+  '\\' always 92
+Line 92
+  matching always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 100
+  matching {!<=-1,!>=2,0,1}
+  && always {!<=-1,!>=2}
+  n possible lifetime[Object]=(name)
+  == always {!<=-1,!>=2}
+  '\0' always 0
+Line 101
+  return always {!<=-1,!>=2}
+  true always 1
+Line 105
+  ( always {!<=-1,!>=2}
+Line 106
+  return always {!<=-1,!>=2}
+  false always 0
+Line 110
+  backtrack always !size=0
+Line 111
+  backtrack always !size=0
+Line 112
+  backtrack always !size=0
+Line 119
+  ( always {!<=-1,!>=2}
+Line 120
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  [ possible lifetime[Lambda]=(name)
+  & {lifetime[Address]=(name),!0}
+Line 121
+  ( always {!<=-1,!>=2}
+Line 132
+  ( {lifetime[Iterator]=(str),start=0}
+  ( {lifetime[Iterator]=(str),end=0}
+  ( {lifetime[Iterator]=(str),start=0}

@@ -1,0 +1,693 @@
+
+
+##file cppcheck-2.8/gui/checkthread.h
+
+1:
+|
+27:
+28: class QObject ;
+29: class Settings ;
+30: class ThreadResult ;
+31:
+|
+38:
+39: class CheckThread : public QThread {
+40: Q_OBJECT
+41: public:
+42: explicit CheckThread ( ThreadResult & result ) ;
+43: ~ CheckThread ( ) override ;
+44:
+|
+49:
+50: void check ( const Settings & settings ) ;
+51:
+|
+55:
+56: void analyseWholeProgram ( const QStringList & files ) ;
+57:
+58: void setAddonsAndTools ( const QStringList & addonsAndTools ) {
+59: mAddonsAndTools = addonsAndTools ;
+60: }
+61:
+62: void setClangIncludePaths ( const QStringList & s ) {
+63: mClangIncludePaths = s ;
+64: }
+65:
+66: void setSuppressions ( const QList < Suppressions :: Suppression > & s ) {
+67: mSuppressions = s ;
+68: }
+69:
+|
+73:
+74: void run ( ) override ;
+75:
+76: void stop ( ) ;
+77:
+|
+81:
+82: static QString clangCmd ( ) ;
+83:
+|
+87:
+88: static QString clangTidyCmd ( ) ;
+89:
+90: signals :
+91:
+|
+95:
+96: void done ( ) ;
+97:
+98: void fileChecked ( const QString & file ) ;
+99: protected:
+100:
+|
+107:
+108: enum State {
+109: Running ,
+110: Stopping ,
+111: Stopped ,
+112: Ready ,
+113: } ;
+114:
+|
+117:
+118: State mState ;
+119:
+120: ThreadResult & mResult ;
+121:
+122:
+123:
+124: CppCheck mCppcheck ;
+125:
+126: private:
+127: void runAddonsAndTools ( const ImportProject :: FileSettings * fileSettings , const QString & fileName ) ;
+128:
+129: void parseClangErrors ( const QString & tool , const QString & file0 , QString err ) ;
+130:
+131: bool isSuppressed ( const Suppressions :: ErrorMessage & errorMessage ) const ;
+132:
+133: QStringList mFiles ;
+134: bool mAnalyseWholeProgram ;
+135: QStringList mAddonsAndTools ;
+136: QStringList mClangIncludePaths ;
+137: QList < Suppressions :: Suppression > mSuppressions ;
+138: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type , const QString & value ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters , bool addAllSupported = true , bool addAll = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/erroritem.h
+
+1:
+|
+36:
+37: class GuiSeverity {
+38: public:
+39: static QString toString ( Severity :: SeverityType severity ) {
+40: return QString :: fromStdString ( Severity :: toString ( severity ) ) ;
+41: }
+42:
+43: static Severity :: SeverityType fromString ( const QString & severity ) {
+44: return Severity :: fromString ( severity . toStdString ( ) ) ;
+45: }
+46: } ;
+47:
+|
+50:
+51: class QErrorPathItem {
+52: public:
+53: QErrorPathItem ( ) : line ( 0 ) , column ( -1 ) { }
+54: explicit QErrorPathItem ( const ErrorMessage :: FileLocation & loc ) ;
+55: QString file ;
+56: int line ;
+57: int column ;
+58: QString info ;
+59: } ;
+60:
+61: bool operator == ( const QErrorPathItem & i1 , const QErrorPathItem & i2 ) ;
+62:
+|
+70:
+71: class ErrorItem {
+72: public:
+73: ErrorItem ( ) ;
+74: explicit ErrorItem ( const ErrorMessage & errmsg ) ;
+75:
+|
+79:
+80: QString toString ( ) const ;
+81: QString tool ( ) const ;
+82:
+83: QString file0 ;
+84: QString function ;
+85: QString errorId ;
+86: Severity :: SeverityType severity ;
+87: bool incomplete ;
+88: bool inconclusive ;
+89: QString summary ;
+90: QString message ;
+91: int cwe ;
+92: unsigned long long hash ;
+93: QList < QErrorPathItem > errorPath ;
+94: QString symbolNames ;
+95:
+96:
+97: QString sinceDate ;
+98: QString tags ;
+99:
+|
+102:
+103: static bool sameCID ( const ErrorItem & errorItem1 , const ErrorItem & errorItem2 ) ;
+104: } ;
+105:
+|
+110:
+111: class ErrorLine {
+112: public:
+113: QString file ;
+114: int line ;
+115: QString file0 ;
+116: QString errorId ;
+117: bool incomplete ;
+118: int cwe ;
+119: unsigned long long hash ;
+120: bool inconclusive ;
+121: Severity :: SeverityType severity ;
+122: QString summary ;
+123: QString message ;
+124: QString sinceDate ;
+125: QString tags ;
+126: } ;
+
+##file cppcheck-2.8/gui/threadresult.h
+
+1:
+|
+33:
+34: class ErrorItem ;
+35:
+|
+42:
+43: class ThreadResult : public QObject , public ErrorLogger {
+44: Q_OBJECT
+45: public:
+46: ThreadResult ( ) ;
+47: ~ ThreadResult ( ) override ;
+48:
+|
+52:
+53: QString getNextFile ( ) ;
+54:
+55: ImportProject :: FileSettings getNextFileSettings ( ) ;
+56:
+|
+60:
+61: void setFiles ( const QStringList & files ) ;
+62:
+63: void setProject ( const ImportProject & prj ) ;
+64:
+|
+68:
+69: void clearFiles ( ) ;
+70:
+|
+74:
+75: int getFileCount ( ) const ;
+76:
+|
+79:
+80: void reportOut ( const std :: string & outmsg , Color c = Color :: Reset ) override ;
+81: void reportErr ( const ErrorMessage & msg ) override ;
+82:
+83: public slots :
+84:
+|
+88:
+89: void fileChecked ( const QString & file ) ;
+90: signals :
+91:
+|
+95:
+96: void progress ( int value , const QString & description ) ;
+97:
+|
+102:
+103: void error ( const ErrorItem & item ) ;
+104:
+|
+109:
+110: void log ( const QString & logline ) ;
+111:
+|
+116:
+117: void debugError ( const ErrorItem & item ) ;
+118:
+119: protected:
+120:
+|
+124:
+125: mutable QMutex mutex ;
+126:
+|
+130:
+131: QStringList mFiles ;
+132:
+133: std :: list < ImportProject :: FileSettings > mFileSettings ;
+134:
+|
+138:
+139: quint64 mMaxProgress ;
+140:
+|
+144:
+145: quint64 mProgress ;
+146:
+|
+150:
+151: unsigned long mFilesChecked ;
+152:
+|
+156:
+157: unsigned long mTotalFiles ;
+158: } ;
+
+##file cppcheck-2.8/gui/checkthread.cpp
+
+1:
+|
+46:
+47: static bool executeCommand ( std :: string exe , std :: vector < std :: string > args , std :: string redirect , std :: string * output )
+48: {
+49: output . clear ( ) ;
+50:
+51: QStringList args2 ;
+52: for ( const std :: string & arg : args ) {
+53: args2 << QString :: fromStdString ( arg ) ; }
+54:
+55: QProcess process ;
+56: process . start ( QString :: fromStdString ( exe ) , args2 ) ;
+57: process . waitForFinished ( ) ;
+58:
+59: if ( redirect == "2>&1" ) {
+60: QString s1 ; s1 = process . readAllStandardOutput ( ) ;
+61: QString s2 ; s2 = process . readAllStandardError ( ) ;
+62: * output = ( s1 + "\n" + s2 ) . toStdString ( ) ;
+63: } else {
+64: * output = process . readAllStandardOutput ( ) . toStdString ( ) ; }
+65:
+66: if ( redirect . compare ( 0 , 3 , "2> " ) == 0 ) {
+67: std :: ofstream fout ( redirect . substr ( 3 ) ) ;
+68: fout << process . readAllStandardError ( ) . toStdString ( ) ;
+69: }
+70: return process . exitCode ( ) == 0 ;
+71: }
+72:
+73:
+74: CheckThread :: CheckThread ( ThreadResult & result ) :
+75: mState ( Ready ) ,
+76: mResult ( result ) ,
+77: mCppcheck ( result , true , executeCommand ) ,
+78: mAnalyseWholeProgram ( false )
+79: {
+80:
+81: }
+82:
+83: CheckThread :: ~ CheckThread ( )
+84: {
+85:
+86: }
+87:
+88: void CheckThread :: check ( const Settings & settings )
+89: {
+90: mFiles . clear ( ) ;
+91: mCppcheck . settings ( ) = settings ;
+92: start ( ) ;
+93: }
+94:
+95: void CheckThread :: analyseWholeProgram ( const QStringList & files )
+96: {
+97: mFiles = files ;
+98: mAnalyseWholeProgram = true ;
+99: start ( ) ;
+100: }
+101:
+102:
+103: void CheckThread :: run ( )
+104: {
+105: mState = Running ;
+106:
+107: if ( ! mFiles . isEmpty ( ) || mAnalyseWholeProgram ) {
+108: mAnalyseWholeProgram = false ;
+109: qDebug ( ) << "Whole program analysis" ;
+110: const std :: string & buildDir = mCppcheck . settings ( ) . buildDir ;
+111: if ( ! buildDir . empty ( ) ) {
+112: std :: map < std :: string , std :: size_t > files2 ;
+113: for ( const QString & file : mFiles ) {
+114: files2 [ file . toStdString ( ) ] = 0 ; }
+115: mCppcheck . analyseWholeProgram ( buildDir , files2 ) ;
+116: }
+117: mFiles . clear ( ) ;
+118: emit done ( ) ;
+119: return ;
+120: }
+121:
+122: QString file ; file = mResult . getNextFile ( ) ;
+123: while ( ! file . isEmpty ( ) && mState == Running ) {
+124: qDebug ( ) << "Checking file" << file ;
+125: mCppcheck . check ( file . toStdString ( ) ) ;
+126: runAddonsAndTools ( nullptr , file ) ;
+127: emit fileChecked ( file ) ;
+128:
+129: if ( mState == Running ) {
+130: file = mResult . getNextFile ( ) ; }
+131: }
+132:
+133: ImportProject :: FileSettings fileSettings ; fileSettings = mResult . getNextFileSettings ( ) ;
+134: while ( ! fileSettings . filename . empty ( ) && mState == Running ) {
+135: file = QString :: fromStdString ( fileSettings . filename ) ;
+136: qDebug ( ) << "Checking file" << file ;
+137: mCppcheck . check ( fileSettings ) ;
+138: runAddonsAndTools ( & fileSettings , QString :: fromStdString ( fileSettings . filename ) ) ;
+139: emit fileChecked ( file ) ;
+140:
+141: if ( mState == Running ) {
+142: fileSettings = mResult . getNextFileSettings ( ) ; }
+143: }
+144:
+145: if ( mState == Running ) {
+146: mState = Ready ; }
+147: else {
+148: mState = Stopped ; }
+149:
+150: emit done ( ) ;
+151: }
+152:
+153: void CheckThread :: runAddonsAndTools ( const ImportProject :: FileSettings * fileSettings , const QString & fileName )
+154: {
+155: for ( const QString & addon : mAddonsAndTools ) {
+156: if ( addon == $"clang-analyzer" || addon == $"clang-tidy" ) {
+157: if ( ! fileSettings ) {
+158: continue ; }
+159:
+160: if ( ! fileSettings . cfg . empty ( ) && fileSettings . cfg . compare ( 0 , 5 , "Debug" ) != 0 ) {
+161: continue ; }
+162:
+163: QStringList args ;
+164: for ( std :: list < std :: string > :: const_iterator incIt = fileSettings . includePaths . begin ( ) ; incIt != fileSettings . includePaths . end ( ) ; ++ incIt ) {
+165: args << ( "-I" + QString :: fromStdString ( * incIt ) ) ; }
+166: for ( std :: list < std :: string > :: const_iterator i = fileSettings . systemIncludePaths . begin ( ) ; i != fileSettings . systemIncludePaths . end ( ) ; ++ i ) {
+167: args << "-isystem" << QString :: fromStdString ( * i ) ; }
+168: for ( const QString & def : QString :: fromStdString ( fileSettings . defines ) . split ( ";" ) ) {
+169: args << ( "-D" + def ) ;
+170: }
+171: for ( const std :: string & U : fileSettings . undefs ) {
+172: args << QString :: fromStdString ( "-U" + U ) ;
+173: }
+174:
+175: const QString clangPath = CheckThread :: clangTidyCmd ( ) ;
+176: if ( ! clangPath . isEmpty ( ) ) {
+177: QDir dir ( clangPath + "/../lib/clang" ) ;
+178: for ( QString ver : dir . entryList ( ) ) {
+179: QString includePath ; includePath = dir . absolutePath ( ) + '/' + ver + "/include" ;
+180: if ( ver [ 0 ] != '.' && QDir ( includePath ) . exists ( ) ) {
+181: args << "-isystem" << includePath ;
+182: break ;
+183: }
+184: }
+185: }
+186:
+|
+200:
+201: if ( ! fileSettings . standard . empty ( ) ) {
+202: args << ( "-std=" + QString :: fromStdString ( fileSettings . standard ) ) ; }
+203: else {
+204:
+205: const std :: string std = mCppcheck . settings ( ) . standards . getCPP ( ) ;
+206: if ( ! std . empty ( ) ) {
+207: args << ( "-std=" + QString :: fromStdString ( std ) ) ;
+208: }
+209: }
+210:
+211: QString analyzerInfoFile ;
+212:
+213: const std :: string & buildDir = mCppcheck . settings ( ) . buildDir ;
+214: if ( ! buildDir . empty ( ) ) {
+215: analyzerInfoFile = QString :: fromStdString ( AnalyzerInformation :: getAnalyzerInfoFile ( buildDir , fileSettings . filename , fileSettings . cfg ) ) ;
+216:
+217: QStringList args2 ( args ) ;
+218: args2 . insert ( 0 , "-E" ) ;
+219: args2 << fileName ;
+220: QProcess process ;
+221: process . start ( clangCmd ( ) , args2 ) ;
+222: process . waitForFinished ( ) ;
+223: const QByteArray & ba = process . readAllStandardOutput ( ) ;
+224:
+225:
+226:
+227: const quint16 chksum = qChecksum ( ba . data ( ) , ba . length ( ) ) ;
+228:
+229:
+230: QFile f1 ( analyzerInfoFile + '.' + addon + "-E" ) ;
+231: if ( f1 . open ( QIODevice :: ReadOnly | QIODevice :: Text ) ) {
+232: QTextStream in1 ( & f1 ) ;
+233: const quint16 oldchksum = in1 . readAll ( ) . toInt ( ) ;
+234: if ( oldchksum == chksum ) {
+235: QFile f2 ( analyzerInfoFile + '.' + addon + "-results" ) ;
+236: if ( f2 . open ( QIODevice :: ReadOnly | QIODevice :: Text ) ) {
+237: QTextStream in2 ( & f2 ) ;
+238: parseClangErrors ( addon , fileName , in2 . readAll ( ) ) ;
+239: continue ;
+240: }
+241: }
+242: f1 . close ( ) ;
+243: }
+244: f1 . open ( QIODevice :: WriteOnly | QIODevice :: Text ) ;
+245: QTextStream out1 ( & f1 ) ;
+246: out1 << chksum ;
+247:
+248: QFile :: remove ( analyzerInfoFile + '.' + addon + "-results" ) ;
+249: }
+250:
+251: if ( addon == $"clang-analyzer" ) {
+252:
+|
+259:
+260: args . insert ( 0 , "-checks=-*,clang-analyzer-*" ) ;
+261: args . insert ( 1 , fileName ) ;
+262: args . insert ( 2 , "--" ) ;
+263: } else {
+264: args . insert ( 0 , "-checks=*,-clang-analyzer-*,-llvm*" ) ;
+265: args . insert ( 1 , fileName ) ;
+266: args . insert ( 2 , "--" ) ;
+267: }
+268:
+269: {
+270: const QString cmd ( clangTidyCmd ( ) ) ;
+271: QString debug ( cmd . contains ( " " ) ? ( '\"' + cmd + '\"' ) : cmd ) ;
+272: for ( const QString & arg : args ) {
+273: if ( arg . contains ( " " ) ) {
+274: debug += " \"" + arg + '\"' ; }
+275: else {
+276: debug += ' ' + arg ; }
+277: }
+278: qDebug ( ) << debug ;
+279:
+280: if ( ! analyzerInfoFile . isEmpty ( ) ) {
+281: QFile f ( analyzerInfoFile + '.' + addon + "-cmd" ) ;
+282: if ( f . open ( QIODevice :: WriteOnly | QIODevice :: Text ) ) {
+283: QTextStream out ( & f ) ;
+284: out << debug ;
+285: }
+286: }
+287: }
+288:
+289: QProcess process ;
+290: process . start ( clangTidyCmd ( ) , args ) ;
+291: process . waitForFinished ( 600 * 1000 ) ;
+292: const QString errout ( process . readAllStandardOutput ( ) + "\n\n\n" + process . readAllStandardError ( ) ) ;
+293: if ( ! analyzerInfoFile . isEmpty ( ) ) {
+294: QFile f ( analyzerInfoFile + '.' + addon + "-results" ) ;
+295: if ( f . open ( QIODevice :: WriteOnly | QIODevice :: Text ) ) {
+296: QTextStream out ( & f ) ;
+297: out << errout ;
+298: }
+299: }
+300:
+301: parseClangErrors ( addon , fileName , errout ) ;
+302: }
+303: }
+304: }
+305:
+306: void CheckThread :: stop ( )
+307: {
+308: mState = Stopping ;
+309: Settings :: terminate ( ) ;
+310: }
+311:
+312: void CheckThread :: parseClangErrors ( const QString & tool , const QString & file0 , QString err )
+313: {
+314: QList < ErrorItem > errorItems ;
+315: ErrorItem errorItem ;
+316: static const QRegularExpression r1 ( "^(.+):([0-9]+):([0-9]+): (note|warning|error|fatal error): (.*)$" ) ;
+317: static const QRegularExpression r2 ( "^(.*)\\[([a-zA-Z0-9\\-_\\.]+)\\]$" ) ;
+318: QTextStream in ( & err , QIODevice :: ReadOnly ) ;
+319: while ( ! in . atEnd ( ) ) {
+320: QString line ; line = in . readLine ( ) ;
+321:
+322: if ( line . startsWith ( "Assertion failed:" ) ) {
+323: ErrorItem e ;
+324: e . errorPath . append ( QErrorPathItem ( ) ) ;
+325: e . errorPath . last ( ) . file = file0 ;
+326: e . errorPath . last ( ) . line = 1 ;
+327: e . errorPath . last ( ) . column = 1 ;
+328: e . errorId = tool + "-internal-error" ;
+329: e . file0 = file0 ;
+330: e . message = line ;
+331: e . severity = Severity :: information ;
+332: errorItems . append ( e ) ;
+333: continue ;
+334: }
+335:
+336: const QRegularExpressionMatch r1MatchRes = r1 . match ( line ) ;
+337: if ( ! r1MatchRes . hasMatch ( ) ) {
+338: continue ; }
+339: if ( r1MatchRes . captured ( 4 ) != "note" ) {
+340: errorItems . append ( errorItem ) ;
+341: errorItem = ErrorItem ( ) ;
+342: errorItem . file0 = r1MatchRes . captured ( 1 ) ;
+343: }
+344:
+345: errorItem . errorPath . append ( QErrorPathItem ( ) ) ;
+346: errorItem . errorPath . last ( ) . file = r1MatchRes . captured ( 1 ) ;
+347: errorItem . errorPath . last ( ) . line = r1MatchRes . captured ( 2 ) . toInt ( ) ;
+348: errorItem . errorPath . last ( ) . column = r1MatchRes . captured ( 3 ) . toInt ( ) ;
+349: if ( r1MatchRes . captured ( 4 ) == "warning" ) {
+350: errorItem . severity = Severity :: SeverityType :: warning ; }
+351: else if ( r1MatchRes . captured ( 4 ) == "error" || r1MatchRes . captured ( 4 ) == "fatal error" ) {
+352: errorItem . severity = Severity :: SeverityType :: error ; }
+353:
+354: QString message ; QString id ;
+355: const QRegularExpressionMatch r2MatchRes = r2 . match ( r1MatchRes . captured ( 5 ) ) ;
+356: if ( r2MatchRes . hasMatch ( ) ) {
+357: message = r2MatchRes . captured ( 1 ) ;
+358: const QString id1 ( r2MatchRes . captured ( 2 ) ) ;
+359: if ( id1 . startsWith ( "clang" ) ) {
+360: id = id1 ; }
+361: else {
+362: id = tool + '-' + r2MatchRes . captured ( 2 ) ; }
+363: if ( tool == $"clang-tidy" ) {
+364: if ( id1 . startsWith ( "performance" ) ) {
+365: errorItem . severity = Severity :: SeverityType :: performance ; }
+366: else if ( id1 . startsWith ( "portability" ) ) {
+367: errorItem . severity = Severity :: SeverityType :: portability ; }
+368: else if ( id1 . startsWith ( "misc" ) && ! id1 . contains ( "unused" ) ) {
+369: errorItem . severity = Severity :: SeverityType :: warning ; }
+370: else {
+371: errorItem . severity = Severity :: SeverityType :: style ; }
+372: }
+373: } else {
+374: message = r1MatchRes . captured ( 5 ) ;
+375: id = $"clang-analyzer" ;
+376: }
+377:
+378: if ( errorItem . errorPath . size ( ) == 1 ) {
+379: errorItem . message = message ;
+380: errorItem . errorId = id ;
+381: }
+382:
+383: errorItem . errorPath . last ( ) . info = message ;
+384: }
+385: errorItems . append ( errorItem ) ;
+386:
+387: for ( const ErrorItem & e : errorItems ) {
+388: if ( e . errorPath . isEmpty ( ) ) {
+389: continue ; }
+390: Suppressions :: ErrorMessage errorMessage ;
+391: errorMessage . setFileName ( e . errorPath . back ( ) . file . toStdString ( ) ) ;
+392: errorMessage . lineNumber = e . errorPath . back ( ) . line ;
+393: errorMessage . errorId = e . errorId . toStdString ( ) ;
+394: errorMessage . symbolNames = e . symbolNames . toStdString ( ) ;
+395:
+396: if ( isSuppressed ( errorMessage ) ) {
+397: continue ; }
+398:
+399: std :: list < ErrorMessage :: FileLocation > callstack ;
+400: for ( const QErrorPathItem & path : e . errorPath ) {
+401: callstack . push_back ( ErrorMessage :: FileLocation ( path . file . toStdString ( ) , path . info . toStdString ( ) , path . line , path . column ) ) ;
+402: }
+403: const std :: string f0 = file0 . toStdString ( ) ;
+404: const std :: string msg = e . message . toStdString ( ) ;
+405: const std :: string id = e . errorId . toStdString ( ) ;
+406: ErrorMessage errmsg ( callstack , f0 , e . severity , msg , id , Certainty :: normal ) ;
+407: mResult . reportErr ( errmsg ) ;
+408: }
+409: }
+410:
+411: bool CheckThread :: isSuppressed ( const Suppressions :: ErrorMessage & errorMessage ) const
+412: {
+413: for ( const Suppressions :: Suppression & suppression : mSuppressions ) {
+414: if ( suppression . isSuppressed ( errorMessage ) ) {
+415: return true ; }
+416: }
+417: return false ;
+418: }
+419:
+420: QString CheckThread :: clangCmd ( )
+421: {
+422: QString path ; path = QSettings ( ) . value ( $"Clang path" , QString ( ) ) . toString ( ) ;
+423: if ( ! path . isEmpty ( ) ) {
+424: path += '/' ; }
+425: path += "clang" ;
+426:
+|
+429:
+430: QProcess process ;
+431: process . start ( path , QStringList ( ) << "--version" ) ;
+432: process . waitForFinished ( ) ;
+433: if ( process . exitCode ( ) == 0 ) {
+434: return path ; }
+435:
+|
+441:
+442: return QString ( ) ;
+443: }
+444:
+445: QString CheckThread :: clangTidyCmd ( )
+446: {
+447: QString path ; path = QSettings ( ) . value ( $"Clang path" , QString ( ) ) . toString ( ) ;
+448: if ( ! path . isEmpty ( ) ) {
+449: path += '/' ; }
+450: path += "clang-tidy" ;
+451:
+|
+454:
+455: QProcess process ;
+456: process . start ( path , QStringList ( ) << "--version" ) ;
+457: process . waitForFinished ( ) ;
+458: if ( process . exitCode ( ) == 0 ) {
+459: return path ; }
+460:
+|
+466:
+467: return QString ( ) ;
+468: }
+
+
+
+##Value flow

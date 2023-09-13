@@ -1,0 +1,615 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741935 expected@var22 !=@expr1073741936 actual@var23 ) {
+62: std ::@expr1073741937 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741938 expected@var22 ;
+64: std ::@expr1073741939 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741940 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741941 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741942 str (@expr1073741943 ) , actualStr@var26 .@expr1073741944 str (@expr1073741945 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741946 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741947 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741948 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741949 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testcharvar.cpp
+
+1:
+|
+28:
+29: class TestCharVar : public TestFixture {
+30: public:
+31: TestCharVar ( ) : TestFixture ( "TestCharVar" ) { }
+32:
+33: private:
+34: Settings settings@var102 ;
+35:
+36: void run ( ) override {
+37: settings@var102 .@expr1073741953 platform (@expr1073741954 Settings ::@expr1073741955 Unspecified@expr1073741950 ) ;
+38: settings@var102 .@expr132 severity@var103 .@expr133 enable (@expr1073741958 Severity ::@expr1073741959 warning@expr1073741951 ) ;
+39: settings@var102 .@expr132 severity@var103 .@expr133 enable (@expr1073741962 Severity ::@expr1073741963 portability@expr1073741952 ) ;
+40:
+41: $do ${ $if $(@expr1073741964 $prepareTest $(@expr1073741965 "array_index_1" $) $) ${ $setVerbose $(@expr1073741966 $false $) $; array_index_1 $(@expr1073741967 $) $; $} $} $while $(@expr1073741968 $false $) ;
+42: $do ${ $if $(@expr1073741969 $prepareTest $(@expr1073741970 "array_index_2" $) $) ${ $setVerbose $(@expr1073741971 $false $) $; array_index_2 $(@expr1073741972 $) $; $} $} $while $(@expr1073741973 $false $) ;
+43: $do ${ $if $(@expr1073741974 $prepareTest $(@expr1073741975 "bitop" $) $) ${ $setVerbose $(@expr1073741976 $false $) $; bitop $(@expr1073741977 $) $; $} $} $while $(@expr1073741978 $false $) ;
+44: }
+45:
+46:
+47: void check_ ( const char code@var104 [ ] , const char * file@var105 , int line@var106 ) {
+48:
+49: errout@var100 .@expr1073741979 str (@expr1073741980 "" ) ;
+50:
+51:
+52: Tokenizer tokenizer@var107 (@expr1073741981 &@expr158 settings@var102 , this@expr159 ) ;
+53: std ::@expr1073741984 istringstream istr@var108 (@expr1073741985 code@var104 ) ;
+54: $assert_ $(@expr1073741986 file@var105 $, line@var106 $, $(@expr1073741987 tokenizer@var107 .@expr1073741988 tokenize (@expr1073741989 istr@var108 , "test.cpp" ) $) $) ;
+55:
+56:
+57: CheckOther checkOther@var109 (@expr1073741990 &@expr1073741991 tokenizer@var107 , &@expr158 settings@var102 , this@expr159 ) ;
+58: checkOther@var109 .@expr1073741993 checkCharVariable (@expr1073741994 ) ;
+59: }
+60:
+61: void array_index_1 ( ) {
+62: $check_ $(@expr1073741995 "int buf[256];\nvoid foo()\n{\n    unsigned char ch = 0x80;\n    buf[ch] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 62 $)
+63:
+|
+66:
+67: ;
+68: $if $(@expr1073741996 $!@expr1073741997 $assertEquals $(@expr1073741998 "cppcheck-2.8/test/testcharvar.cpp" $, 68 $, "" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+69:
+70: $check_ $(@expr1073742001 "int buf[256];\nvoid foo()\n{\n    char ch = 0x80;\n    buf[ch] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 70 $)
+71:
+|
+74:
+75: ;
+76: $if $(@expr1073742002 $!@expr1073742003 $assertEquals $(@expr1073742004 "cppcheck-2.8/test/testcharvar.cpp" $, 76 $, "[test.cpp:5]: (portability) 'char' type used as array index.\n" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+77:
+78: $check_ $(@expr1073742007 "int buf[256];\nvoid foo()\n{\n    char ch = 0;\n    buf[ch] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 78 $)
+79:
+|
+82:
+83: ;
+84: $if $(@expr1073742008 $!@expr1073742009 $assertEquals $(@expr1073742010 "cppcheck-2.8/test/testcharvar.cpp" $, 84 $, "" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+85:
+86: $check_ $(@expr1073742013 "int buf[256];\nvoid foo()\n{\n    signed char ch = 0;\n    buf[ch] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 86 $)
+87:
+|
+90:
+91: ;
+92: $if $(@expr1073742014 $!@expr1073742015 $assertEquals $(@expr1073742016 "cppcheck-2.8/test/testcharvar.cpp" $, 92 $, "" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+93:
+94: $check_ $(@expr1073742019 "int buf[256];\nvoid foo()\n{\n    char ch = 0x80;\n    buf[ch] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 94 $)
+95:
+|
+98:
+99: ;
+100: $if $(@expr1073742020 $!@expr1073742021 $assertEquals $(@expr1073742022 "cppcheck-2.8/test/testcharvar.cpp" $, 100 $, "[test.cpp:5]: (portability) 'char' type used as array index.\n" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+101:
+102: $check_ $(@expr1073742025 "int buf[256];\nvoid foo(signed char ch)\n{\n    buf[ch] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 102 $)
+103:
+104:
+105:
+106: ;
+107: $if $(@expr1073742026 $!@expr1073742027 $assertEquals $(@expr1073742028 "cppcheck-2.8/test/testcharvar.cpp" $, 107 $, "" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+108:
+109: $check_ $(@expr1073742031 "int buf[256];\nvoid foo(char ch)\n{\n    buf[ch] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 109 $)
+110:
+111:
+112:
+113: ;
+114: $if $(@expr1073742032 $!@expr1073742033 $assertEquals $(@expr1073742034 "cppcheck-2.8/test/testcharvar.cpp" $, 114 $, "" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+115:
+116: $check_ $(@expr1073742037 "void foo(char* buf)\n{\n    char ch = 0x80;    buf[ch] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 116 $)
+117:
+118:
+119:
+120: ;
+121: $if $(@expr1073742038 $!@expr1073742039 $assertEquals $(@expr1073742040 "cppcheck-2.8/test/testcharvar.cpp" $, 121 $, "[test.cpp:3]: (portability) 'char' type used as array index.\n" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+122:
+123: $check_ $(@expr1073742043 "void foo(char* buf)\n{\n    char ch = 0;    buf[ch] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 123 $)
+124:
+125:
+126:
+127: ;
+128: $if $(@expr1073742044 $!@expr1073742045 $assertEquals $(@expr1073742046 "cppcheck-2.8/test/testcharvar.cpp" $, 128 $, "" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+129:
+130: $check_ $(@expr1073742049 "void foo(char* buf)\n{\n    buf['A'] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 130 $)
+131:
+132:
+133: ;
+134: $if $(@expr1073742050 $!@expr1073742051 $assertEquals $(@expr1073742052 "cppcheck-2.8/test/testcharvar.cpp" $, 134 $, "" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+135:
+136: $check_ $(@expr1073742055 "void foo(char* buf, char ch)\n{\n    buf[ch] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 136 $)
+137:
+138:
+139: ;
+140: $if $(@expr1073742056 $!@expr1073742057 $assertEquals $(@expr1073742058 "cppcheck-2.8/test/testcharvar.cpp" $, 140 $, "" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+141:
+142: $check_ $(@expr1073742061 "int flags[256];\nvoid foo(const char* str)\n{\n    flags[*str] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 142 $)
+143:
+144:
+145:
+146: ;
+147: $if $(@expr1073742062 $!@expr1073742063 $assertEquals $(@expr1073742064 "cppcheck-2.8/test/testcharvar.cpp" $, 147 $, "" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+148:
+149: $check_ $(@expr1073742067 "int flags[256];\nvoid foo(const char* str)\n{\n    flags[(unsigned char)*str] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 149 $)
+150:
+151:
+152:
+153: ;
+154: $if $(@expr1073742068 $!@expr1073742069 $assertEquals $(@expr1073742070 "cppcheck-2.8/test/testcharvar.cpp" $, 154 $, "" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+155:
+156: $check_ $(@expr1073742073 "void foo(const char str[])\n{\n    map[str] = 0;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 156 $)
+157:
+158:
+159: ;
+160: $if $(@expr1073742074 $!@expr1073742075 $assertEquals $(@expr1073742076 "cppcheck-2.8/test/testcharvar.cpp" $, 160 $, "" $, errout@var100 .@expr175 str (@expr176 ) $) $) { $return ; }
+161: }
+162:
+163: void array_index_2 ( ) {
+164:
+165: $check_ $(@expr1073742079 "void foo(char i);\nvoid bar(int i) {\n    const char *s = \"abcde\";\n    foo(s[i]);\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 165 $)
+166:
+167:
+168:
+169: ;
+170: $if $(@expr1073742080 $!@expr1073742081 $assertEquals $(@expr1073742082 "cppcheck-2.8/test/testcharvar.cpp" $, 170 $, "" $, errout@var100 .@expr1073742083 str (@expr1073742084 ) $) $) { $return ; }
+171: }
+172:
+173: void bitop ( ) {
+174: $check_ $(@expr1073742085 "void foo(int *result) {\n    signed char ch = -1;\n    *result = a | ch;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 174 $)
+175:
+176:
+177: ;
+178: $if $(@expr1073742086 $!@expr1073742087 $assertEquals $(@expr1073742088 "cppcheck-2.8/test/testcharvar.cpp" $, 178 $, "[test.cpp:3]: (warning) When using 'char' variables in bit operations, sign extension can generate unexpected results.\n" $, errout@var100 .@expr265 str (@expr266 ) $) $) { $return ; }
+179:
+180: $check_ $(@expr1073742091 "void foo(int *result) {\n    unsigned char ch = -1;\n    *result = a | ch;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 180 $)
+181:
+182:
+183: ;
+184: $if $(@expr1073742092 $!@expr1073742093 $assertEquals $(@expr1073742094 "cppcheck-2.8/test/testcharvar.cpp" $, 184 $, "" $, errout@var100 .@expr265 str (@expr266 ) $) $) { $return ; }
+185:
+186: $check_ $(@expr1073742097 "void foo(char *result) {\n    signed char ch = -1;\n    *result = a | ch;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 186 $)
+187:
+188:
+189: ;
+190: $if $(@expr1073742098 $!@expr1073742099 $assertEquals $(@expr1073742100 "cppcheck-2.8/test/testcharvar.cpp" $, 190 $, "" $, errout@var100 .@expr265 str (@expr266 ) $) $) { $return ; }
+191:
+192:
+193: $check_ $(@expr1073742103 "void foo(int *result) {\n    signed char ch = -1;\n    *result = 0x03 | ch;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 193 $)
+194:
+195:
+196: ;
+197: $if $(@expr1073742104 $!@expr1073742105 $assertEquals $(@expr1073742106 "cppcheck-2.8/test/testcharvar.cpp" $, 197 $, "[test.cpp:3]: (warning) When using 'char' variables in bit operations, sign extension can generate unexpected results.\n" $, errout@var100 .@expr265 str (@expr266 ) $) $) { $return ; }
+198:
+199: $check_ $(@expr1073742109 "void foo(int *result) {\n    signed char ch = -1;\n    *result = 0x03 & ch;\n}" $, "cppcheck-2.8/test/testcharvar.cpp" $, 199 $)
+200:
+201:
+202: ;
+203: $if $(@expr1073742110 $!@expr1073742111 $assertEquals $(@expr1073742112 "cppcheck-2.8/test/testcharvar.cpp" $, 203 $, "" $, errout@var100 .@expr265 str (@expr266 ) $) $) { $return ; }
+204: }
+205: } ;
+206:
+207: $namespace ${ TestCharVar instance_TestCharVar@var110 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@21}
+  v {!<=-1,!>=2,0@21}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 31
+  "TestCharVar" always "TestCharVar"
+Line 41
+  ( always {!<=-1,!>=2}
+  "array_index_1" always "array_index_1"
+  false always 0
+  false always 0
+Line 42
+  ( always {!<=-1,!>=2}
+  "array_index_2" always "array_index_2"
+  false always 0
+  false always 0
+Line 43
+  ( always {!<=-1,!>=2}
+  "bitop" always "bitop"
+  false always 0
+  false always 0
+Line 49
+  "" always ""
+Line 52
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 53
+  code possible {"void foo(int *result) {\n    signed char ch = -1;\n    *result = a | ch;\n}"@1,"void foo(int *result) {\n    unsigned char ch = -1;\n    *result = a | ch;\n}"@2,"void foo(char *result) {\n    signed char ch = -1;\n    *result = a | ch;\n}"@3,"void foo(int *result) {\n    signed char ch = -1;\n    *result = 0x03 | ch;\n}"@4,"void foo(int *result) {\n    signed char ch = -1;\n    *result = 0x03 & ch;\n}"@5,"void foo(char i);\nvoid bar(int i) {\n    const char *s = \"abcde\";\n    foo(s[i]);\n}"@6,"int buf[256];\nvoid foo()\n{\n    unsigned char ch = 0x80;\n    buf[ch] = 0;\n}"@7,"int buf[256];\nvoid foo()\n{\n    char ch = 0x80;\n    buf[ch] = 0;\n}"@8,"int buf[256];\nvoid foo()\n{\n    char ch = 0;\n    buf[ch] = 0;\n}"@9,"int buf[256];\nvoid foo()\n{\n    signed char ch = 0;\n    buf[ch] = 0;\n}"@10}
+Line 54
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testcharvar.cpp"@1,"cppcheck-2.8/test/testcharvar.cpp"@2,"cppcheck-2.8/test/testcharvar.cpp"@3,"cppcheck-2.8/test/testcharvar.cpp"@4,"cppcheck-2.8/test/testcharvar.cpp"@5,"cppcheck-2.8/test/testcharvar.cpp"@6,"cppcheck-2.8/test/testcharvar.cpp"@7,"cppcheck-2.8/test/testcharvar.cpp"@8,"cppcheck-2.8/test/testcharvar.cpp"@9,"cppcheck-2.8/test/testcharvar.cpp"@10}
+  line inconclusive {174@1,180@2,186@3,193@4,199@5,165@6,62@7,70@8,78@9,86@10}
+  "test.cpp" always "test.cpp"
+Line 57
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 62
+  "int buf[256];\nvoid foo()\n{\n    unsigned char ch = 0x80;\n    buf[ch] = 0;\n}" always "int buf[256];\nvoid foo()\n{\n    unsigned char ch = 0x80;\n    buf[ch] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  62 always 62
+Line 68
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  68 always 68
+  "" always ""
+Line 70
+  "int buf[256];\nvoid foo()\n{\n    char ch = 0x80;\n    buf[ch] = 0;\n}" always "int buf[256];\nvoid foo()\n{\n    char ch = 0x80;\n    buf[ch] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  70 always 70
+Line 76
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  76 always 76
+  "[test.cpp:5]: (portability) 'char' type used as array index.\n" always "[test.cpp:5]: (portability) 'char' type used as array index.\n"
+Line 78
+  "int buf[256];\nvoid foo()\n{\n    char ch = 0;\n    buf[ch] = 0;\n}" always "int buf[256];\nvoid foo()\n{\n    char ch = 0;\n    buf[ch] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  78 always 78
+Line 84
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  84 always 84
+  "" always ""
+Line 86
+  "int buf[256];\nvoid foo()\n{\n    signed char ch = 0;\n    buf[ch] = 0;\n}" always "int buf[256];\nvoid foo()\n{\n    signed char ch = 0;\n    buf[ch] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  86 always 86
+Line 92
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  92 always 92
+  "" always ""
+Line 94
+  "int buf[256];\nvoid foo()\n{\n    char ch = 0x80;\n    buf[ch] = 0;\n}" always "int buf[256];\nvoid foo()\n{\n    char ch = 0x80;\n    buf[ch] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  94 always 94
+Line 100
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  100 always 100
+  "[test.cpp:5]: (portability) 'char' type used as array index.\n" always "[test.cpp:5]: (portability) 'char' type used as array index.\n"
+Line 102
+  "int buf[256];\nvoid foo(signed char ch)\n{\n    buf[ch] = 0;\n}" always "int buf[256];\nvoid foo(signed char ch)\n{\n    buf[ch] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  102 always 102
+Line 107
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  107 always 107
+  "" always ""
+Line 109
+  "int buf[256];\nvoid foo(char ch)\n{\n    buf[ch] = 0;\n}" always "int buf[256];\nvoid foo(char ch)\n{\n    buf[ch] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  109 always 109
+Line 114
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  114 always 114
+  "" always ""
+Line 116
+  "void foo(char* buf)\n{\n    char ch = 0x80;    buf[ch] = 0;\n}" always "void foo(char* buf)\n{\n    char ch = 0x80;    buf[ch] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  116 always 116
+Line 121
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  121 always 121
+  "[test.cpp:3]: (portability) 'char' type used as array index.\n" always "[test.cpp:3]: (portability) 'char' type used as array index.\n"
+Line 123
+  "void foo(char* buf)\n{\n    char ch = 0;    buf[ch] = 0;\n}" always "void foo(char* buf)\n{\n    char ch = 0;    buf[ch] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  123 always 123
+Line 128
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  128 always 128
+  "" always ""
+Line 130
+  "void foo(char* buf)\n{\n    buf['A'] = 0;\n}" always "void foo(char* buf)\n{\n    buf['A'] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  130 always 130
+Line 134
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  134 always 134
+  "" always ""
+Line 136
+  "void foo(char* buf, char ch)\n{\n    buf[ch] = 0;\n}" always "void foo(char* buf, char ch)\n{\n    buf[ch] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  136 always 136
+Line 140
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  140 always 140
+  "" always ""
+Line 142
+  "int flags[256];\nvoid foo(const char* str)\n{\n    flags[*str] = 0;\n}" always "int flags[256];\nvoid foo(const char* str)\n{\n    flags[*str] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  142 always 142
+Line 147
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  147 always 147
+  "" always ""
+Line 149
+  "int flags[256];\nvoid foo(const char* str)\n{\n    flags[(unsigned char)*str] = 0;\n}" always "int flags[256];\nvoid foo(const char* str)\n{\n    flags[(unsigned char)*str] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  149 always 149
+Line 154
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  154 always 154
+  "" always ""
+Line 156
+  "void foo(const char str[])\n{\n    map[str] = 0;\n}" always "void foo(const char str[])\n{\n    map[str] = 0;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  156 always 156
+Line 160
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  160 always 160
+  "" always ""
+Line 165
+  "void foo(char i);\nvoid bar(int i) {\n    const char *s = \"abcde\";\n    foo(s[i]);\n}" always "void foo(char i);\nvoid bar(int i) {\n    const char *s = \"abcde\";\n    foo(s[i]);\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  165 always 165
+Line 170
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  170 always 170
+  "" always ""
+Line 174
+  "void foo(int *result) {\n    signed char ch = -1;\n    *result = a | ch;\n}" always "void foo(int *result) {\n    signed char ch = -1;\n    *result = a | ch;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  174 always 174
+Line 178
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  178 always 178
+  "[test.cpp:3]: (warning) When using 'char' variables in bit operations, sign extension can generate unexpected results.\n" always "[test.cpp:3]: (warning) When using 'char' variables in bit operations, sign extension can generate unexpected results.\n"
+Line 180
+  "void foo(int *result) {\n    unsigned char ch = -1;\n    *result = a | ch;\n}" always "void foo(int *result) {\n    unsigned char ch = -1;\n    *result = a | ch;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  180 always 180
+Line 184
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  184 always 184
+  "" always ""
+Line 186
+  "void foo(char *result) {\n    signed char ch = -1;\n    *result = a | ch;\n}" always "void foo(char *result) {\n    signed char ch = -1;\n    *result = a | ch;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  186 always 186
+Line 190
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  190 always 190
+  "" always ""
+Line 193
+  "void foo(int *result) {\n    signed char ch = -1;\n    *result = 0x03 | ch;\n}" always "void foo(int *result) {\n    signed char ch = -1;\n    *result = 0x03 | ch;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  193 always 193
+Line 197
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  197 always 197
+  "[test.cpp:3]: (warning) When using 'char' variables in bit operations, sign extension can generate unexpected results.\n" always "[test.cpp:3]: (warning) When using 'char' variables in bit operations, sign extension can generate unexpected results.\n"
+Line 199
+  "void foo(int *result) {\n    signed char ch = -1;\n    *result = 0x03 & ch;\n}" always "void foo(int *result) {\n    signed char ch = -1;\n    *result = 0x03 & ch;\n}"
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  199 always 199
+Line 203
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcharvar.cpp" always "cppcheck-2.8/test/testcharvar.cpp"
+  203 always 203
+  "" always ""

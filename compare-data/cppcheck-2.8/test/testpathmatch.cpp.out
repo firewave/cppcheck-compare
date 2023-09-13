@@ -1,0 +1,772 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741946 expected@var22 !=@expr1073741947 actual@var23 ) {
+62: std ::@expr1073741948 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741949 expected@var22 ;
+64: std ::@expr1073741950 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741951 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741952 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741953 str (@expr1073741954 ) , actualStr@var26 .@expr1073741955 str (@expr1073741956 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741957 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741958 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741959 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741960 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testpathmatch.cpp
+
+1:
+|
+25:
+26: class TestPathMatch : public TestFixture {
+27: public:
+28: TestPathMatch ( )
+29: : TestFixture ( "TestPathMatch" )
+30: , emptyMatcher@var102 ( std :: vector < std :: string > ( ) )
+31: , srcMatcher@var103 ( std :: vector < std :: string > ( 1 , "src/" ) )
+32: , fooCppMatcher@var104 ( std :: vector < std :: string > ( 1 , "foo.cpp" ) )
+33: , srcFooCppMatcher@var105 ( std :: vector < std :: string > ( 1 , "src/foo.cpp" ) ) { }
+34:
+35: private:
+36: const PathMatch emptyMatcher@var102 ;
+37: const PathMatch srcMatcher@var103 ;
+38: const PathMatch fooCppMatcher@var104 ;
+39: const PathMatch srcFooCppMatcher@var105 ;
+40:
+41: void run ( ) override {
+42: $do ${ $if $(@expr1073741961 $prepareTest $(@expr1073741962 "emptymaskemptyfile" $) $) ${ $setVerbose $(@expr1073741963 $false $) $; emptymaskemptyfile $(@expr1073741964 $) $; $} $} $while $(@expr1073741965 $false $) ;
+43: $do ${ $if $(@expr1073741966 $prepareTest $(@expr1073741967 "emptymaskpath1" $) $) ${ $setVerbose $(@expr1073741968 $false $) $; emptymaskpath1 $(@expr1073741969 $) $; $} $} $while $(@expr1073741970 $false $) ;
+44: $do ${ $if $(@expr1073741971 $prepareTest $(@expr1073741972 "emptymaskpath2" $) $) ${ $setVerbose $(@expr1073741973 $false $) $; emptymaskpath2 $(@expr1073741974 $) $; $} $} $while $(@expr1073741975 $false $) ;
+45: $do ${ $if $(@expr1073741976 $prepareTest $(@expr1073741977 "emptymaskpath3" $) $) ${ $setVerbose $(@expr1073741978 $false $) $; emptymaskpath3 $(@expr1073741979 $) $; $} $} $while $(@expr1073741980 $false $) ;
+46: $do ${ $if $(@expr1073741981 $prepareTest $(@expr1073741982 "onemaskemptypath" $) $) ${ $setVerbose $(@expr1073741983 $false $) $; onemaskemptypath $(@expr1073741984 $) $; $} $} $while $(@expr1073741985 $false $) ;
+47: $do ${ $if $(@expr1073741986 $prepareTest $(@expr1073741987 "onemasksamepath" $) $) ${ $setVerbose $(@expr1073741988 $false $) $; onemasksamepath $(@expr1073741989 $) $; $} $} $while $(@expr1073741990 $false $) ;
+48: $do ${ $if $(@expr1073741991 $prepareTest $(@expr1073741992 "onemasksamepathdifferentcase" $) $) ${ $setVerbose $(@expr1073741993 $false $) $; onemasksamepathdifferentcase $(@expr1073741994 $) $; $} $} $while $(@expr1073741995 $false $) ;
+49: $do ${ $if $(@expr1073741996 $prepareTest $(@expr1073741997 "onemasksamepathwithfile" $) $) ${ $setVerbose $(@expr1073741998 $false $) $; onemasksamepathwithfile $(@expr1073741999 $) $; $} $} $while $(@expr1073742000 $false $) ;
+50: $do ${ $if $(@expr1073742001 $prepareTest $(@expr1073742002 "onemaskshorterpath" $) $) ${ $setVerbose $(@expr1073742003 $false $) $; onemaskshorterpath $(@expr1073742004 $) $; $} $} $while $(@expr1073742005 $false $) ;
+51: $do ${ $if $(@expr1073742006 $prepareTest $(@expr1073742007 "onemaskdifferentdir1" $) $) ${ $setVerbose $(@expr1073742008 $false $) $; onemaskdifferentdir1 $(@expr1073742009 $) $; $} $} $while $(@expr1073742010 $false $) ;
+52: $do ${ $if $(@expr1073742011 $prepareTest $(@expr1073742012 "onemaskdifferentdir2" $) $) ${ $setVerbose $(@expr1073742013 $false $) $; onemaskdifferentdir2 $(@expr1073742014 $) $; $} $} $while $(@expr1073742015 $false $) ;
+53: $do ${ $if $(@expr1073742016 $prepareTest $(@expr1073742017 "onemaskdifferentdir3" $) $) ${ $setVerbose $(@expr1073742018 $false $) $; onemaskdifferentdir3 $(@expr1073742019 $) $; $} $} $while $(@expr1073742020 $false $) ;
+54: $do ${ $if $(@expr1073742021 $prepareTest $(@expr1073742022 "onemaskdifferentdir4" $) $) ${ $setVerbose $(@expr1073742023 $false $) $; onemaskdifferentdir4 $(@expr1073742024 $) $; $} $} $while $(@expr1073742025 $false $) ;
+55: $do ${ $if $(@expr1073742026 $prepareTest $(@expr1073742027 "onemasklongerpath1" $) $) ${ $setVerbose $(@expr1073742028 $false $) $; onemasklongerpath1 $(@expr1073742029 $) $; $} $} $while $(@expr1073742030 $false $) ;
+56: $do ${ $if $(@expr1073742031 $prepareTest $(@expr1073742032 "onemasklongerpath2" $) $) ${ $setVerbose $(@expr1073742033 $false $) $; onemasklongerpath2 $(@expr1073742034 $) $; $} $} $while $(@expr1073742035 $false $) ;
+57: $do ${ $if $(@expr1073742036 $prepareTest $(@expr1073742037 "onemasklongerpath3" $) $) ${ $setVerbose $(@expr1073742038 $false $) $; onemasklongerpath3 $(@expr1073742039 $) $; $} $} $while $(@expr1073742040 $false $) ;
+58: $do ${ $if $(@expr1073742041 $prepareTest $(@expr1073742042 "twomasklongerpath1" $) $) ${ $setVerbose $(@expr1073742043 $false $) $; twomasklongerpath1 $(@expr1073742044 $) $; $} $} $while $(@expr1073742045 $false $) ;
+59: $do ${ $if $(@expr1073742046 $prepareTest $(@expr1073742047 "twomasklongerpath2" $) $) ${ $setVerbose $(@expr1073742048 $false $) $; twomasklongerpath2 $(@expr1073742049 $) $; $} $} $while $(@expr1073742050 $false $) ;
+60: $do ${ $if $(@expr1073742051 $prepareTest $(@expr1073742052 "twomasklongerpath3" $) $) ${ $setVerbose $(@expr1073742053 $false $) $; twomasklongerpath3 $(@expr1073742054 $) $; $} $} $while $(@expr1073742055 $false $) ;
+61: $do ${ $if $(@expr1073742056 $prepareTest $(@expr1073742057 "twomasklongerpath4" $) $) ${ $setVerbose $(@expr1073742058 $false $) $; twomasklongerpath4 $(@expr1073742059 $) $; $} $} $while $(@expr1073742060 $false $) ;
+62: $do ${ $if $(@expr1073742061 $prepareTest $(@expr1073742062 "filemask1" $) $) ${ $setVerbose $(@expr1073742063 $false $) $; filemask1 $(@expr1073742064 $) $; $} $} $while $(@expr1073742065 $false $) ;
+63: $do ${ $if $(@expr1073742066 $prepareTest $(@expr1073742067 "filemaskdifferentcase" $) $) ${ $setVerbose $(@expr1073742068 $false $) $; filemaskdifferentcase $(@expr1073742069 $) $; $} $} $while $(@expr1073742070 $false $) ;
+64: $do ${ $if $(@expr1073742071 $prepareTest $(@expr1073742072 "filemask2" $) $) ${ $setVerbose $(@expr1073742073 $false $) $; filemask2 $(@expr1073742074 $) $; $} $} $while $(@expr1073742075 $false $) ;
+65: $do ${ $if $(@expr1073742076 $prepareTest $(@expr1073742077 "filemask3" $) $) ${ $setVerbose $(@expr1073742078 $false $) $; filemask3 $(@expr1073742079 $) $; $} $} $while $(@expr1073742080 $false $) ;
+66: $do ${ $if $(@expr1073742081 $prepareTest $(@expr1073742082 "filemaskpath1" $) $) ${ $setVerbose $(@expr1073742083 $false $) $; filemaskpath1 $(@expr1073742084 $) $; $} $} $while $(@expr1073742085 $false $) ;
+67: $do ${ $if $(@expr1073742086 $prepareTest $(@expr1073742087 "filemaskpath2" $) $) ${ $setVerbose $(@expr1073742088 $false $) $; filemaskpath2 $(@expr1073742089 $) $; $} $} $while $(@expr1073742090 $false $) ;
+68: $do ${ $if $(@expr1073742091 $prepareTest $(@expr1073742092 "filemaskpath3" $) $) ${ $setVerbose $(@expr1073742093 $false $) $; filemaskpath3 $(@expr1073742094 $) $; $} $} $while $(@expr1073742095 $false $) ;
+69: $do ${ $if $(@expr1073742096 $prepareTest $(@expr1073742097 "filemaskpath4" $) $) ${ $setVerbose $(@expr1073742098 $false $) $; filemaskpath4 $(@expr1073742099 $) $; $} $} $while $(@expr1073742100 $false $) ;
+70: }
+71:
+72:
+73: void emptymaskemptyfile ( ) const {
+74: $if $(@expr1073742101 $!@expr1073742102 $assert_ $(@expr1073742103 "cppcheck-2.8/test/testpathmatch.cpp" $, 74 $, !@expr1073742104 emptyMatcher@var102 .@expr1073742105 match (@expr1073742106 "" ) $) $) { $return ; }
+75: }
+76:
+77: void emptymaskpath1 ( ) const {
+78: $if $(@expr1073742107 $!@expr1073742108 $assert_ $(@expr1073742109 "cppcheck-2.8/test/testpathmatch.cpp" $, 78 $, !@expr1073742110 emptyMatcher@var102 .@expr1073742111 match (@expr1073742112 "src/" ) $) $) { $return ; }
+79: }
+80:
+81: void emptymaskpath2 ( ) const {
+82: $if $(@expr1073742113 $!@expr1073742114 $assert_ $(@expr1073742115 "cppcheck-2.8/test/testpathmatch.cpp" $, 82 $, !@expr1073742116 emptyMatcher@var102 .@expr1073742117 match (@expr1073742118 "../src/" ) $) $) { $return ; }
+83: }
+84:
+85: void emptymaskpath3 ( ) const {
+86: $if $(@expr1073742119 $!@expr1073742120 $assert_ $(@expr1073742121 "cppcheck-2.8/test/testpathmatch.cpp" $, 86 $, !@expr1073742122 emptyMatcher@var102 .@expr1073742123 match (@expr1073742124 "/home/user/code/src/" ) $) $) { $return ; }
+87: }
+88:
+89:
+90: void onemaskemptypath ( ) const {
+91: $if $(@expr1073742125 $!@expr1073742126 $assert_ $(@expr1073742127 "cppcheck-2.8/test/testpathmatch.cpp" $, 91 $, !@expr1073742128 srcMatcher@var103 .@expr1073742129 match (@expr1073742130 "" ) $) $) { $return ; }
+92: }
+93:
+94: void onemasksamepath ( ) const {
+95: $if $(@expr1073742131 $!@expr1073742132 $assert_ $(@expr1073742133 "cppcheck-2.8/test/testpathmatch.cpp" $, 95 $, srcMatcher@var103 .@expr1073742134 match (@expr1073742135 "src/" ) $) $) { $return ; }
+96: }
+97:
+98: void onemasksamepathdifferentcase ( ) const {
+99: std ::@expr1073742136 vector < std ::@expr1073742137 string > masks@var106 (@expr1073742138 1 , "sRc/" ) ;
+100: PathMatch match@var107 (@expr1073742139 masks@var106 , false ) ;
+101: $if $(@expr1073742140 $!@expr1073742141 $assert_ $(@expr1073742142 "cppcheck-2.8/test/testpathmatch.cpp" $, 101 $, match@var107 .@expr1073742143 match (@expr1073742144 "srC/" ) $) $) { $return ; }
+102: }
+103:
+104: void onemasksamepathwithfile ( ) const {
+105: $if $(@expr1073742145 $!@expr1073742146 $assert_ $(@expr1073742147 "cppcheck-2.8/test/testpathmatch.cpp" $, 105 $, srcMatcher@var103 .@expr1073742148 match (@expr1073742149 "src/file.txt" ) $) $) { $return ; }
+106: }
+107:
+108: void onemaskshorterpath ( ) const {
+109: const std ::@expr1073742150 string longerExclude@var108 (@expr1073742151 "longersrc/" ) ;
+110: const std ::@expr1073742152 string shorterToMatch@var109 (@expr1073742153 "src/" ) ;
+111: $if $(@expr1073742154 $!@expr1073742155 $assert_ $(@expr1073742156 "cppcheck-2.8/test/testpathmatch.cpp" $, 111 $, shorterToMatch@var109 .@expr1073742157 length (@expr1073742158 ) <@expr1073742159 longerExclude@var108 .@expr1073742160 length (@expr1073742161 ) $) $) { $return ; }
+112: PathMatch match@var110 (@expr1073742162 std ::@expr1073742163 vector < std ::@expr1073742164 string > (@expr1073742165 1 , longerExclude@var108 ) ) ;
+113: $if $(@expr1073742166 $!@expr1073742167 $assert_ $(@expr1073742168 "cppcheck-2.8/test/testpathmatch.cpp" $, 113 $, match@var110 .@expr345 match (@expr1073742170 longerExclude@var108 ) $) $) { $return ; }
+114: $if $(@expr1073742171 $!@expr1073742172 $assert_ $(@expr1073742173 "cppcheck-2.8/test/testpathmatch.cpp" $, 114 $, !@expr1073742174 match@var110 .@expr345 match (@expr1073742176 shorterToMatch@var109 ) $) $) { $return ; }
+115: }
+116:
+117: void onemaskdifferentdir1 ( ) const {
+118: $if $(@expr1073742177 $!@expr1073742178 $assert_ $(@expr1073742179 "cppcheck-2.8/test/testpathmatch.cpp" $, 118 $, !@expr1073742180 srcMatcher@var103 .@expr1073742181 match (@expr1073742182 "srcfiles/file.txt" ) $) $) { $return ; }
+119: }
+120:
+121: void onemaskdifferentdir2 ( ) const {
+122: $if $(@expr1073742183 $!@expr1073742184 $assert_ $(@expr1073742185 "cppcheck-2.8/test/testpathmatch.cpp" $, 122 $, !@expr1073742186 srcMatcher@var103 .@expr1073742187 match (@expr1073742188 "proj/srcfiles/file.txt" ) $) $) { $return ; }
+123: }
+124:
+125: void onemaskdifferentdir3 ( ) const {
+126: $if $(@expr1073742189 $!@expr1073742190 $assert_ $(@expr1073742191 "cppcheck-2.8/test/testpathmatch.cpp" $, 126 $, !@expr1073742192 srcMatcher@var103 .@expr1073742193 match (@expr1073742194 "proj/mysrc/file.txt" ) $) $) { $return ; }
+127: }
+128:
+129: void onemaskdifferentdir4 ( ) const {
+130: $if $(@expr1073742195 $!@expr1073742196 $assert_ $(@expr1073742197 "cppcheck-2.8/test/testpathmatch.cpp" $, 130 $, !@expr1073742198 srcMatcher@var103 .@expr1073742199 match (@expr1073742200 "proj/mysrcfiles/file.txt" ) $) $) { $return ; }
+131: }
+132:
+133: void onemasklongerpath1 ( ) const {
+134: $if $(@expr1073742201 $!@expr1073742202 $assert_ $(@expr1073742203 "cppcheck-2.8/test/testpathmatch.cpp" $, 134 $, srcMatcher@var103 .@expr1073742204 match (@expr1073742205 "/tmp/src/" ) $) $) { $return ; }
+135: }
+136:
+137: void onemasklongerpath2 ( ) const {
+138: $if $(@expr1073742206 $!@expr1073742207 $assert_ $(@expr1073742208 "cppcheck-2.8/test/testpathmatch.cpp" $, 138 $, srcMatcher@var103 .@expr1073742209 match (@expr1073742210 "src/module/" ) $) $) { $return ; }
+139: }
+140:
+141: void onemasklongerpath3 ( ) const {
+142: $if $(@expr1073742211 $!@expr1073742212 $assert_ $(@expr1073742213 "cppcheck-2.8/test/testpathmatch.cpp" $, 142 $, srcMatcher@var103 .@expr1073742214 match (@expr1073742215 "project/src/module/" ) $) $) { $return ; }
+143: }
+144:
+145: void twomasklongerpath1 ( ) const {
+146: std ::@expr1073742216 vector < std ::@expr1073742217 string > masks@var111 ; masks@var111 =@expr1073742218 {@expr1073742219 "src/" , "module/" } ;
+147: PathMatch match@var112 (@expr1073742220 masks@var111 ) ;
+148: $if $(@expr1073742221 $!@expr1073742222 $assert_ $(@expr1073742223 "cppcheck-2.8/test/testpathmatch.cpp" $, 148 $, !@expr1073742224 match@var112 .@expr1073742225 match (@expr1073742226 "project/" ) $) $) { $return ; }
+149: }
+150:
+151: void twomasklongerpath2 ( ) const {
+152: std ::@expr1073742227 vector < std ::@expr1073742228 string > masks@var113 ; masks@var113 =@expr1073742229 {@expr1073742230 "src/" , "module/" } ;
+153: PathMatch match@var114 (@expr1073742231 masks@var113 ) ;
+154: $if $(@expr1073742232 $!@expr1073742233 $assert_ $(@expr1073742234 "cppcheck-2.8/test/testpathmatch.cpp" $, 154 $, match@var114 .@expr1073742235 match (@expr1073742236 "project/src/" ) $) $) { $return ; }
+155: }
+156:
+157: void twomasklongerpath3 ( ) const {
+158: std ::@expr1073742237 vector < std ::@expr1073742238 string > masks@var115 ; masks@var115 =@expr1073742239 {@expr1073742240 "src/" , "module/" } ;
+159: PathMatch match@var116 (@expr1073742241 masks@var115 ) ;
+160: $if $(@expr1073742242 $!@expr1073742243 $assert_ $(@expr1073742244 "cppcheck-2.8/test/testpathmatch.cpp" $, 160 $, match@var116 .@expr1073742245 match (@expr1073742246 "project/module/" ) $) $) { $return ; }
+161: }
+162:
+163: void twomasklongerpath4 ( ) const {
+164: std ::@expr1073742247 vector < std ::@expr1073742248 string > masks@var117 ; masks@var117 =@expr1073742249 {@expr1073742250 "src/" , "module/" } ;
+165: PathMatch match@var118 (@expr1073742251 masks@var117 ) ;
+166: $if $(@expr1073742252 $!@expr1073742253 $assert_ $(@expr1073742254 "cppcheck-2.8/test/testpathmatch.cpp" $, 166 $, match@var118 .@expr1073742255 match (@expr1073742256 "project/src/module/" ) $) $) { $return ; }
+167: }
+168:
+169:
+170: void filemask1 ( ) const {
+171: $if $(@expr1073742257 $!@expr1073742258 $assert_ $(@expr1073742259 "cppcheck-2.8/test/testpathmatch.cpp" $, 171 $, fooCppMatcher@var104 .@expr1073742260 match (@expr1073742261 "foo.cpp" ) $) $) { $return ; }
+172: }
+173:
+174: void filemaskdifferentcase ( ) const {
+175: std ::@expr1073742262 vector < std ::@expr1073742263 string > masks@var119 (@expr1073742264 1 , "foo.cPp" ) ;
+176: PathMatch match@var120 (@expr1073742265 masks@var119 , false ) ;
+177: $if $(@expr1073742266 $!@expr1073742267 $assert_ $(@expr1073742268 "cppcheck-2.8/test/testpathmatch.cpp" $, 177 $, match@var120 .@expr1073742269 match (@expr1073742270 "fOo.cpp" ) $) $) { $return ; }
+178: }
+179:
+180: void filemask2 ( ) const {
+181: $if $(@expr1073742271 $!@expr1073742272 $assert_ $(@expr1073742273 "cppcheck-2.8/test/testpathmatch.cpp" $, 181 $, fooCppMatcher@var104 .@expr1073742274 match (@expr1073742275 "../foo.cpp" ) $) $) { $return ; }
+182: }
+183:
+184: void filemask3 ( ) const {
+185: $if $(@expr1073742276 $!@expr1073742277 $assert_ $(@expr1073742278 "cppcheck-2.8/test/testpathmatch.cpp" $, 185 $, fooCppMatcher@var104 .@expr1073742279 match (@expr1073742280 "src/foo.cpp" ) $) $) { $return ; }
+186: }
+187:
+188:
+189: void filemaskpath1 ( ) const {
+190: $if $(@expr1073742281 $!@expr1073742282 $assert_ $(@expr1073742283 "cppcheck-2.8/test/testpathmatch.cpp" $, 190 $, srcFooCppMatcher@var105 .@expr1073742284 match (@expr1073742285 "src/foo.cpp" ) $) $) { $return ; }
+191: }
+192:
+193: void filemaskpath2 ( ) const {
+194: $if $(@expr1073742286 $!@expr1073742287 $assert_ $(@expr1073742288 "cppcheck-2.8/test/testpathmatch.cpp" $, 194 $, srcFooCppMatcher@var105 .@expr1073742289 match (@expr1073742290 "proj/src/foo.cpp" ) $) $) { $return ; }
+195: }
+196:
+197: void filemaskpath3 ( ) const {
+198: $if $(@expr1073742291 $!@expr1073742292 $assert_ $(@expr1073742293 "cppcheck-2.8/test/testpathmatch.cpp" $, 198 $, !@expr1073742294 srcFooCppMatcher@var105 .@expr1073742295 match (@expr1073742296 "foo.cpp" ) $) $) { $return ; }
+199: }
+200:
+201: void filemaskpath4 ( ) const {
+202: $if $(@expr1073742297 $!@expr1073742298 $assert_ $(@expr1073742299 "cppcheck-2.8/test/testpathmatch.cpp" $, 202 $, !@expr1073742300 srcFooCppMatcher@var105 .@expr1073742301 match (@expr1073742302 "bar/foo.cpp" ) $) $) { $return ; }
+203: }
+204: } ;
+205:
+206: $namespace ${ TestPathMatch instance_TestPathMatch@var121 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@1}
+  v {!<=-1,!>=2,0@1}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 29
+  "TestPathMatch" always "TestPathMatch"
+Line 31
+  1 always 1
+  "src/" always "src/"
+Line 32
+  1 always 1
+  "foo.cpp" always "foo.cpp"
+Line 33
+  1 always 1
+  "src/foo.cpp" always "src/foo.cpp"
+Line 42
+  ( always {!<=-1,!>=2}
+  "emptymaskemptyfile" always "emptymaskemptyfile"
+  false always 0
+  false always 0
+Line 43
+  ( always {!<=-1,!>=2}
+  "emptymaskpath1" always "emptymaskpath1"
+  false always 0
+  false always 0
+Line 44
+  ( always {!<=-1,!>=2}
+  "emptymaskpath2" always "emptymaskpath2"
+  false always 0
+  false always 0
+Line 45
+  ( always {!<=-1,!>=2}
+  "emptymaskpath3" always "emptymaskpath3"
+  false always 0
+  false always 0
+Line 46
+  ( always {!<=-1,!>=2}
+  "onemaskemptypath" always "onemaskemptypath"
+  false always 0
+  false always 0
+Line 47
+  ( always {!<=-1,!>=2}
+  "onemasksamepath" always "onemasksamepath"
+  false always 0
+  false always 0
+Line 48
+  ( always {!<=-1,!>=2}
+  "onemasksamepathdifferentcase" always "onemasksamepathdifferentcase"
+  false always 0
+  false always 0
+Line 49
+  ( always {!<=-1,!>=2}
+  "onemasksamepathwithfile" always "onemasksamepathwithfile"
+  false always 0
+  false always 0
+Line 50
+  ( always {!<=-1,!>=2}
+  "onemaskshorterpath" always "onemaskshorterpath"
+  false always 0
+  false always 0
+Line 51
+  ( always {!<=-1,!>=2}
+  "onemaskdifferentdir1" always "onemaskdifferentdir1"
+  false always 0
+  false always 0
+Line 52
+  ( always {!<=-1,!>=2}
+  "onemaskdifferentdir2" always "onemaskdifferentdir2"
+  false always 0
+  false always 0
+Line 53
+  ( always {!<=-1,!>=2}
+  "onemaskdifferentdir3" always "onemaskdifferentdir3"
+  false always 0
+  false always 0
+Line 54
+  ( always {!<=-1,!>=2}
+  "onemaskdifferentdir4" always "onemaskdifferentdir4"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "onemasklongerpath1" always "onemasklongerpath1"
+  false always 0
+  false always 0
+Line 56
+  ( always {!<=-1,!>=2}
+  "onemasklongerpath2" always "onemasklongerpath2"
+  false always 0
+  false always 0
+Line 57
+  ( always {!<=-1,!>=2}
+  "onemasklongerpath3" always "onemasklongerpath3"
+  false always 0
+  false always 0
+Line 58
+  ( always {!<=-1,!>=2}
+  "twomasklongerpath1" always "twomasklongerpath1"
+  false always 0
+  false always 0
+Line 59
+  ( always {!<=-1,!>=2}
+  "twomasklongerpath2" always "twomasklongerpath2"
+  false always 0
+  false always 0
+Line 60
+  ( always {!<=-1,!>=2}
+  "twomasklongerpath3" always "twomasklongerpath3"
+  false always 0
+  false always 0
+Line 61
+  ( always {!<=-1,!>=2}
+  "twomasklongerpath4" always "twomasklongerpath4"
+  false always 0
+  false always 0
+Line 62
+  ( always {!<=-1,!>=2}
+  "filemask1" always "filemask1"
+  false always 0
+  false always 0
+Line 63
+  ( always {!<=-1,!>=2}
+  "filemaskdifferentcase" always "filemaskdifferentcase"
+  false always 0
+  false always 0
+Line 64
+  ( always {!<=-1,!>=2}
+  "filemask2" always "filemask2"
+  false always 0
+  false always 0
+Line 65
+  ( always {!<=-1,!>=2}
+  "filemask3" always "filemask3"
+  false always 0
+  false always 0
+Line 66
+  ( always {!<=-1,!>=2}
+  "filemaskpath1" always "filemaskpath1"
+  false always 0
+  false always 0
+Line 67
+  ( always {!<=-1,!>=2}
+  "filemaskpath2" always "filemaskpath2"
+  false always 0
+  false always 0
+Line 68
+  ( always {!<=-1,!>=2}
+  "filemaskpath3" always "filemaskpath3"
+  false always 0
+  false always 0
+Line 69
+  ( always {!<=-1,!>=2}
+  "filemaskpath4" always "filemaskpath4"
+  false always 0
+  false always 0
+Line 74
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  74 always 74
+  ! always {!<=-1,!>=2}
+  "" always ""
+Line 78
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  78 always 78
+  ! always {!<=-1,!>=2}
+  "src/" always "src/"
+Line 82
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  82 always 82
+  ! always {!<=-1,!>=2}
+  "../src/" always "../src/"
+Line 86
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  86 always 86
+  ! always {!<=-1,!>=2}
+  "/home/user/code/src/" always "/home/user/code/src/"
+Line 91
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  91 always 91
+  ! always {!<=-1,!>=2}
+  "" always ""
+Line 95
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  95 always 95
+  "src/" always "src/"
+Line 99
+  1 always 1
+  "sRc/" always "sRc/"
+Line 100
+  masks always size=1
+  false always 0
+Line 101
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  101 always 101
+  "srC/" always "srC/"
+Line 105
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  105 always 105
+  "src/file.txt" always "src/file.txt"
+Line 109
+  "longersrc/" always "longersrc/"
+Line 110
+  "src/" always "src/"
+Line 111
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  111 always 111
+  ( always !<=-1
+  < always {!<=-1,!>=2}
+  ( always !<=-1
+Line 112
+  ( always size=1
+  1 always 1
+Line 113
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  113 always 113
+Line 114
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  114 always 114
+  ! always {!<=-1,!>=2}
+Line 118
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  118 always 118
+  ! always {!<=-1,!>=2}
+  "srcfiles/file.txt" always "srcfiles/file.txt"
+Line 122
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  122 always 122
+  ! always {!<=-1,!>=2}
+  "proj/srcfiles/file.txt" always "proj/srcfiles/file.txt"
+Line 126
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  126 always 126
+  ! always {!<=-1,!>=2}
+  "proj/mysrc/file.txt" always "proj/mysrc/file.txt"
+Line 130
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  130 always 130
+  ! always {!<=-1,!>=2}
+  "proj/mysrcfiles/file.txt" always "proj/mysrcfiles/file.txt"
+Line 134
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  134 always 134
+  "/tmp/src/" always "/tmp/src/"
+Line 138
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  138 always 138
+  "src/module/" always "src/module/"
+Line 142
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  142 always 142
+  "project/src/module/" always "project/src/module/"
+Line 146
+  "src/" always "src/"
+  "module/" always "module/"
+Line 147
+  masks always {
+Line 148
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  148 always 148
+  ! always {!<=-1,!>=2}
+  "project/" always "project/"
+Line 152
+  "src/" always "src/"
+  "module/" always "module/"
+Line 153
+  masks always {
+Line 154
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  154 always 154
+  "project/src/" always "project/src/"
+Line 158
+  "src/" always "src/"
+  "module/" always "module/"
+Line 159
+  masks always {
+Line 160
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  160 always 160
+  "project/module/" always "project/module/"
+Line 164
+  "src/" always "src/"
+  "module/" always "module/"
+Line 165
+  masks always {
+Line 166
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  166 always 166
+  "project/src/module/" always "project/src/module/"
+Line 171
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  171 always 171
+  "foo.cpp" always "foo.cpp"
+Line 175
+  1 always 1
+  "foo.cPp" always "foo.cPp"
+Line 176
+  masks always size=1
+  false always 0
+Line 177
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  177 always 177
+  "fOo.cpp" always "fOo.cpp"
+Line 181
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  181 always 181
+  "../foo.cpp" always "../foo.cpp"
+Line 185
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  185 always 185
+  "src/foo.cpp" always "src/foo.cpp"
+Line 190
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  190 always 190
+  "src/foo.cpp" always "src/foo.cpp"
+Line 194
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  194 always 194
+  "proj/src/foo.cpp" always "proj/src/foo.cpp"
+Line 198
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  198 always 198
+  ! always {!<=-1,!>=2}
+  "foo.cpp" always "foo.cpp"
+Line 202
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpathmatch.cpp" always "cppcheck-2.8/test/testpathmatch.cpp"
+  202 always 202
+  ! always {!<=-1,!>=2}
+  "bar/foo.cpp" always "bar/foo.cpp"

@@ -1,0 +1,124 @@
+
+
+##file cppcheck-2.8/lib/config.h
+
+1:
+|
+78:
+79: static const std :: string emptyString@var1 ;
+
+##file cppcheck-2.8/lib/color.h
+
+1:
+|
+26:
+27: enum class Color {
+28: Reset = 0 ,
+29: Bold = 1 ,
+30: Dim = 2 ,
+31: FgRed = 31 ,
+32: FgGreen = 32 ,
+33: FgBlue = 34 ,
+34: FgMagenta = 35 ,
+35: FgDefault = 39 ,
+36: BgRed = 41 ,
+37: BgGreen = 42 ,
+38: BgBlue = 44 ,
+39: BgDefault = 49
+40: } ;
+41: std :: ostream & operator<< ( std :: ostream & os@var2 , const Color & c@var3 ) ;
+42:
+43: std :: string toString ( const Color & c@var4 ) ;
+
+##file cppcheck-2.8/lib/color.cpp
+
+1:
+|
+30:
+31: std :: ostream & operator<< ( std :: ostream & os@var5 , const Color & c@var6 )
+32: {
+33: static const bool use_color@var7 =@expr1073741835 isatty (@expr1073741836 STDOUT_FILENO@expr1073741834 ) ;
+34: if (@expr1073741837 use_color@var7 ) {
+35: return os@var5 <<@expr1073741838 "[" <<@expr1073741839 static_cast < unsigned long > (@expr1073741840 c@var6 ) <<@expr1073741841 "m" ; }
+36:
+37: return os@var5 ;
+38: }
+39:
+40: std :: string toString ( const Color & c@var8 )
+41: {
+42: std ::@expr1073741842 stringstream ss@var9 ;
+43: ss@var9 <<@expr1073741843 c@var8 ;
+44: return ss@var9 .@expr1073741844 str (@expr1073741845 ) ;
+45: }
+
+
+
+##Value flow
+Line 28
+  Reset always 0
+  = always 0
+  0 always 0
+  , always 1
+Line 29
+  Bold always 1
+  = always 1
+  1 always 1
+  , always 2
+Line 30
+  Dim always 2
+  = always 2
+  2 always 2
+  , always 31
+Line 31
+  FgRed always 31
+  = always 31
+  31 always 31
+  , always 32
+Line 32
+  FgGreen always 32
+  = always 32
+  32 always 32
+  , always 34
+Line 33
+  FgBlue always 34
+  = always 34
+  34 always 34
+  , always 35
+Line 34
+  FgMagenta always 35
+  = always 35
+  35 always 35
+  , always 39
+Line 35
+  FgDefault always 39
+  = always 39
+  39 always 39
+  , always 41
+Line 36
+  BgRed always 41
+  = always 41
+  41 always 41
+  , always 42
+Line 37
+  BgGreen always 42
+  = always 42
+  42 always 42
+  , always 44
+Line 38
+  BgBlue always 44
+  = always 44
+  44 always 44
+  , always 49
+Line 39
+  BgDefault always 49
+  = always 49
+  49 always 49
+Line 33
+  use_color always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+Line 34
+  use_color always {!<=-1,!>=2}
+Line 35
+  "[" always "["
+  ( always !<=-1
+  "m" always "m"

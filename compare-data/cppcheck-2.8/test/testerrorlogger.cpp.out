@@ -1,0 +1,1496 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073742015 expected@var22 !=@expr1073742016 actual@var23 ) {
+62: std ::@expr1073742017 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073742018 expected@var22 ;
+64: std ::@expr1073742019 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073742020 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073742021 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073742022 str (@expr1073742023 ) , actualStr@var26 .@expr1073742024 str (@expr1073742025 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073742026 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073742027 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073742028 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073742029 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testerrorlogger.cpp
+
+1:
+|
+32:
+33: class TestErrorLogger : public TestFixture {
+34: public:
+35: TestErrorLogger ( ) : TestFixture ( "TestErrorLogger" ) , fooCpp5@var102 ( "foo.cpp" , 5 , 1 ) , barCpp8@var103 ( "bar.cpp" , 8 , 1 ) { }
+36:
+37: private:
+38: const ErrorMessage :: FileLocation fooCpp5@var102 ;
+39: const ErrorMessage :: FileLocation barCpp8@var103 ;
+40:
+41: void run ( ) override {
+42: $do ${ $if $(@expr1073742030 $prepareTest $(@expr1073742031 "PatternSearchReplace" $) $) ${ $setVerbose $(@expr1073742032 $false $) $; PatternSearchReplace $(@expr1073742033 $) $; $} $} $while $(@expr1073742034 $false $) ;
+43: $do ${ $if $(@expr1073742035 $prepareTest $(@expr1073742036 "FileLocationDefaults" $) $) ${ $setVerbose $(@expr1073742037 $false $) $; FileLocationDefaults $(@expr1073742038 $) $; $} $} $while $(@expr1073742039 $false $) ;
+44: $do ${ $if $(@expr1073742040 $prepareTest $(@expr1073742041 "FileLocationSetFile" $) $) ${ $setVerbose $(@expr1073742042 $false $) $; FileLocationSetFile $(@expr1073742043 $) $; $} $} $while $(@expr1073742044 $false $) ;
+45: $do ${ $if $(@expr1073742045 $prepareTest $(@expr1073742046 "ErrorMessageConstruct" $) $) ${ $setVerbose $(@expr1073742047 $false $) $; ErrorMessageConstruct $(@expr1073742048 $) $; $} $} $while $(@expr1073742049 $false $) ;
+46: $do ${ $if $(@expr1073742050 $prepareTest $(@expr1073742051 "ErrorMessageConstructLocations" $) $) ${ $setVerbose $(@expr1073742052 $false $) $; ErrorMessageConstructLocations $(@expr1073742053 $) $; $} $} $while $(@expr1073742054 $false $) ;
+47: $do ${ $if $(@expr1073742055 $prepareTest $(@expr1073742056 "ErrorMessageVerbose" $) $) ${ $setVerbose $(@expr1073742057 $false $) $; ErrorMessageVerbose $(@expr1073742058 $) $; $} $} $while $(@expr1073742059 $false $) ;
+48: $do ${ $if $(@expr1073742060 $prepareTest $(@expr1073742061 "ErrorMessageVerboseLocations" $) $) ${ $setVerbose $(@expr1073742062 $false $) $; ErrorMessageVerboseLocations $(@expr1073742063 $) $; $} $} $while $(@expr1073742064 $false $) ;
+49: $do ${ $if $(@expr1073742065 $prepareTest $(@expr1073742066 "CustomFormat" $) $) ${ $setVerbose $(@expr1073742067 $false $) $; CustomFormat $(@expr1073742068 $) $; $} $} $while $(@expr1073742069 $false $) ;
+50: $do ${ $if $(@expr1073742070 $prepareTest $(@expr1073742071 "CustomFormat2" $) $) ${ $setVerbose $(@expr1073742072 $false $) $; CustomFormat2 $(@expr1073742073 $) $; $} $} $while $(@expr1073742074 $false $) ;
+51: $do ${ $if $(@expr1073742075 $prepareTest $(@expr1073742076 "CustomFormatLocations" $) $) ${ $setVerbose $(@expr1073742077 $false $) $; CustomFormatLocations $(@expr1073742078 $) $; $} $} $while $(@expr1073742079 $false $) ;
+52: $do ${ $if $(@expr1073742080 $prepareTest $(@expr1073742081 "ToXmlV2" $) $) ${ $setVerbose $(@expr1073742082 $false $) $; ToXmlV2 $(@expr1073742083 $) $; $} $} $while $(@expr1073742084 $false $) ;
+53: $do ${ $if $(@expr1073742085 $prepareTest $(@expr1073742086 "ToXmlV2Locations" $) $) ${ $setVerbose $(@expr1073742087 $false $) $; ToXmlV2Locations $(@expr1073742088 $) $; $} $} $while $(@expr1073742089 $false $) ;
+54: $do ${ $if $(@expr1073742090 $prepareTest $(@expr1073742091 "ToXmlV2Encoding" $) $) ${ $setVerbose $(@expr1073742092 $false $) $; ToXmlV2Encoding $(@expr1073742093 $) $; $} $} $while $(@expr1073742094 $false $) ;
+55: $do ${ $if $(@expr1073742095 $prepareTest $(@expr1073742096 "FromXmlV2" $) $) ${ $setVerbose $(@expr1073742097 $false $) $; FromXmlV2 $(@expr1073742098 $) $; $} $} $while $(@expr1073742099 $false $) ;
+56:
+57:
+58: $do ${ $if $(@expr1073742100 $prepareTest $(@expr1073742101 "InconclusiveXml" $) $) ${ $setVerbose $(@expr1073742102 $false $) $; InconclusiveXml $(@expr1073742103 $) $; $} $} $while $(@expr1073742104 $false $) ;
+59:
+60:
+61: $do ${ $if $(@expr1073742105 $prepareTest $(@expr1073742106 "SerializeInconclusiveMessage" $) $) ${ $setVerbose $(@expr1073742107 $false $) $; SerializeInconclusiveMessage $(@expr1073742108 $) $; $} $} $while $(@expr1073742109 $false $) ;
+62: $do ${ $if $(@expr1073742110 $prepareTest $(@expr1073742111 "DeserializeInvalidInput" $) $) ${ $setVerbose $(@expr1073742112 $false $) $; DeserializeInvalidInput $(@expr1073742113 $) $; $} $} $while $(@expr1073742114 $false $) ;
+63: $do ${ $if $(@expr1073742115 $prepareTest $(@expr1073742116 "SerializeSanitize" $) $) ${ $setVerbose $(@expr1073742117 $false $) $; SerializeSanitize $(@expr1073742118 $) $; $} $} $while $(@expr1073742119 $false $) ;
+64: $do ${ $if $(@expr1073742120 $prepareTest $(@expr1073742121 "SerializeFileLocation" $) $) ${ $setVerbose $(@expr1073742122 $false $) $; SerializeFileLocation $(@expr1073742123 $) $; $} $} $while $(@expr1073742124 $false $) ;
+65:
+66: $do ${ $if $(@expr1073742125 $prepareTest $(@expr1073742126 "suppressUnmatchedSuppressions" $) $) ${ $setVerbose $(@expr1073742127 $false $) $; suppressUnmatchedSuppressions $(@expr1073742128 $) $; $} $} $while $(@expr1073742129 $false $) ;
+67: }
+68:
+69: void TestPatternSearchReplace ( const std :: string & idPlaceholder@var104 , const std :: string & id@var105 ) const {
+70: const std ::@expr1073742130 string plainText@var106 =@expr1073742131 "text" ;
+71:
+72: ErrorMessage message@var107 ;
+73: message@var107 .@expr1073742132 id@var108 =@expr1073742133 id@var105 ;
+74:
+75: std ::@expr1073742134 string serialized@var109 ; serialized@var109 =@expr1073742135 message@var107 .@expr312 toString (@expr1073742137 true , idPlaceholder@var104 +@expr1073742138 plainText@var106 +@expr1073742139 idPlaceholder@var104 ) ;
+76: $if $(@expr1073742140 $!@expr1073742141 $assertEquals $(@expr1073742142 "cppcheck-2.8/test/testerrorlogger.cpp" $, 76 $, id@var105 +@expr1073742143 plainText@var106 +@expr1073742144 id@var105 $, serialized@var109 $) $) { $return ; }
+77:
+78: serialized@var109 =@expr1073742145 message@var107 .@expr312 toString (@expr1073742147 true , idPlaceholder@var104 +@expr1073742148 idPlaceholder@var104 ) ;
+79: $if $(@expr1073742149 $!@expr1073742150 $assertEquals $(@expr1073742151 "cppcheck-2.8/test/testerrorlogger.cpp" $, 79 $, id@var105 +@expr1073742152 id@var105 $, serialized@var109 $) $) { $return ; }
+80:
+81: serialized@var109 =@expr1073742153 message@var107 .@expr312 toString (@expr1073742155 true , plainText@var106 +@expr1073742156 idPlaceholder@var104 +@expr1073742157 plainText@var106 ) ;
+82: $if $(@expr1073742158 $!@expr1073742159 $assertEquals $(@expr1073742160 "cppcheck-2.8/test/testerrorlogger.cpp" $, 82 $, plainText@var106 +@expr1073742161 id@var105 +@expr1073742162 plainText@var106 $, serialized@var109 $) $) { $return ; }
+83: }
+84:
+85: void PatternSearchReplace ( ) const {
+86: const std ::@expr339 string idPlaceholder@var110 =@expr1073742164 "{id}" ;
+87:
+88: const std ::@expr1073742165 string empty@var111 ;
+89: TestPatternSearchReplace (@expr1073742166 idPlaceholder@var110 , empty@var111 ) ;
+90:
+91: const std ::@expr339 string shortIdValue@var112 =@expr1073742168 "ID" ;
+92: $if $(@expr1073742169 $!@expr1073742170 $assertEquals $(@expr1073742171 "cppcheck-2.8/test/testerrorlogger.cpp" $, 92 $, true $, shortIdValue@var112 .@expr1073742172 length (@expr1073742173 ) <@expr1073742174 idPlaceholder@var110 .@expr351 length (@expr352 ) $) $) { $return ; }
+93: TestPatternSearchReplace (@expr1073742177 idPlaceholder@var110 , shortIdValue@var112 ) ;
+94:
+95: const std ::@expr339 string mediumIdValue@var113 =@expr1073742179 "_ID_" ;
+96: $if $(@expr1073742180 $!@expr1073742181 $assertEquals $(@expr1073742182 "cppcheck-2.8/test/testerrorlogger.cpp" $, 96 $, mediumIdValue@var113 .@expr1073742183 length (@expr1073742184 ) $, idPlaceholder@var110 .@expr351 length (@expr352 ) $) $) { $return ; }
+97: TestPatternSearchReplace (@expr1073742187 idPlaceholder@var110 , mediumIdValue@var113 ) ;
+98:
+99: const std ::@expr339 string longIdValue@var114 =@expr1073742189 "longId" ;
+100: $if $(@expr1073742190 $!@expr1073742191 $assertEquals $(@expr1073742192 "cppcheck-2.8/test/testerrorlogger.cpp" $, 100 $, true $, longIdValue@var114 .@expr1073742193 length (@expr1073742194 ) >@expr1073742195 idPlaceholder@var110 .@expr351 length (@expr352 ) $) $) { $return ; }
+101: TestPatternSearchReplace (@expr1073742198 idPlaceholder@var110 , longIdValue@var114 ) ;
+102: }
+103:
+104: void FileLocationDefaults ( ) const {
+105: ErrorMessage ::@expr1073742199 FileLocation loc@var115 ;
+106: $if $(@expr1073742200 $!@expr1073742201 $assertEquals $(@expr1073742202 "cppcheck-2.8/test/testerrorlogger.cpp" $, 106 $, "" $, loc@var115 .@expr1073742203 getfile (@expr1073742204 ) $) $) { $return ; }
+107: $if $(@expr1073742205 $!@expr1073742206 $assertEquals $(@expr1073742207 "cppcheck-2.8/test/testerrorlogger.cpp" $, 107 $, 0 $, loc@var115 .@expr1073742208 line@var116 $) $) { $return ; }
+108: }
+109:
+110: void FileLocationSetFile ( ) const {
+111: ErrorMessage ::@expr1073742209 FileLocation loc@var117 ;
+112: loc@var117 .@expr1073742210 setfile (@expr1073742211 "foo.cpp" ) ;
+113: $if $(@expr1073742212 $!@expr1073742213 $assertEquals $(@expr1073742214 "cppcheck-2.8/test/testerrorlogger.cpp" $, 113 $, "foo.cpp" $, loc@var117 .@expr1073742215 getfile (@expr1073742216 ) $) $) { $return ; }
+114: $if $(@expr1073742217 $!@expr1073742218 $assertEquals $(@expr1073742219 "cppcheck-2.8/test/testerrorlogger.cpp" $, 114 $, 0 $, loc@var117 .@expr1073742220 line@var118 $) $) { $return ; }
+115: }
+116:
+117: void ErrorMessageConstruct ( ) const {
+118: std ::@expr1073742223 list < ErrorMessage ::@expr1073742224 FileLocation > locs@var119 (@expr1073742225 1 , fooCpp5@var102 ) ;
+119: ErrorMessage msg@var120 (@expr1073742226 locs@var119 , emptyString , Severity ::@expr1073742227 error@expr1073742221 , "Programming error." , "errorId" , Certainty ::@expr1073742228 normal@expr1073742222 ) ;
+120: $if $(@expr1073742229 $!@expr1073742230 $assertEquals $(@expr1073742231 "cppcheck-2.8/test/testerrorlogger.cpp" $, 120 $, 1 $, msg@var120 .@expr1073742232 callStack@var121 .@expr1073742233 size (@expr1073742234 ) $) $) { $return ; }
+121: $if $(@expr1073742235 $!@expr1073742236 $assertEquals $(@expr1073742237 "cppcheck-2.8/test/testerrorlogger.cpp" $, 121 $, "Programming error." $, msg@var120 .@expr1073742238 shortMessage (@expr1073742239 ) $) $) { $return ; }
+122: $if $(@expr1073742240 $!@expr1073742241 $assertEquals $(@expr1073742242 "cppcheck-2.8/test/testerrorlogger.cpp" $, 122 $, "Programming error." $, msg@var120 .@expr1073742243 verboseMessage (@expr1073742244 ) $) $) { $return ; }
+123: $if $(@expr1073742245 $!@expr1073742246 $assertEquals $(@expr1073742247 "cppcheck-2.8/test/testerrorlogger.cpp" $, 123 $, "[foo.cpp:5]: (error) Programming error." $, msg@var120 .@expr424 toString (@expr1073742249 false ) $) $) { $return ; }
+124: $if $(@expr1073742250 $!@expr1073742251 $assertEquals $(@expr1073742252 "cppcheck-2.8/test/testerrorlogger.cpp" $, 124 $, "[foo.cpp:5]: (error) Programming error." $, msg@var120 .@expr424 toString (@expr1073742254 true ) $) $) { $return ; }
+125: }
+126:
+127: void ErrorMessageConstructLocations ( ) const {
+128: std ::@expr1073742257 list < ErrorMessage ::@expr1073742258 FileLocation > locs@var122 ; locs@var122 =@expr1073742259 {@expr1073742260 fooCpp5@var102 , barCpp8@var103 } ;
+129: ErrorMessage msg@var123 (@expr1073742261 locs@var122 , emptyString , Severity ::@expr1073742262 error@expr1073742255 , "Programming error." , "errorId" , Certainty ::@expr1073742263 normal@expr1073742256 ) ;
+130: $if $(@expr1073742264 $!@expr1073742265 $assertEquals $(@expr1073742266 "cppcheck-2.8/test/testerrorlogger.cpp" $, 130 $, 2 $, msg@var123 .@expr1073742267 callStack@var124 .@expr1073742268 size (@expr1073742269 ) $) $) { $return ; }
+131: $if $(@expr1073742270 $!@expr1073742271 $assertEquals $(@expr1073742272 "cppcheck-2.8/test/testerrorlogger.cpp" $, 131 $, "Programming error." $, msg@var123 .@expr1073742273 shortMessage (@expr1073742274 ) $) $) { $return ; }
+132: $if $(@expr1073742275 $!@expr1073742276 $assertEquals $(@expr1073742277 "cppcheck-2.8/test/testerrorlogger.cpp" $, 132 $, "Programming error." $, msg@var123 .@expr1073742278 verboseMessage (@expr1073742279 ) $) $) { $return ; }
+133: $if $(@expr1073742280 $!@expr1073742281 $assertEquals $(@expr1073742282 "cppcheck-2.8/test/testerrorlogger.cpp" $, 133 $, "[foo.cpp:5] -> [bar.cpp:8]: (error) Programming error." $, msg@var123 .@expr459 toString (@expr1073742284 false ) $) $) { $return ; }
+134: $if $(@expr1073742285 $!@expr1073742286 $assertEquals $(@expr1073742287 "cppcheck-2.8/test/testerrorlogger.cpp" $, 134 $, "[foo.cpp:5] -> [bar.cpp:8]: (error) Programming error." $, msg@var123 .@expr459 toString (@expr1073742289 true ) $) $) { $return ; }
+135: }
+136:
+137: void ErrorMessageVerbose ( ) const {
+138: std ::@expr1073742292 list < ErrorMessage ::@expr1073742293 FileLocation > locs@var125 (@expr1073742294 1 , fooCpp5@var102 ) ;
+139: ErrorMessage msg@var126 (@expr1073742295 locs@var125 , emptyString , Severity ::@expr1073742296 error@expr1073742290 , "Programming error.\nVerbose error" , "errorId" , Certainty ::@expr1073742297 normal@expr1073742291 ) ;
+140: $if $(@expr1073742298 $!@expr1073742299 $assertEquals $(@expr1073742300 "cppcheck-2.8/test/testerrorlogger.cpp" $, 140 $, 1 $, msg@var126 .@expr1073742301 callStack@var127 .@expr1073742302 size (@expr1073742303 ) $) $) { $return ; }
+141: $if $(@expr1073742304 $!@expr1073742305 $assertEquals $(@expr1073742306 "cppcheck-2.8/test/testerrorlogger.cpp" $, 141 $, "Programming error." $, msg@var126 .@expr1073742307 shortMessage (@expr1073742308 ) $) $) { $return ; }
+142: $if $(@expr1073742309 $!@expr1073742310 $assertEquals $(@expr1073742311 "cppcheck-2.8/test/testerrorlogger.cpp" $, 142 $, "Verbose error" $, msg@var126 .@expr1073742312 verboseMessage (@expr1073742313 ) $) $) { $return ; }
+143: $if $(@expr1073742314 $!@expr1073742315 $assertEquals $(@expr1073742316 "cppcheck-2.8/test/testerrorlogger.cpp" $, 143 $, "[foo.cpp:5]: (error) Programming error." $, msg@var126 .@expr493 toString (@expr1073742318 false ) $) $) { $return ; }
+144: $if $(@expr1073742319 $!@expr1073742320 $assertEquals $(@expr1073742321 "cppcheck-2.8/test/testerrorlogger.cpp" $, 144 $, "[foo.cpp:5]: (error) Verbose error" $, msg@var126 .@expr493 toString (@expr1073742323 true ) $) $) { $return ; }
+145: }
+146:
+147: void ErrorMessageVerboseLocations ( ) const {
+148: std ::@expr1073742326 list < ErrorMessage ::@expr1073742327 FileLocation > locs@var128 ; locs@var128 =@expr1073742328 {@expr1073742329 fooCpp5@var102 , barCpp8@var103 } ;
+149: ErrorMessage msg@var129 (@expr1073742330 locs@var128 , emptyString , Severity ::@expr1073742331 error@expr1073742324 , "Programming error.\nVerbose error" , "errorId" , Certainty ::@expr1073742332 normal@expr1073742325 ) ;
+150: $if $(@expr1073742333 $!@expr1073742334 $assertEquals $(@expr1073742335 "cppcheck-2.8/test/testerrorlogger.cpp" $, 150 $, 2 $, msg@var129 .@expr1073742336 callStack@var130 .@expr1073742337 size (@expr1073742338 ) $) $) { $return ; }
+151: $if $(@expr1073742339 $!@expr1073742340 $assertEquals $(@expr1073742341 "cppcheck-2.8/test/testerrorlogger.cpp" $, 151 $, "Programming error." $, msg@var129 .@expr1073742342 shortMessage (@expr1073742343 ) $) $) { $return ; }
+152: $if $(@expr1073742344 $!@expr1073742345 $assertEquals $(@expr1073742346 "cppcheck-2.8/test/testerrorlogger.cpp" $, 152 $, "Verbose error" $, msg@var129 .@expr1073742347 verboseMessage (@expr1073742348 ) $) $) { $return ; }
+153: $if $(@expr1073742349 $!@expr1073742350 $assertEquals $(@expr1073742351 "cppcheck-2.8/test/testerrorlogger.cpp" $, 153 $, "[foo.cpp:5] -> [bar.cpp:8]: (error) Programming error." $, msg@var129 .@expr528 toString (@expr1073742353 false ) $) $) { $return ; }
+154: $if $(@expr1073742354 $!@expr1073742355 $assertEquals $(@expr1073742356 "cppcheck-2.8/test/testerrorlogger.cpp" $, 154 $, "[foo.cpp:5] -> [bar.cpp:8]: (error) Verbose error" $, msg@var129 .@expr528 toString (@expr1073742358 true ) $) $) { $return ; }
+155: }
+156:
+157: void CustomFormat ( ) const {
+158: std ::@expr1073742361 list < ErrorMessage ::@expr1073742362 FileLocation > locs@var131 (@expr1073742363 1 , fooCpp5@var102 ) ;
+159: ErrorMessage msg@var132 (@expr1073742364 locs@var131 , emptyString , Severity ::@expr1073742365 error@expr1073742359 , "Programming error.\nVerbose error" , "errorId" , Certainty ::@expr1073742366 normal@expr1073742360 ) ;
+160: $if $(@expr1073742367 $!@expr1073742368 $assertEquals $(@expr1073742369 "cppcheck-2.8/test/testerrorlogger.cpp" $, 160 $, 1 $, msg@var132 .@expr1073742370 callStack@var133 .@expr1073742371 size (@expr1073742372 ) $) $) { $return ; }
+161: $if $(@expr1073742373 $!@expr1073742374 $assertEquals $(@expr1073742375 "cppcheck-2.8/test/testerrorlogger.cpp" $, 161 $, "Programming error." $, msg@var132 .@expr1073742376 shortMessage (@expr1073742377 ) $) $) { $return ; }
+162: $if $(@expr1073742378 $!@expr1073742379 $assertEquals $(@expr1073742380 "cppcheck-2.8/test/testerrorlogger.cpp" $, 162 $, "Verbose error" $, msg@var132 .@expr1073742381 verboseMessage (@expr1073742382 ) $) $) { $return ; }
+163: $if $(@expr1073742383 $!@expr1073742384 $assertEquals $(@expr1073742385 "cppcheck-2.8/test/testerrorlogger.cpp" $, 163 $, "foo.cpp:5,error,errorId,Programming error." $, $(@expr1073742386 msg@var132 .@expr563 toString (@expr1073742388 false , "{file}:{line},{severity},{id},{message}" ) $) $) $) { $return ; }
+164: $if $(@expr1073742389 $!@expr1073742390 $assertEquals $(@expr1073742391 "cppcheck-2.8/test/testerrorlogger.cpp" $, 164 $, "foo.cpp:5,error,errorId,Verbose error" $, $(@expr1073742392 msg@var132 .@expr563 toString (@expr1073742394 true , "{file}:{line},{severity},{id},{message}" ) $) $) $) { $return ; }
+165: }
+166:
+167: void CustomFormat2 ( ) const {
+168: std ::@expr1073742397 list < ErrorMessage ::@expr1073742398 FileLocation > locs@var134 (@expr1073742399 1 , fooCpp5@var102 ) ;
+169: ErrorMessage msg@var135 (@expr1073742400 locs@var134 , emptyString , Severity ::@expr1073742401 error@expr1073742395 , "Programming error.\nVerbose error" , "errorId" , Certainty ::@expr1073742402 normal@expr1073742396 ) ;
+170: $if $(@expr1073742403 $!@expr1073742404 $assertEquals $(@expr1073742405 "cppcheck-2.8/test/testerrorlogger.cpp" $, 170 $, 1 $, msg@var135 .@expr1073742406 callStack@var136 .@expr1073742407 size (@expr1073742408 ) $) $) { $return ; }
+171: $if $(@expr1073742409 $!@expr1073742410 $assertEquals $(@expr1073742411 "cppcheck-2.8/test/testerrorlogger.cpp" $, 171 $, "Programming error." $, msg@var135 .@expr1073742412 shortMessage (@expr1073742413 ) $) $) { $return ; }
+172: $if $(@expr1073742414 $!@expr1073742415 $assertEquals $(@expr1073742416 "cppcheck-2.8/test/testerrorlogger.cpp" $, 172 $, "Verbose error" $, msg@var135 .@expr1073742417 verboseMessage (@expr1073742418 ) $) $) { $return ; }
+173: $if $(@expr1073742419 $!@expr1073742420 $assertEquals $(@expr1073742421 "cppcheck-2.8/test/testerrorlogger.cpp" $, 173 $, "Programming error. - foo.cpp(5):(error,errorId)" $, $(@expr1073742422 msg@var135 .@expr599 toString (@expr1073742424 false , "{message} - {file}({line}):({severity},{id})" ) $) $) $) { $return ; }
+174: $if $(@expr1073742425 $!@expr1073742426 $assertEquals $(@expr1073742427 "cppcheck-2.8/test/testerrorlogger.cpp" $, 174 $, "Verbose error - foo.cpp(5):(error,errorId)" $, $(@expr1073742428 msg@var135 .@expr599 toString (@expr1073742430 true , "{message} - {file}({line}):({severity},{id})" ) $) $) $) { $return ; }
+175: }
+176:
+177: void CustomFormatLocations ( ) const {
+178:
+179: std ::@expr1073742433 list < ErrorMessage ::@expr1073742434 FileLocation > locs@var137 ; locs@var137 =@expr1073742435 {@expr1073742436 fooCpp5@var102 , barCpp8@var103 } ;
+180: ErrorMessage msg@var138 (@expr1073742437 locs@var137 , emptyString , Severity ::@expr1073742438 error@expr1073742431 , "Programming error.\nVerbose error" , "errorId" , Certainty ::@expr1073742439 normal@expr1073742432 ) ;
+181: $if $(@expr1073742440 $!@expr1073742441 $assertEquals $(@expr1073742442 "cppcheck-2.8/test/testerrorlogger.cpp" $, 181 $, 2 $, msg@var138 .@expr1073742443 callStack@var139 .@expr1073742444 size (@expr1073742445 ) $) $) { $return ; }
+182: $if $(@expr1073742446 $!@expr1073742447 $assertEquals $(@expr1073742448 "cppcheck-2.8/test/testerrorlogger.cpp" $, 182 $, "Programming error." $, msg@var138 .@expr1073742449 shortMessage (@expr1073742450 ) $) $) { $return ; }
+183: $if $(@expr1073742451 $!@expr1073742452 $assertEquals $(@expr1073742453 "cppcheck-2.8/test/testerrorlogger.cpp" $, 183 $, "Verbose error" $, msg@var138 .@expr1073742454 verboseMessage (@expr1073742455 ) $) $) { $return ; }
+184: $if $(@expr1073742456 $!@expr1073742457 $assertEquals $(@expr1073742458 "cppcheck-2.8/test/testerrorlogger.cpp" $, 184 $, "Programming error. - bar.cpp(8):(error,errorId)" $, $(@expr1073742459 msg@var138 .@expr636 toString (@expr1073742461 false , "{message} - {file}({line}):({severity},{id})" ) $) $) $) { $return ; }
+185: $if $(@expr1073742462 $!@expr1073742463 $assertEquals $(@expr1073742464 "cppcheck-2.8/test/testerrorlogger.cpp" $, 185 $, "Verbose error - bar.cpp(8):(error,errorId)" $, $(@expr1073742465 msg@var138 .@expr636 toString (@expr1073742467 true , "{message} - {file}({line}):({severity},{id})" ) $) $) $) { $return ; }
+186: }
+187:
+188: void ToXmlV2 ( ) const {
+189: std ::@expr1073742470 list < ErrorMessage ::@expr1073742471 FileLocation > locs@var140 (@expr1073742472 1 , fooCpp5@var102 ) ;
+190: ErrorMessage msg@var141 (@expr1073742473 locs@var140 , emptyString , Severity ::@expr1073742474 error@expr1073742468 , "Programming error.\nVerbose error" , "errorId" , Certainty ::@expr1073742475 normal@expr1073742469 ) ;
+191: std ::@expr1073742476 string header@var142 (@expr1073742477 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results version=\"2\">\n" ) ;
+192: header@var142 +=@expr1073742478 "    <cppcheck version=\"" ;
+193: header@var142 +=@expr1073742479 CppCheck ::@expr1073742480 version (@expr1073742481 ) ;
+194: header@var142 +=@expr1073742482 "\"/>\n    <errors>" ;
+195: $if $(@expr1073742483 $!@expr1073742484 $assertEquals $(@expr1073742485 "cppcheck-2.8/test/testerrorlogger.cpp" $, 195 $, header@var142 $, ErrorMessage ::@expr1073742486 getXMLHeader (@expr1073742487 ) $) $) { $return ; }
+196: $if $(@expr1073742488 $!@expr1073742489 $assertEquals $(@expr1073742490 "cppcheck-2.8/test/testerrorlogger.cpp" $, 196 $, "    </errors>\n</results>" $, ErrorMessage ::@expr1073742491 getXMLFooter (@expr1073742492 ) $) $) { $return ; }
+197: std ::@expr1073742493 string message@var143 (@expr1073742494 "        <error id=\"errorId\" severity=\"error\"" ) ;
+198: message@var143 +=@expr1073742495 " msg=\"Programming error.\" verbose=\"Verbose error\">\n" ;
+199: message@var143 +=@expr1073742496 "            <location file=\"foo.cpp\" line=\"5\" column=\"1\"/>\n        </error>" ;
+200: $if $(@expr1073742497 $!@expr1073742498 $assertEquals $(@expr1073742499 "cppcheck-2.8/test/testerrorlogger.cpp" $, 200 $, message@var143 $, msg@var141 .@expr1073742500 toXML (@expr1073742501 ) $) $) { $return ; }
+201: }
+202:
+203: void ToXmlV2Locations ( ) const {
+204: std ::@expr1073742504 list < ErrorMessage ::@expr1073742505 FileLocation > locs@var144 ; locs@var144 =@expr1073742506 {@expr1073742507 fooCpp5@var102 , barCpp8@var103 } ;
+205: locs@var144 .@expr1073742508 back (@expr1073742509 ) .@expr1073742510 setinfo (@expr1073742511 "ä" ) ;
+206: ErrorMessage msg@var145 (@expr1073742512 locs@var144 , emptyString , Severity ::@expr1073742513 error@expr1073742502 , "Programming error.\nVerbose error" , "errorId" , Certainty ::@expr1073742514 normal@expr1073742503 ) ;
+207: std ::@expr1073742515 string header@var146 (@expr1073742516 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results version=\"2\">\n" ) ;
+208: header@var146 +=@expr1073742517 "    <cppcheck version=\"" ;
+209: header@var146 +=@expr1073742518 CppCheck ::@expr1073742519 version (@expr1073742520 ) ;
+210: header@var146 +=@expr1073742521 "\"/>\n    <errors>" ;
+211: $if $(@expr1073742522 $!@expr1073742523 $assertEquals $(@expr1073742524 "cppcheck-2.8/test/testerrorlogger.cpp" $, 211 $, header@var146 $, ErrorMessage ::@expr1073742525 getXMLHeader (@expr1073742526 ) $) $) { $return ; }
+212: $if $(@expr1073742527 $!@expr1073742528 $assertEquals $(@expr1073742529 "cppcheck-2.8/test/testerrorlogger.cpp" $, 212 $, "    </errors>\n</results>" $, ErrorMessage ::@expr1073742530 getXMLFooter (@expr1073742531 ) $) $) { $return ; }
+213: std ::@expr1073742532 string message@var147 (@expr1073742533 "        <error id=\"errorId\" severity=\"error\"" ) ;
+214: message@var147 +=@expr1073742534 " msg=\"Programming error.\" verbose=\"Verbose error\">\n" ;
+215: message@var147 +=@expr1073742535 "            <location file=\"bar.cpp\" line=\"8\" column=\"1\" info=\"\\303\\244\"/>\n" ;
+216: message@var147 +=@expr1073742536 "            <location file=\"foo.cpp\" line=\"5\" column=\"1\"/>\n        </error>" ;
+217: $if $(@expr1073742537 $!@expr1073742538 $assertEquals $(@expr1073742539 "cppcheck-2.8/test/testerrorlogger.cpp" $, 217 $, message@var147 $, msg@var145 .@expr1073742540 toXML (@expr1073742541 ) $) $) { $return ; }
+218: }
+219:
+220: void ToXmlV2Encoding ( ) const {
+221: {
+222: std ::@expr1073742544 list < ErrorMessage ::@expr721 FileLocation > locs@var148 ;
+223: ErrorMessage msg@var149 (@expr1073742546 locs@var148 , emptyString , Severity ::@expr723 error@expr1073742542 , "Programming error.\nComparing \"�\" with \"\"" , "errorId" , Certainty ::@expr724 normal@expr719 ) ;
+224: const std ::@expr1073742549 string expected@var150 (@expr1073742550 "        <error id=\"errorId\" severity=\"error\" msg=\"Programming error.\" verbose=\"Comparing &quot;\\203&quot; with &quot;\\003&quot;\"/>" ) ;
+225: $if $(@expr1073742551 $!@expr1073742552 $assertEquals $(@expr1073742553 "cppcheck-2.8/test/testerrorlogger.cpp" $, 225 $, expected@var150 $, msg@var149 .@expr1073742554 toXML (@expr1073742555 ) $) $) { $return ; }
+226: }
+227: {
+228: const char code1@var151 [@expr1073742556 7 ] =@expr1073742557 "äöü" ;
+229: const char code2@var152 [@expr1073742558 5 ] =@expr1073742559 "\0\0" ;
+230: std ::@expr1073742560 list < ErrorMessage ::@expr721 FileLocation > locs@var153 ;
+231: ErrorMessage msg1@var154 (@expr1073742562 locs@var153 , emptyString , Severity ::@expr723 error , std ::@expr740 string (@expr741 "Programming error.\nReading \"" ) +@expr1073742566 code1@var151 +@expr1073742567 "\"" , "errorId" , Certainty ::@expr724 normal@expr719 ) ;
+232: $if $(@expr1073742569 $!@expr1073742570 $assertEquals $(@expr1073742571 "cppcheck-2.8/test/testerrorlogger.cpp" $, 232 $, "        <error id=\"errorId\" severity=\"error\" msg=\"Programming error.\" verbose=\"Reading &quot;\\303\\244\\303\\266\\303\\274&quot;\"/>" $, msg1@var154 .@expr1073742572 toXML (@expr1073742573 ) $) $) { $return ; }
+233: ErrorMessage msg2@var155 (@expr1073742574 locs@var153 , emptyString , Severity ::@expr723 error , std ::@expr740 string (@expr741 "Programming error.\nReading \"" ) +@expr1073742578 code2@var152 +@expr1073742579 "\"" , "errorId" , Certainty ::@expr724 normal@expr719 ) ;
+234: $if $(@expr1073742581 $!@expr1073742582 $assertEquals $(@expr1073742583 "cppcheck-2.8/test/testerrorlogger.cpp" $, 234 $, "        <error id=\"errorId\" severity=\"error\" msg=\"Programming error.\" verbose=\"Reading &quot;\\022&quot;\"/>" $, msg2@var155 .@expr1073742584 toXML (@expr1073742585 ) $) $) { $return ; }
+235: }
+236: }
+237:
+238: void FromXmlV2 ( ) const {
+239: const char xmldata@var156 [@expr1073742592 257 ] =@expr1073742593 "<?xml version=\"1.0\"?>\n<error id=\"errorId\" severity=\"error\" cwe=\"123\" inconclusive=\"true\" msg=\"Programming error.\" verbose=\"Verbose error\" hash=\"456\">\n  <location file=\"bar.cpp\" line=\"8\" column=\"1\"/>\n  <location file=\"foo.cpp\" line=\"5\" column=\"2\"/>\n</error>"
+240:
+|
+249:
+250: ;
+251: tinyxml2 ::@expr1073742594 XMLDocument doc@var157 ;
+252: doc@var157 .@expr1073742595 Parse (@expr1073742596 xmldata@var156 , sizeof (@expr1073742597 xmldata@var156 ) ) ;
+253: ErrorMessage msg@var158 (@expr1073742598 doc@var157 .@expr1073742599 FirstChildElement (@expr1073742600 ) ) ;
+254: $if $(@expr1073742601 $!@expr1073742602 $assertEquals $(@expr1073742603 "cppcheck-2.8/test/testerrorlogger.cpp" $, 254 $, "errorId" $, msg@var158 .@expr1073742604 id@var159 $) $) { $return ; }
+255: $if $(@expr1073742605 $!@expr1073742606 $assertEquals $(@expr1073742607 "cppcheck-2.8/test/testerrorlogger.cpp" $, 255 $, Severity ::@expr1073742608 error@expr1073742586 $, msg@var158 .@expr1073742609 severity@var160 $) $) { $return ; }
+256: $if $(@expr1073742610 $!@expr1073742611 $assertEquals $(@expr1073742612 "cppcheck-2.8/test/testerrorlogger.cpp" $, 256 $, 123u $, msg@var158 .@expr1073742613 cwe@var161 .@expr1073742614 id@var162 $) $) { $return ; }
+257: $if $(@expr1073742615 $!@expr1073742616 $assertEquals $(@expr1073742617 "cppcheck-2.8/test/testerrorlogger.cpp" $, 257 $, Certainty ::@expr1073742618 inconclusive@expr1073742587 $, msg@var158 .@expr1073742619 certainty@var163 $) $) { $return ; }
+258: $if $(@expr1073742620 $!@expr1073742621 $assertEquals $(@expr1073742622 "cppcheck-2.8/test/testerrorlogger.cpp" $, 258 $, "Programming error." $, msg@var158 .@expr1073742623 shortMessage (@expr1073742624 ) $) $) { $return ; }
+259: $if $(@expr1073742625 $!@expr1073742626 $assertEquals $(@expr1073742627 "cppcheck-2.8/test/testerrorlogger.cpp" $, 259 $, "Verbose error" $, msg@var158 .@expr1073742628 verboseMessage (@expr1073742629 ) $) $) { $return ; }
+260: $if $(@expr1073742630 $!@expr1073742631 $assertEquals $(@expr1073742632 "cppcheck-2.8/test/testerrorlogger.cpp" $, 260 $, 456u $, msg@var158 .@expr1073742633 hash@var164 $) $) { $return ; }
+261: $if $(@expr1073742634 $!@expr1073742635 $assertEquals $(@expr1073742636 "cppcheck-2.8/test/testerrorlogger.cpp" $, 261 $, 2u $, msg@var158 .@expr813 callStack@var165 .@expr1073742638 size (@expr1073742639 ) $) $) { $return ; }
+262: $if $(@expr1073742640 $!@expr1073742641 $assertEquals $(@expr1073742642 "cppcheck-2.8/test/testerrorlogger.cpp" $, 262 $, "foo.cpp" $, msg@var158 .@expr813 callStack@var165 .@expr820 front (@expr821 ) .@expr1073742646 getfile (@expr1073742647 ) $) $) { $return ; }
+263: $if $(@expr1073742648 $!@expr1073742649 $assertEquals $(@expr1073742650 "cppcheck-2.8/test/testerrorlogger.cpp" $, 263 $, 5 $, msg@var158 .@expr813 callStack@var165 .@expr820 front (@expr821 ) .@expr1073742654 line@expr1073742588 $) $) { $return ; }
+264: $if $(@expr1073742655 $!@expr1073742656 $assertEquals $(@expr1073742657 "cppcheck-2.8/test/testerrorlogger.cpp" $, 264 $, 2u $, msg@var158 .@expr813 callStack@var165 .@expr820 front (@expr821 ) .@expr1073742661 column@expr1073742589 $) $) { $return ; }
+265: $if $(@expr1073742662 $!@expr1073742663 $assertEquals $(@expr1073742664 "cppcheck-2.8/test/testerrorlogger.cpp" $, 265 $, "bar.cpp" $, msg@var158 .@expr813 callStack@var165 .@expr842 back (@expr843 ) .@expr1073742668 getfile (@expr1073742669 ) $) $) { $return ; }
+266: $if $(@expr1073742670 $!@expr1073742671 $assertEquals $(@expr1073742672 "cppcheck-2.8/test/testerrorlogger.cpp" $, 266 $, 8 $, msg@var158 .@expr813 callStack@var165 .@expr842 back (@expr843 ) .@expr1073742676 line@expr1073742590 $) $) { $return ; }
+267: $if $(@expr1073742677 $!@expr1073742678 $assertEquals $(@expr1073742679 "cppcheck-2.8/test/testerrorlogger.cpp" $, 267 $, 1u $, msg@var158 .@expr813 callStack@var165 .@expr842 back (@expr843 ) .@expr1073742683 column@expr1073742591 $) $) { $return ; }
+268: }
+269:
+270: void InconclusiveXml ( ) const {
+271:
+272: std ::@expr1073742686 list < ErrorMessage ::@expr1073742687 FileLocation > locs@var166 (@expr1073742688 1 , fooCpp5@var102 ) ;
+273:
+274:
+275: ErrorMessage msg@var167 (@expr1073742689 locs@var166 , emptyString , Severity ::@expr1073742690 error@expr1073742684 , "Programming error" , "errorId" , Certainty ::@expr1073742691 inconclusive@expr1073742685 ) ;
+276:
+277:
+278: $if $(@expr1073742692 $!@expr1073742693 $assertEquals $(@expr1073742694 "cppcheck-2.8/test/testerrorlogger.cpp" $, 278 $, "        <error id=\"errorId\" severity=\"error\" msg=\"Programming error\" verbose=\"Programming error\" inconclusive=\"true\">\n            <location file=\"foo.cpp\" line=\"5\" column=\"1\"/>\n        </error>" $, msg@var167 .@expr1073742695 toXML (@expr1073742696 ) $) $) { $return
+279:
+280:
+281: ; }
+282: }
+283:
+284: void SerializeInconclusiveMessage ( ) const {
+285:
+286: std ::@expr1073742699 list < ErrorMessage ::@expr1073742700 FileLocation > locs@var168 ;
+287: ErrorMessage msg@var169 (@expr1073742701 locs@var168 , emptyString , Severity ::@expr878 error@expr873 , "Programming error" , "errorId" , Certainty ::@expr879 inconclusive@expr874 ) ;
+288: msg@var169 .@expr1073742704 file0@var170 =@expr1073742705 "test.cpp" ;
+289: $if $(@expr1073742706 $!@expr1073742707 $assertEquals $(@expr1073742708 "cppcheck-2.8/test/testerrorlogger.cpp" $, 289 $, "7 errorId5 error1 01 08 test.cpp12 inconclusive17 Programming error17 Programming error0 " $, msg@var169 .@expr885 serialize (@expr886 ) $) $) { $return
+290:
+|
+296:
+297: ; }
+298:
+299: ErrorMessage msg2@var171 ;
+300: msg2@var171 .@expr1073742711 deserialize (@expr1073742712 msg@var169 .@expr885 serialize (@expr886 ) ) ;
+301: $if $(@expr1073742715 $!@expr1073742716 $assertEquals $(@expr1073742717 "cppcheck-2.8/test/testerrorlogger.cpp" $, 301 $, "errorId" $, msg2@var171 .@expr1073742718 id@var172 $) $) { $return ; }
+302: $if $(@expr1073742719 $!@expr1073742720 $assertEquals $(@expr1073742721 "cppcheck-2.8/test/testerrorlogger.cpp" $, 302 $, Severity ::@expr878 error@expr873 $, msg2@var171 .@expr1073742723 severity@var173 $) $) { $return ; }
+303: $if $(@expr1073742724 $!@expr1073742725 $assertEquals $(@expr1073742726 "cppcheck-2.8/test/testerrorlogger.cpp" $, 303 $, "test.cpp" $, msg2@var171 .@expr1073742727 file0@var174 $) $) { $return ; }
+304: $if $(@expr1073742728 $!@expr1073742729 $assertEquals $(@expr1073742730 "cppcheck-2.8/test/testerrorlogger.cpp" $, 304 $, Certainty ::@expr879 inconclusive@expr874 $, msg2@var171 .@expr1073742732 certainty@var175 $) $) { $return ; }
+305: $if $(@expr1073742733 $!@expr1073742734 $assertEquals $(@expr1073742735 "cppcheck-2.8/test/testerrorlogger.cpp" $, 305 $, "Programming error" $, msg2@var171 .@expr1073742736 shortMessage (@expr1073742737 ) $) $) { $return ; }
+306: $if $(@expr1073742738 $!@expr1073742739 $assertEquals $(@expr1073742740 "cppcheck-2.8/test/testerrorlogger.cpp" $, 306 $, "Programming error" $, msg2@var171 .@expr1073742741 verboseMessage (@expr1073742742 ) $) $) { $return ; }
+307: }
+308:
+309: void DeserializeInvalidInput ( ) const {
+310: ErrorMessage msg@var176 ;
+311: $do ${ $try ${ msg@var176 .@expr1073742743 deserialize (@expr1073742744 "500foobar" ) $; $assertThrowFail $(@expr1073742745 "cppcheck-2.8/test/testerrorlogger.cpp" $, 311 $) $; $} $catch $(@expr1073742746 $const InternalError $&@expr1073742747 $) ${ $} $catch $(@expr1073742748 $... $) ${ $assertThrowFail $(@expr1073742749 "cppcheck-2.8/test/testerrorlogger.cpp" $, 311 $) $; $} $} $while $(@expr1073742750 $false $) ;
+312: }
+313:
+314: void SerializeSanitize ( ) const {
+315: std ::@expr1073742753 list < ErrorMessage ::@expr1073742754 FileLocation > locs@var177 ;
+316: ErrorMessage msg@var178 (@expr1073742755 locs@var177 , emptyString , Severity ::@expr932 error , std ::@expr1073742757 string (@expr1073742758 "Illegal character in \"foobar\"" ) , "errorId" , Certainty ::@expr1073742759 normal@expr1073742751 ) ;
+317: msg@var178 .@expr1073742760 file0@var179 =@expr1073742761 "1.c" ;
+318:
+319: $if $(@expr1073742762 $!@expr1073742763 $assertEquals $(@expr1073742764 "cppcheck-2.8/test/testerrorlogger.cpp" $, 319 $, "7 errorId5 error1 01 03 1.c33 Illegal character in \"foo\\001bar\"33 Illegal character in \"foo\\001bar\"0 " $, msg@var178 .@expr941 serialize (@expr942 ) $) $) { $return
+320:
+|
+325:
+326: ; }
+327:
+328: ErrorMessage msg2@var180 ;
+329: msg2@var180 .@expr1073742767 deserialize (@expr1073742768 msg@var178 .@expr941 serialize (@expr942 ) ) ;
+330: $if $(@expr1073742771 $!@expr1073742772 $assertEquals $(@expr1073742773 "cppcheck-2.8/test/testerrorlogger.cpp" $, 330 $, "errorId" $, msg2@var180 .@expr1073742774 id@var181 $) $) { $return ; }
+331: $if $(@expr1073742775 $!@expr1073742776 $assertEquals $(@expr1073742777 "cppcheck-2.8/test/testerrorlogger.cpp" $, 331 $, Severity ::@expr932 error@expr1073742752 $, msg2@var180 .@expr1073742779 severity@var182 $) $) { $return ; }
+332: $if $(@expr1073742780 $!@expr1073742781 $assertEquals $(@expr1073742782 "cppcheck-2.8/test/testerrorlogger.cpp" $, 332 $, "1.c" $, msg2@var180 .@expr1073742783 file0@var183 $) $) { $return ; }
+333: $if $(@expr1073742784 $!@expr1073742785 $assertEquals $(@expr1073742786 "cppcheck-2.8/test/testerrorlogger.cpp" $, 333 $, "Illegal character in \"foo\\001bar\"" $, msg2@var180 .@expr1073742787 shortMessage (@expr1073742788 ) $) $) { $return ; }
+334: $if $(@expr1073742789 $!@expr1073742790 $assertEquals $(@expr1073742791 "cppcheck-2.8/test/testerrorlogger.cpp" $, 334 $, "Illegal character in \"foo\\001bar\"" $, msg2@var180 .@expr1073742792 verboseMessage (@expr1073742793 ) $) $) { $return ; }
+335: }
+336:
+337: void SerializeFileLocation ( ) const {
+338: ErrorMessage ::@expr1073742798 FileLocation loc1@var184 (@expr1073742799 ":/,;" , 654 , 33 ) ;
+339: loc1@var184 .@expr1073742800 setfile (@expr1073742801 "[]:;,()" ) ;
+340: loc1@var184 .@expr1073742802 setinfo (@expr1073742803 "abcd:/," ) ;
+341:
+342: std ::@expr980 list < ErrorMessage ::@expr980 FileLocation > locs@var185 {@expr1073742806 loc1@var184 } ;
+343:
+344: ErrorMessage msg@var186 (@expr1073742807 locs@var185 , emptyString , Severity ::@expr1073742808 error@expr1073742794 , "Programming error" , "errorId" , Certainty ::@expr1073742809 inconclusive@expr1073742795 ) ;
+345:
+346: ErrorMessage msg2@var187 ;
+347: msg2@var187 .@expr1073742810 deserialize (@expr1073742811 msg@var186 .@expr1073742812 serialize (@expr1073742813 ) ) ;
+348: $if $(@expr1073742814 $!@expr1073742815 $assertEquals $(@expr1073742816 "cppcheck-2.8/test/testerrorlogger.cpp" $, 348 $, "[]:;,()" $, msg2@var187 .@expr993 callStack@var188 .@expr994 front (@expr995 ) .@expr1073742820 getfile (@expr1073742821 false ) $) $) { $return ; }
+349: $if $(@expr1073742822 $!@expr1073742823 $assertEquals $(@expr1073742824 "cppcheck-2.8/test/testerrorlogger.cpp" $, 349 $, ":/,;" $, msg2@var187 .@expr993 callStack@var188 .@expr994 front (@expr995 ) .@expr1073742828 getOrigFile (@expr1073742829 false ) $) $) { $return ; }
+350: $if $(@expr1073742830 $!@expr1073742831 $assertEquals $(@expr1073742832 "cppcheck-2.8/test/testerrorlogger.cpp" $, 350 $, 654 $, msg2@var187 .@expr993 callStack@var188 .@expr994 front (@expr995 ) .@expr1073742836 line@expr1073742796 $) $) { $return ; }
+351: $if $(@expr1073742837 $!@expr1073742838 $assertEquals $(@expr1073742839 "cppcheck-2.8/test/testerrorlogger.cpp" $, 351 $, 33 $, msg2@var187 .@expr993 callStack@var188 .@expr994 front (@expr995 ) .@expr1073742843 column@expr1073742797 $) $) { $return ; }
+352: $if $(@expr1073742844 $!@expr1073742845 $assertEquals $(@expr1073742846 "cppcheck-2.8/test/testerrorlogger.cpp" $, 352 $, "abcd:/," $, msg2@var187 .@expr993 callStack@var188 .@expr994 front (@expr995 ) .@expr1073742850 getinfo (@expr1073742851 ) $) $) { $return ; }
+353: }
+354:
+355: void suppressUnmatchedSuppressions ( ) {
+356: std ::@expr1073742853 list < Suppressions ::@expr1073742854 Suppression > suppressions@var189 ;
+357:
+358:
+359: errout@var100 .@expr1031 str (@expr1032 "" ) ;
+360: suppressions@var189 .@expr1033 clear (@expr1034 ) ;
+361: reportUnmatchedSuppressions (@expr1035 suppressions@var189 ) ;
+362: $if $(@expr1073742860 $!@expr1073742861 $assertEquals $(@expr1073742862 "cppcheck-2.8/test/testerrorlogger.cpp" $, 362 $, "" $, errout@var100 .@expr1031 str (@expr1040 ) $) $) { $return ; }
+363:
+364:
+365: errout@var100 .@expr1031 str (@expr1032 "" ) ;
+366: suppressions@var189 .@expr1033 clear (@expr1034 ) ;
+367: suppressions@var189 .@expr1045 emplace_back (@expr1046 "abc" , "a.c" , 10U ) ;
+368: suppressions@var189 .@expr1045 emplace_back (@expr1073742872 "unmatchedSuppression" , "*" , Suppressions ::@expr1049 Suppression ::@expr1050 NO_LINE@expr1028 ) ;
+369: reportUnmatchedSuppressions (@expr1035 suppressions@var189 ) ;
+370: $if $(@expr1073742876 $!@expr1073742877 $assertEquals $(@expr1073742878 "cppcheck-2.8/test/testerrorlogger.cpp" $, 370 $, "" $, errout@var100 .@expr1031 str (@expr1040 ) $) $) { $return ; }
+371:
+372:
+373: errout@var100 .@expr1031 str (@expr1032 "" ) ;
+374: suppressions@var189 .@expr1033 clear (@expr1034 ) ;
+375: suppressions@var189 .@expr1045 emplace_back (@expr1046 "abc" , "a.c" , 10U ) ;
+376: suppressions@var189 .@expr1045 emplace_back (@expr1073742888 "unmatchedSuppression" , "" , Suppressions ::@expr1049 Suppression ::@expr1050 NO_LINE@expr1028 ) ;
+377: reportUnmatchedSuppressions (@expr1035 suppressions@var189 ) ;
+378: $if $(@expr1073742892 $!@expr1073742893 $assertEquals $(@expr1073742894 "cppcheck-2.8/test/testerrorlogger.cpp" $, 378 $, "" $, errout@var100 .@expr1031 str (@expr1040 ) $) $) { $return ; }
+379:
+380:
+381: errout@var100 .@expr1031 str (@expr1032 "" ) ;
+382: suppressions@var189 .@expr1033 clear (@expr1034 ) ;
+383: suppressions@var189 .@expr1045 emplace_back (@expr1046 "abc" , "a.c" , 10U ) ;
+384: suppressions@var189 .@expr1045 emplace_back (@expr1073742904 "unmatchedSuppression" , "a.c" , Suppressions ::@expr1049 Suppression ::@expr1050 NO_LINE@expr1028 ) ;
+385: reportUnmatchedSuppressions (@expr1035 suppressions@var189 ) ;
+386: $if $(@expr1073742908 $!@expr1073742909 $assertEquals $(@expr1073742910 "cppcheck-2.8/test/testerrorlogger.cpp" $, 386 $, "" $, errout@var100 .@expr1031 str (@expr1040 ) $) $) { $return ; }
+387:
+388:
+389: errout@var100 .@expr1031 str (@expr1032 "" ) ;
+390: suppressions@var189 .@expr1033 clear (@expr1034 ) ;
+391: suppressions@var189 .@expr1045 emplace_back (@expr1046 "abc" , "a.c" , 10U ) ;
+392: suppressions@var189 .@expr1045 emplace_back (@expr1073742920 "unmatchedSuppression" , "a.c" , 10U ) ;
+393: reportUnmatchedSuppressions (@expr1035 suppressions@var189 ) ;
+394: $if $(@expr1073742922 $!@expr1073742923 $assertEquals $(@expr1073742924 "cppcheck-2.8/test/testerrorlogger.cpp" $, 394 $, "" $, errout@var100 .@expr1031 str (@expr1040 ) $) $) { $return ; }
+395:
+396:
+397: errout@var100 .@expr1031 str (@expr1032 "" ) ;
+398: suppressions@var189 .@expr1033 clear (@expr1034 ) ;
+399: suppressions@var189 .@expr1045 emplace_back (@expr1046 "abc" , "a.c" , 10U ) ;
+400: suppressions@var189 .@expr1045 emplace_back (@expr1073742934 "unmatchedSuppression" , "b.c" , Suppressions ::@expr1049 Suppression ::@expr1050 NO_LINE@expr1028 ) ;
+401: reportUnmatchedSuppressions (@expr1035 suppressions@var189 ) ;
+402: $if $(@expr1073742938 $!@expr1073742939 $assertEquals $(@expr1073742940 "cppcheck-2.8/test/testerrorlogger.cpp" $, 402 $, "[a.c:10]: (information) Unmatched suppression: abc\n" $, errout@var100 .@expr1031 str (@expr1040 ) $) $) { $return ; }
+403:
+404:
+405: errout@var100 .@expr1031 str (@expr1032 "" ) ;
+406: suppressions@var189 .@expr1033 clear (@expr1034 ) ;
+407: suppressions@var189 .@expr1045 emplace_back (@expr1046 "abc" , "a.c" , 10U ) ;
+408: suppressions@var189 .@expr1045 emplace_back (@expr1073742950 "unmatchedSuppression" , "a.c" , 1U ) ;
+409: reportUnmatchedSuppressions (@expr1035 suppressions@var189 ) ;
+410: $if $(@expr1073742952 $!@expr1073742953 $assertEquals $(@expr1073742954 "cppcheck-2.8/test/testerrorlogger.cpp" $, 410 $, "[a.c:10]: (information) Unmatched suppression: abc\n" $, errout@var100 .@expr1031 str (@expr1040 ) $) $) { $return ; }
+411: }
+412: } ;
+413:
+414: $namespace ${ TestErrorLogger instance_TestErrorLogger@var190 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@5}
+  v {!<=-1,!>=2,0@5}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 35
+  "TestErrorLogger" always "TestErrorLogger"
+  "foo.cpp" always "foo.cpp"
+  5 always 5
+  1 always 1
+  "bar.cpp" always "bar.cpp"
+  8 always 8
+  1 always 1
+Line 42
+  ( always {!<=-1,!>=2}
+  "PatternSearchReplace" always "PatternSearchReplace"
+  false always 0
+  false always 0
+Line 43
+  ( always {!<=-1,!>=2}
+  "FileLocationDefaults" always "FileLocationDefaults"
+  false always 0
+  false always 0
+Line 44
+  ( always {!<=-1,!>=2}
+  "FileLocationSetFile" always "FileLocationSetFile"
+  false always 0
+  false always 0
+Line 45
+  ( always {!<=-1,!>=2}
+  "ErrorMessageConstruct" always "ErrorMessageConstruct"
+  false always 0
+  false always 0
+Line 46
+  ( always {!<=-1,!>=2}
+  "ErrorMessageConstructLocations" always "ErrorMessageConstructLocations"
+  false always 0
+  false always 0
+Line 47
+  ( always {!<=-1,!>=2}
+  "ErrorMessageVerbose" always "ErrorMessageVerbose"
+  false always 0
+  false always 0
+Line 48
+  ( always {!<=-1,!>=2}
+  "ErrorMessageVerboseLocations" always "ErrorMessageVerboseLocations"
+  false always 0
+  false always 0
+Line 49
+  ( always {!<=-1,!>=2}
+  "CustomFormat" always "CustomFormat"
+  false always 0
+  false always 0
+Line 50
+  ( always {!<=-1,!>=2}
+  "CustomFormat2" always "CustomFormat2"
+  false always 0
+  false always 0
+Line 51
+  ( always {!<=-1,!>=2}
+  "CustomFormatLocations" always "CustomFormatLocations"
+  false always 0
+  false always 0
+Line 52
+  ( always {!<=-1,!>=2}
+  "ToXmlV2" always "ToXmlV2"
+  false always 0
+  false always 0
+Line 53
+  ( always {!<=-1,!>=2}
+  "ToXmlV2Locations" always "ToXmlV2Locations"
+  false always 0
+  false always 0
+Line 54
+  ( always {!<=-1,!>=2}
+  "ToXmlV2Encoding" always "ToXmlV2Encoding"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "FromXmlV2" always "FromXmlV2"
+  false always 0
+  false always 0
+Line 58
+  ( always {!<=-1,!>=2}
+  "InconclusiveXml" always "InconclusiveXml"
+  false always 0
+  false always 0
+Line 61
+  ( always {!<=-1,!>=2}
+  "SerializeInconclusiveMessage" always "SerializeInconclusiveMessage"
+  false always 0
+  false always 0
+Line 62
+  ( always {!<=-1,!>=2}
+  "DeserializeInvalidInput" always "DeserializeInvalidInput"
+  false always 0
+  false always 0
+Line 63
+  ( always {!<=-1,!>=2}
+  "SerializeSanitize" always "SerializeSanitize"
+  false always 0
+  false always 0
+Line 64
+  ( always {!<=-1,!>=2}
+  "SerializeFileLocation" always "SerializeFileLocation"
+  false always 0
+  false always 0
+Line 66
+  ( always {!<=-1,!>=2}
+  "suppressUnmatchedSuppressions" always "suppressUnmatchedSuppressions"
+  false always 0
+  false always 0
+Line 70
+  = always "text"
+  "text" always "text"
+Line 73
+  = possible {size=0@1,"ID"@2,"_ID_"@3,"longId"@4}
+  id possible {size=0@1,"ID"@2,"_ID_"@3,"longId"@4}
+Line 75
+  true always 1
+  idPlaceholder possible {"{id}"@1,size=4@1}
+  plainText always {"text",size=4}
+  idPlaceholder possible {"{id}"@1,size=4@1}
+Line 76
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  76 always 76
+  id possible {size=0@1,"ID"@2,"_ID_"@3,"longId"@4}
+  plainText always {"text",size=4}
+  id possible {size=0@1,"ID"@2,"_ID_"@3,"longId"@4}
+Line 78
+  true always 1
+  idPlaceholder possible {"{id}"@1,size=4@1}
+  + possible size=8@1
+  idPlaceholder possible {"{id}"@1,size=4@1}
+Line 79
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  79 always 79
+  id possible {size=0@1,"ID"@2,"_ID_"@3,"longId"@4}
+  + possible size=0@1
+  id possible {size=0@1,"ID"@2,"_ID_"@3,"longId"@4}
+Line 81
+  true always 1
+  plainText always "text"
+  plainText always "text"
+Line 82
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  82 always 82
+  plainText always "text"
+  plainText always "text"
+Line 86
+  = always "{id}"
+  "{id}" always "{id}"
+Line 89
+  idPlaceholder always {"{id}",size=4}
+  empty always size=0
+Line 91
+  = always "ID"
+  "ID" always "ID"
+Line 92
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  92 always 92
+  true always 1
+  shortIdValue always {"ID",size=2}
+  ( always 2
+  < always 1
+  idPlaceholder always {"{id}",size=4}
+  ( always 4
+Line 93
+  idPlaceholder always "{id}"
+  shortIdValue always "ID"
+Line 95
+  = always "_ID_"
+  "_ID_" always "_ID_"
+Line 96
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  96 always 96
+  mediumIdValue always {"_ID_",size=4}
+  ( always 4
+  idPlaceholder always "{id}"
+  ( always !<=-1
+Line 97
+  idPlaceholder always "{id}"
+  mediumIdValue always "_ID_"
+Line 99
+  = always "longId"
+  "longId" always "longId"
+Line 100
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  100 always 100
+  true always 1
+  longIdValue always {"longId",size=6}
+  ( always 6
+  > always {!<=-1,!>=2}
+  idPlaceholder always "{id}"
+  ( always !<=-1
+Line 101
+  idPlaceholder always "{id}"
+  longIdValue always "longId"
+Line 106
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  106 always 106
+  "" always ""
+Line 107
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  107 always 107
+  0 always 0
+Line 112
+  "foo.cpp" always "foo.cpp"
+Line 113
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  113 always 113
+  "foo.cpp" always "foo.cpp"
+Line 114
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  114 always 114
+  0 always 0
+Line 118
+  1 always 1
+Line 119
+  locs always size=1
+  "Programming error." always "Programming error."
+  "errorId" always "errorId"
+Line 120
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  120 always 120
+  1 always 1
+Line 121
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  121 always 121
+  "Programming error." always "Programming error."
+Line 122
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  122 always 122
+  "Programming error." always "Programming error."
+Line 123
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  123 always 123
+  "[foo.cpp:5]: (error) Programming error." always "[foo.cpp:5]: (error) Programming error."
+  false always 0
+Line 124
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  124 always 124
+  "[foo.cpp:5]: (error) Programming error." always "[foo.cpp:5]: (error) Programming error."
+  true always 1
+Line 129
+  locs always {{,size=2}
+  "Programming error." always "Programming error."
+  "errorId" always "errorId"
+Line 130
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  130 always 130
+  2 always 2
+Line 131
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  131 always 131
+  "Programming error." always "Programming error."
+Line 132
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  132 always 132
+  "Programming error." always "Programming error."
+Line 133
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  133 always 133
+  "[foo.cpp:5] -> [bar.cpp:8]: (error) Programming error." always "[foo.cpp:5] -> [bar.cpp:8]: (error) Programming error."
+  false always 0
+Line 134
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  134 always 134
+  "[foo.cpp:5] -> [bar.cpp:8]: (error) Programming error." always "[foo.cpp:5] -> [bar.cpp:8]: (error) Programming error."
+  true always 1
+Line 138
+  1 always 1
+Line 139
+  locs always size=1
+  "Programming error.\nVerbose error" always "Programming error.\nVerbose error"
+  "errorId" always "errorId"
+Line 140
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  140 always 140
+  1 always 1
+Line 141
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  141 always 141
+  "Programming error." always "Programming error."
+Line 142
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  142 always 142
+  "Verbose error" always "Verbose error"
+Line 143
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  143 always 143
+  "[foo.cpp:5]: (error) Programming error." always "[foo.cpp:5]: (error) Programming error."
+  false always 0
+Line 144
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  144 always 144
+  "[foo.cpp:5]: (error) Verbose error" always "[foo.cpp:5]: (error) Verbose error"
+  true always 1
+Line 149
+  locs always {{,size=2}
+  "Programming error.\nVerbose error" always "Programming error.\nVerbose error"
+  "errorId" always "errorId"
+Line 150
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  150 always 150
+  2 always 2
+Line 151
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  151 always 151
+  "Programming error." always "Programming error."
+Line 152
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  152 always 152
+  "Verbose error" always "Verbose error"
+Line 153
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  153 always 153
+  "[foo.cpp:5] -> [bar.cpp:8]: (error) Programming error." always "[foo.cpp:5] -> [bar.cpp:8]: (error) Programming error."
+  false always 0
+Line 154
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  154 always 154
+  "[foo.cpp:5] -> [bar.cpp:8]: (error) Verbose error" always "[foo.cpp:5] -> [bar.cpp:8]: (error) Verbose error"
+  true always 1
+Line 158
+  1 always 1
+Line 159
+  locs always size=1
+  "Programming error.\nVerbose error" always "Programming error.\nVerbose error"
+  "errorId" always "errorId"
+Line 160
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  160 always 160
+  1 always 1
+Line 161
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  161 always 161
+  "Programming error." always "Programming error."
+Line 162
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  162 always 162
+  "Verbose error" always "Verbose error"
+Line 163
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  163 always 163
+  "foo.cpp:5,error,errorId,Programming error." always "foo.cpp:5,error,errorId,Programming error."
+  false always 0
+  "{file}:{line},{severity},{id},{message}" always "{file}:{line},{severity},{id},{message}"
+Line 164
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  164 always 164
+  "foo.cpp:5,error,errorId,Verbose error" always "foo.cpp:5,error,errorId,Verbose error"
+  true always 1
+  "{file}:{line},{severity},{id},{message}" always "{file}:{line},{severity},{id},{message}"
+Line 168
+  1 always 1
+Line 169
+  locs always size=1
+  "Programming error.\nVerbose error" always "Programming error.\nVerbose error"
+  "errorId" always "errorId"
+Line 170
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  170 always 170
+  1 always 1
+Line 171
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  171 always 171
+  "Programming error." always "Programming error."
+Line 172
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  172 always 172
+  "Verbose error" always "Verbose error"
+Line 173
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  173 always 173
+  "Programming error. - foo.cpp(5):(error,errorId)" always "Programming error. - foo.cpp(5):(error,errorId)"
+  false always 0
+  "{message} - {file}({line}):({severity},{id})" always "{message} - {file}({line}):({severity},{id})"
+Line 174
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  174 always 174
+  "Verbose error - foo.cpp(5):(error,errorId)" always "Verbose error - foo.cpp(5):(error,errorId)"
+  true always 1
+  "{message} - {file}({line}):({severity},{id})" always "{message} - {file}({line}):({severity},{id})"
+Line 180
+  locs always {{,size=2}
+  "Programming error.\nVerbose error" always "Programming error.\nVerbose error"
+  "errorId" always "errorId"
+Line 181
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  181 always 181
+  2 always 2
+Line 182
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  182 always 182
+  "Programming error." always "Programming error."
+Line 183
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  183 always 183
+  "Verbose error" always "Verbose error"
+Line 184
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  184 always 184
+  "Programming error. - bar.cpp(8):(error,errorId)" always "Programming error. - bar.cpp(8):(error,errorId)"
+  false always 0
+  "{message} - {file}({line}):({severity},{id})" always "{message} - {file}({line}):({severity},{id})"
+Line 185
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  185 always 185
+  "Verbose error - bar.cpp(8):(error,errorId)" always "Verbose error - bar.cpp(8):(error,errorId)"
+  true always 1
+  "{message} - {file}({line}):({severity},{id})" always "{message} - {file}({line}):({severity},{id})"
+Line 189
+  1 always 1
+Line 190
+  locs always size=1
+  "Programming error.\nVerbose error" always "Programming error.\nVerbose error"
+  "errorId" always "errorId"
+Line 191
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results version=\"2\">\n" always "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results version=\"2\">\n"
+Line 192
+  "    <cppcheck version=\"" always "    <cppcheck version=\""
+Line 194
+  "\"/>\n    <errors>" always "\"/>\n    <errors>"
+Line 195
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  195 always 195
+  header always !<=size=15
+Line 196
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  196 always 196
+  "    </errors>\n</results>" always "    </errors>\n</results>"
+Line 197
+  "        <error id=\"errorId\" severity=\"error\"" always "        <error id=\"errorId\" severity=\"error\""
+Line 198
+  " msg=\"Programming error.\" verbose=\"Verbose error\">\n" always " msg=\"Programming error.\" verbose=\"Verbose error\">\n"
+Line 199
+  message always !<=size=50
+  "            <location file=\"foo.cpp\" line=\"5\" column=\"1\"/>\n        </error>" always "            <location file=\"foo.cpp\" line=\"5\" column=\"1\"/>\n        </error>"
+Line 200
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  200 always 200
+  message always !<=size=125
+Line 205
+  locs always {{,size=2}
+  "ä" always "ä"
+Line 206
+  locs always size=2
+  "Programming error.\nVerbose error" always "Programming error.\nVerbose error"
+  "errorId" always "errorId"
+Line 207
+  "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results version=\"2\">\n" always "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<results version=\"2\">\n"
+Line 208
+  "    <cppcheck version=\"" always "    <cppcheck version=\""
+Line 210
+  "\"/>\n    <errors>" always "\"/>\n    <errors>"
+Line 211
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  211 always 211
+  header always !<=size=15
+Line 212
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  212 always 212
+  "    </errors>\n</results>" always "    </errors>\n</results>"
+Line 213
+  "        <error id=\"errorId\" severity=\"error\"" always "        <error id=\"errorId\" severity=\"error\""
+Line 214
+  " msg=\"Programming error.\" verbose=\"Verbose error\">\n" always " msg=\"Programming error.\" verbose=\"Verbose error\">\n"
+Line 215
+  message always !<=size=50
+  "            <location file=\"bar.cpp\" line=\"8\" column=\"1\" info=\"\\303\\244\"/>\n" always "            <location file=\"bar.cpp\" line=\"8\" column=\"1\" info=\"\\303\\244\"/>\n"
+Line 216
+  message always !<=size=125
+  "            <location file=\"foo.cpp\" line=\"5\" column=\"1\"/>\n        </error>" always "            <location file=\"foo.cpp\" line=\"5\" column=\"1\"/>\n        </error>"
+Line 217
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  217 always 217
+  message always !<=size=200
+Line 223
+  locs always size=0
+  "Programming error.\nComparing \"�\" with \"\"" always "Programming error.\nComparing \"�\" with \"\""
+  "errorId" always "errorId"
+Line 224
+  "        <error id=\"errorId\" severity=\"error\" msg=\"Programming error.\" verbose=\"Comparing &quot;\\203&quot; with &quot;\\003&quot;\"/>" always "        <error id=\"errorId\" severity=\"error\" msg=\"Programming error.\" verbose=\"Comparing &quot;\\203&quot; with &quot;\\003&quot;\"/>"
+Line 225
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  225 always 225
+Line 228
+  7 always 7
+  = always "äöü"
+  "äöü" always "äöü"
+Line 229
+  5 always 5
+  = always "  "
+  "  " always "  "
+Line 231
+  locs always size=0
+  "Programming error.\nReading \"" always "Programming error.\nReading \""
+  code1 {"äöü",lifetime[Object]=(code1)}
+  "\"" always "\""
+  "errorId" always "errorId"
+Line 232
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  232 always 232
+  "        <error id=\"errorId\" severity=\"error\" msg=\"Programming error.\" verbose=\"Reading &quot;\\303\\244\\303\\266\\303\\274&quot;\"/>" always "        <error id=\"errorId\" severity=\"error\" msg=\"Programming error.\" verbose=\"Reading &quot;\\303\\244\\303\\266\\303\\274&quot;\"/>"
+Line 233
+  "Programming error.\nReading \"" always "Programming error.\nReading \""
+  code2 {"  ",lifetime[Object]=(code2)}
+  "\"" always "\""
+  "errorId" always "errorId"
+Line 234
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  234 always 234
+  "        <error id=\"errorId\" severity=\"error\" msg=\"Programming error.\" verbose=\"Reading &quot;\\022&quot;\"/>" always "        <error id=\"errorId\" severity=\"error\" msg=\"Programming error.\" verbose=\"Reading &quot;\\022&quot;\"/>"
+Line 239
+  257 always 257
+  = always "<?xml version=\"1.0\"?>\n<error id=\"errorId\" severity=\"error\" cwe=\"123\" inconclusive=\"true\" msg=\"Programming error.\" verbose=\"Verbose error\" hash=\"456\">\n  <location file=\"bar.cpp\" line=\"8\" column=\"1\"/>\n  <location file=\"foo.cpp\" line=\"5\" column=\"2\"/>\n</error>"
+  "<?xml version=\"1.0\"?>\n<error id=\"errorId\" severity=\"error\" cwe=\"123\" inconclusive=\"true\" msg=\"Programming error.\" verbose=\"Verbose error\" hash=\"456\">\n  <location file=\"bar.cpp\" line=\"8\" column=\"1\"/>\n  <location file=\"foo.cpp\" line=\"5\" column=\"2\"/>\n</error>" always "<?xml version=\"1.0\"?>\n<error id=\"errorId\" severity=\"error\" cwe=\"123\" inconclusive=\"true\" msg=\"Programming error.\" verbose=\"Verbose error\" hash=\"456\">\n  <location file=\"bar.cpp\" line=\"8\" column=\"1\"/>\n  <location file=\"foo.cpp\" line=\"5\" column=\"2\"/>\n</error>"
+Line 252
+  xmldata always "<?xml version=\"1.0\"?>\n<error id=\"errorId\" severity=\"error\" cwe=\"123\" inconclusive=\"true\" msg=\"Programming error.\" verbose=\"Verbose error\" hash=\"456\">\n  <location file=\"bar.cpp\" line=\"8\" column=\"1\"/>\n  <location file=\"foo.cpp\" line=\"5\" column=\"2\"/>\n</error>"
+  sizeof always 257
+  ( always 257
+  xmldata always "<?xml version=\"1.0\"?>\n<error id=\"errorId\" severity=\"error\" cwe=\"123\" inconclusive=\"true\" msg=\"Programming error.\" verbose=\"Verbose error\" hash=\"456\">\n  <location file=\"bar.cpp\" line=\"8\" column=\"1\"/>\n  <location file=\"foo.cpp\" line=\"5\" column=\"2\"/>\n</error>"
+Line 254
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  254 always 254
+  "errorId" always "errorId"
+Line 255
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  255 always 255
+Line 256
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  256 always 256
+  123u always 123
+Line 257
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  257 always 257
+Line 258
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  258 always 258
+  "Programming error." always "Programming error."
+Line 259
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  259 always 259
+  "Verbose error" always "Verbose error"
+Line 260
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  260 always 260
+  456u always 456
+Line 261
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  261 always 261
+  2u always 2
+Line 262
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  262 always 262
+  "foo.cpp" always "foo.cpp"
+Line 263
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  263 always 263
+  5 always 5
+Line 264
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  264 always 264
+  2u always 2
+Line 265
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  265 always 265
+  "bar.cpp" always "bar.cpp"
+Line 266
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  266 always 266
+  8 always 8
+Line 267
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  267 always 267
+  1u always 1
+Line 272
+  1 always 1
+Line 275
+  locs always size=1
+  "Programming error" always "Programming error"
+  "errorId" always "errorId"
+Line 278
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  278 always 278
+  "        <error id=\"errorId\" severity=\"error\" msg=\"Programming error\" verbose=\"Programming error\" inconclusive=\"true\">\n            <location file=\"foo.cpp\" line=\"5\" column=\"1\"/>\n        </error>" always "        <error id=\"errorId\" severity=\"error\" msg=\"Programming error\" verbose=\"Programming error\" inconclusive=\"true\">\n            <location file=\"foo.cpp\" line=\"5\" column=\"1\"/>\n        </error>"
+Line 287
+  locs always size=0
+  "Programming error" always "Programming error"
+  "errorId" always "errorId"
+Line 288
+  = always "test.cpp"
+  "test.cpp" always "test.cpp"
+Line 289
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  289 always 289
+  "7 errorId5 error1 01 08 test.cpp12 inconclusive17 Programming error17 Programming error0 " always "7 errorId5 error1 01 08 test.cpp12 inconclusive17 Programming error17 Programming error0 "
+Line 301
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  301 always 301
+  "errorId" always "errorId"
+Line 302
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  302 always 302
+Line 303
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  303 always 303
+  "test.cpp" always "test.cpp"
+Line 304
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  304 always 304
+Line 305
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  305 always 305
+  "Programming error" always "Programming error"
+Line 306
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  306 always 306
+  "Programming error" always "Programming error"
+Line 311
+  "500foobar" always "500foobar"
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  311 always 311
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  311 always 311
+  false always 0
+Line 316
+  locs always size=0
+  "Illegal character in \"foobar\"" always "Illegal character in \"foobar\""
+  "errorId" always "errorId"
+Line 317
+  = always "1.c"
+  "1.c" always "1.c"
+Line 319
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  319 always 319
+  "7 errorId5 error1 01 03 1.c33 Illegal character in \"foo\\001bar\"33 Illegal character in \"foo\\001bar\"0 " always "7 errorId5 error1 01 03 1.c33 Illegal character in \"foo\\001bar\"33 Illegal character in \"foo\\001bar\"0 "
+Line 330
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  330 always 330
+  "errorId" always "errorId"
+Line 331
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  331 always 331
+Line 332
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  332 always 332
+  "1.c" always "1.c"
+Line 333
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  333 always 333
+  "Illegal character in \"foo\\001bar\"" always "Illegal character in \"foo\\001bar\""
+Line 334
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  334 always 334
+  "Illegal character in \"foo\\001bar\"" always "Illegal character in \"foo\\001bar\""
+Line 338
+  ":/,;" always ":/,;"
+  654 always 654
+  33 always 33
+Line 339
+  "[]:;,()" always "[]:;,()"
+Line 340
+  "abcd:/," always "abcd:/,"
+Line 344
+  locs always {{,size=1}
+  "Programming error" always "Programming error"
+  "errorId" always "errorId"
+Line 348
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  348 always 348
+  "[]:;,()" always "[]:;,()"
+  false always 0
+Line 349
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  349 always 349
+  ":/,;" always ":/,;"
+  false always 0
+Line 350
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  350 always 350
+  654 always 654
+Line 351
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  351 always 351
+  33 always 33
+Line 352
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  352 always 352
+  "abcd:/," always "abcd:/,"
+Line 359
+  "" always ""
+Line 360
+  suppressions always {NonMovedVariable,size=0}
+Line 361
+  suppressions always {NonMovedVariable,size=0}
+Line 362
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  362 always 362
+  "" always ""
+Line 365
+  "" always ""
+Line 366
+  suppressions always NonMovedVariable
+Line 367
+  suppressions always {NonMovedVariable,size=0}
+  "abc" always "abc"
+  "a.c" always "a.c"
+  10U always 10
+Line 368
+  suppressions always !size=0
+  "unmatchedSuppression" always "unmatchedSuppression"
+  "*" always "*"
+Line 369
+  suppressions always !size=0
+Line 370
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  370 always 370
+  "" always ""
+Line 373
+  "" always ""
+Line 374
+  suppressions always NonMovedVariable
+Line 375
+  suppressions always {NonMovedVariable,size=0}
+  "abc" always "abc"
+  "a.c" always "a.c"
+  10U always 10
+Line 376
+  suppressions always !size=0
+  "unmatchedSuppression" always "unmatchedSuppression"
+  "" always ""
+Line 377
+  suppressions always !size=0
+Line 378
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  378 always 378
+  "" always ""
+Line 381
+  "" always ""
+Line 382
+  suppressions always NonMovedVariable
+Line 383
+  suppressions always {NonMovedVariable,size=0}
+  "abc" always "abc"
+  "a.c" always "a.c"
+  10U always 10
+Line 384
+  suppressions always !size=0
+  "unmatchedSuppression" always "unmatchedSuppression"
+  "a.c" always "a.c"
+Line 385
+  suppressions always !size=0
+Line 386
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  386 always 386
+  "" always ""
+Line 389
+  "" always ""
+Line 390
+  suppressions always NonMovedVariable
+Line 391
+  suppressions always {NonMovedVariable,size=0}
+  "abc" always "abc"
+  "a.c" always "a.c"
+  10U always 10
+Line 392
+  suppressions always !size=0
+  "unmatchedSuppression" always "unmatchedSuppression"
+  "a.c" always "a.c"
+  10U always 10
+Line 393
+  suppressions always !size=0
+Line 394
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  394 always 394
+  "" always ""
+Line 397
+  "" always ""
+Line 398
+  suppressions always NonMovedVariable
+Line 399
+  suppressions always {NonMovedVariable,size=0}
+  "abc" always "abc"
+  "a.c" always "a.c"
+  10U always 10
+Line 400
+  suppressions always !size=0
+  "unmatchedSuppression" always "unmatchedSuppression"
+  "b.c" always "b.c"
+Line 401
+  suppressions always !size=0
+Line 402
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  402 always 402
+  "[a.c:10]: (information) Unmatched suppression: abc\n" always "[a.c:10]: (information) Unmatched suppression: abc\n"
+Line 405
+  "" always ""
+Line 406
+  suppressions always NonMovedVariable
+Line 407
+  suppressions always {NonMovedVariable,size=0}
+  "abc" always "abc"
+  "a.c" always "a.c"
+  10U always 10
+Line 408
+  suppressions always !size=0
+  "unmatchedSuppression" always "unmatchedSuppression"
+  "a.c" always "a.c"
+  1U always 1
+Line 409
+  suppressions always !size=0
+Line 410
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testerrorlogger.cpp" always "cppcheck-2.8/test/testerrorlogger.cpp"
+  410 always 410
+  "[a.c:10]: (information) Unmatched suppression: abc\n" always "[a.c:10]: (information) Unmatched suppression: abc\n"

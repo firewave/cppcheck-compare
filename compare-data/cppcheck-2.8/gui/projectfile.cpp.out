@@ -1,0 +1,2078 @@
+
+
+##file cppcheck-2.8/gui/projectfile.h
+
+1:
+|
+31:
+32: class QXmlStreamReader ;
+33: class QXmlStreamWriter ;
+34:
+|
+43:
+44: class ProjectFile : public QObject {
+45: Q_OBJECT
+46:
+47: public:
+48: explicit ProjectFile ( QObject * parent@var1 = nullptr ) ;
+49: explicit ProjectFile ( const QString & filename@var2 , QObject * parent@var3 = nullptr ) ;
+50: ~ ProjectFile ( ) override {
+51: if (@expr1073742043 this@expr1073742044 ==@expr1073742045 mActiveProject@var86 ) { mActiveProject@var86 =@expr1073742046 nullptr ; }
+52: }
+53:
+54: static ProjectFile * getActiveProject ( ) {
+55: return mActiveProject@var86 ;
+56: }
+57: void setActiveProject ( ) {
+58: mActiveProject@var86 =@expr1073742047 this@expr1073742048 ;
+59: }
+60:
+|
+64:
+65: bool read ( const QString & filename@var4 = QString ( ) ) ;
+66:
+|
+70:
+71: QString getRootPath ( ) const {
+72: return mRootPath@var63 ;
+73: }
+74:
+75: QString getBuildDir ( ) const {
+76: return mBuildDir@var64 ;
+77: }
+78:
+79: QString getImportProject ( ) const {
+80: return mImportProject@var65 ;
+81: }
+82:
+83: bool getAnalyzeAllVsConfigs ( ) const {
+84: return mAnalyzeAllVsConfigs@var66 ;
+85: }
+86:
+87: bool getCheckHeaders ( ) const {
+88: return mCheckHeaders@var68 ;
+89: }
+90:
+91: void setCheckHeaders ( bool b@var5 ) {
+92: mCheckHeaders@var68 =@expr1073742049 b@var5 ;
+93: }
+94:
+95: bool getCheckUnusedTemplates ( ) const {
+96: return mCheckUnusedTemplates@var69 ;
+97: }
+98:
+99: void setCheckUnusedTemplates ( bool b@var6 ) {
+100: mCheckUnusedTemplates@var69 =@expr1073742050 b@var6 ;
+101: }
+102:
+|
+106:
+107: QStringList getIncludeDirs ( ) const {
+108: return ProjectFile ::@expr1073742051 fromNativeSeparators (@expr1073742052 mIncludeDirs@var70 ) ;
+109: }
+110:
+|
+114:
+115: QStringList getDefines ( ) const {
+116: return mDefines@var71 ;
+117: }
+118:
+|
+122:
+123: QStringList getUndefines ( ) const {
+124: return mUndefines@var72 ;
+125: }
+126:
+|
+130:
+131: QStringList getCheckPaths ( ) const {
+132: return ProjectFile ::@expr1073742053 fromNativeSeparators (@expr1073742054 mPaths@var73 ) ;
+133: }
+134:
+|
+138:
+139: QStringList getExcludedPaths ( ) const {
+140: return ProjectFile ::@expr1073742055 fromNativeSeparators (@expr1073742056 mExcludedPaths@var74 ) ;
+141: }
+142:
+|
+146:
+147: QStringList getVsConfigurations ( ) const {
+148: return mVsConfigurations@var67 ;
+149: }
+150:
+|
+154:
+155: QStringList getLibraries ( ) const {
+156: return mLibraries@var75 ;
+157: }
+158:
+|
+162:
+163: QString getPlatform ( ) const {
+164: return mPlatform@var76 ;
+165: }
+166:
+|
+170:
+171: QList < Suppressions :: Suppression > getSuppressions ( ) const {
+172: return mSuppressions@var77 ;
+173: }
+174:
+|
+178:
+179: QStringList getAddons ( ) const {
+180: return mAddons@var78 ;
+181: }
+182:
+|
+187:
+188: static QString getAddonFilePath ( QString filesDir@var7 , const QString & addon@var8 ) ;
+189:
+|
+193:
+194: QStringList getAddonsAndTools ( ) const ;
+195:
+196: bool getClangAnalyzer ( ) const {
+197: return false ;
+198: }
+199:
+200: void setClangAnalyzer ( bool c@var9 ) {
+201: mClangAnalyzer@var79 =@expr1073742057 c@var9 ;
+202: }
+203:
+204: bool getClangTidy ( ) const {
+205: return mClangTidy@var80 ;
+206: }
+207:
+208: void setClangTidy ( bool c@var10 ) {
+209: mClangTidy@var80 =@expr1073742058 c@var10 ;
+210: }
+211:
+212: QStringList getTags ( ) const {
+213: return mTags@var81 ;
+214: }
+215:
+216: int getMaxCtuDepth ( ) const {
+217: return mMaxCtuDepth@var83 ;
+218: }
+219:
+220: void setMaxCtuDepth ( int maxCtuDepth@var11 ) {
+221: mMaxCtuDepth@var83 =@expr1073742059 maxCtuDepth@var11 ;
+222: }
+223:
+224: int getMaxTemplateRecursion ( ) const {
+225: return mMaxTemplateRecursion@var84 ;
+226: }
+227:
+228: void setMaxTemplateRecursion ( int maxTemplateRecursion@var12 ) {
+229: mMaxTemplateRecursion@var84 =@expr1073742060 maxTemplateRecursion@var12 ;
+230: }
+231:
+|
+235:
+236: QString getFilename ( ) const {
+237: return mFilename@var62 ;
+238: }
+239:
+|
+243:
+244: void setRootPath ( const QString & rootpath@var13 ) {
+245: mRootPath@var63 =@expr1073742061 rootpath@var13 ;
+246: }
+247:
+248: void setBuildDir ( const QString & buildDir@var14 ) {
+249: mBuildDir@var64 =@expr1073742062 buildDir@var14 ;
+250: }
+251:
+252: void setImportProject ( const QString & importProject@var15 ) {
+253: mImportProject@var65 =@expr1073742063 importProject@var15 ;
+254: }
+255:
+256: void setAnalyzeAllVsConfigs ( bool b@var16 ) {
+257: mAnalyzeAllVsConfigs@var66 =@expr1073742064 b@var16 ;
+258: }
+259:
+|
+263:
+264: void setIncludes ( const QStringList & includes@var17 ) ;
+265:
+|
+269:
+270: void setDefines ( const QStringList & defines@var18 ) ;
+271:
+|
+275:
+276: void setUndefines ( const QStringList & undefines@var19 ) ;
+277:
+|
+281:
+282: void setCheckPaths ( const QStringList & paths@var20 ) ;
+283:
+|
+287:
+288: void setExcludedPaths ( const QStringList & paths@var21 ) ;
+289:
+|
+293:
+294: void setLibraries ( const QStringList & libraries@var22 ) ;
+295:
+|
+299:
+300: void setPlatform ( const QString & platform@var23 ) ;
+301:
+|
+305:
+306: void setSuppressions ( const QList < Suppressions :: Suppression > & suppressions@var24 ) ;
+307:
+308:
+309: void addSuppression ( const Suppressions :: Suppression & suppression@var25 ) ;
+310:
+|
+314:
+315: void setAddons ( const QStringList & addons@var26 ) ;
+316:
+|
+319:
+320: void setVSConfigurations ( const QStringList & vsConfigs@var27 ) ;
+321:
+|
+325:
+326: void setTags ( const QStringList & tags@var28 ) {
+327: mTags@var81 =@expr1073742065 tags@var28 ;
+328: }
+329:
+330:
+331: void setWarningTags ( unsigned long hash@var29 , const QString & tags@var30 ) ;
+332:
+333:
+334: QString getWarningTags ( unsigned long hash@var31 ) const ;
+335:
+|
+339:
+340: bool write ( const QString & filename@var32 = QString ( ) ) ;
+341:
+|
+345:
+346: void setFilename ( const QString & filename@var33 ) {
+347: mFilename@var62 =@expr1073742066 filename@var33 ;
+348: }
+349:
+350:
+351: class SafeChecks : public Settings :: SafeChecks {
+352: public:
+353: SafeChecks ( ) : Settings :: SafeChecks ( ) { }
+354:
+355: void loadFromXml ( QXmlStreamReader & xmlReader@var34 ) ;
+356: void saveToXml ( QXmlStreamWriter & xmlWriter@var35 ) const ;
+357: } ;
+358:
+359: SafeChecks safeChecks@var36 ;
+360:
+361:
+362: QStringList getCheckUnknownFunctionReturn ( ) const {
+363: return mCheckUnknownFunctionReturn@var85 ;
+364: }
+365: void setCheckUnknownFunctionReturn ( const QStringList & s@var37 ) {
+366: mCheckUnknownFunctionReturn@var85 =@expr1073742067 s@var37 ;
+367: }
+368:
+369:
+370: bool clangParser@var38 ;
+371:
+372: protected:
+373:
+|
+377:
+378: void readRootPath ( QXmlStreamReader & reader@var39 ) ;
+379:
+380: void readBuildDir ( QXmlStreamReader & reader@var40 ) ;
+381:
+|
+385:
+386: void readImportProject ( QXmlStreamReader & reader@var41 ) ;
+387:
+388: bool readBool ( QXmlStreamReader & reader@var42 ) ;
+389:
+390: int readInt ( QXmlStreamReader & reader@var43 , int defaultValue@var44 ) ;
+391:
+|
+395:
+396: void readIncludeDirs ( QXmlStreamReader & reader@var45 ) ;
+397:
+|
+401:
+402: void readDefines ( QXmlStreamReader & reader@var46 ) ;
+403:
+|
+407:
+408: void readCheckPaths ( QXmlStreamReader & reader@var47 ) ;
+409:
+|
+413:
+414: void readExcludes ( QXmlStreamReader & reader@var48 ) ;
+415:
+|
+419:
+420: void readVsConfigurations ( QXmlStreamReader & reader@var49 ) ;
+421:
+|
+425:
+426: void readPlatform ( QXmlStreamReader & reader@var50 ) ;
+427:
+|
+431:
+432: void readSuppressions ( QXmlStreamReader & reader@var51 ) ;
+433:
+|
+437:
+438: void readTagWarnings ( QXmlStreamReader & reader@var52 , const QString & tag@var53 ) ;
+439:
+|
+445:
+446: void readStringList ( QStringList & stringlist@var54 , QXmlStreamReader & reader@var55 , const char elementname@var56 [ ] ) ;
+447:
+|
+454:
+455: static void writeStringList ( QXmlStreamWriter & xmlWriter@var57 , const QStringList & stringlist@var58 , const char startelementname@var59 [ ] , const char stringelementname@var60 [ ] ) ;
+456:
+457: private:
+458:
+459: void clear ( ) ;
+460:
+|
+463:
+464: static QStringList fromNativeSeparators ( const QStringList & paths@var61 ) ;
+465:
+|
+468:
+469: QString mFilename@var62 ;
+470:
+|
+476:
+477: QString mRootPath@var63 ;
+478:
+479:
+480: QString mBuildDir@var64 ;
+481:
+482:
+483: QString mImportProject@var65 ;
+484:
+|
+489:
+490: bool mAnalyzeAllVsConfigs@var66 ;
+491:
+492:
+493: QStringList mVsConfigurations@var67 ;
+494:
+495:
+496: bool mCheckHeaders@var68 ;
+497:
+498:
+499: bool mCheckUnusedTemplates@var69 ;
+500:
+|
+503:
+504: QStringList mIncludeDirs@var70 ;
+505:
+|
+508:
+509: QStringList mDefines@var71 ;
+510:
+|
+513:
+514: QStringList mUndefines@var72 ;
+515:
+|
+518:
+519: QStringList mPaths@var73 ;
+520:
+|
+523:
+524: QStringList mExcludedPaths@var74 ;
+525:
+|
+528:
+529: QStringList mLibraries@var75 ;
+530:
+|
+533:
+534: QString mPlatform@var76 ;
+535:
+|
+538:
+539: QList < Suppressions :: Suppression > mSuppressions@var77 ;
+540:
+|
+543:
+544: QStringList mAddons@var78 ;
+545:
+546:
+547: bool mClangAnalyzer@var79 ;
+548:
+549:
+550: bool mClangTidy@var80 ;
+551:
+|
+554:
+555: QStringList mTags@var81 ;
+556:
+|
+559:
+560: std :: map < unsigned long , QString > mWarningTags@var82 ;
+561:
+562:
+563: int mMaxCtuDepth@var83 ;
+564:
+565:
+566: int mMaxTemplateRecursion@var84 ;
+567:
+568: QStringList mCheckUnknownFunctionReturn@var85 ;
+569:
+570: static ProjectFile * mActiveProject@var86 ;
+571: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type@var87 ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type@var88 , const QString & value@var89 ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters@var90 , bool addAllSupported@var91 = true , bool addAll@var92 = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/projectfile.cpp
+
+1:
+|
+32:
+33: ProjectFile * ProjectFile :: mActiveProject@var86 ;
+34:
+35: ProjectFile :: ProjectFile ( QObject * parent@var93 ) :
+36: QObject ( parent@var93 )
+37: {
+38: clear (@expr1073742068 ) ;
+39: }
+40:
+41: ProjectFile :: ProjectFile ( const QString & filename@var94 , QObject * parent@var95 ) :
+42: QObject ( parent@var95 ) ,
+43: mFilename@var62 ( filename@var94 )
+44: {
+45: clear (@expr1073742069 ) ;
+46: read (@expr1073742070 ) ;
+47: }
+48:
+49: void ProjectFile :: clear ( )
+50: {
+51: const Settings settings@var96 ;
+52: clangParser@var38 =@expr1073742071 false ;
+53: mRootPath@var63 .@expr1073742072 clear (@expr1073742073 ) ;
+54: mBuildDir@var64 .@expr1073742074 clear (@expr1073742075 ) ;
+55: mImportProject@var65 .@expr1073742076 clear (@expr1073742077 ) ;
+56: mAnalyzeAllVsConfigs@var66 =@expr1073742078 true ;
+57: mIncludeDirs@var70 .@expr1073742079 clear (@expr1073742080 ) ;
+58: mDefines@var71 .@expr1073742081 clear (@expr1073742082 ) ;
+59: mUndefines@var72 .@expr1073742083 clear (@expr1073742084 ) ;
+60: mPaths@var73 .@expr1073742085 clear (@expr1073742086 ) ;
+61: mExcludedPaths@var74 .@expr1073742087 clear (@expr1073742088 ) ;
+62: mLibraries@var75 .@expr1073742089 clear (@expr1073742090 ) ;
+63: mPlatform@var76 .@expr1073742091 clear (@expr1073742092 ) ;
+64: mSuppressions@var77 .@expr1073742093 clear (@expr1073742094 ) ;
+65: mAddons@var78 .@expr1073742095 clear (@expr1073742096 ) ;
+66: mClangAnalyzer@var79 =@expr1073742097 false ; mClangTidy@var80 =@expr1073742098 false ;
+67: mAnalyzeAllVsConfigs@var66 =@expr1073742099 false ;
+68: mCheckHeaders@var68 =@expr1073742100 true ;
+69: mCheckUnusedTemplates@var69 =@expr1073742101 true ;
+70: mMaxCtuDepth@var83 =@expr1073742102 settings@var96 .@expr1073742103 maxCtuDepth@var97 ;
+71: mMaxTemplateRecursion@var84 =@expr1073742104 settings@var96 .@expr1073742105 maxTemplateRecursion@var98 ;
+72: mCheckUnknownFunctionReturn@var85 .@expr1073742106 clear (@expr1073742107 ) ;
+73: safeChecks@var36 .@expr1073742108 clear (@expr1073742109 ) ;
+74: mVsConfigurations@var67 .@expr1073742110 clear (@expr1073742111 ) ;
+75: mTags@var81 .@expr1073742112 clear (@expr1073742113 ) ;
+76: mWarningTags@var82 .@expr1073742114 clear (@expr1073742115 ) ;
+77: }
+78:
+79: bool ProjectFile :: read ( const QString & filename@var99 )
+80: {
+81: if (@expr1073742151 !@expr1073742152 filename@var99 .@expr1073742153 isEmpty (@expr1073742154 ) ) {
+82: mFilename@var62 =@expr1073742155 filename@var99 ; }
+83:
+84: QFile file@var100 (@expr1073742156 mFilename@var62 ) ;
+85: if (@expr1073742157 !@expr1073742158 file@var100 .@expr1073742159 open (@expr1073742160 QIODevice ::@expr1073742161 ReadOnly@expr1073742116 |@expr1073742162 QIODevice ::@expr1073742163 Text@expr1073742117 ) ) {
+86: return false ; }
+87:
+88: clear (@expr1073742164 ) ;
+89:
+90: QXmlStreamReader xmlReader@var101 (@expr1073742165 &@expr1073742166 file@var100 ) ;
+91: bool insideProject@var102 ; insideProject@var102 =@expr1073742167 false ;
+92: bool projectTagFound@var103 ; projectTagFound@var103 =@expr1073742168 false ;
+93: while (@expr1073742169 !@expr1073742170 xmlReader@var101 .@expr1073742171 atEnd (@expr1073742172 ) ) {
+94: switch (@expr1073742173 xmlReader@var101 .@expr1073742174 readNext (@expr1073742175 ) ) {
+95: case QXmlStreamReader ::@expr1073742176 StartElement :@expr353 ;
+96: if (@expr354 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr357 QString (@expr358 CppcheckXml ::@expr359 ProjectElementName@expr294 ) ) {
+97: insideProject@var102 =@expr1073742184 true ;
+98: projectTagFound@var103 =@expr1073742185 true ;
+99: break ;
+100: }
+101: if (@expr1073742186 !@expr1073742187 insideProject@var102 ) {
+102: break ; }
+103:
+104:
+105: if (@expr1073742188 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742191 QString (@expr1073742192 CppcheckXml ::@expr1073742193 RootPathName@expr1073742119 ) ) {
+106: readRootPath (@expr1073742194 xmlReader@var101 ) ; }
+107:
+108:
+109: if (@expr1073742195 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742198 QString (@expr1073742199 CppcheckXml ::@expr1073742200 BuildDirElementName@expr1073742120 ) ) {
+110: readBuildDir (@expr1073742201 xmlReader@var101 ) ; }
+111:
+112:
+113: if (@expr1073742202 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742205 QString (@expr1073742206 CppcheckXml ::@expr1073742207 PathsElementName@expr1073742121 ) ) {
+114: readCheckPaths (@expr1073742208 xmlReader@var101 ) ; }
+115:
+116: if (@expr1073742209 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742212 QString (@expr1073742213 CppcheckXml ::@expr1073742214 ImportProjectElementName@expr1073742122 ) ) {
+117: readImportProject (@expr1073742215 xmlReader@var101 ) ; }
+118:
+119: if (@expr1073742216 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742219 QString (@expr1073742220 CppcheckXml ::@expr1073742221 AnalyzeAllVsConfigsElementName@expr1073742123 ) ) {
+120: mAnalyzeAllVsConfigs@var66 =@expr1073742222 readBool (@expr399 xmlReader@var101 ) ; }
+121:
+122: if (@expr1073742224 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742227 QString (@expr1073742228 CppcheckXml ::@expr1073742229 Parser@expr1073742124 ) ) {
+123: clangParser@var38 =@expr1073742230 true ; }
+124:
+125: if (@expr1073742231 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742234 QString (@expr1073742235 CppcheckXml ::@expr1073742236 CheckHeadersElementName@expr1073742125 ) ) {
+126: mCheckHeaders@var68 =@expr1073742237 readBool (@expr399 xmlReader@var101 ) ; }
+127:
+128: if (@expr1073742239 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742242 QString (@expr1073742243 CppcheckXml ::@expr1073742244 CheckUnusedTemplatesElementName@expr1073742126 ) ) {
+129: mCheckUnusedTemplates@var69 =@expr1073742245 readBool (@expr399 xmlReader@var101 ) ; }
+130:
+131:
+132: if (@expr1073742247 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742250 QString (@expr1073742251 CppcheckXml ::@expr1073742252 IncludeDirElementName@expr1073742127 ) ) {
+133: readIncludeDirs (@expr1073742253 xmlReader@var101 ) ; }
+134:
+135:
+136: if (@expr1073742254 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742257 QString (@expr1073742258 CppcheckXml ::@expr1073742259 DefinesElementName@expr1073742128 ) ) {
+137: readDefines (@expr1073742260 xmlReader@var101 ) ; }
+138:
+139:
+140: if (@expr1073742261 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742264 QString (@expr1073742265 CppcheckXml ::@expr1073742266 UndefinesElementName@expr1073742129 ) ) {
+141: readStringList (@expr1073742267 mUndefines@var72 , xmlReader@var101 , CppcheckXml ::@expr1073742268 UndefineName@expr1073742130 ) ; }
+142:
+143:
+144: if (@expr1073742269 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742272 QString (@expr1073742273 CppcheckXml ::@expr1073742274 ExcludeElementName@expr1073742131 ) ) {
+145: readExcludes (@expr451 xmlReader@var101 ) ; }
+146:
+147:
+148:
+149: if (@expr1073742276 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742279 QString (@expr1073742280 CppcheckXml ::@expr1073742281 IgnoreElementName@expr1073742132 ) ) {
+150: readExcludes (@expr451 xmlReader@var101 ) ; }
+151:
+152:
+153: if (@expr1073742283 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742286 QString (@expr1073742287 CppcheckXml ::@expr1073742288 LibrariesElementName@expr1073742133 ) ) {
+154: readStringList (@expr1073742289 mLibraries@var75 , xmlReader@var101 , CppcheckXml ::@expr1073742290 LibraryElementName@expr1073742134 ) ; }
+155:
+156: if (@expr1073742291 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742294 QString (@expr1073742295 CppcheckXml ::@expr1073742296 PlatformElementName@expr1073742135 ) ) {
+157: readPlatform (@expr1073742297 xmlReader@var101 ) ; }
+158:
+159:
+160: if (@expr1073742298 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742301 QString (@expr1073742302 CppcheckXml ::@expr1073742303 SuppressionsElementName@expr1073742136 ) ) {
+161: readSuppressions (@expr1073742304 xmlReader@var101 ) ; }
+162:
+163:
+164: if (@expr1073742305 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742308 QString (@expr1073742309 CppcheckXml ::@expr1073742310 CheckUnknownFunctionReturn@expr1073742137 ) ) {
+165: readStringList (@expr1073742311 mCheckUnknownFunctionReturn@var85 , xmlReader@var101 , CppcheckXml ::@expr1073742312 Name@expr1073742138 ) ; }
+166:
+167:
+168: if (@expr1073742313 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742316 QString (@expr1073742317 Settings ::@expr1073742318 SafeChecks ::@expr1073742319 XmlRootName@expr1073742139 ) ) {
+169: safeChecks@var36 .@expr1073742320 loadFromXml (@expr1073742321 xmlReader@var101 ) ; }
+170:
+171:
+172: if (@expr1073742322 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742325 QString (@expr1073742326 CppcheckXml ::@expr1073742327 AddonsElementName@expr1073742140 ) ) {
+173: readStringList (@expr1073742328 mAddons@var78 , xmlReader@var101 , CppcheckXml ::@expr1073742329 AddonElementName@expr1073742141 ) ; }
+174:
+175:
+176: if (@expr1073742330 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742333 QString (@expr1073742334 CppcheckXml ::@expr1073742335 ToolsElementName@expr1073742142 ) ) {
+177: QStringList tools@var104 ;
+178: readStringList (@expr1073742336 tools@var104 , xmlReader@var101 , CppcheckXml ::@expr1073742337 ToolElementName@expr1073742143 ) ;
+179: mClangAnalyzer@var79 =@expr1073742338 tools@var104 .@expr515 contains (@expr1073742340 $"clang-analyzer" ) ;
+180: mClangTidy@var80 =@expr1073742341 tools@var104 .@expr515 contains (@expr1073742343 $"clang-tidy" ) ;
+181: }
+182:
+183: if (@expr1073742344 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742347 QString (@expr1073742348 CppcheckXml ::@expr1073742349 TagsElementName@expr1073742144 ) ) {
+184: readStringList (@expr1073742350 mTags@var81 , xmlReader@var101 , CppcheckXml ::@expr1073742351 TagElementName@expr1073742145 ) ; }
+185:
+186: if (@expr1073742352 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742355 QString (@expr1073742356 CppcheckXml ::@expr1073742357 TagWarningsElementName@expr1073742146 ) ) {
+187: readTagWarnings (@expr1073742358 xmlReader@var101 , xmlReader@var101 .@expr1073742359 attributes (@expr1073742360 ) .@expr1073742361 value (@expr1073742362 QString (@expr1073742363 ) , CppcheckXml ::@expr1073742364 TagAttributeName@expr1073742147 ) .@expr1073742365 toString (@expr1073742366 ) ) ; }
+188:
+189: if (@expr1073742367 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742370 QString (@expr1073742371 CppcheckXml ::@expr1073742372 MaxCtuDepthElementName@expr1073742148 ) ) {
+190: mMaxCtuDepth@var83 =@expr1073742373 readInt (@expr1073742374 xmlReader@var101 , mMaxCtuDepth@var83 ) ; }
+191:
+192: if (@expr1073742375 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742378 QString (@expr1073742379 CppcheckXml ::@expr1073742380 MaxTemplateRecursionElementName@expr1073742149 ) ) {
+193: mMaxTemplateRecursion@var84 =@expr1073742381 readInt (@expr1073742382 xmlReader@var101 , mMaxTemplateRecursion@var84 ) ; }
+194:
+195:
+196: if (@expr1073742383 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr1073742386 QString (@expr1073742387 CppcheckXml ::@expr1073742388 VSConfigurationElementName@expr1073742150 ) ) {
+197: readVsConfigurations (@expr1073742389 xmlReader@var101 ) ; }
+198: break ;
+199:
+200: case QXmlStreamReader ::@expr1073742390 EndElement :@expr353 ;
+201: if (@expr354 xmlReader@var101 .@expr355 name (@expr356 ) ==@expr357 QString (@expr358 CppcheckXml ::@expr359 ProjectElementName@expr294 ) ) {
+202: insideProject@var102 =@expr1073742398 false ; }
+203: break ;
+204:
+205:
+206: case QXmlStreamReader ::@expr1073742399 NoToken :@expr353
+207: case QXmlStreamReader ::@expr1073742401 Invalid :@expr353
+208: case QXmlStreamReader ::@expr1073742403 StartDocument :@expr353
+209: case QXmlStreamReader ::@expr1073742405 EndDocument :@expr353
+210: case QXmlStreamReader ::@expr1073742407 Characters :@expr353
+211: case QXmlStreamReader ::@expr1073742409 Comment :@expr353
+212: case QXmlStreamReader ::@expr1073742411 DTD :@expr353
+213: case QXmlStreamReader ::@expr1073742413 EntityReference :@expr353
+214: case QXmlStreamReader ::@expr1073742415 ProcessingInstruction :@expr353 ;
+215: break ;
+216: }
+217: }
+218:
+219: file@var100 .@expr1073742417 close (@expr1073742418 ) ;
+220: return projectTagFound@var103 ;
+221: }
+222:
+223: void ProjectFile :: readRootPath ( QXmlStreamReader & reader@var105 )
+224: {
+225: QXmlStreamAttributes attribs@var106 ; attribs@var106 =@expr1073742420 reader@var105 .@expr1073742421 attributes (@expr1073742422 ) ;
+226: QString name@var107 ; name@var107 =@expr1073742423 attribs@var106 .@expr1073742424 value (@expr1073742425 QString (@expr1073742426 ) , CppcheckXml ::@expr1073742427 RootPathNameAttrib@expr1073742419 ) .@expr1073742428 toString (@expr1073742429 ) ;
+227: if (@expr1073742430 !@expr1073742431 name@var107 .@expr1073742432 isEmpty (@expr1073742433 ) ) {
+228: mRootPath@var63 =@expr1073742434 name@var107 ; }
+229: }
+230:
+231: void ProjectFile :: readBuildDir ( QXmlStreamReader & reader@var108 )
+232: {
+233: mBuildDir@var64 .@expr1073742435 clear (@expr1073742436 ) ;
+234: do {
+235: const QXmlStreamReader ::@expr1073742437 TokenType type@var109 =@expr1073742438 reader@var108 .@expr1073742439 readNext (@expr1073742440 ) ;
+236: switch (@expr1073742441 type@var109 ) {
+237: case QXmlStreamReader ::@expr1073742442 Characters :@expr619 ;
+238: mBuildDir@var64 =@expr1073742444 reader@var108 .@expr1073742445 text (@expr1073742446 ) .@expr1073742447 toString (@expr1073742448 ) ;
+239: FALLTHROUGH ;
+240: case QXmlStreamReader ::@expr1073742449 EndElement :@expr619 ;
+241: return ;
+242:
+243: case QXmlStreamReader ::@expr1073742451 StartElement :@expr619
+244: case QXmlStreamReader ::@expr1073742453 NoToken :@expr619
+245: case QXmlStreamReader ::@expr1073742455 Invalid :@expr619
+246: case QXmlStreamReader ::@expr1073742457 StartDocument :@expr619
+247: case QXmlStreamReader ::@expr1073742459 EndDocument :@expr619
+248: case QXmlStreamReader ::@expr1073742461 Comment :@expr619
+249: case QXmlStreamReader ::@expr1073742463 DTD :@expr619
+250: case QXmlStreamReader ::@expr1073742465 EntityReference :@expr619
+251: case QXmlStreamReader ::@expr1073742467 ProcessingInstruction :@expr619 ;
+252: break ;
+253: }
+254: } while (@expr1073742469 true ) ;
+255: }
+256:
+257: void ProjectFile :: readImportProject ( QXmlStreamReader & reader@var110 )
+258: {
+259: mImportProject@var65 .@expr1073742470 clear (@expr1073742471 ) ;
+260: do {
+261: const QXmlStreamReader ::@expr1073742472 TokenType type@var111 =@expr1073742473 reader@var110 .@expr1073742474 readNext (@expr1073742475 ) ;
+262: switch (@expr1073742476 type@var111 ) {
+263: case QXmlStreamReader ::@expr1073742477 Characters :@expr654 ;
+264: mImportProject@var65 =@expr1073742479 reader@var110 .@expr1073742480 text (@expr1073742481 ) .@expr1073742482 toString (@expr1073742483 ) ;
+265: FALLTHROUGH ;
+266: case QXmlStreamReader ::@expr1073742484 EndElement :@expr654 ;
+267: return ;
+268:
+269: case QXmlStreamReader ::@expr1073742486 StartElement :@expr654
+270: case QXmlStreamReader ::@expr1073742488 NoToken :@expr654
+271: case QXmlStreamReader ::@expr1073742490 Invalid :@expr654
+272: case QXmlStreamReader ::@expr1073742492 StartDocument :@expr654
+273: case QXmlStreamReader ::@expr1073742494 EndDocument :@expr654
+274: case QXmlStreamReader ::@expr1073742496 Comment :@expr654
+275: case QXmlStreamReader ::@expr1073742498 DTD :@expr654
+276: case QXmlStreamReader ::@expr1073742500 EntityReference :@expr654
+277: case QXmlStreamReader ::@expr1073742502 ProcessingInstruction :@expr654 ;
+278: break ;
+279: }
+280: } while (@expr1073742504 true ) ;
+281: }
+282:
+283: bool ProjectFile :: readBool ( QXmlStreamReader & reader@var112 )
+284: {
+285: bool ret@var113 ; ret@var113 =@expr1073742505 false ;
+286: do {
+287: const QXmlStreamReader ::@expr1073742506 TokenType type@var114 =@expr1073742507 reader@var112 .@expr1073742508 readNext (@expr1073742509 ) ;
+288: switch (@expr1073742510 type@var114 ) {
+289: case QXmlStreamReader ::@expr1073742511 Characters :@expr688 ;
+290: ret@var113 =@expr1073742513 reader@var112 .@expr1073742514 text (@expr1073742515 ) .@expr1073742516 toString (@expr1073742517 ) ==@expr1073742518 "true" ;
+291: FALLTHROUGH ;
+292: case QXmlStreamReader ::@expr1073742519 EndElement :@expr688 ;
+293: return ret@var113 ;
+294:
+295: case QXmlStreamReader ::@expr1073742521 StartElement :@expr688
+296: case QXmlStreamReader ::@expr1073742523 NoToken :@expr688
+297: case QXmlStreamReader ::@expr1073742525 Invalid :@expr688
+298: case QXmlStreamReader ::@expr1073742527 StartDocument :@expr688
+299: case QXmlStreamReader ::@expr1073742529 EndDocument :@expr688
+300: case QXmlStreamReader ::@expr1073742531 Comment :@expr688
+301: case QXmlStreamReader ::@expr1073742533 DTD :@expr688
+302: case QXmlStreamReader ::@expr1073742535 EntityReference :@expr688
+303: case QXmlStreamReader ::@expr1073742537 ProcessingInstruction :@expr688 ;
+304: break ;
+305: }
+306: } while (@expr1073742539 true ) ;
+307: }
+308:
+309: int ProjectFile :: readInt ( QXmlStreamReader & reader@var115 , int defaultValue@var116 )
+310: {
+311: int ret@var117 ; ret@var117 =@expr1073742540 defaultValue@var116 ;
+312: do {
+313: const QXmlStreamReader ::@expr1073742541 TokenType type@var118 =@expr1073742542 reader@var115 .@expr1073742543 readNext (@expr1073742544 ) ;
+314: switch (@expr1073742545 type@var118 ) {
+315: case QXmlStreamReader ::@expr1073742546 Characters :@expr723 ;
+316: ret@var117 =@expr1073742548 reader@var115 .@expr1073742549 text (@expr1073742550 ) .@expr1073742551 toString (@expr1073742552 ) .@expr1073742553 toInt (@expr1073742554 ) ;
+317: FALLTHROUGH ;
+318: case QXmlStreamReader ::@expr1073742555 EndElement :@expr723 ;
+319: return ret@var117 ;
+320:
+321: case QXmlStreamReader ::@expr1073742557 StartElement :@expr723
+322: case QXmlStreamReader ::@expr1073742559 NoToken :@expr723
+323: case QXmlStreamReader ::@expr1073742561 Invalid :@expr723
+324: case QXmlStreamReader ::@expr1073742563 StartDocument :@expr723
+325: case QXmlStreamReader ::@expr1073742565 EndDocument :@expr723
+326: case QXmlStreamReader ::@expr1073742567 Comment :@expr723
+327: case QXmlStreamReader ::@expr1073742569 DTD :@expr723
+328: case QXmlStreamReader ::@expr1073742571 EntityReference :@expr723
+329: case QXmlStreamReader ::@expr1073742573 ProcessingInstruction :@expr723 ;
+330: break ;
+331: }
+332: } while (@expr1073742575 true ) ;
+333: }
+334:
+335: void ProjectFile :: readIncludeDirs ( QXmlStreamReader & reader@var119 )
+336: {
+337: QXmlStreamReader ::@expr1073742579 TokenType type@var120 ;
+338: bool allRead@var121 ; allRead@var121 =@expr1073742580 false ;
+339: do {
+340: type@var120 =@expr1073742581 reader@var119 .@expr1073742582 readNext (@expr1073742583 ) ;
+341: switch (@expr1073742584 type@var120 ) {
+342: case QXmlStreamReader ::@expr1073742585 StartElement :@expr762 ;
+343:
+344:
+345: if (@expr1073742587 reader@var119 .@expr764 name (@expr765 ) .@expr766 toString (@expr767 ) ==@expr1073742592 CppcheckXml ::@expr1073742593 DirElementName@expr1073742576 ) {
+346: QXmlStreamAttributes attribs@var122 ; attribs@var122 =@expr1073742594 reader@var119 .@expr1073742595 attributes (@expr1073742596 ) ;
+347: QString name@var123 ; name@var123 =@expr1073742597 attribs@var122 .@expr1073742598 value (@expr1073742599 QString (@expr1073742600 ) , CppcheckXml ::@expr1073742601 DirNameAttrib@expr1073742577 ) .@expr1073742602 toString (@expr1073742603 ) ;
+348: if (@expr1073742604 !@expr1073742605 name@var123 .@expr1073742606 isEmpty (@expr1073742607 ) ) {
+349: mIncludeDirs@var70 <<@expr1073742608 name@var123 ; }
+350: }
+351: break ;
+352:
+353: case QXmlStreamReader ::@expr1073742609 EndElement :@expr762 ;
+354: if (@expr1073742611 reader@var119 .@expr764 name (@expr765 ) .@expr766 toString (@expr767 ) ==@expr1073742616 CppcheckXml ::@expr1073742617 IncludeDirElementName@expr1073742578 ) {
+355: allRead@var121 =@expr1073742618 true ; }
+356: break ;
+357:
+358:
+359: case QXmlStreamReader ::@expr1073742619 NoToken :@expr762
+360: case QXmlStreamReader ::@expr1073742621 Invalid :@expr762
+361: case QXmlStreamReader ::@expr1073742623 StartDocument :@expr762
+362: case QXmlStreamReader ::@expr1073742625 EndDocument :@expr762
+363: case QXmlStreamReader ::@expr1073742627 Characters :@expr762
+364: case QXmlStreamReader ::@expr1073742629 Comment :@expr762
+365: case QXmlStreamReader ::@expr1073742631 DTD :@expr762
+366: case QXmlStreamReader ::@expr1073742633 EntityReference :@expr762
+367: case QXmlStreamReader ::@expr1073742635 ProcessingInstruction :@expr762 ;
+368: break ;
+369: }
+370: } while (@expr1073742637 !@expr1073742638 allRead@var121 ) ;
+371: }
+372:
+373: void ProjectFile :: readDefines ( QXmlStreamReader & reader@var124 )
+374: {
+375: QXmlStreamReader ::@expr1073742642 TokenType type@var125 ;
+376: bool allRead@var126 ; allRead@var126 =@expr1073742643 false ;
+377: do {
+378: type@var125 =@expr1073742644 reader@var124 .@expr1073742645 readNext (@expr1073742646 ) ;
+379: switch (@expr1073742647 type@var125 ) {
+380: case QXmlStreamReader ::@expr1073742648 StartElement :@expr825 ;
+381:
+382: if (@expr1073742650 reader@var124 .@expr827 name (@expr828 ) .@expr829 toString (@expr830 ) ==@expr1073742655 CppcheckXml ::@expr1073742656 DefineName@expr1073742639 ) {
+383: QXmlStreamAttributes attribs@var127 ; attribs@var127 =@expr1073742657 reader@var124 .@expr1073742658 attributes (@expr1073742659 ) ;
+384: QString name@var128 ; name@var128 =@expr1073742660 attribs@var127 .@expr1073742661 value (@expr1073742662 QString (@expr1073742663 ) , CppcheckXml ::@expr1073742664 DefineNameAttrib@expr1073742640 ) .@expr1073742665 toString (@expr1073742666 ) ;
+385: if (@expr1073742667 !@expr1073742668 name@var128 .@expr1073742669 isEmpty (@expr1073742670 ) ) {
+386: mDefines@var71 <<@expr1073742671 name@var128 ; }
+387: }
+388: break ;
+389:
+390: case QXmlStreamReader ::@expr1073742672 EndElement :@expr825 ;
+391: if (@expr1073742674 reader@var124 .@expr827 name (@expr828 ) .@expr829 toString (@expr830 ) ==@expr1073742679 CppcheckXml ::@expr1073742680 DefinesElementName@expr1073742641 ) {
+392: allRead@var126 =@expr1073742681 true ; }
+393: break ;
+394:
+395:
+396: case QXmlStreamReader ::@expr1073742682 NoToken :@expr825
+397: case QXmlStreamReader ::@expr1073742684 Invalid :@expr825
+398: case QXmlStreamReader ::@expr1073742686 StartDocument :@expr825
+399: case QXmlStreamReader ::@expr1073742688 EndDocument :@expr825
+400: case QXmlStreamReader ::@expr1073742690 Characters :@expr825
+401: case QXmlStreamReader ::@expr1073742692 Comment :@expr825
+402: case QXmlStreamReader ::@expr1073742694 DTD :@expr825
+403: case QXmlStreamReader ::@expr1073742696 EntityReference :@expr825
+404: case QXmlStreamReader ::@expr1073742698 ProcessingInstruction :@expr825 ;
+405: break ;
+406: }
+407: } while (@expr1073742700 !@expr1073742701 allRead@var126 ) ;
+408: }
+409:
+410: void ProjectFile :: readCheckPaths ( QXmlStreamReader & reader@var129 )
+411: {
+412: QXmlStreamReader ::@expr1073742705 TokenType type@var130 ;
+413: bool allRead@var131 ; allRead@var131 =@expr1073742706 false ;
+414: do {
+415: type@var130 =@expr1073742707 reader@var129 .@expr1073742708 readNext (@expr1073742709 ) ;
+416: switch (@expr1073742710 type@var130 ) {
+417: case QXmlStreamReader ::@expr1073742711 StartElement :@expr888 ;
+418:
+419:
+420: if (@expr1073742713 reader@var129 .@expr890 name (@expr891 ) .@expr892 toString (@expr893 ) ==@expr1073742718 CppcheckXml ::@expr1073742719 PathName@expr1073742702 ) {
+421: QXmlStreamAttributes attribs@var132 ; attribs@var132 =@expr1073742720 reader@var129 .@expr1073742721 attributes (@expr1073742722 ) ;
+422: QString name@var133 ; name@var133 =@expr1073742723 attribs@var132 .@expr1073742724 value (@expr1073742725 QString (@expr1073742726 ) , CppcheckXml ::@expr1073742727 PathNameAttrib@expr1073742703 ) .@expr1073742728 toString (@expr1073742729 ) ;
+423: if (@expr1073742730 !@expr1073742731 name@var133 .@expr1073742732 isEmpty (@expr1073742733 ) ) {
+424: mPaths@var73 <<@expr1073742734 name@var133 ; }
+425: }
+426: break ;
+427:
+428: case QXmlStreamReader ::@expr1073742735 EndElement :@expr888 ;
+429: if (@expr1073742737 reader@var129 .@expr890 name (@expr891 ) .@expr892 toString (@expr893 ) ==@expr1073742742 CppcheckXml ::@expr1073742743 PathsElementName@expr1073742704 ) {
+430: allRead@var131 =@expr1073742744 true ; }
+431: break ;
+432:
+433:
+434: case QXmlStreamReader ::@expr1073742745 NoToken :@expr888
+435: case QXmlStreamReader ::@expr1073742747 Invalid :@expr888
+436: case QXmlStreamReader ::@expr1073742749 StartDocument :@expr888
+437: case QXmlStreamReader ::@expr1073742751 EndDocument :@expr888
+438: case QXmlStreamReader ::@expr1073742753 Characters :@expr888
+439: case QXmlStreamReader ::@expr1073742755 Comment :@expr888
+440: case QXmlStreamReader ::@expr1073742757 DTD :@expr888
+441: case QXmlStreamReader ::@expr1073742759 EntityReference :@expr888
+442: case QXmlStreamReader ::@expr1073742761 ProcessingInstruction :@expr888 ;
+443: break ;
+444: }
+445: } while (@expr1073742763 !@expr1073742764 allRead@var131 ) ;
+446: }
+447:
+448: void ProjectFile :: readExcludes ( QXmlStreamReader & reader@var134 )
+449: {
+450: QXmlStreamReader ::@expr1073742771 TokenType type@var135 ;
+451: bool allRead@var136 ; allRead@var136 =@expr1073742772 false ;
+452: do {
+453: type@var135 =@expr1073742773 reader@var134 .@expr1073742774 readNext (@expr1073742775 ) ;
+454: switch (@expr1073742776 type@var135 ) {
+455: case QXmlStreamReader ::@expr1073742777 StartElement :@expr954 ;
+456:
+457: if (@expr1073742779 reader@var134 .@expr956 name (@expr957 ) .@expr958 toString (@expr959 ) ==@expr1073742784 CppcheckXml ::@expr1073742785 ExcludePathName@expr1073742765 ) {
+458: QXmlStreamAttributes attribs@var137 ; attribs@var137 =@expr1073742786 reader@var134 .@expr963 attributes (@expr964 ) ;
+459: QString name@var138 ; name@var138 =@expr1073742789 attribs@var137 .@expr1073742790 value (@expr1073742791 QString (@expr968 ) , CppcheckXml ::@expr1073742793 ExcludePathNameAttrib@expr1073742766 ) .@expr1073742794 toString (@expr1073742795 ) ;
+460: if (@expr1073742796 !@expr1073742797 name@var138 .@expr1073742798 isEmpty (@expr1073742799 ) ) {
+461: mExcludedPaths@var74 <<@expr1073742800 name@var138 ; }
+462: }
+463:
+464: else { if (@expr1073742801 reader@var134 .@expr956 name (@expr957 ) .@expr958 toString (@expr959 ) ==@expr1073742806 CppcheckXml ::@expr1073742807 IgnorePathName@expr1073742767 ) {
+465: QXmlStreamAttributes attribs@var139 ; attribs@var139 =@expr1073742808 reader@var134 .@expr963 attributes (@expr964 ) ;
+466: QString name@var140 ; name@var140 =@expr1073742811 attribs@var139 .@expr1073742812 value (@expr1073742813 QString (@expr968 ) , CppcheckXml ::@expr1073742815 IgnorePathNameAttrib@expr1073742768 ) .@expr1073742816 toString (@expr1073742817 ) ;
+467: if (@expr1073742818 !@expr1073742819 name@var140 .@expr1073742820 isEmpty (@expr1073742821 ) ) {
+468: mExcludedPaths@var74 <<@expr1073742822 name@var140 ; }
+469: } }
+470: break ;
+471:
+472: case QXmlStreamReader ::@expr1073742823 EndElement :@expr954 ;
+473: if (@expr1073742825 reader@var134 .@expr956 name (@expr957 ) .@expr958 toString (@expr959 ) ==@expr1073742830 CppcheckXml ::@expr1073742831 IgnoreElementName@expr1073742769 ) {
+474: allRead@var136 =@expr1073742832 true ; }
+475: if (@expr1073742833 reader@var134 .@expr956 name (@expr957 ) .@expr958 toString (@expr959 ) ==@expr1073742838 CppcheckXml ::@expr1073742839 ExcludeElementName@expr1073742770 ) {
+476: allRead@var136 =@expr1073742840 true ; }
+477: break ;
+478:
+479:
+480: case QXmlStreamReader ::@expr1073742841 NoToken :@expr954
+481: case QXmlStreamReader ::@expr1073742843 Invalid :@expr954
+482: case QXmlStreamReader ::@expr1073742845 StartDocument :@expr954
+483: case QXmlStreamReader ::@expr1073742847 EndDocument :@expr954
+484: case QXmlStreamReader ::@expr1073742849 Characters :@expr954
+485: case QXmlStreamReader ::@expr1073742851 Comment :@expr954
+486: case QXmlStreamReader ::@expr1073742853 DTD :@expr954
+487: case QXmlStreamReader ::@expr1073742855 EntityReference :@expr954
+488: case QXmlStreamReader ::@expr1073742857 ProcessingInstruction :@expr954 ;
+489: break ;
+490: }
+491: } while (@expr1073742859 !@expr1073742860 allRead@var136 ) ;
+492: }
+493:
+494: void ProjectFile :: readVsConfigurations ( QXmlStreamReader & reader@var141 )
+495: {
+496: QXmlStreamReader ::@expr1073742863 TokenType type@var142 ;
+497: do {
+498: type@var142 =@expr1073742864 reader@var141 .@expr1041 readNext (@expr1042 ) ;
+499: switch (@expr1073742867 type@var142 ) {
+500: case QXmlStreamReader ::@expr1073742868 StartElement :@expr1045 ;
+501:
+502: if (@expr1073742870 reader@var141 .@expr1047 name (@expr1048 ) .@expr1049 toString (@expr1050 ) ==@expr1073742875 CppcheckXml ::@expr1052 VSConfigurationName@expr1037 ) {
+503: QString config@var143 ;
+504: type@var142 =@expr1073742877 reader@var141 .@expr1041 readNext (@expr1042 ) ;
+505: if (@expr1073742880 type@var142 ==@expr1073742881 QXmlStreamReader ::@expr1058 Characters@expr1073742862 ) {
+506: config@var143 =@expr1073742883 reader@var141 .@expr1073742884 text (@expr1073742885 ) .@expr1073742886 toString (@expr1073742887 ) ;
+507: }
+508: mVsConfigurations@var67 <<@expr1073742888 config@var143 ;
+509: }
+510: break ;
+511:
+512: case QXmlStreamReader ::@expr1073742889 EndElement :@expr1045 ;
+513: if (@expr1073742891 reader@var141 .@expr1047 name (@expr1048 ) .@expr1049 toString (@expr1050 ) !=@expr1073742896 CppcheckXml ::@expr1052 VSConfigurationName@expr1037 ) {
+514: return ; }
+515: break ;
+516:
+517:
+518: case QXmlStreamReader ::@expr1073742898 NoToken :@expr1045
+519: case QXmlStreamReader ::@expr1073742900 Invalid :@expr1045
+520: case QXmlStreamReader ::@expr1073742902 StartDocument :@expr1045
+521: case QXmlStreamReader ::@expr1073742904 EndDocument :@expr1045
+522: case QXmlStreamReader ::@expr1058 Characters :@expr1045
+523: case QXmlStreamReader ::@expr1073742908 Comment :@expr1045
+524: case QXmlStreamReader ::@expr1073742910 DTD :@expr1045
+525: case QXmlStreamReader ::@expr1073742912 EntityReference :@expr1045
+526: case QXmlStreamReader ::@expr1073742914 ProcessingInstruction :@expr1045 ;
+527: break ;
+528: }
+529: } while (@expr1073742916 true ) ;
+530: }
+531:
+532: void ProjectFile :: readPlatform ( QXmlStreamReader & reader@var144 )
+533: {
+534: do {
+535: const QXmlStreamReader ::@expr1073742917 TokenType type@var145 =@expr1073742918 reader@var144 .@expr1073742919 readNext (@expr1073742920 ) ;
+536: switch (@expr1073742921 type@var145 ) {
+537: case QXmlStreamReader ::@expr1073742922 Characters :@expr1099 ;
+538: mPlatform@var76 =@expr1073742924 reader@var144 .@expr1073742925 text (@expr1073742926 ) .@expr1073742927 toString (@expr1073742928 ) ;
+539: FALLTHROUGH ;
+540: case QXmlStreamReader ::@expr1073742929 EndElement :@expr1099 ;
+541: return ;
+542:
+543: case QXmlStreamReader ::@expr1073742931 StartElement :@expr1099
+544: case QXmlStreamReader ::@expr1073742933 NoToken :@expr1099
+545: case QXmlStreamReader ::@expr1073742935 Invalid :@expr1099
+546: case QXmlStreamReader ::@expr1073742937 StartDocument :@expr1099
+547: case QXmlStreamReader ::@expr1073742939 EndDocument :@expr1099
+548: case QXmlStreamReader ::@expr1073742941 Comment :@expr1099
+549: case QXmlStreamReader ::@expr1073742943 DTD :@expr1099
+550: case QXmlStreamReader ::@expr1073742945 EntityReference :@expr1099
+551: case QXmlStreamReader ::@expr1073742947 ProcessingInstruction :@expr1099 ;
+552: break ;
+553: }
+554: } while (@expr1073742949 true ) ;
+555: }
+556:
+557:
+558: void ProjectFile :: readSuppressions ( QXmlStreamReader & reader@var146 )
+559: {
+560: QXmlStreamReader ::@expr1073742952 TokenType type@var147 ;
+561: do {
+562: type@var147 =@expr1073742953 reader@var146 .@expr1130 readNext (@expr1131 ) ;
+563: switch (@expr1073742956 type@var147 ) {
+564: case QXmlStreamReader ::@expr1073742957 StartElement :@expr1134 ;
+565:
+566: if (@expr1073742959 reader@var146 .@expr1136 name (@expr1137 ) .@expr1138 toString (@expr1139 ) ==@expr1073742964 CppcheckXml ::@expr1141 SuppressionElementName@expr1126 ) {
+567: Suppressions ::@expr1073742966 Suppression suppression@var148 ;
+568: if (@expr1073742967 reader@var146 .@expr1144 attributes (@expr1145 ) .@expr1146 hasAttribute (@expr1073742971 QString (@expr1148 ) , "fileName" ) ) {
+569: suppression@var148 .@expr1073742973 fileName@var149 =@expr1073742974 reader@var146 .@expr1144 attributes (@expr1145 ) .@expr1153 value (@expr1073742978 QString (@expr1148 ) , "fileName" ) .@expr1073742980 toString (@expr1073742981 ) .@expr1073742982 toStdString (@expr1073742983 ) ; }
+570: if (@expr1073742984 reader@var146 .@expr1144 attributes (@expr1145 ) .@expr1146 hasAttribute (@expr1073742988 QString (@expr1148 ) , "lineNumber" ) ) {
+571: suppression@var148 .@expr1073742990 lineNumber@var150 =@expr1073742991 reader@var146 .@expr1144 attributes (@expr1145 ) .@expr1153 value (@expr1073742995 QString (@expr1148 ) , "lineNumber" ) .@expr1073742997 toInt (@expr1073742998 ) ; }
+572: if (@expr1073742999 reader@var146 .@expr1144 attributes (@expr1145 ) .@expr1146 hasAttribute (@expr1073743003 QString (@expr1148 ) , "symbolName" ) ) {
+573: suppression@var148 .@expr1073743005 symbolName@var151 =@expr1073743006 reader@var146 .@expr1144 attributes (@expr1145 ) .@expr1153 value (@expr1073743010 QString (@expr1148 ) , "symbolName" ) .@expr1073743012 toString (@expr1073743013 ) .@expr1073743014 toStdString (@expr1073743015 ) ; }
+574: if (@expr1073743016 reader@var146 .@expr1144 attributes (@expr1145 ) .@expr1146 hasAttribute (@expr1073743020 QString (@expr1148 ) , "hash" ) ) {
+575: suppression@var148 .@expr1073743022 hash@var152 =@expr1073743023 reader@var146 .@expr1144 attributes (@expr1145 ) .@expr1153 value (@expr1073743027 QString (@expr1148 ) , "hash" ) .@expr1073743029 toULongLong (@expr1073743030 ) ; }
+576: type@var147 =@expr1073743031 reader@var146 .@expr1130 readNext (@expr1131 ) ;
+577: if (@expr1073743034 type@var147 ==@expr1073743035 QXmlStreamReader ::@expr1212 Characters@expr1073742951 ) {
+578: suppression@var148 .@expr1073743037 errorId@var153 =@expr1073743038 reader@var146 .@expr1073743039 text (@expr1073743040 ) .@expr1073743041 toString (@expr1073743042 ) .@expr1073743043 toStdString (@expr1073743044 ) ;
+579: }
+580: mSuppressions@var77 <<@expr1073743045 suppression@var148 ;
+581: }
+582: break ;
+583:
+584: case QXmlStreamReader ::@expr1073743046 EndElement :@expr1134 ;
+585: if (@expr1073743048 reader@var146 .@expr1136 name (@expr1137 ) .@expr1138 toString (@expr1139 ) !=@expr1073743053 CppcheckXml ::@expr1141 SuppressionElementName@expr1126 ) {
+586: return ; }
+587: break ;
+588:
+589:
+590: case QXmlStreamReader ::@expr1073743055 NoToken :@expr1134
+591: case QXmlStreamReader ::@expr1073743057 Invalid :@expr1134
+592: case QXmlStreamReader ::@expr1073743059 StartDocument :@expr1134
+593: case QXmlStreamReader ::@expr1073743061 EndDocument :@expr1134
+594: case QXmlStreamReader ::@expr1212 Characters :@expr1134
+595: case QXmlStreamReader ::@expr1073743065 Comment :@expr1134
+596: case QXmlStreamReader ::@expr1073743067 DTD :@expr1134
+597: case QXmlStreamReader ::@expr1073743069 EntityReference :@expr1134
+598: case QXmlStreamReader ::@expr1073743071 ProcessingInstruction :@expr1134 ;
+599: break ;
+600: }
+601: } while (@expr1073743073 true ) ;
+602: }
+603:
+604:
+605: void ProjectFile :: readTagWarnings ( QXmlStreamReader & reader@var154 , const QString & tag@var155 )
+606: {
+607: QXmlStreamReader ::@expr1073743076 TokenType type@var156 ;
+608: do {
+609: type@var156 =@expr1073743077 reader@var154 .@expr1073743078 readNext (@expr1073743079 ) ;
+610: switch (@expr1073743080 type@var156 ) {
+611: case QXmlStreamReader ::@expr1073743081 StartElement :@expr1258 ;
+612:
+613: if (@expr1073743083 reader@var154 .@expr1260 name (@expr1261 ) .@expr1262 toString (@expr1263 ) ==@expr1073743088 CppcheckXml ::@expr1265 WarningElementName@expr1250 ) {
+614: unsigned long hash@var157 ; hash@var157 =@expr1073743090 reader@var154 .@expr1073743091 attributes (@expr1073743092 ) .@expr1073743093 value (@expr1073743094 QString (@expr1073743095 ) , CppcheckXml ::@expr1073743096 HashAttributeName@expr1073743075 ) .@expr1073743097 toULongLong (@expr1073743098 ) ;
+615: mWarningTags@var82 [@expr1073743099 hash@var157 ] =@expr1073743100 tag@var155 ;
+616: }
+617: break ;
+618:
+619: case QXmlStreamReader ::@expr1073743101 EndElement :@expr1258 ;
+620: if (@expr1073743103 reader@var154 .@expr1260 name (@expr1261 ) .@expr1262 toString (@expr1263 ) !=@expr1073743108 CppcheckXml ::@expr1265 WarningElementName@expr1250 ) {
+621: return ; }
+622: break ;
+623:
+624:
+625: case QXmlStreamReader ::@expr1073743110 NoToken :@expr1258
+626: case QXmlStreamReader ::@expr1073743112 Invalid :@expr1258
+627: case QXmlStreamReader ::@expr1073743114 StartDocument :@expr1258
+628: case QXmlStreamReader ::@expr1073743116 EndDocument :@expr1258
+629: case QXmlStreamReader ::@expr1073743118 Characters :@expr1258
+630: case QXmlStreamReader ::@expr1073743120 Comment :@expr1258
+631: case QXmlStreamReader ::@expr1073743122 DTD :@expr1258
+632: case QXmlStreamReader ::@expr1073743124 EntityReference :@expr1258
+633: case QXmlStreamReader ::@expr1073743126 ProcessingInstruction :@expr1258 ;
+634: break ;
+635: }
+636: } while (@expr1073743128 true ) ;
+637: }
+638:
+639:
+640: void ProjectFile :: readStringList ( QStringList & stringlist@var158 , QXmlStreamReader & reader@var159 , const char elementname@var160 [ ] )
+641: {
+642: QXmlStreamReader ::@expr1073743130 TokenType type@var161 ;
+643: bool allRead@var162 ; allRead@var162 =@expr1073743131 false ;
+644: do {
+645: type@var161 =@expr1073743132 reader@var159 .@expr1309 readNext (@expr1310 ) ;
+646: switch (@expr1073743135 type@var161 ) {
+647: case QXmlStreamReader ::@expr1073743136 StartElement :@expr1313 ;
+648:
+649: if (@expr1073743138 reader@var159 .@expr1315 name (@expr1316 ) .@expr1317 toString (@expr1318 ) ==@expr1073743143 elementname@var160 ) {
+650: type@var161 =@expr1073743144 reader@var159 .@expr1309 readNext (@expr1310 ) ;
+651: if (@expr1073743147 type@var161 ==@expr1073743148 QXmlStreamReader ::@expr1325 Characters@expr1073743129 ) {
+652: QString text@var163 ; text@var163 =@expr1073743150 reader@var159 .@expr1073743151 text (@expr1073743152 ) .@expr1073743153 toString (@expr1073743154 ) ;
+653: stringlist@var158 <<@expr1073743155 text@var163 ;
+654: }
+655: }
+656: break ;
+657:
+658: case QXmlStreamReader ::@expr1073743156 EndElement :@expr1313 ;
+659: if (@expr1073743158 reader@var159 .@expr1315 name (@expr1316 ) .@expr1317 toString (@expr1318 ) !=@expr1073743163 elementname@var160 ) {
+660: allRead@var162 =@expr1073743164 true ; }
+661: break ;
+662:
+663:
+664: case QXmlStreamReader ::@expr1073743165 NoToken :@expr1313
+665: case QXmlStreamReader ::@expr1073743167 Invalid :@expr1313
+666: case QXmlStreamReader ::@expr1073743169 StartDocument :@expr1313
+667: case QXmlStreamReader ::@expr1073743171 EndDocument :@expr1313
+668: case QXmlStreamReader ::@expr1325 Characters :@expr1313
+669: case QXmlStreamReader ::@expr1073743175 Comment :@expr1313
+670: case QXmlStreamReader ::@expr1073743177 DTD :@expr1313
+671: case QXmlStreamReader ::@expr1073743179 EntityReference :@expr1313
+672: case QXmlStreamReader ::@expr1073743181 ProcessingInstruction :@expr1313 ;
+673: break ;
+674: }
+675: } while (@expr1073743183 !@expr1073743184 allRead@var162 ) ;
+676: }
+677:
+678: void ProjectFile :: setIncludes ( const QStringList & includes@var164 )
+679: {
+680: mIncludeDirs@var70 =@expr1073743185 includes@var164 ;
+681: }
+682:
+683: void ProjectFile :: setDefines ( const QStringList & defines@var165 )
+684: {
+685: mDefines@var71 =@expr1073743186 defines@var165 ;
+686: }
+687:
+688: void ProjectFile :: setUndefines ( const QStringList & undefines@var166 )
+689: {
+690: mUndefines@var72 =@expr1073743187 undefines@var166 ;
+691: }
+692:
+693: void ProjectFile :: setCheckPaths ( const QStringList & paths@var167 )
+694: {
+695: mPaths@var73 =@expr1073743188 paths@var167 ;
+696: }
+697:
+698: void ProjectFile :: setExcludedPaths ( const QStringList & paths@var168 )
+699: {
+700: mExcludedPaths@var74 =@expr1073743189 paths@var168 ;
+701: }
+702:
+703: void ProjectFile :: setLibraries ( const QStringList & libraries@var169 )
+704: {
+705: mLibraries@var75 =@expr1073743190 libraries@var169 ;
+706: }
+707:
+708: void ProjectFile :: setPlatform ( const QString & platform@var170 )
+709: {
+710: mPlatform@var76 =@expr1073743191 platform@var170 ;
+711: }
+712:
+713: void ProjectFile :: setSuppressions ( const QList < Suppressions :: Suppression > & suppressions@var171 )
+714: {
+715: mSuppressions@var77 =@expr1073743192 suppressions@var171 ;
+716: }
+717:
+718: void ProjectFile :: addSuppression ( const Suppressions :: Suppression & suppression@var172 )
+719: {
+720: mSuppressions@var77 .@expr1073743193 append (@expr1073743194 suppression@var172 ) ;
+721: }
+722:
+723: void ProjectFile :: setAddons ( const QStringList & addons@var173 )
+724: {
+725: mAddons@var78 =@expr1073743195 addons@var173 ;
+726: }
+727:
+728: void ProjectFile :: setVSConfigurations ( const QStringList & vsConfigs@var174 )
+729: {
+730: mVsConfigurations@var67 =@expr1073743196 vsConfigs@var174 ;
+731: }
+732:
+733: void ProjectFile :: setWarningTags ( unsigned long hash@var175 , const QString & tags@var176 )
+734: {
+735: if (@expr1073743197 tags@var176 .@expr1073743198 isEmpty (@expr1073743199 ) ) {
+736: mWarningTags@var82 .@expr1073743200 erase (@expr1073743201 hash@var175 ) ; }
+737: else { if (@expr1073743202 hash@var175 >@expr1073743203 0 ) {
+738: mWarningTags@var82 [@expr1073743204 hash@var175 ] =@expr1073743205 tags@var176 ; } }
+739: }
+740:
+741: QString ProjectFile :: getWarningTags ( unsigned long hash@var177 ) const
+742: {
+743: auto it@var178 ; it@var178 =@expr1073743206 mWarningTags@var82 .@expr1073743207 find (@expr1073743208 hash@var177 ) ;
+744: return (@expr1073743209 it@var178 !=@expr1073743210 mWarningTags@var82 .@expr1073743211 end (@expr1073743212 ) ) ?@expr1073743213 it@var178 .@expr1073743214 second@var179 :@expr1073743215 QString (@expr1073743216 ) ;
+745: }
+746:
+747: bool ProjectFile :: write ( const QString & filename@var180 )
+748: {
+749: if (@expr1073743256 !@expr1073743257 filename@var180 .@expr1073743258 isEmpty (@expr1073743259 ) ) {
+750: mFilename@var62 =@expr1073743260 filename@var180 ; }
+751:
+752: QFile file@var181 (@expr1073743261 mFilename@var62 ) ;
+753: if (@expr1073743262 !@expr1073743263 file@var181 .@expr1073743264 open (@expr1073743265 QIODevice ::@expr1073743266 WriteOnly@expr1073743217 |@expr1073743267 QIODevice ::@expr1073743268 Text@expr1073743218 ) ) {
+754: return false ; }
+755:
+756: QXmlStreamWriter xmlWriter@var182 (@expr1073743269 &@expr1073743270 file@var181 ) ;
+757: xmlWriter@var182 .@expr1073743271 setAutoFormatting (@expr1073743272 true ) ;
+758: xmlWriter@var182 .@expr1073743273 writeStartDocument (@expr1073743274 "1.0" ) ;
+759: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743276 CppcheckXml ::@expr1073743277 ProjectElementName@expr1073743219 ) ;
+760: xmlWriter@var182 .@expr1454 writeAttribute (@expr1073743279 CppcheckXml ::@expr1073743280 ProjectVersionAttrib , CppcheckXml ::@expr1073743281 ProjectFileVersion@expr1073743220 ) ;
+761:
+762: if (@expr1073743282 !@expr1073743283 mRootPath@var63 .@expr1073743284 isEmpty (@expr1073743285 ) ) {
+763: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743287 CppcheckXml ::@expr1073743288 RootPathName@expr1073743221 ) ;
+764: xmlWriter@var182 .@expr1454 writeAttribute (@expr1073743290 CppcheckXml ::@expr1073743291 RootPathNameAttrib@expr1073743222 , mRootPath@var63 ) ;
+765: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+766: }
+767:
+768: if (@expr1073743294 !@expr1073743295 mBuildDir@var64 .@expr1073743296 isEmpty (@expr1073743297 ) ) {
+769: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743299 CppcheckXml ::@expr1073743300 BuildDirElementName@expr1073743223 ) ;
+770: xmlWriter@var182 .@expr1477 writeCharacters (@expr1073743302 mBuildDir@var64 ) ;
+771: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+772: }
+773:
+774: if (@expr1073743305 !@expr1073743306 mPlatform@var76 .@expr1073743307 isEmpty (@expr1073743308 ) ) {
+775: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743310 CppcheckXml ::@expr1073743311 PlatformElementName@expr1073743224 ) ;
+776: xmlWriter@var182 .@expr1477 writeCharacters (@expr1073743313 mPlatform@var76 ) ;
+777: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+778: }
+779:
+780: if (@expr1073743316 !@expr1073743317 mImportProject@var65 .@expr1073743318 isEmpty (@expr1073743319 ) ) {
+781: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743321 CppcheckXml ::@expr1073743322 ImportProjectElementName@expr1073743225 ) ;
+782: xmlWriter@var182 .@expr1477 writeCharacters (@expr1073743324 mImportProject@var65 ) ;
+783: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+784: }
+785:
+786: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743328 CppcheckXml ::@expr1073743329 AnalyzeAllVsConfigsElementName@expr1073743226 ) ;
+787: xmlWriter@var182 .@expr1477 writeCharacters (@expr1073743331 mAnalyzeAllVsConfigs@var66 ?@expr1073743332 "true" :@expr1509 "false" ) ;
+788: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+789:
+790: if (@expr1073743336 clangParser@var38 ) {
+791: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743338 CppcheckXml ::@expr1073743339 Parser@expr1073743227 ) ;
+792: xmlWriter@var182 .@expr1477 writeCharacters (@expr1073743341 "clang" ) ;
+793: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+794: }
+795:
+796: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743345 CppcheckXml ::@expr1073743346 CheckHeadersElementName@expr1073743228 ) ;
+797: xmlWriter@var182 .@expr1477 writeCharacters (@expr1073743348 mCheckHeaders@var68 ?@expr1073743349 "true" :@expr1509 "false" ) ;
+798: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+799:
+800: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743354 CppcheckXml ::@expr1073743355 CheckUnusedTemplatesElementName@expr1073743229 ) ;
+801: xmlWriter@var182 .@expr1477 writeCharacters (@expr1073743357 mCheckUnusedTemplates@var69 ?@expr1073743358 "true" :@expr1509 "false" ) ;
+802: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+803:
+804: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743363 CppcheckXml ::@expr1073743364 MaxCtuDepthElementName@expr1073743230 ) ;
+805: xmlWriter@var182 .@expr1477 writeCharacters (@expr1073743366 QString ::@expr1543 number (@expr1073743368 mMaxCtuDepth@var83 ) ) ;
+806: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+807:
+808: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743372 CppcheckXml ::@expr1073743373 MaxTemplateRecursionElementName@expr1073743231 ) ;
+809: xmlWriter@var182 .@expr1477 writeCharacters (@expr1073743375 QString ::@expr1543 number (@expr1073743377 mMaxTemplateRecursion@var84 ) ) ;
+810: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+811:
+812: if (@expr1073743380 !@expr1073743381 mIncludeDirs@var70 .@expr1073743382 isEmpty (@expr1073743383 ) ) {
+813: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743385 CppcheckXml ::@expr1073743386 IncludeDirElementName@expr1073743232 ) ;
+814: for (@expr1073743387 const QString &@expr1564 incdir@var183 :@expr1073743389 mIncludeDirs@var70 ) {
+815: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743391 CppcheckXml ::@expr1073743392 DirElementName@expr1073743233 ) ;
+816: xmlWriter@var182 .@expr1454 writeAttribute (@expr1073743394 CppcheckXml ::@expr1073743395 DirNameAttrib@expr1073743234 , incdir@var183 ) ;
+817: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+818: }
+819: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+820: }
+821:
+822: if (@expr1073743400 !@expr1073743401 mDefines@var71 .@expr1073743402 isEmpty (@expr1073743403 ) ) {
+823: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743405 CppcheckXml ::@expr1073743406 DefinesElementName@expr1073743235 ) ;
+824: for (@expr1073743407 const QString &@expr1564 define@var184 :@expr1073743409 mDefines@var71 ) {
+825: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743411 CppcheckXml ::@expr1073743412 DefineName@expr1073743236 ) ;
+826: xmlWriter@var182 .@expr1454 writeAttribute (@expr1073743414 CppcheckXml ::@expr1073743415 DefineNameAttrib@expr1073743237 , define@var184 ) ;
+827: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+828: }
+829: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+830: }
+831:
+832: if (@expr1073743420 !@expr1073743421 mVsConfigurations@var67 .@expr1073743422 isEmpty (@expr1073743423 ) ) {
+833: writeStringList (@expr1073743424 xmlWriter@var182 ,
+834: mVsConfigurations@var67 ,
+835: CppcheckXml ::@expr1073743425 VSConfigurationElementName ,
+836: CppcheckXml ::@expr1073743426 VSConfigurationName@expr1073743238 ) ;
+837: }
+838:
+839: writeStringList (@expr1073743427 xmlWriter@var182 ,
+840: mUndefines@var72 ,
+841: CppcheckXml ::@expr1073743428 UndefinesElementName ,
+842: CppcheckXml ::@expr1073743429 UndefineName@expr1073743239 ) ;
+843:
+844: if (@expr1073743430 !@expr1073743431 mPaths@var73 .@expr1073743432 isEmpty (@expr1073743433 ) ) {
+845: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743435 CppcheckXml ::@expr1073743436 PathsElementName@expr1073743240 ) ;
+846: for (@expr1073743437 const QString &@expr1564 path@var185 :@expr1073743439 mPaths@var73 ) {
+847: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743441 CppcheckXml ::@expr1073743442 PathName@expr1073743241 ) ;
+848: xmlWriter@var182 .@expr1454 writeAttribute (@expr1073743444 CppcheckXml ::@expr1073743445 PathNameAttrib@expr1073743242 , path@var185 ) ;
+849: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+850: }
+851: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+852: }
+853:
+854: if (@expr1073743450 !@expr1073743451 mExcludedPaths@var74 .@expr1073743452 isEmpty (@expr1073743453 ) ) {
+855: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743455 CppcheckXml ::@expr1073743456 ExcludeElementName@expr1073743243 ) ;
+856: for (@expr1073743457 const QString &@expr1564 path@var186 :@expr1073743459 mExcludedPaths@var74 ) {
+857: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743461 CppcheckXml ::@expr1073743462 ExcludePathName@expr1073743244 ) ;
+858: xmlWriter@var182 .@expr1454 writeAttribute (@expr1073743464 CppcheckXml ::@expr1073743465 ExcludePathNameAttrib@expr1073743245 , path@var186 ) ;
+859: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+860: }
+861: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+862: }
+863:
+864: writeStringList (@expr1073743470 xmlWriter@var182 ,
+865: mLibraries@var75 ,
+866: CppcheckXml ::@expr1073743471 LibrariesElementName ,
+867: CppcheckXml ::@expr1073743472 LibraryElementName@expr1073743246 ) ;
+868:
+869: if (@expr1073743473 !@expr1073743474 mSuppressions@var77 .@expr1073743475 isEmpty (@expr1073743476 ) ) {
+870: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743478 CppcheckXml ::@expr1073743479 SuppressionsElementName@expr1073743247 ) ;
+871: for (@expr1073743480 const Suppressions ::@expr1073743481 Suppression &@expr1564 suppression@var187 :@expr1073743483 mSuppressions@var77 ) {
+872: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743485 CppcheckXml ::@expr1073743486 SuppressionElementName@expr1073743248 ) ;
+873: if (@expr1073743487 !@expr1073743488 suppression@var187 .@expr1665 fileName@var188 .@expr1073743490 empty (@expr1073743491 ) ) {
+874: xmlWriter@var182 .@expr1454 writeAttribute (@expr1073743493 "fileName" , QString ::@expr1670 fromStdString (@expr1073743495 suppression@var187 .@expr1665 fileName@var188 ) ) ; }
+875: if (@expr1073743497 suppression@var187 .@expr1674 lineNumber@var189 >@expr1073743499 0 ) {
+876: xmlWriter@var182 .@expr1454 writeAttribute (@expr1073743501 "lineNumber" , QString ::@expr1543 number (@expr1073743503 suppression@var187 .@expr1674 lineNumber@var189 ) ) ; }
+877: if (@expr1073743505 !@expr1073743506 suppression@var187 .@expr1683 symbolName@var190 .@expr1073743508 empty (@expr1073743509 ) ) {
+878: xmlWriter@var182 .@expr1454 writeAttribute (@expr1073743511 "symbolName" , QString ::@expr1670 fromStdString (@expr1073743513 suppression@var187 .@expr1683 symbolName@var190 ) ) ; }
+879: if (@expr1073743515 suppression@var187 .@expr1692 hash@var191 >@expr1073743517 0 ) {
+880: xmlWriter@var182 .@expr1454 writeAttribute (@expr1073743519 CppcheckXml ::@expr1696 HashAttributeName , QString ::@expr1543 number (@expr1073743522 suppression@var187 .@expr1692 hash@var191 ) ) ; }
+881: if (@expr1073743524 !@expr1073743525 suppression@var187 .@expr1702 errorId@var192 .@expr1073743527 empty (@expr1073743528 ) ) {
+882: xmlWriter@var182 .@expr1477 writeCharacters (@expr1073743530 QString ::@expr1670 fromStdString (@expr1073743532 suppression@var187 .@expr1702 errorId@var192 ) ) ; }
+883: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+884: }
+885: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+886: }
+887:
+888: writeStringList (@expr1073743538 xmlWriter@var182 ,
+889: mCheckUnknownFunctionReturn@var85 ,
+890: CppcheckXml ::@expr1073743539 CheckUnknownFunctionReturn ,
+891: CppcheckXml ::@expr1073743540 Name@expr1073743249 ) ;
+892:
+893: safeChecks@var36 .@expr1073743541 saveToXml (@expr1073743542 xmlWriter@var182 ) ;
+894:
+895: writeStringList (@expr1073743543 xmlWriter@var182 ,
+896: mAddons@var78 ,
+897: CppcheckXml ::@expr1073743544 AddonsElementName ,
+898: CppcheckXml ::@expr1073743545 AddonElementName@expr1073743250 ) ;
+899:
+900: QStringList tools@var193 ;
+901: if (@expr1073743546 mClangAnalyzer@var79 ) {
+902: tools@var193 <<@expr1073743547 $"clang-analyzer" ; }
+903: if (@expr1073743548 mClangTidy@var80 ) {
+904: tools@var193 <<@expr1073743549 $"clang-tidy" ; }
+905: writeStringList (@expr1073743550 xmlWriter@var182 ,
+906: tools@var193 ,
+907: CppcheckXml ::@expr1073743551 ToolsElementName ,
+908: CppcheckXml ::@expr1073743552 ToolElementName@expr1073743251 ) ;
+909:
+910: writeStringList (@expr1073743553 xmlWriter@var182 , mTags@var81 , CppcheckXml ::@expr1073743554 TagsElementName , CppcheckXml ::@expr1073743555 TagElementName@expr1073743252 ) ;
+911: if (@expr1073743556 !@expr1073743557 mWarningTags@var82 .@expr1073743558 empty (@expr1073743559 ) ) {
+912: QStringList tags@var194 ;
+913: for (@expr1073743560 const auto &@expr1564 wt@var195 :@expr1073743562 mWarningTags@var82 ) {
+914: if (@expr1073743563 !@expr1073743564 tags@var194 .@expr1073743565 contains (@expr1073743566 wt@var195 .@expr1743 second@var196 ) ) {
+915: tags@var194 .@expr1073743568 append (@expr1073743569 wt@var195 .@expr1743 second@var196 ) ; }
+916: }
+917: for (@expr1073743571 const QString &@expr1564 tag@var197 :@expr1073743573 tags@var194 ) {
+918: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743575 CppcheckXml ::@expr1073743576 TagWarningsElementName@expr1073743253 ) ;
+919: xmlWriter@var182 .@expr1454 writeAttribute (@expr1073743578 CppcheckXml ::@expr1073743579 TagAttributeName@expr1073743254 , tag@var197 ) ;
+920: for (@expr1073743580 const auto &@expr1564 wt@var198 :@expr1073743582 mWarningTags@var82 ) {
+921: if (@expr1073743583 wt@var198 .@expr1073743584 second@var199 ==@expr1073743585 tag@var197 ) {
+922: xmlWriter@var182 .@expr1451 writeStartElement (@expr1073743587 CppcheckXml ::@expr1073743588 WarningElementName@expr1073743255 ) ;
+923: xmlWriter@var182 .@expr1454 writeAttribute (@expr1073743590 CppcheckXml ::@expr1696 HashAttributeName , QString ::@expr1543 number (@expr1073743593 wt@var198 .@expr1073743594 first@var200 ) ) ;
+924: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+925: }
+926: }
+927: xmlWriter@var182 .@expr1468 writeEndElement (@expr1469 ) ;
+928: }
+929: }
+930:
+931: xmlWriter@var182 .@expr1073743599 writeEndDocument (@expr1073743600 ) ;
+932: file@var181 .@expr1073743601 close (@expr1073743602 ) ;
+933: return true ;
+934: }
+935:
+936: void ProjectFile :: writeStringList ( QXmlStreamWriter & xmlWriter@var201 , const QStringList & stringlist@var202 , const char startelementname@var203 [ ] , const char stringelementname@var204 [ ] )
+937: {
+938: if (@expr1073743603 stringlist@var202 .@expr1073743604 isEmpty (@expr1073743605 ) ) {
+939: return ; }
+940:
+941: xmlWriter@var201 .@expr1782 writeStartElement (@expr1073743607 startelementname@var203 ) ;
+942: for (@expr1073743608 const QString &@expr1073743609 str@var205 :@expr1073743610 stringlist@var202 ) {
+943: xmlWriter@var201 .@expr1782 writeStartElement (@expr1073743612 stringelementname@var204 ) ;
+944: xmlWriter@var201 .@expr1073743613 writeCharacters (@expr1073743614 str@var205 ) ;
+945: xmlWriter@var201 .@expr1791 writeEndElement (@expr1792 ) ;
+946: }
+947: xmlWriter@var201 .@expr1791 writeEndElement (@expr1792 ) ;
+948: }
+949:
+950: QStringList ProjectFile :: fromNativeSeparators ( const QStringList & paths@var206 )
+951: {
+952: QStringList ret@var207 ;
+953: for (@expr1073743619 const QString &@expr1073743620 path@var208 :@expr1073743621 paths@var206 ) {
+954: ret@var207 <<@expr1073743622 QDir ::@expr1073743623 fromNativeSeparators (@expr1073743624 path@var208 ) ; }
+955: return ret@var207 ;
+956: }
+957:
+958: QStringList ProjectFile :: getAddonsAndTools ( ) const
+959: {
+960: QStringList ret@var209 (@expr1073743625 mAddons@var78 ) ;
+961: if (@expr1073743626 mClangAnalyzer@var79 ) {
+962: ret@var209 <<@expr1073743627 $"clang-analyzer" ; }
+963: if (@expr1073743628 mClangTidy@var80 ) {
+964: ret@var209 <<@expr1073743629 $"clang-tidy" ; }
+965: return ret@var209 ;
+966: }
+967:
+968: void ProjectFile :: SafeChecks :: loadFromXml ( QXmlStreamReader & xmlReader@var210 )
+969: {
+970: classes@expr1806 =@expr1073743638 externalFunctions@expr1807 =@expr1073743639 internalFunctions@expr1808 =@expr1073743640 externalVariables@expr1809 =@expr1073743641 false ;
+971:
+972: int level@var211 ; level@var211 =@expr1073743642 0 ;
+973:
+974: do {
+975: const QXmlStreamReader ::@expr1073743643 TokenType type@var212 =@expr1073743644 xmlReader@var210 .@expr1073743645 readNext (@expr1073743646 ) ;
+976: switch (@expr1073743647 type@var212 ) {
+977: case QXmlStreamReader ::@expr1073743648 StartElement :@expr1825 ;
+978: ++@expr1073743650 level@var211 ;
+979: if (@expr1073743651 xmlReader@var210 .@expr1828 name (@expr1829 ) ==@expr1073743654 QString (@expr1073743655 Settings ::@expr1832 SafeChecks ::@expr1073743657 XmlClasses@expr1073743634 ) ) {
+980: classes@expr1806 =@expr1073743658 true ; }
+981: else { if (@expr1073743659 xmlReader@var210 .@expr1828 name (@expr1829 ) ==@expr1073743662 QString (@expr1073743663 Settings ::@expr1832 SafeChecks ::@expr1073743665 XmlExternalFunctions@expr1073743635 ) ) {
+982: externalFunctions@expr1807 =@expr1073743666 true ; }
+983: else { if (@expr1073743667 xmlReader@var210 .@expr1828 name (@expr1829 ) ==@expr1073743670 QString (@expr1073743671 Settings ::@expr1832 SafeChecks ::@expr1073743673 XmlInternalFunctions@expr1073743636 ) ) {
+984: internalFunctions@expr1808 =@expr1073743674 true ; }
+985: else { if (@expr1073743675 xmlReader@var210 .@expr1828 name (@expr1829 ) ==@expr1073743678 QString (@expr1073743679 Settings ::@expr1832 SafeChecks ::@expr1073743681 XmlExternalVariables@expr1073743637 ) ) {
+986: externalVariables@expr1809 =@expr1073743682 true ; } } } }
+987: break ;
+988: case QXmlStreamReader ::@expr1073743683 EndElement :@expr1825 ;
+989: if (@expr1073743685 level@var211 <=@expr1073743686 0 ) {
+990: return ; }
+991: level@var211 --@expr1073743687 ;
+992: break ;
+993:
+994: case QXmlStreamReader ::@expr1073743688 Characters :@expr1825
+995: case QXmlStreamReader ::@expr1073743690 NoToken :@expr1825
+996: case QXmlStreamReader ::@expr1073743692 Invalid :@expr1825
+997: case QXmlStreamReader ::@expr1073743694 StartDocument :@expr1825
+998: case QXmlStreamReader ::@expr1073743696 EndDocument :@expr1825
+999: case QXmlStreamReader ::@expr1073743698 Comment :@expr1825
+1000: case QXmlStreamReader ::@expr1073743700 DTD :@expr1825
+1001: case QXmlStreamReader ::@expr1073743702 EntityReference :@expr1825
+1002: case QXmlStreamReader ::@expr1073743704 ProcessingInstruction :@expr1825 ;
+1003: break ;
+1004: }
+1005: } while (@expr1073743706 true ) ;
+1006: }
+1007:
+1008: void ProjectFile :: SafeChecks :: saveToXml ( QXmlStreamWriter & xmlWriter@var213 ) const
+1009: {
+1010: if (@expr1073743716 !@expr1073743717 classes@expr1883 &&@expr1073743718 !@expr1073743719 externalFunctions@expr1884 &&@expr1073743720 !@expr1073743721 internalFunctions@expr1885 &&@expr1073743722 !@expr1073743723 externalVariables@expr1886 ) {
+1011: return ; }
+1012: xmlWriter@var213 .@expr1900 writeStartElement (@expr1073743725 Settings ::@expr1902 SafeChecks ::@expr1073743727 XmlRootName@expr1073743711 ) ;
+1013: if (@expr1073743728 classes@expr1883 ) {
+1014: xmlWriter@var213 .@expr1900 writeStartElement (@expr1073743730 Settings ::@expr1902 SafeChecks ::@expr1073743732 XmlClasses@expr1073743712 ) ;
+1015: xmlWriter@var213 .@expr1909 writeEndElement (@expr1910 ) ;
+1016: }
+1017: if (@expr1073743735 externalFunctions@expr1884 ) {
+1018: xmlWriter@var213 .@expr1900 writeStartElement (@expr1073743737 Settings ::@expr1902 SafeChecks ::@expr1073743739 XmlExternalFunctions@expr1073743713 ) ;
+1019: xmlWriter@var213 .@expr1909 writeEndElement (@expr1910 ) ;
+1020: }
+1021: if (@expr1073743742 internalFunctions@expr1885 ) {
+1022: xmlWriter@var213 .@expr1900 writeStartElement (@expr1073743744 Settings ::@expr1902 SafeChecks ::@expr1073743746 XmlInternalFunctions@expr1073743714 ) ;
+1023: xmlWriter@var213 .@expr1909 writeEndElement (@expr1910 ) ;
+1024: }
+1025: if (@expr1073743749 externalVariables@expr1886 ) {
+1026: xmlWriter@var213 .@expr1900 writeStartElement (@expr1073743751 Settings ::@expr1902 SafeChecks ::@expr1073743753 XmlExternalVariables@expr1073743715 ) ;
+1027: xmlWriter@var213 .@expr1909 writeEndElement (@expr1910 ) ;
+1028: }
+1029: xmlWriter@var213 .@expr1909 writeEndElement (@expr1910 ) ;
+1030: }
+1031:
+1032: QString ProjectFile :: getAddonFilePath ( QString filesDir@var214 , const QString & addon@var215 )
+1033: {
+1034: if (@expr1073743758 !@expr1073743759 filesDir@var214 .@expr1073743760 endsWith (@expr1073743761 "/" ) ) {
+1035: filesDir@var214 +=@expr1073743762 "/" ; }
+1036:
+1037: QStringList searchPaths@var216 ;
+1038: searchPaths@var216 <<@expr1073743763 filesDir@var214 <<@expr1073743764 (@expr1073743765 filesDir@var214 +@expr1073743766 "addons/" ) <<@expr1073743767 (@expr1073743768 filesDir@var214 +@expr1073743769 "../addons/" )
+1039:
+1040:
+1041:
+1042: ;
+1043:
+1044: for (@expr1073743770 const QString &@expr1073743771 path@var217 :@expr1073743772 searchPaths@var216 ) {
+1045: QString f@var218 ; f@var218 =@expr1073743773 path@var217 +@expr1073743774 addon@var215 +@expr1073743775 ".py" ;
+1046: if (@expr1073743776 QFile (@expr1073743777 f@var218 ) .@expr1073743778 exists (@expr1073743779 ) ) {
+1047: return f@var218 ; }
+1048: }
+1049:
+1050: return QString (@expr1073743780 ) ;
+1051: }
+
+
+
+##Value flow
+Line 48
+  = always 0
+  nullptr always 0
+Line 49
+  , always 0
+  = always 0
+  nullptr always 0
+Line 51
+  this always !0
+  == always {!<=-1,!>=2}
+  = always 0
+  nullptr always 0
+Line 58
+  = always !0
+  this always !0
+Line 65
+  ( always {!<=-1,!>=2}
+Line 83
+  ( always {!<=-1,!>=2}
+Line 84
+  return always {!<=-1,!>=2}
+  mAnalyzeAllVsConfigs always {!<=-1,!>=2}
+Line 87
+  ( always {!<=-1,!>=2}
+Line 88
+  return always {!<=-1,!>=2}
+  mCheckHeaders always {!<=-1,!>=2}
+Line 91
+  b always {!<=-1,!>=2}
+Line 92
+  mCheckHeaders always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  b always {!<=-1,!>=2}
+Line 95
+  ( always {!<=-1,!>=2}
+Line 96
+  return always {!<=-1,!>=2}
+  mCheckUnusedTemplates always {!<=-1,!>=2}
+Line 99
+  b always {!<=-1,!>=2}
+Line 100
+  mCheckUnusedTemplates always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  b always {!<=-1,!>=2}
+Line 196
+  ( always {!<=-1,!>=2}
+Line 197
+  return always {!<=-1,!>=2}
+  false always 0
+Line 200
+  c always {!<=-1,!>=2}
+Line 201
+  mClangAnalyzer always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  c always {!<=-1,!>=2}
+Line 204
+  ( always {!<=-1,!>=2}
+Line 205
+  return always {!<=-1,!>=2}
+  mClangTidy always {!<=-1,!>=2}
+Line 208
+  c always {!<=-1,!>=2}
+Line 209
+  mClangTidy always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  c always {!<=-1,!>=2}
+Line 256
+  b always {!<=-1,!>=2}
+Line 257
+  mAnalyzeAllVsConfigs always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  b always {!<=-1,!>=2}
+Line 340
+  ( always {!<=-1,!>=2}
+Line 370
+  clangParser always {!<=-1,!>=2}
+Line 388
+  ( always {!<=-1,!>=2}
+Line 490
+  mAnalyzeAllVsConfigs always {!<=-1,!>=2}
+Line 496
+  mCheckHeaders always {!<=-1,!>=2}
+Line 499
+  mCheckUnusedTemplates always {!<=-1,!>=2}
+Line 547
+  mClangAnalyzer always {!<=-1,!>=2}
+Line 550
+  mClangTidy always {!<=-1,!>=2}
+Line 148
+  addAllSupported always {!<=-1,!>=2}
+  = always 1
+  true always 1
+  , always 1
+  addAll always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 46
+  ( always {!<=-1,!>=2}
+Line 52
+  clangParser always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 56
+  mAnalyzeAllVsConfigs always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 66
+  mClangAnalyzer always {!<=-1,!>=2}
+  = always 0
+  false always 0
+  mClangTidy always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 67
+  mAnalyzeAllVsConfigs always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 68
+  mCheckHeaders always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 69
+  mCheckUnusedTemplates always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 79
+  ( always {!<=-1,!>=2}
+Line 81
+  ! always {!<=-1,!>=2}
+Line 85
+  ! always {!<=-1,!>=2}
+Line 86
+  return always {!<=-1,!>=2}
+  false always 0
+Line 90
+  & {lifetime[Address]=(file),!0}
+Line 91
+  insideProject always {!<=-1,!>=2}
+  insideProject always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 92
+  projectTagFound always {!<=-1,!>=2}
+  projectTagFound always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 93
+  ! always {!<=-1,!>=2}
+Line 96
+  == always {!<=-1,!>=2}
+Line 97
+  insideProject always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 98
+  projectTagFound always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 101
+  ! always {!<=-1,!>=2}
+  insideProject always {!<=-1,!>=2}
+Line 105
+  == always {!<=-1,!>=2}
+Line 109
+  == always {!<=-1,!>=2}
+Line 113
+  == always {!<=-1,!>=2}
+Line 116
+  == always {!<=-1,!>=2}
+Line 119
+  == always {!<=-1,!>=2}
+Line 120
+  mAnalyzeAllVsConfigs always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 122
+  == always {!<=-1,!>=2}
+Line 123
+  clangParser always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 125
+  == always {!<=-1,!>=2}
+Line 126
+  mCheckHeaders always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 128
+  == always {!<=-1,!>=2}
+Line 129
+  mCheckUnusedTemplates always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 132
+  == always {!<=-1,!>=2}
+Line 136
+  == always {!<=-1,!>=2}
+Line 140
+  == always {!<=-1,!>=2}
+Line 144
+  == always {!<=-1,!>=2}
+Line 149
+  == always {!<=-1,!>=2}
+Line 153
+  == always {!<=-1,!>=2}
+Line 156
+  == always {!<=-1,!>=2}
+Line 160
+  == always {!<=-1,!>=2}
+Line 164
+  == always {!<=-1,!>=2}
+Line 168
+  == always {!<=-1,!>=2}
+Line 172
+  == always {!<=-1,!>=2}
+Line 176
+  == always {!<=-1,!>=2}
+Line 179
+  mClangAnalyzer always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  "clang-analyzer" always "clang-analyzer"
+Line 180
+  mClangTidy always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  "clang-tidy" always "clang-tidy"
+Line 183
+  == always {!<=-1,!>=2}
+Line 186
+  == always {!<=-1,!>=2}
+Line 189
+  == always {!<=-1,!>=2}
+Line 192
+  == always {!<=-1,!>=2}
+Line 196
+  == always {!<=-1,!>=2}
+Line 201
+  == always {!<=-1,!>=2}
+Line 202
+  insideProject always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 220
+  return always {!<=-1,!>=2}
+  projectTagFound always {!<=-1,!>=2}
+Line 227
+  ! always {!<=-1,!>=2}
+Line 254
+  true always 1
+Line 280
+  true always 1
+Line 283
+  ( always {!<=-1,!>=2}
+Line 285
+  ret always {!<=-1,!>=2}
+  ret always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 290
+  ret always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "true" always "true"
+Line 293
+  return always {!<=-1,!>=2}
+  ret always {!<=-1,!>=2}
+Line 306
+  true always 1
+Line 332
+  true always 1
+Line 338
+  allRead always {!<=-1,!>=2}
+  allRead always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 345
+  == always {!<=-1,!>=2}
+Line 348
+  ! always {!<=-1,!>=2}
+Line 354
+  == always {!<=-1,!>=2}
+Line 355
+  allRead always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 370
+  ! always {!<=-1,!>=2}
+  allRead always {!<=-1,!>=2}
+Line 376
+  allRead always {!<=-1,!>=2}
+  allRead always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 382
+  == always {!<=-1,!>=2}
+Line 385
+  ! always {!<=-1,!>=2}
+Line 391
+  == always {!<=-1,!>=2}
+Line 392
+  allRead always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 407
+  ! always {!<=-1,!>=2}
+  allRead always {!<=-1,!>=2}
+Line 413
+  allRead always {!<=-1,!>=2}
+  allRead always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 420
+  == always {!<=-1,!>=2}
+Line 423
+  ! always {!<=-1,!>=2}
+Line 429
+  == always {!<=-1,!>=2}
+Line 430
+  allRead always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 445
+  ! always {!<=-1,!>=2}
+  allRead always {!<=-1,!>=2}
+Line 451
+  allRead always {!<=-1,!>=2}
+  allRead always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 457
+  == always {!<=-1,!>=2}
+Line 460
+  ! always {!<=-1,!>=2}
+Line 464
+  == always {!<=-1,!>=2}
+Line 467
+  ! always {!<=-1,!>=2}
+Line 473
+  == always {!<=-1,!>=2}
+Line 474
+  allRead always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 475
+  == always {!<=-1,!>=2}
+Line 476
+  allRead always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 491
+  ! always {!<=-1,!>=2}
+  allRead always {!<=-1,!>=2}
+Line 502
+  == always {!<=-1,!>=2}
+Line 505
+  == always {!<=-1,!>=2}
+Line 513
+  != always {!<=-1,!>=2}
+Line 529
+  true always 1
+Line 554
+  true always 1
+Line 566
+  == always {!<=-1,!>=2}
+Line 568
+  "fileName" always "fileName"
+Line 569
+  "fileName" always "fileName"
+Line 570
+  "lineNumber" always "lineNumber"
+Line 571
+  "lineNumber" always "lineNumber"
+Line 572
+  "symbolName" always "symbolName"
+Line 573
+  "symbolName" always "symbolName"
+Line 574
+  "hash" always "hash"
+Line 575
+  "hash" always "hash"
+Line 577
+  == always {!<=-1,!>=2}
+Line 585
+  != always {!<=-1,!>=2}
+Line 601
+  true always 1
+Line 613
+  == always {!<=-1,!>=2}
+Line 614
+  hash always !<=-1
+  hash always !<=-1
+  = always !<=-1
+Line 615
+  hash always !<=-1
+Line 620
+  != always {!<=-1,!>=2}
+Line 636
+  true always 1
+Line 643
+  allRead always {!<=-1,!>=2}
+  allRead always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 649
+  == always {!<=-1,!>=2}
+Line 651
+  == always {!<=-1,!>=2}
+Line 659
+  != always {!<=-1,!>=2}
+Line 660
+  allRead always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 675
+  ! always {!<=-1,!>=2}
+  allRead always {!<=-1,!>=2}
+Line 733
+  hash always !<=-1
+Line 736
+  hash always !<=-1
+Line 737
+  hash always !<=-1
+  > always {!<=-1,!>=2}
+  0 always 0
+Line 738
+  hash {>=1,!<=0}
+Line 741
+  hash always !<=-1
+Line 743
+  = possible lifetime[Iterator]=(mWarningTags)
+  ( possible lifetime[Iterator]=(mWarningTags)
+  hash always !<=-1
+Line 744
+  it {lifetime[Iterator]=(mWarningTags),symbolic=(mWarningTags.find(hash))}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mWarningTags),end=0}
+  it {lifetime[Iterator]=(mWarningTags),symbolic=(mWarningTags.find(hash)),!symbolic=(mWarningTags.end()),!end=0}
+Line 747
+  ( always {!<=-1,!>=2}
+Line 749
+  ! always {!<=-1,!>=2}
+Line 753
+  ! always {!<=-1,!>=2}
+Line 754
+  return always {!<=-1,!>=2}
+  false always 0
+Line 756
+  & {lifetime[Address]=(file),!0}
+Line 757
+  true always 1
+Line 758
+  "1.0" always "1.0"
+Line 762
+  ! always {!<=-1,!>=2}
+Line 768
+  ! always {!<=-1,!>=2}
+Line 774
+  ! always {!<=-1,!>=2}
+Line 780
+  ! always {!<=-1,!>=2}
+Line 787
+  mAnalyzeAllVsConfigs always {!<=-1,!>=2}
+  ? possible {"true","false"}
+  "true" always "true"
+  : always "false"
+  "false" always "false"
+Line 790
+  clangParser always {!<=-1,!>=2}
+Line 792
+  "clang" always "clang"
+Line 797
+  mCheckHeaders always {!<=-1,!>=2}
+  ? possible {"true","false"}
+  "true" always "true"
+  : always "false"
+  "false" always "false"
+Line 801
+  mCheckUnusedTemplates always {!<=-1,!>=2}
+  ? possible {"true","false"}
+  "true" always "true"
+  : always "false"
+  "false" always "false"
+Line 812
+  ! always {!<=-1,!>=2}
+Line 822
+  ! always {!<=-1,!>=2}
+Line 832
+  ! always {!<=-1,!>=2}
+Line 844
+  ! always {!<=-1,!>=2}
+Line 854
+  ! always {!<=-1,!>=2}
+Line 869
+  ! always {!<=-1,!>=2}
+Line 873
+  ! always {!<=-1,!>=2}
+Line 874
+  "fileName" always "fileName"
+Line 875
+  > always {!<=-1,!>=2}
+  0 always 0
+Line 876
+  "lineNumber" always "lineNumber"
+Line 877
+  ! always {!<=-1,!>=2}
+Line 878
+  "symbolName" always "symbolName"
+Line 879
+  > always {!<=-1,!>=2}
+  0 always 0
+Line 881
+  ! always {!<=-1,!>=2}
+Line 901
+  mClangAnalyzer always {!<=-1,!>=2}
+Line 902
+  "clang-analyzer" always "clang-analyzer"
+Line 903
+  mClangTidy always {!<=-1,!>=2}
+Line 904
+  "clang-tidy" always "clang-tidy"
+Line 911
+  ! {!<=-1,!>=2,0}
+  mWarningTags possible size=0
+  ( {!<=-1,!>=2,1}
+Line 913
+  mWarningTags always !size=0
+Line 914
+  ! always {!<=-1,!>=2}
+Line 921
+  == always {!<=-1,!>=2}
+Line 933
+  return always {!<=-1,!>=2}
+  true always 1
+Line 961
+  mClangAnalyzer always {!<=-1,!>=2}
+Line 962
+  "clang-analyzer" always "clang-analyzer"
+Line 963
+  mClangTidy always {!<=-1,!>=2}
+Line 964
+  "clang-tidy" always "clang-tidy"
+Line 970
+  = always 0
+  = always 0
+  = always 0
+  = always 0
+  false always 0
+Line 972
+  = always 0
+  0 always 0
+Line 979
+  == always {!<=-1,!>=2}
+Line 980
+  = always 1
+  true always 1
+Line 981
+  == always {!<=-1,!>=2}
+Line 982
+  = always 1
+  true always 1
+Line 983
+  == always {!<=-1,!>=2}
+Line 984
+  = always 1
+  true always 1
+Line 985
+  == always {!<=-1,!>=2}
+Line 986
+  = always 1
+  true always 1
+Line 989
+  <= always {!<=-1,!>=2}
+  0 always 0
+Line 991
+  level {!<=0,>=1}
+  -- {!<=0,>=1}
+Line 1005
+  true always 1
+Line 1010
+  ! always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+Line 1034
+  ! always {!<=-1,!>=2}
+  "/" always "/"
+Line 1035
+  "/" always "/"
+Line 1038
+  "addons/" always "addons/"
+  "../addons/" always "../addons/"
+Line 1045
+  ".py" always ".py"
+Line 1046
+  f always symbolic=(path+addon+".py")

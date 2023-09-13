@@ -1,0 +1,879 @@
+
+
+##file cppcheck-2.8/gui/statsdialog.h
+
+1:
+|
+23:
+24: class ProjectFile ;
+25: class CheckStatistics ;
+26: class QObject ;
+27: class QWidget ;
+28: namespace Ui {
+29: class StatsDialog ;
+30: }
+31:
+|
+49:
+50: class StatsDialog : public QDialog {
+51: Q_OBJECT
+52: public:
+53: explicit StatsDialog ( QWidget * parent = nullptr ) ;
+54: ~ StatsDialog ( ) override ;
+55:
+|
+58:
+59: void setProject ( const ProjectFile * projectFile ) ;
+60:
+|
+63:
+64: void setPathSelected ( const QString & path ) ;
+65:
+|
+68:
+69: void setNumberOfFilesScanned ( int num ) ;
+70:
+|
+73:
+74: void setScanDuration ( double seconds ) ;
+75:
+|
+78:
+79: void setStatistics ( const CheckStatistics * stats ) ;
+80:
+81: private slots :
+82: void copyToClipboard ( ) ;
+83: void pdfExport ( ) ;
+84:
+|
+92:
+93: private:
+94: Ui :: StatsDialog * mUI ;
+95: const CheckStatistics * mStatistics ;
+96: } ;
+
+##file cppcheck-2.8/gui/showtypes.h
+
+1:
+|
+37:
+38: class ShowTypes {
+39: public:
+40:
+|
+43:
+44: enum ShowType {
+45: ShowStyle = 0 ,
+46: ShowWarnings ,
+47: ShowPerformance ,
+48: ShowPortability ,
+49: ShowInformation ,
+50: ShowErrors ,
+51: ShowNone
+52: } ;
+53:
+|
+57:
+58: ShowTypes ( ) ;
+59:
+|
+63:
+64: ~ ShowTypes ( ) ;
+65:
+|
+68:
+69: void load ( ) ;
+70:
+|
+73:
+74: void save ( ) const ;
+75:
+|
+80:
+81: bool isShown ( ShowTypes :: ShowType category ) const ;
+82:
+|
+87:
+88: bool isShown ( Severity :: SeverityType severity ) const ;
+89:
+|
+94:
+95: void show ( ShowTypes :: ShowType category , bool showing ) ;
+96:
+|
+101:
+102: static ShowTypes :: ShowType SeverityToShowType ( Severity :: SeverityType severity ) ;
+103:
+|
+108:
+109: static Severity :: SeverityType ShowTypeToSeverity ( ShowTypes :: ShowType type ) ;
+110:
+|
+116:
+117: static ShowTypes :: ShowType VariantToShowType ( const QVariant & data ) ;
+118:
+119: bool mVisible [ ShowNone ] ;
+120: } ;
+
+##file cppcheck-2.8/gui/checkstatistics.h
+
+1:
+|
+33:
+34: class CheckStatistics : public QObject {
+35: public:
+36: explicit CheckStatistics ( QObject * parent = nullptr ) ;
+37:
+|
+43:
+44: void addItem ( const QString & tool , ShowTypes :: ShowType type ) ;
+45:
+|
+49:
+50: void clear ( ) ;
+51:
+|
+58:
+59: unsigned getCount ( const QString & tool , ShowTypes :: ShowType type ) const ;
+60:
+61:
+62: QStringList getTools ( ) const ;
+63:
+64: private:
+65: QMap < QString , unsigned > mStyle ;
+66: QMap < QString , unsigned > mWarning ;
+67: QMap < QString , unsigned > mPerformance ;
+68: QMap < QString , unsigned > mPortability ;
+69: QMap < QString , unsigned > mInformation ;
+70: QMap < QString , unsigned > mError ;
+71: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type , const QString & value ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters , bool addAllSupported = true , bool addAll = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/projectfile.h
+
+1:
+|
+31:
+32: class QXmlStreamReader ;
+33: class QXmlStreamWriter ;
+34:
+|
+43:
+44: class ProjectFile : public QObject {
+45: Q_OBJECT
+46:
+47: public:
+48: explicit ProjectFile ( QObject * parent = nullptr ) ;
+49: explicit ProjectFile ( const QString & filename , QObject * parent = nullptr ) ;
+50: ~ ProjectFile ( ) override {
+51: if ( this == mActiveProject ) { mActiveProject = nullptr ; }
+52: }
+53:
+54: static ProjectFile * getActiveProject ( ) {
+55: return mActiveProject ;
+56: }
+57: void setActiveProject ( ) {
+58: mActiveProject = this ;
+59: }
+60:
+|
+64:
+65: bool read ( const QString & filename = QString ( ) ) ;
+66:
+|
+70:
+71: QString getRootPath ( ) const {
+72: return mRootPath ;
+73: }
+74:
+75: QString getBuildDir ( ) const {
+76: return mBuildDir ;
+77: }
+78:
+79: QString getImportProject ( ) const {
+80: return mImportProject ;
+81: }
+82:
+83: bool getAnalyzeAllVsConfigs ( ) const {
+84: return mAnalyzeAllVsConfigs ;
+85: }
+86:
+87: bool getCheckHeaders ( ) const {
+88: return mCheckHeaders ;
+89: }
+90:
+91: void setCheckHeaders ( bool b ) {
+92: mCheckHeaders = b ;
+93: }
+94:
+95: bool getCheckUnusedTemplates ( ) const {
+96: return mCheckUnusedTemplates ;
+97: }
+98:
+99: void setCheckUnusedTemplates ( bool b ) {
+100: mCheckUnusedTemplates = b ;
+101: }
+102:
+|
+106:
+107: QStringList getIncludeDirs ( ) const {
+108: return ProjectFile :: fromNativeSeparators ( mIncludeDirs ) ;
+109: }
+110:
+|
+114:
+115: QStringList getDefines ( ) const {
+116: return mDefines ;
+117: }
+118:
+|
+122:
+123: QStringList getUndefines ( ) const {
+124: return mUndefines ;
+125: }
+126:
+|
+130:
+131: QStringList getCheckPaths ( ) const {
+132: return ProjectFile :: fromNativeSeparators ( mPaths ) ;
+133: }
+134:
+|
+138:
+139: QStringList getExcludedPaths ( ) const {
+140: return ProjectFile :: fromNativeSeparators ( mExcludedPaths ) ;
+141: }
+142:
+|
+146:
+147: QStringList getVsConfigurations ( ) const {
+148: return mVsConfigurations ;
+149: }
+150:
+|
+154:
+155: QStringList getLibraries ( ) const {
+156: return mLibraries ;
+157: }
+158:
+|
+162:
+163: QString getPlatform ( ) const {
+164: return mPlatform ;
+165: }
+166:
+|
+170:
+171: QList < Suppressions :: Suppression > getSuppressions ( ) const {
+172: return mSuppressions ;
+173: }
+174:
+|
+178:
+179: QStringList getAddons ( ) const {
+180: return mAddons ;
+181: }
+182:
+|
+187:
+188: static QString getAddonFilePath ( QString filesDir , const QString & addon ) ;
+189:
+|
+193:
+194: QStringList getAddonsAndTools ( ) const ;
+195:
+196: bool getClangAnalyzer ( ) const {
+197: return false ;
+198: }
+199:
+200: void setClangAnalyzer ( bool c ) {
+201: mClangAnalyzer = c ;
+202: }
+203:
+204: bool getClangTidy ( ) const {
+205: return mClangTidy ;
+206: }
+207:
+208: void setClangTidy ( bool c ) {
+209: mClangTidy = c ;
+210: }
+211:
+212: QStringList getTags ( ) const {
+213: return mTags ;
+214: }
+215:
+216: int getMaxCtuDepth ( ) const {
+217: return mMaxCtuDepth ;
+218: }
+219:
+220: void setMaxCtuDepth ( int maxCtuDepth ) {
+221: mMaxCtuDepth = maxCtuDepth ;
+222: }
+223:
+224: int getMaxTemplateRecursion ( ) const {
+225: return mMaxTemplateRecursion ;
+226: }
+227:
+228: void setMaxTemplateRecursion ( int maxTemplateRecursion ) {
+229: mMaxTemplateRecursion = maxTemplateRecursion ;
+230: }
+231:
+|
+235:
+236: QString getFilename ( ) const {
+237: return mFilename ;
+238: }
+239:
+|
+243:
+244: void setRootPath ( const QString & rootpath ) {
+245: mRootPath = rootpath ;
+246: }
+247:
+248: void setBuildDir ( const QString & buildDir ) {
+249: mBuildDir = buildDir ;
+250: }
+251:
+252: void setImportProject ( const QString & importProject ) {
+253: mImportProject = importProject ;
+254: }
+255:
+256: void setAnalyzeAllVsConfigs ( bool b ) {
+257: mAnalyzeAllVsConfigs = b ;
+258: }
+259:
+|
+263:
+264: void setIncludes ( const QStringList & includes ) ;
+265:
+|
+269:
+270: void setDefines ( const QStringList & defines ) ;
+271:
+|
+275:
+276: void setUndefines ( const QStringList & undefines ) ;
+277:
+|
+281:
+282: void setCheckPaths ( const QStringList & paths ) ;
+283:
+|
+287:
+288: void setExcludedPaths ( const QStringList & paths ) ;
+289:
+|
+293:
+294: void setLibraries ( const QStringList & libraries ) ;
+295:
+|
+299:
+300: void setPlatform ( const QString & platform ) ;
+301:
+|
+305:
+306: void setSuppressions ( const QList < Suppressions :: Suppression > & suppressions ) ;
+307:
+308:
+309: void addSuppression ( const Suppressions :: Suppression & suppression ) ;
+310:
+|
+314:
+315: void setAddons ( const QStringList & addons ) ;
+316:
+|
+319:
+320: void setVSConfigurations ( const QStringList & vsConfigs ) ;
+321:
+|
+325:
+326: void setTags ( const QStringList & tags ) {
+327: mTags = tags ;
+328: }
+329:
+330:
+331: void setWarningTags ( std :: size_t hash , const QString & tags ) ;
+332:
+333:
+334: QString getWarningTags ( std :: size_t hash ) const ;
+335:
+|
+339:
+340: bool write ( const QString & filename = QString ( ) ) ;
+341:
+|
+345:
+346: void setFilename ( const QString & filename ) {
+347: mFilename = filename ;
+348: }
+349:
+350:
+351: class SafeChecks : public Settings :: SafeChecks {
+352: public:
+353: SafeChecks ( ) : Settings :: SafeChecks ( ) { }
+354:
+355: void loadFromXml ( QXmlStreamReader & xmlReader ) ;
+356: void saveToXml ( QXmlStreamWriter & xmlWriter ) const ;
+357: } ;
+358:
+359: SafeChecks safeChecks ;
+360:
+361:
+362: QStringList getCheckUnknownFunctionReturn ( ) const {
+363: return mCheckUnknownFunctionReturn ;
+364: }
+365: void setCheckUnknownFunctionReturn ( const QStringList & s ) {
+366: mCheckUnknownFunctionReturn = s ;
+367: }
+368:
+369:
+370: bool clangParser ;
+371:
+372: protected:
+373:
+|
+377:
+378: void readRootPath ( QXmlStreamReader & reader ) ;
+379:
+380: void readBuildDir ( QXmlStreamReader & reader ) ;
+381:
+|
+385:
+386: void readImportProject ( QXmlStreamReader & reader ) ;
+387:
+388: bool readBool ( QXmlStreamReader & reader ) ;
+389:
+390: int readInt ( QXmlStreamReader & reader , int defaultValue ) ;
+391:
+|
+395:
+396: void readIncludeDirs ( QXmlStreamReader & reader ) ;
+397:
+|
+401:
+402: void readDefines ( QXmlStreamReader & reader ) ;
+403:
+|
+407:
+408: void readCheckPaths ( QXmlStreamReader & reader ) ;
+409:
+|
+413:
+414: void readExcludes ( QXmlStreamReader & reader ) ;
+415:
+|
+419:
+420: void readVsConfigurations ( QXmlStreamReader & reader ) ;
+421:
+|
+425:
+426: void readPlatform ( QXmlStreamReader & reader ) ;
+427:
+|
+431:
+432: void readSuppressions ( QXmlStreamReader & reader ) ;
+433:
+|
+437:
+438: void readTagWarnings ( QXmlStreamReader & reader , const QString & tag ) ;
+439:
+|
+445:
+446: void readStringList ( QStringList & stringlist , QXmlStreamReader & reader , const char elementname [ ] ) ;
+447:
+|
+454:
+455: static void writeStringList ( QXmlStreamWriter & xmlWriter , const QStringList & stringlist , const char startelementname [ ] , const char stringelementname [ ] ) ;
+456:
+457: private:
+458:
+459: void clear ( ) ;
+460:
+|
+463:
+464: static QStringList fromNativeSeparators ( const QStringList & paths ) ;
+465:
+|
+468:
+469: QString mFilename ;
+470:
+|
+476:
+477: QString mRootPath ;
+478:
+479:
+480: QString mBuildDir ;
+481:
+482:
+483: QString mImportProject ;
+484:
+|
+489:
+490: bool mAnalyzeAllVsConfigs ;
+491:
+492:
+493: QStringList mVsConfigurations ;
+494:
+495:
+496: bool mCheckHeaders ;
+497:
+498:
+499: bool mCheckUnusedTemplates ;
+500:
+|
+503:
+504: QStringList mIncludeDirs ;
+505:
+|
+508:
+509: QStringList mDefines ;
+510:
+|
+513:
+514: QStringList mUndefines ;
+515:
+|
+518:
+519: QStringList mPaths ;
+520:
+|
+523:
+524: QStringList mExcludedPaths ;
+525:
+|
+528:
+529: QStringList mLibraries ;
+530:
+|
+533:
+534: QString mPlatform ;
+535:
+|
+538:
+539: QList < Suppressions :: Suppression > mSuppressions ;
+540:
+|
+543:
+544: QStringList mAddons ;
+545:
+546:
+547: bool mClangAnalyzer ;
+548:
+549:
+550: bool mClangTidy ;
+551:
+|
+554:
+555: QStringList mTags ;
+556:
+|
+559:
+560: std :: map < std :: size_t , QString > mWarningTags ;
+561:
+562:
+563: int mMaxCtuDepth ;
+564:
+565:
+566: int mMaxTemplateRecursion ;
+567:
+568: QStringList mCheckUnknownFunctionReturn ;
+569:
+570: static ProjectFile * mActiveProject ;
+571: } ;
+
+##file cppcheck-2.8/gui/statsdialog.cpp
+
+1:
+|
+50:
+51: static const QString CPPCHECK ( "cppcheck" ) ;
+52:
+53: StatsDialog :: StatsDialog ( QWidget * parent )
+54: : QDialog ( parent ) ,
+55: mUI ( new Ui :: StatsDialog ) ,
+56: mStatistics ( nullptr )
+57: {
+58: mUI . setupUi ( this ) ;
+59:
+60: setWindowFlags ( Qt :: Window ) ;
+61:
+62: connect ( mUI . mCopyToClipboard , & QPushButton :: pressed , this , & StatsDialog :: copyToClipboard ) ;
+63: connect ( mUI . mPDFexport , & QPushButton :: pressed , this , & StatsDialog :: pdfExport ) ;
+64: }
+65:
+66: StatsDialog :: ~ StatsDialog ( )
+67: {
+68: delete mUI ;
+69: }
+70:
+71: void StatsDialog :: setProject ( const ProjectFile * projectFile )
+72: {
+73: if ( projectFile ) {
+74: mUI . mProject . setText ( projectFile . getRootPath ( ) ) ;
+75: mUI . mPaths . setText ( projectFile . getCheckPaths ( ) . join ( ";" ) ) ;
+76: mUI . mIncludePaths . setText ( projectFile . getIncludeDirs ( ) . join ( ";" ) ) ;
+77: mUI . mDefines . setText ( projectFile . getDefines ( ) . join ( ";" ) ) ;
+78: mUI . mUndefines . setText ( projectFile . getUndefines ( ) . join ( ";" ) ) ;
+79:
+80: mUI . mTabHistory . setVisible ( false ) ;
+81:
+|
+104:
+105: } else {
+106: mUI . mProject . setText ( QString ( ) ) ;
+107: mUI . mPaths . setText ( QString ( ) ) ;
+108: mUI . mIncludePaths . setText ( QString ( ) ) ;
+109: mUI . mDefines . setText ( QString ( ) ) ;
+110: mUI . mUndefines . setText ( QString ( ) ) ;
+111: }
+112: }
+113:
+114: void StatsDialog :: setPathSelected ( const QString & path )
+115: {
+116: mUI . mPath . setText ( path ) ;
+117: }
+118:
+119: void StatsDialog :: setNumberOfFilesScanned ( int num )
+120: {
+121: mUI . mNumberOfFilesScanned . setText ( QString :: number ( num ) ) ;
+122: }
+123:
+124: void StatsDialog :: setScanDuration ( double seconds )
+125: {
+126:
+127: int secs ; secs = seconds ;
+128: int days ; days = secs / ( 24 * 60 * 60 ) ;
+129: secs -= days * ( 24 * 60 * 60 ) ;
+130: int hours ; hours = secs / ( 60 * 60 ) ;
+131: secs -= hours * ( 60 * 60 ) ;
+132: int mins ; mins = secs / 60 ;
+133: secs -= mins * 60 ;
+134:
+135:
+136: QStringList parts ;
+137: if ( days ) {
+138: parts << ( ( days == 1 ) ? tr ( "1 day" ) : tr ( "%1 days" ) . arg ( days ) ) ; }
+139: if ( hours ) {
+140: parts << ( ( hours == 1 ) ? tr ( "1 hour" ) : tr ( "%1 hours" ) . arg ( hours ) ) ; }
+141: if ( mins && parts . size ( ) < 2 ) {
+142: parts << ( ( mins == 1 ) ? tr ( "1 minute" ) : tr ( "%1 minutes" ) . arg ( mins ) ) ; }
+143: if ( secs && parts . size ( ) < 2 ) {
+144: parts << ( ( secs == 1 ) ? tr ( "1 second" ) : tr ( "%1 seconds" ) . arg ( secs ) ) ; }
+145:
+146:
+147: if ( parts . isEmpty ( ) ) {
+148: parts << tr ( "0.%1 seconds" ) . arg ( int ( 10.0 * ( seconds - secs ) ) ) ; }
+149:
+150: mUI . mScanDuration . setText ( parts . join ( tr ( " and " ) ) ) ;
+151: }
+152: void StatsDialog :: pdfExport ( )
+153: {
+154: const QString Stat = QString (
+155: "<center><h1>%1   %2</h1></center>\n<font color=\"red\"><h3>%3   :   %4</h3></font>\n<font color=\"green\"><h3>%5   :   %6</h3></font>\n<font color=\"orange\"><h3>%7   :   %8</h3></font>\n<font color=\"blue\"><h3>%9   :   %10</h3></font>\n<font color=\"blue\"><h3>%11  :   %12</h3></font>\n<font color=\"purple\"><h3>%13  :   %14</h3></font>\n"
+156:
+|
+160:
+161: )
+162: . arg ( tr ( "Statistics" ) )
+163: . arg ( QDate :: currentDate ( ) . toString ( "dd.MM.yyyy" ) )
+164: . arg ( tr ( "Errors" ) )
+165: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowErrors ) )
+166: . arg ( tr ( "Warnings" ) )
+167: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowWarnings ) )
+168: . arg ( tr ( "Style warnings" ) )
+169: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowStyle ) )
+170: . arg ( tr ( "Portability warnings" ) )
+171: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowPortability ) )
+172: . arg ( tr ( "Performance warnings" ) )
+173: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowPerformance ) )
+174: . arg ( tr ( "Information messages" ) )
+175: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowInformation ) ) ;
+176:
+177: QString fileName ; fileName = QFileDialog :: getSaveFileName ( ( QWidget * ) nullptr , tr ( "Export PDF" ) , QString ( ) , "*.pdf" ) ;
+178: if ( QFileInfo ( fileName ) . suffix ( ) . isEmpty ( ) ) {
+179: fileName . append ( ".pdf" ) ;
+180: }
+181: QPrinter printer ( QPrinter :: PrinterResolution ) ;
+182: printer . setOutputFormat ( QPrinter :: PdfFormat ) ;
+183: printer . setPageSize ( QPageSize ( QPageSize :: A4 ) ) ;
+184: printer . setOutputFileName ( fileName ) ;
+185:
+186: QTextDocument doc ;
+187: doc . setHtml ( Stat ) ;
+188:
+189: doc . print ( & printer ) ;
+190:
+191: }
+192:
+193: void StatsDialog :: copyToClipboard ( )
+194: {
+195: QClipboard * clipboard ; clipboard = QApplication :: clipboard ( ) ;
+196: if ( ! clipboard ) {
+197: return ; }
+198:
+199: const QString projSettings ( tr ( "Project Settings" ) ) ;
+200: const QString project ( tr ( "Project" ) ) ;
+201: const QString paths ( tr ( "Paths" ) ) ;
+202: const QString incPaths ( tr ( "Include paths" ) ) ;
+203: const QString defines ( tr ( "Defines" ) ) ;
+204: const QString undefines ( tr ( "Undefines" ) ) ;
+205: const QString prevScan ( tr ( "Previous Scan" ) ) ;
+206: const QString selPath ( tr ( "Path selected" ) ) ;
+207: const QString numFiles ( tr ( "Number of files scanned" ) ) ;
+208: const QString duration ( tr ( "Scan duration" ) ) ;
+209: const QString stats ( tr ( "Statistics" ) ) ;
+210: const QString errors ( tr ( "Errors" ) ) ;
+211: const QString warnings ( tr ( "Warnings" ) ) ;
+212: const QString style ( tr ( "Style warnings" ) ) ;
+213: const QString portability ( tr ( "Portability warnings" ) ) ;
+214: const QString performance ( tr ( "Performance warnings" ) ) ;
+215: const QString information ( tr ( "Information messages" ) ) ;
+216:
+217:
+218: const QString settings = QString (
+219: "%1\n\t%2:\t%3\n\t%4:\t%5\n\t%6:\t%7\n\t%8:\t%9\n\t%10:\t%11\n"
+220:
+|
+224:
+225: )
+226: . arg ( projSettings )
+227: . arg ( project )
+228: . arg ( mUI . mProject . text ( ) )
+229: . arg ( paths )
+230: . arg ( mUI . mPaths . text ( ) )
+231: . arg ( incPaths )
+232: . arg ( mUI . mIncludePaths . text ( ) )
+233: . arg ( defines )
+234: . arg ( mUI . mDefines . text ( ) )
+235: . arg ( undefines )
+236: . arg ( mUI . mUndefines . text ( ) ) ;
+237:
+238: const QString previous = QString (
+239: "%1\n\t%2:\t%3\n\t%4:\t%5\n\t%6:\t%7\n"
+240:
+241:
+242:
+243: )
+244: . arg ( prevScan )
+245: . arg ( selPath )
+246: . arg ( mUI . mPath . text ( ) )
+247: . arg ( numFiles )
+248: . arg ( mUI . mNumberOfFilesScanned . text ( ) )
+249: . arg ( duration )
+250: . arg ( mUI . mScanDuration . text ( ) ) ;
+251:
+252: const QString statistics = QString (
+253: "%1\n\t%2:\t%3\n\t%4:\t%5\n\t%6:\t%7\n\t%8:\t%9\n\t%10:\t%11\n\t%12:\t%13\n"
+254:
+|
+259:
+260: )
+261: . arg ( stats )
+262: . arg ( errors )
+263: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowErrors ) )
+264: . arg ( warnings )
+265: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowWarnings ) )
+266: . arg ( style )
+267: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowStyle ) )
+268: . arg ( portability )
+269: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowPortability ) )
+270: . arg ( performance )
+271: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowPerformance ) )
+272: . arg ( information )
+273: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowInformation ) ) ;
+274:
+275: const QString textSummary = settings + previous + statistics ;
+276:
+277:
+278: const QString htmlSettings = QString (
+279: "<h3>%1<h3>\n<table>\n <tr><th>%2:</th><td>%3</td></tr>\n <tr><th>%4:</th><td>%5</td></tr>\n <tr><th>%6:</th><td>%7</td></tr>\n <tr><th>%8:</th><td>%9</td></tr>\n <tr><th>%10:</th><td>%11</td></tr>\n</table>\n"
+280:
+|
+286:
+287: )
+288: . arg ( projSettings )
+289: . arg ( project )
+290: . arg ( mUI . mProject . text ( ) )
+291: . arg ( paths )
+292: . arg ( mUI . mPaths . text ( ) )
+293: . arg ( incPaths )
+294: . arg ( mUI . mIncludePaths . text ( ) )
+295: . arg ( defines )
+296: . arg ( mUI . mDefines . text ( ) )
+297: . arg ( undefines )
+298: . arg ( mUI . mUndefines . text ( ) ) ;
+299:
+300: const QString htmlPrevious = QString (
+301: "<h3>%1</h3>\n<table>\n <tr><th>%2:</th><td>%3</td></tr>\n <tr><th>%4:</th><td>%5</td></tr>\n <tr><th>%6:</th><td>%7</td></tr>\n</table>\n"
+302:
+|
+306:
+307: )
+308: . arg ( prevScan )
+309: . arg ( selPath )
+310: . arg ( mUI . mPath . text ( ) )
+311: . arg ( numFiles )
+312: . arg ( mUI . mNumberOfFilesScanned . text ( ) )
+313: . arg ( duration )
+314: . arg ( mUI . mScanDuration . text ( ) ) ;
+315:
+316: const QString htmlStatistics = QString (
+317: "<h3>%1</h3>\n <tr><th>%2:</th><td>%3</td></tr>\n <tr><th>%4:</th><td>%5</td></tr>\n <tr><th>%6:</th><td>%7</td></tr>\n <tr><th>%8:</th><td>%9</td></tr>\n <tr><th>%10:</th><td>%11</td></tr>\n <tr><th>%12:</th><td>%13</td></tr>\n</table>\n"
+318:
+|
+324:
+325: )
+326: . arg ( stats )
+327: . arg ( errors )
+328: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowErrors ) )
+329: . arg ( warnings )
+330: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowWarnings ) )
+331: . arg ( style )
+332: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowStyle ) )
+333: . arg ( portability )
+334: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowPortability ) )
+335: . arg ( performance )
+336: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowPerformance ) )
+337: . arg ( information )
+338: . arg ( mStatistics . getCount ( CPPCHECK , ShowTypes :: ShowInformation ) ) ;
+339:
+340: const QString htmlSummary = htmlSettings + htmlPrevious + htmlStatistics ;
+341:
+342: QMimeData * mimeData ; mimeData = new QMimeData ( ) ;
+343: mimeData . setText ( textSummary ) ;
+344: mimeData . setHtml ( htmlSummary ) ;
+345: clipboard . setMimeData ( mimeData ) ;
+346: }
+347:
+348: void StatsDialog :: setStatistics ( const CheckStatistics * stats )
+349: {
+350: mStatistics = stats ;
+351: mUI . mLblErrors . setText ( QString ( "%1" ) . arg ( stats . getCount ( CPPCHECK , ShowTypes :: ShowErrors ) ) ) ;
+352: mUI . mLblWarnings . setText ( QString ( "%1" ) . arg ( stats . getCount ( CPPCHECK , ShowTypes :: ShowWarnings ) ) ) ;
+353: mUI . mLblStyle . setText ( QString ( "%1" ) . arg ( stats . getCount ( CPPCHECK , ShowTypes :: ShowStyle ) ) ) ;
+354: mUI . mLblPortability . setText ( QString ( "%1" ) . arg ( stats . getCount ( CPPCHECK , ShowTypes :: ShowPortability ) ) ) ;
+355: mUI . mLblPerformance . setText ( QString ( "%1" ) . arg ( stats . getCount ( CPPCHECK , ShowTypes :: ShowPerformance ) ) ) ;
+356: mUI . mLblInformation . setText ( QString ( "%1" ) . arg ( stats . getCount ( CPPCHECK , ShowTypes :: ShowInformation ) ) ) ;
+357: }
+
+
+
+##Value flow

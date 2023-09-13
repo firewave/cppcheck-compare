@@ -1,0 +1,524 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741941 expected@var22 !=@expr1073741942 actual@var23 ) {
+62: std ::@expr1073741943 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741944 expected@var22 ;
+64: std ::@expr1073741945 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741946 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741947 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741948 str (@expr1073741949 ) , actualStr@var26 .@expr1073741950 str (@expr1073741951 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741952 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741953 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741954 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741955 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testtokenlist.cpp
+
+1:
+|
+26:
+27: class TestTokenList : public TestFixture {
+28: public:
+29: TestTokenList ( ) : TestFixture ( "TestTokenList" ) { }
+30:
+31: private:
+32: Settings settings@var102 ;
+33:
+34: void run ( ) override {
+35: $do ${ $if $(@expr1073741956 $prepareTest $(@expr1073741957 "testaddtoken1" $) $) ${ $setVerbose $(@expr1073741958 $false $) $; testaddtoken1 $(@expr1073741959 $) $; $} $} $while $(@expr1073741960 $false $) ;
+36: $do ${ $if $(@expr1073741961 $prepareTest $(@expr1073741962 "testaddtoken2" $) $) ${ $setVerbose $(@expr1073741963 $false $) $; testaddtoken2 $(@expr1073741964 $) $; $} $} $while $(@expr1073741965 $false $) ;
+37: $do ${ $if $(@expr1073741966 $prepareTest $(@expr1073741967 "inc" $) $) ${ $setVerbose $(@expr1073741968 $false $) $; inc $(@expr1073741969 $) $; $} $} $while $(@expr1073741970 $false $) ;
+38: $do ${ $if $(@expr1073741971 $prepareTest $(@expr1073741972 "isKeyword" $) $) ${ $setVerbose $(@expr1073741973 $false $) $; isKeyword $(@expr1073741974 $) $; $} $} $while $(@expr1073741975 $false $) ;
+39: }
+40:
+41:
+42: void testaddtoken1 ( ) {
+43: const std ::@expr1073741976 string code@var103 =@expr1073741977 "0x89504e470d0a1a0a" ;
+44: TokenList tokenlist@var104 (@expr1073741978 &@expr1073741979 settings@var102 ) ;
+45: tokenlist@var104 .@expr1073741980 addtoken (@expr1073741981 code@var103 , 1 , 1 , false ) ;
+46: $if $(@expr1073741982 $!@expr1073741983 $assertEquals $(@expr1073741984 "cppcheck-2.8/test/testtokenlist.cpp" $, 46 $, "0x89504e470d0a1a0a" $, tokenlist@var104 .@expr1073741985 front (@expr1073741986 ) .@expr1073741987 str (@expr1073741988 ) $) $) { $return ; }
+47: }
+48:
+49: void testaddtoken2 ( ) {
+50: const std ::@expr1073741989 string code@var105 =@expr1073741990 "0xF0000000" ;
+51: settings@var102 .@expr1073741991 int_bit@var106 =@expr1073741992 32 ;
+52: TokenList tokenlist@var107 (@expr1073741993 &@expr1073741994 settings@var102 ) ;
+53: tokenlist@var107 .@expr1073741995 addtoken (@expr1073741996 code@var105 , 1 , 1 , false ) ;
+54: $if $(@expr1073741997 $!@expr1073741998 $assertEquals $(@expr1073741999 "cppcheck-2.8/test/testtokenlist.cpp" $, 54 $, "0xF0000000" $, tokenlist@var107 .@expr1073742000 front (@expr1073742001 ) .@expr1073742002 str (@expr1073742003 ) $) $) { $return ; }
+55: }
+56:
+57: void inc ( ) const {
+58: const char code@var108 [@expr1073742004 11 ] =@expr1073742005 "a++1;1++b;" ;
+59:
+60: errout@var100 .@expr1073742006 str (@expr1073742007 "" ) ;
+61:
+62:
+63: TokenList tokenlist@var109 (@expr1073742008 &@expr1073742009 settings@var102 ) ;
+64: std ::@expr1073742010 istringstream istr@var110 (@expr1073742011 code@var108 ) ;
+65: tokenlist@var109 .@expr1073742012 createTokens (@expr1073742013 istr@var110 , "a.cpp" ) ;
+66:
+67: $if $(@expr1073742014 $!@expr1073742015 $assert_ $(@expr1073742016 "cppcheck-2.8/test/testtokenlist.cpp" $, 67 $, $(@expr1073742017 Token ::@expr1073742018 simpleMatch (@expr1073742019 tokenlist@var109 .@expr1073742020 front (@expr1073742021 ) , "a + + 1 ; 1 + + b ;" ) $) $) $) { $return ; }
+68: }
+69:
+70: void isKeyword ( ) {
+71:
+72: const char code@var111 [@expr1073742023 22 ] =@expr1073742024 "for a int delete true" ;
+73:
+74: {
+75: TokenList tokenlist@var112 (@expr1073742025 &@expr202 settings@var102 ) ;
+76: std ::@expr1073742027 istringstream istr@var113 (@expr1073742028 code@var111 ) ;
+77: tokenlist@var112 .@expr1073742029 createTokens (@expr1073742030 istr@var113 , "a.c" ) ;
+78:
+79: $if $(@expr1073742031 $!@expr1073742032 $assertEquals $(@expr1073742033 "cppcheck-2.8/test/testtokenlist.cpp" $, 79 $, true $, tokenlist@var112 .@expr210 front (@expr211 ) .@expr1073742036 isKeyword (@expr1073742037 ) $) $) { $return ; }
+80: $if $(@expr1073742038 $!@expr1073742039 $assertEquals $(@expr1073742040 "cppcheck-2.8/test/testtokenlist.cpp" $, 80 $, true $, tokenlist@var112 .@expr210 front (@expr211 ) .@expr1073742043 isControlFlowKeyword (@expr1073742044 ) $) $) { $return ; }
+81: $if $(@expr1073742045 $!@expr1073742046 $assertEquals $(@expr1073742047 "cppcheck-2.8/test/testtokenlist.cpp" $, 81 $, false $, tokenlist@var112 .@expr210 front (@expr211 ) .@expr226 next (@expr227 ) .@expr1073742052 isKeyword (@expr1073742053 ) $) $) { $return ; }
+82: $if $(@expr1073742054 $!@expr1073742055 $assertEquals $(@expr1073742056 "cppcheck-2.8/test/testtokenlist.cpp" $, 82 $, false $, tokenlist@var112 .@expr210 front (@expr211 ) .@expr226 next (@expr227 ) .@expr1073742061 isControlFlowKeyword (@expr1073742062 ) $) $) { $return ; }
+83: $if $(@expr1073742063 $!@expr1073742064 $assertEquals $(@expr1073742065 "cppcheck-2.8/test/testtokenlist.cpp" $, 83 $, false $, tokenlist@var112 .@expr210 front (@expr211 ) .@expr244 tokAt (@expr245 2 ) .@expr1073742070 isKeyword (@expr1073742071 ) $) $) { $return ; }
+84: $if $(@expr1073742072 $!@expr1073742073 $assertEquals $(@expr1073742074 "cppcheck-2.8/test/testtokenlist.cpp" $, 84 $, true $, tokenlist@var112 .@expr210 front (@expr211 ) .@expr244 tokAt (@expr245 2 ) .@expr1073742079 tokType (@expr1073742080 ) ==@expr1073742081 Token ::@expr258 eType@expr198 $) $) { $return ; }
+85: $if $(@expr1073742083 $!@expr1073742084 $assertEquals $(@expr1073742085 "cppcheck-2.8/test/testtokenlist.cpp" $, 85 $, false $, tokenlist@var112 .@expr210 front (@expr211 ) .@expr244 tokAt (@expr245 2 ) .@expr1073742090 isControlFlowKeyword (@expr1073742091 ) $) $) { $return ; }
+86: $if $(@expr1073742092 $!@expr1073742093 $assertEquals $(@expr1073742094 "cppcheck-2.8/test/testtokenlist.cpp" $, 86 $, false $, tokenlist@var112 .@expr210 front (@expr211 ) .@expr244 tokAt (@expr274 3 ) .@expr1073742099 isKeyword (@expr1073742100 ) $) $) { $return ; }
+87: $if $(@expr1073742101 $!@expr1073742102 $assertEquals $(@expr1073742103 "cppcheck-2.8/test/testtokenlist.cpp" $, 87 $, false $, tokenlist@var112 .@expr210 front (@expr211 ) .@expr244 tokAt (@expr274 3 ) .@expr1073742108 isControlFlowKeyword (@expr1073742109 ) $) $) { $return ; }
+88: $if $(@expr1073742110 $!@expr1073742111 $assertEquals $(@expr1073742112 "cppcheck-2.8/test/testtokenlist.cpp" $, 88 $, false $, tokenlist@var112 .@expr210 front (@expr211 ) .@expr244 tokAt (@expr292 4 ) .@expr1073742117 isKeyword (@expr1073742118 ) $) $) { $return ; }
+89: $if $(@expr1073742119 $!@expr1073742120 $assertEquals $(@expr1073742121 "cppcheck-2.8/test/testtokenlist.cpp" $, 89 $, true $, tokenlist@var112 .@expr210 front (@expr211 ) .@expr244 tokAt (@expr292 4 ) .@expr1073742126 isLiteral (@expr1073742127 ) $) $) { $return ; }
+90: $if $(@expr1073742128 $!@expr1073742129 $assertEquals $(@expr1073742130 "cppcheck-2.8/test/testtokenlist.cpp" $, 90 $, false $, tokenlist@var112 .@expr210 front (@expr211 ) .@expr244 tokAt (@expr292 4 ) .@expr1073742135 isControlFlowKeyword (@expr1073742136 ) $) $) { $return ; }
+91: }
+92: {
+93: TokenList tokenlist@var114 (@expr1073742137 &@expr202 settings@var102 ) ;
+94: std ::@expr1073742139 istringstream istr@var115 (@expr1073742140 code@var111 ) ;
+95: tokenlist@var114 .@expr1073742141 createTokens (@expr1073742142 istr@var115 , "a.cpp" ) ;
+96:
+97: $if $(@expr1073742143 $!@expr1073742144 $assertEquals $(@expr1073742145 "cppcheck-2.8/test/testtokenlist.cpp" $, 97 $, true $, tokenlist@var114 .@expr322 front (@expr323 ) .@expr1073742148 isKeyword (@expr1073742149 ) $) $) { $return ; }
+98: $if $(@expr1073742150 $!@expr1073742151 $assertEquals $(@expr1073742152 "cppcheck-2.8/test/testtokenlist.cpp" $, 98 $, true $, tokenlist@var114 .@expr322 front (@expr323 ) .@expr1073742155 isControlFlowKeyword (@expr1073742156 ) $) $) { $return ; }
+99: $if $(@expr1073742157 $!@expr1073742158 $assertEquals $(@expr1073742159 "cppcheck-2.8/test/testtokenlist.cpp" $, 99 $, false $, tokenlist@var114 .@expr322 front (@expr323 ) .@expr338 next (@expr339 ) .@expr1073742164 isKeyword (@expr1073742165 ) $) $) { $return ; }
+100: $if $(@expr1073742166 $!@expr1073742167 $assertEquals $(@expr1073742168 "cppcheck-2.8/test/testtokenlist.cpp" $, 100 $, false $, tokenlist@var114 .@expr322 front (@expr323 ) .@expr338 next (@expr339 ) .@expr1073742173 isControlFlowKeyword (@expr1073742174 ) $) $) { $return ; }
+101: $if $(@expr1073742175 $!@expr1073742176 $assertEquals $(@expr1073742177 "cppcheck-2.8/test/testtokenlist.cpp" $, 101 $, false $, tokenlist@var114 .@expr322 front (@expr323 ) .@expr356 tokAt (@expr357 2 ) .@expr1073742182 isKeyword (@expr1073742183 ) $) $) { $return ; }
+102: $if $(@expr1073742184 $!@expr1073742185 $assertEquals $(@expr1073742186 "cppcheck-2.8/test/testtokenlist.cpp" $, 102 $, true $, tokenlist@var114 .@expr322 front (@expr323 ) .@expr356 tokAt (@expr357 2 ) .@expr1073742191 tokType (@expr1073742192 ) ==@expr1073742193 Token ::@expr258 eType@expr198 $) $) { $return ; }
+103: $if $(@expr1073742195 $!@expr1073742196 $assertEquals $(@expr1073742197 "cppcheck-2.8/test/testtokenlist.cpp" $, 103 $, false $, tokenlist@var114 .@expr322 front (@expr323 ) .@expr356 tokAt (@expr357 2 ) .@expr1073742202 isControlFlowKeyword (@expr1073742203 ) $) $) { $return ; }
+104: $if $(@expr1073742204 $!@expr1073742205 $assertEquals $(@expr1073742206 "cppcheck-2.8/test/testtokenlist.cpp" $, 104 $, true $, tokenlist@var114 .@expr322 front (@expr323 ) .@expr356 tokAt (@expr386 3 ) .@expr1073742211 isKeyword (@expr1073742212 ) $) $) { $return ; }
+105: $if $(@expr1073742213 $!@expr1073742214 $assertEquals $(@expr1073742215 "cppcheck-2.8/test/testtokenlist.cpp" $, 105 $, false $, tokenlist@var114 .@expr322 front (@expr323 ) .@expr356 tokAt (@expr386 3 ) .@expr1073742220 isControlFlowKeyword (@expr1073742221 ) $) $) { $return ; }
+106: $if $(@expr1073742222 $!@expr1073742223 $assertEquals $(@expr1073742224 "cppcheck-2.8/test/testtokenlist.cpp" $, 106 $, false $, tokenlist@var114 .@expr322 front (@expr323 ) .@expr356 tokAt (@expr404 4 ) .@expr1073742229 isKeyword (@expr1073742230 ) $) $) { $return ; }
+107: $if $(@expr1073742231 $!@expr1073742232 $assertEquals $(@expr1073742233 "cppcheck-2.8/test/testtokenlist.cpp" $, 107 $, true $, tokenlist@var114 .@expr322 front (@expr323 ) .@expr356 tokAt (@expr404 4 ) .@expr1073742238 isLiteral (@expr1073742239 ) $) $) { $return ; }
+108: $if $(@expr1073742240 $!@expr1073742241 $assertEquals $(@expr1073742242 "cppcheck-2.8/test/testtokenlist.cpp" $, 108 $, false $, tokenlist@var114 .@expr322 front (@expr323 ) .@expr356 tokAt (@expr404 4 ) .@expr1073742247 isControlFlowKeyword (@expr1073742248 ) $) $) { $return ; }
+109: }
+110: }
+111: } ;
+112:
+113: $namespace ${ TestTokenList instance_TestTokenList@var116 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@1}
+  v {!<=-1,!>=2,0@1}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 29
+  "TestTokenList" always "TestTokenList"
+Line 35
+  ( always {!<=-1,!>=2}
+  "testaddtoken1" always "testaddtoken1"
+  false always 0
+  false always 0
+Line 36
+  ( always {!<=-1,!>=2}
+  "testaddtoken2" always "testaddtoken2"
+  false always 0
+  false always 0
+Line 37
+  ( always {!<=-1,!>=2}
+  "inc" always "inc"
+  false always 0
+  false always 0
+Line 38
+  ( always {!<=-1,!>=2}
+  "isKeyword" always "isKeyword"
+  false always 0
+  false always 0
+Line 43
+  = always "0x89504e470d0a1a0a"
+  "0x89504e470d0a1a0a" always "0x89504e470d0a1a0a"
+Line 44
+  & {lifetime[Address]=(settings),!0}
+Line 45
+  code always {"0x89504e470d0a1a0a",size=18}
+  1 always 1
+  1 always 1
+  false always 0
+Line 46
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  46 always 46
+  "0x89504e470d0a1a0a" always "0x89504e470d0a1a0a"
+Line 50
+  = always "0xF0000000"
+  "0xF0000000" always "0xF0000000"
+Line 51
+  = always 32
+  32 always 32
+Line 52
+  & {lifetime[Address]=(settings),!0}
+Line 53
+  code always {"0xF0000000",size=10}
+  1 always 1
+  1 always 1
+  false always 0
+Line 54
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  54 always 54
+  "0xF0000000" always "0xF0000000"
+Line 58
+  11 always 11
+  = always "a++1;1++b;"
+  "a++1;1++b;" always "a++1;1++b;"
+Line 60
+  "" always ""
+Line 63
+  & {lifetime[Address]=(settings),!0}
+Line 64
+  code always "a++1;1++b;"
+Line 65
+  "a.cpp" always "a.cpp"
+Line 67
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  67 always 67
+  "a + + 1 ; 1 + + b ;" always "a + + 1 ; 1 + + b ;"
+Line 72
+  22 always 22
+  = always "for a int delete true"
+  "for a int delete true" always "for a int delete true"
+Line 75
+  & {lifetime[Address]=(settings),!0}
+Line 76
+  code always "for a int delete true"
+Line 77
+  "a.c" always "a.c"
+Line 79
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  79 always 79
+  true always 1
+Line 80
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  80 always 80
+  true always 1
+Line 81
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  81 always 81
+  false always 0
+Line 82
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  82 always 82
+  false always 0
+Line 83
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  83 always 83
+  false always 0
+  2 always 2
+Line 84
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  84 always 84
+  true always 1
+  2 always 2
+  == always {!<=-1,!>=2}
+Line 85
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  85 always 85
+  false always 0
+  2 always 2
+Line 86
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  86 always 86
+  false always 0
+  3 always 3
+Line 87
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  87 always 87
+  false always 0
+  3 always 3
+Line 88
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  88 always 88
+  false always 0
+  4 always 4
+Line 89
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  89 always 89
+  true always 1
+  4 always 4
+Line 90
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  90 always 90
+  false always 0
+  4 always 4
+Line 93
+  & {lifetime[Address]=(settings),!0}
+Line 94
+  code always "for a int delete true"
+Line 95
+  "a.cpp" always "a.cpp"
+Line 97
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  97 always 97
+  true always 1
+Line 98
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  98 always 98
+  true always 1
+Line 99
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  99 always 99
+  false always 0
+Line 100
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  100 always 100
+  false always 0
+Line 101
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  101 always 101
+  false always 0
+  2 always 2
+Line 102
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  102 always 102
+  true always 1
+  2 always 2
+  == always {!<=-1,!>=2}
+Line 103
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  103 always 103
+  false always 0
+  2 always 2
+Line 104
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  104 always 104
+  true always 1
+  3 always 3
+Line 105
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  105 always 105
+  false always 0
+  3 always 3
+Line 106
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  106 always 106
+  false always 0
+  4 always 4
+Line 107
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  107 always 107
+  true always 1
+  4 always 4
+Line 108
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenlist.cpp" always "cppcheck-2.8/test/testtokenlist.cpp"
+  108 always 108
+  false always 0
+  4 always 4

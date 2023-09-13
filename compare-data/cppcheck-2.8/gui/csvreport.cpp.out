@@ -1,0 +1,292 @@
+
+
+##file cppcheck-2.8/gui/report.h
+
+1:
+|
+25:
+26: class ErrorItem ;
+27:
+|
+33:
+34: class Report : public QObject {
+35: public:
+36: enum Type {
+37: TXT ,
+38: XMLV2 ,
+39: CSV ,
+40: } ;
+41:
+42: explicit Report ( const QString & filename@var1 ) ;
+43: ~ Report ( ) override ;
+44:
+|
+48:
+49: virtual bool create ( ) ;
+50:
+|
+54:
+55: virtual bool open ( ) ;
+56:
+|
+59:
+60: void close ( ) ;
+61:
+|
+64:
+65: virtual void writeHeader ( ) = 0 ;
+66:
+|
+69:
+70: virtual void writeFooter ( ) = 0 ;
+71:
+|
+75:
+76: virtual void writeError ( const ErrorItem & error@var2 ) = 0 ;
+77:
+78: protected:
+79:
+|
+82:
+83: QFile * getFile ( ) ;
+84:
+85: private:
+86:
+|
+89:
+90: QString mFilename@var3 ;
+91:
+|
+94:
+95: QFile mFile@var4 ;
+96: } ;
+
+##file cppcheck-2.8/gui/csvreport.h
+
+1:
+|
+26:
+27: class ErrorItem ;
+28:
+|
+38:
+39: class CsvReport : public Report {
+40: public:
+41: explicit CsvReport ( const QString & filename@var5 ) ;
+42: ~ CsvReport ( ) override ;
+43:
+|
+47:
+48: virtual bool create ( ) override ;
+49:
+|
+52:
+53: virtual void writeHeader ( ) override ;
+54:
+|
+57:
+58: virtual void writeFooter ( ) override ;
+59:
+|
+63:
+64: virtual void writeError ( const ErrorItem & error@var6 ) override ;
+65:
+66: private:
+67:
+|
+70:
+71: QTextStream mTxtWriter@var7 ;
+72: } ;
+
+##file cppcheck-2.8/gui/erroritem.h
+
+1:
+|
+36:
+37: class GuiSeverity {
+38: public:
+39: static QString toString ( Severity :: SeverityType severity@var8 ) {
+40: return QString ::@expr1073741876 fromStdString (@expr1073741877 Severity ::@expr1073741878 toString (@expr1073741879 severity@var8 ) ) ;
+41: }
+42:
+43: static Severity :: SeverityType fromString ( const QString & severity@var9 ) {
+44: return Severity ::@expr1073741880 fromString (@expr1073741881 severity@var9 .@expr1073741882 toStdString (@expr1073741883 ) ) ;
+45: }
+46: } ;
+47:
+|
+50:
+51: class QErrorPathItem {
+52: public:
+53: QErrorPathItem ( ) : line@var12 ( 0 ) , column@var13 ( -1 ) { }
+54: explicit QErrorPathItem ( const ErrorMessage :: FileLocation & loc@var10 ) ;
+55: QString file@var11 ;
+56: int line@var12 ;
+57: int column@var13 ;
+58: QString info@var14 ;
+59: } ;
+60:
+61: bool operator== ( const QErrorPathItem & i1@var15 , const QErrorPathItem & i2@var16 ) ;
+62:
+|
+70:
+71: class ErrorItem {
+72: public:
+73: ErrorItem ( ) ;
+74: explicit ErrorItem ( const ErrorMessage & errmsg@var17 ) ;
+75:
+|
+79:
+80: QString toString ( ) const ;
+81: QString tool ( ) const ;
+82:
+83: QString file0@var18 ;
+84: QString function@var19 ;
+85: QString errorId@var20 ;
+86: Severity :: SeverityType severity@var21 ;
+87: bool incomplete@var22 ;
+88: bool inconclusive@var23 ;
+89: QString summary@var24 ;
+90: QString message@var25 ;
+91: int cwe@var26 ;
+92: unsigned long long hash@var27 ;
+93: QList < QErrorPathItem > errorPath@var28 ;
+94: QString symbolNames@var29 ;
+95:
+96:
+97: QString sinceDate@var30 ;
+98: QString tags@var31 ;
+99:
+|
+102:
+103: static bool sameCID ( const ErrorItem & errorItem1@var32 , const ErrorItem & errorItem2@var33 ) ;
+104: } ;
+105:
+|
+110:
+111: class ErrorLine {
+112: public:
+113: QString file@var34 ;
+114: int line@var35 ;
+115: QString file0@var36 ;
+116: QString errorId@var37 ;
+117: bool incomplete@var38 ;
+118: int cwe@var39 ;
+119: unsigned long long hash@var40 ;
+120: bool inconclusive@var41 ;
+121: Severity :: SeverityType severity@var42 ;
+122: QString summary@var43 ;
+123: QString message@var44 ;
+124: QString sinceDate@var45 ;
+125: QString tags@var46 ;
+126: } ;
+
+##file cppcheck-2.8/gui/csvreport.cpp
+
+1:
+|
+25:
+26: CsvReport :: CsvReport ( const QString & filename@var47 ) :
+27: Report ( filename@var47 )
+28: { }
+29:
+30: CsvReport :: ~ CsvReport ( )
+31: { }
+32:
+33: bool CsvReport :: create ( )
+34: {
+35: if (@expr1073741884 Report ::@expr1073741885 create (@expr1073741886 ) ) {
+36: mTxtWriter@var7 .@expr1073741887 setDevice (@expr1073741888 Report ::@expr1073741889 getFile (@expr1073741890 ) ) ;
+37: return true ;
+38: }
+39: return false ;
+40: }
+41:
+42: void CsvReport :: writeHeader ( )
+43: {
+44:
+|
+47:
+48: mTxtWriter@var7 <<@expr1073741892 "File, Line, Severity, Id, Summary" <<@expr1073741893 endl@expr1073741891 ;
+49:
+50: }
+51:
+52: void CsvReport :: writeFooter ( )
+53: {
+54:
+55: }
+56:
+57: void CsvReport :: writeError ( const ErrorItem & error@var48 )
+58: {
+59:
+|
+63:
+64: const QString file@var49 =@expr1073741897 QDir ::@expr1073741898 toNativeSeparators (@expr1073741899 error@var48 .@expr76 errorPath@var50 .@expr77 back (@expr78 ) .@expr1073741903 file@expr1073741894 ) ;
+65: QString line@var51 ; line@var51 =@expr1073741904 QString (@expr1073741905 "%1,%2," ) .@expr1073741906 arg (@expr1073741907 file@var49 ) .@expr1073741908 arg (@expr1073741909 error@var48 .@expr76 errorPath@var50 .@expr77 back (@expr78 ) .@expr1073741913 line@expr1073741895 ) ;
+66: line@var51 +=@expr1073741914 QString (@expr1073741915 "%1,%2,%3" ) .@expr1073741916 arg (@expr1073741917 GuiSeverity ::@expr1073741918 toString (@expr1073741919 error@var48 .@expr1073741920 severity@var52 ) ) .@expr1073741921 arg (@expr1073741922 error@var48 .@expr1073741923 errorId@var53 ) .@expr1073741924 arg (@expr1073741925 error@var48 .@expr1073741926 summary@var54 ) ;
+67:
+68:
+69:
+70: mTxtWriter@var7 <<@expr1073741927 line@var51 <<@expr1073741928 endl@expr1073741896 ;
+71:
+72: }
+
+
+
+##Value flow
+Line 37
+  TXT always 0
+Line 38
+  XMLV2 always 1
+Line 39
+  CSV always 2
+Line 49
+  ( always {!<=-1,!>=2}
+Line 55
+  ( always {!<=-1,!>=2}
+Line 65
+  = always 0
+  0 always 0
+Line 70
+  = always 0
+  0 always 0
+Line 76
+  = always 0
+  0 always 0
+Line 48
+  ( always {!<=-1,!>=2}
+Line 53
+  0 always 0
+  -1 always -1
+Line 61
+  ( always {!<=-1,!>=2}
+Line 87
+  incomplete always {!<=-1,!>=2}
+Line 88
+  inconclusive always {!<=-1,!>=2}
+Line 92
+  hash always !<=-1
+Line 103
+  ( always {!<=-1,!>=2}
+Line 117
+  incomplete always {!<=-1,!>=2}
+Line 119
+  hash always !<=-1
+Line 120
+  inconclusive always {!<=-1,!>=2}
+Line 33
+  ( always {!<=-1,!>=2}
+Line 35
+  ( always {!<=-1,!>=2}
+Line 37
+  return always {!<=-1,!>=2}
+  true always 1
+Line 39
+  return always {!<=-1,!>=2}
+  false always 0
+Line 48
+  "File, Line, Severity, Id, Summary" always "File, Line, Severity, Id, Summary"
+Line 65
+  "%1,%2," always "%1,%2,"
+Line 66
+  "%1,%2,%3" always "%1,%2,%3"

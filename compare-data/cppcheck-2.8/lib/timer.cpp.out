@@ -1,0 +1,275 @@
+
+
+##file cppcheck-2.8/lib/config.h
+
+1:
+|
+78:
+79: static const std :: string emptyString@var1 ;
+
+##file cppcheck-2.8/lib/timer.h
+
+1:
+|
+28:
+29: enum class SHOWTIME_MODES {
+30: SHOWTIME_NONE = 0 ,
+31: SHOWTIME_FILE ,
+32: SHOWTIME_SUMMARY ,
+33: SHOWTIME_TOP5
+34: } ;
+35:
+36: class TimerResultsIntf {
+37: public:
+38: virtual ~ TimerResultsIntf ( ) { }
+39:
+40: virtual void addResults ( const std :: string & str@var2 , std :: clock_t clocks@var3 ) = 0 ;
+41: } ;
+42:
+43: struct TimerResultsData {
+44: std :: clock_t mClocks@var4 ;
+45: long mNumberOfResults@var5 ;
+46:
+47: TimerResultsData ( )
+48: : mClocks@var4 ( 0 )
+49: , mNumberOfResults@var5 ( 0 ) { }
+50:
+51: double seconds ( ) const {
+52: const double ret@var6 =@expr1073741870 (@expr1073741871 double ) (@expr1073741872 (@expr1073741873 unsigned long ) mClocks@var4 ) /@expr1073741874 (@expr1073741875 double ) CLOCKS_PER_SEC@expr1073741869 ;
+53: return ret@var6 ;
+54: }
+55: } ;
+56:
+57: class TimerResults : public TimerResultsIntf {
+58: public:
+59: TimerResults ( ) { }
+60:
+61: void showResults ( SHOWTIME_MODES mode@var7 ) const ;
+62: void addResults ( const std :: string & str@var8 , std :: clock_t clocks@var9 ) override ;
+63:
+64: private:
+65: std :: map < std :: string , struct TimerResultsData > mResults@var10 ;
+66: } ;
+67:
+68: class Timer {
+69: public:
+70: Timer ( const std :: string & str@var11 , SHOWTIME_MODES showtimeMode@var12 , TimerResultsIntf * timerResults@var13 = nullptr ) ;
+71: ~ Timer ( ) ;
+72: void stop ( ) ;
+73:
+74: private:
+75: Timer ( const Timer & other@var14 ) ;
+76: Timer & operator= ( const Timer & ) ;
+77:
+78: const std :: string mStr@var15 ;
+79: TimerResultsIntf * mTimerResults@var16 ;
+80: std :: clock_t mStart@var17 ;
+81: const SHOWTIME_MODES mShowTimeMode@var18 ;
+82: bool mStopped@var19 ;
+83: } ;
+
+##file cppcheck-2.8/lib/timer.cpp
+
+1:
+|
+33:
+34: namespace {
+35:
+36: bool more_second_sec ( const std :: pair < std :: string , struct TimerResultsData > & lhs@var20 , const std :: pair < std :: string , struct TimerResultsData > & rhs@var21 )
+37: {
+38: return lhs@var20 .@expr1073741876 second@var22 .@expr1073741877 seconds (@expr1073741878 ) >@expr1073741879 rhs@var21 .@expr1073741880 second@var23 .@expr1073741881 seconds (@expr1073741882 ) ;
+39: }
+40: }
+41:
+42: void TimerResults :: showResults ( SHOWTIME_MODES mode@var24 ) const
+43: {
+44: if (@expr1073741885 mode@var24 ==@expr1073741886 SHOWTIME_MODES ::@expr1073741887 SHOWTIME_NONE ) {
+45: return ; }
+46:
+47: std ::@expr64 cout@expr59 <<@expr1073741889 std ::@expr66 endl@expr60 ;
+48: TimerResultsData overallData@var25 ;
+49:
+50: std ::@expr1073741891 vector < dataElementType > data@var26 (@expr1073741892 mResults@var10 .@expr1073741893 begin (@expr1073741894 ) , mResults@var10 .@expr1073741895 end (@expr1073741896 ) ) ;
+51: std ::@expr1073741897 sort (@expr1073741898 data@var26 .@expr75 begin (@expr76 ) , data@var26 .@expr77 end (@expr78 ) , more_second_sec ) ;
+52:
+53: unsigned long ordinal@var27 ; ordinal@var27 =@expr1073741903 1 ;
+54: for (@expr1073741904 std ::@expr81 vector < dataElementType > ::@expr81 const_iterator iter@var28 =@expr1073741907 data@var26 .@expr75 begin (@expr76 ) ; iter@var28 !=@expr1073741910 data@var26 .@expr77 end (@expr78 ) ; ++@expr1073741913 iter@var28 ) {
+55: const double sec@var29 =@expr1073741914 iter@var28 .@expr91 second@var30 .@expr1073741916 seconds (@expr1073741917 ) ;
+56: const double secAverage@var31 =@expr1073741918 sec@var29 /@expr1073741919 (@expr1073741920 double ) (@expr1073741921 iter@var28 .@expr91 second@var30 .@expr99 mNumberOfResults@var32 ) ;
+57: overallData@var25 .@expr1073741924 mClocks@var33 +=@expr1073741925 iter@var28 .@expr91 second@var30 .@expr1073741927 mClocks@var34 ;
+58: if (@expr1073741928 (@expr1073741929 mode@var24 !=@expr1073741930 SHOWTIME_MODES ::@expr1073741931 SHOWTIME_TOP5 ) ||@expr1073741932 (@expr1073741933 ordinal@var27 <=@expr1073741934 5 ) ) {
+59: std ::@expr64 cout@expr59 <<@expr1073741936 iter@var28 .@expr1073741937 first@var35 <<@expr1073741938 ": " <<@expr1073741939 sec@var29 <<@expr1073741940 "s (avg. " <<@expr1073741941 secAverage@var31 <<@expr1073741942 "s - " <<@expr1073741943 iter@var28 .@expr91 second@var30 .@expr99 mNumberOfResults@var32 <<@expr1073741946 " result(s))" <<@expr1073741947 std ::@expr66 endl@expr60 ;
+60: }
+61: ++@expr1073741949 ordinal@var27 ;
+62: }
+63:
+64: const double secOverall@var36 =@expr1073741950 overallData@var25 .@expr1073741951 seconds (@expr1073741952 ) ;
+65: std ::@expr64 cout@expr59 <<@expr1073741954 "Overall time: " <<@expr1073741955 secOverall@var36 <<@expr1073741956 "s" <<@expr1073741957 std ::@expr66 endl@expr60 ;
+66: }
+67:
+68: void TimerResults :: addResults ( const std :: string & str@var37 , std :: clock_t clocks@var38 )
+69: {
+70: mResults@var10 [@expr135 str@var37 ] .@expr1073741960 mClocks@var45 +=@expr1073741961 clocks@var38 ;
+71: mResults@var10 [@expr135 str@var37 ] .@expr1073741963 mNumberOfResults@var46 ++@expr1073741964 ;
+72: }
+73:
+74: Timer :: Timer ( const std :: string & str@var39 , SHOWTIME_MODES showtimeMode@var40 , TimerResultsIntf * timerResults@var41 )
+75: : mStr@var15 ( str@var39 )
+76: , mTimerResults@var16 ( timerResults@var41 )
+77: , mStart@var17 ( 0 )
+78: , mShowTimeMode@var18 ( showtimeMode@var40 )
+79: , mStopped@var19 ( false )
+80: {
+81: if (@expr1073741965 showtimeMode@var40 !=@expr1073741966 SHOWTIME_MODES ::@expr1073741967 SHOWTIME_NONE ) {
+82: mStart@var17 =@expr1073741968 std ::@expr1073741969 clock (@expr1073741970 ) ; }
+83: }
+84:
+85: Timer :: ~ Timer ( )
+86: {
+87: stop (@expr1073741971 ) ;
+88: }
+89:
+90: void Timer :: stop ( )
+91: {
+92: if (@expr1073741975 (@expr1073741976 mShowTimeMode@var18 !=@expr1073741977 SHOWTIME_MODES ::@expr1073741978 SHOWTIME_NONE ) &&@expr1073741979 !@expr1073741980 mStopped@var19 ) {
+93: const std ::@expr157 clock_t end@var42 =@expr1073741982 std ::@expr1073741983 clock (@expr1073741984 ) ;
+94: const std ::@expr157 clock_t diff@var43 =@expr1073741986 end@var42 -@expr1073741987 mStart@var17 ;
+95:
+96: if (@expr1073741988 mShowTimeMode@var18 ==@expr1073741989 SHOWTIME_MODES ::@expr1073741990 SHOWTIME_FILE ) {
+97: const double sec@var44 =@expr1073741991 (@expr1073741992 double ) diff@var43 /@expr1073741993 CLOCKS_PER_SEC@expr1073741972 ;
+98: std ::@expr1073741994 cout@expr1073741973 <<@expr1073741995 mStr@var15 <<@expr1073741996 ": " <<@expr1073741997 sec@var44 <<@expr1073741998 "s" <<@expr1073741999 std ::@expr1073742000 endl@expr1073741974 ;
+99: } else {
+100: if (@expr1073742001 mTimerResults@var16 ) {
+101: mTimerResults@var16 .@expr1073742002 addResults (@expr1073742003 mStr@var15 , diff@var43 ) ; }
+102: }
+103: }
+104:
+105: mStopped@var19 =@expr1073742004 true ;
+106: }
+
+
+
+##Value flow
+Line 30
+  SHOWTIME_NONE always 0
+  = always 0
+  0 always 0
+  , always 1
+Line 31
+  SHOWTIME_FILE always 1
+  , always 2
+Line 32
+  SHOWTIME_SUMMARY always 2
+  , always 3
+Line 33
+  SHOWTIME_TOP5 always 3
+Line 40
+  = always 0
+  0 always 0
+Line 48
+  0 always 0
+Line 49
+  0 always 0
+Line 52
+  ( always !<=-1
+  ( always !<=-1
+Line 70
+  , always 0
+  = always 0
+  nullptr always 0
+Line 82
+  mStopped always {!<=-1,!>=2}
+Line 36
+  ( always {!<=-1,!>=2}
+Line 38
+  return always {!<=-1,!>=2}
+  > always {!<=-1,!>=2}
+Line 44
+  mode possible 3
+  == {!<=-1,!>=2,0}
+  :: always 0
+  SHOWTIME_NONE always 0
+Line 50
+  ( {lifetime[Iterator]=(mResults),start=0}
+  ( {lifetime[Iterator]=(mResults),end=0}
+Line 51
+  ( {lifetime[Iterator]=(data),start=0}
+  ( {lifetime[Iterator]=(data),end=0}
+Line 53
+  ordinal always !<=-1
+  ordinal always !<=-1
+  = always 1
+  1 always 1
+Line 54
+  = {lifetime[Iterator]=(data),start=0}
+  ( {lifetime[Iterator]=(data),start=0}
+  iter possible {lifetime[Iterator]=(data),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(data),end=0}
+  iter possible lifetime[Iterator]=(data)
+Line 55
+  iter {lifetime[Iterator]=(data),!symbolic=(data.end()),!end=0}
+Line 56
+  iter {lifetime[Iterator]=(data),!symbolic=(data.end()),!end=0}
+Line 57
+  iter {lifetime[Iterator]=(data),!symbolic=(data.end()),!end=0}
+Line 58
+  mode always !0
+  != always {!<=-1,!>=2}
+  :: always 3
+  SHOWTIME_TOP5 always 3
+  || always {!<=-1,!>=2}
+  ordinal always !<=-1
+  <= always {!<=-1,!>=2}
+  5 always 5
+Line 59
+  iter {lifetime[Iterator]=(data),!symbolic=(data.end()),!end=0}
+  ": " always ": "
+  "s (avg. " always "s (avg. "
+  secAverage always symbolic=(sec/(double)(iter->second.mNumberOfResults))
+  "s - " always "s - "
+  iter {lifetime[Iterator]=(data),!symbolic=(data.end()),!end=0}
+  " result(s))" always " result(s))"
+Line 61
+  ++ {!<=0,<=6,>=7}
+  ordinal {!<=-1,<=5,>=6}
+Line 65
+  "Overall time: " always "Overall time: "
+  secOverall always symbolic=(overallData.seconds())
+  "s" always "s"
+Line 77
+  0 always 0
+Line 78
+  showtimeMode inconclusive 0
+Line 79
+  mStopped always {!<=-1,!>=2}
+  false always 0
+Line 81
+  != always {!<=-1,!>=2}
+  :: always 0
+  SHOWTIME_NONE always 0
+Line 92
+  mShowTimeMode possible 1
+  != {!<=-1,!>=2,1}
+  :: always 0
+  SHOWTIME_NONE always 0
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  mStopped always {!<=-1,!>=2}
+Line 96
+  mShowTimeMode always !0
+  == always {!<=-1,!>=2}
+  :: always 1
+  SHOWTIME_FILE always 1
+Line 97
+  diff always symbolic=(end-mStart)
+Line 98
+  ": " always ": "
+  "s" always "s"
+Line 101
+  mTimerResults always !0
+  diff always symbolic=(end-mStart)
+Line 105
+  mStopped always {!<=-1,!>=2}
+  = always 1
+  true always 1

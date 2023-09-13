@@ -1,0 +1,384 @@
+
+
+##file cppcheck-2.8/gui/showtypes.h
+
+1:
+|
+37:
+38: class ShowTypes {
+39: public:
+40:
+|
+43:
+44: enum ShowType {
+45: ShowStyle = 0 ,
+46: ShowWarnings ,
+47: ShowPerformance ,
+48: ShowPortability ,
+49: ShowInformation ,
+50: ShowErrors ,
+51: ShowNone
+52: } ;
+53:
+|
+57:
+58: ShowTypes ( ) ;
+59:
+|
+63:
+64: ~ ShowTypes ( ) ;
+65:
+|
+68:
+69: void load ( ) ;
+70:
+|
+73:
+74: void save ( ) const ;
+75:
+|
+80:
+81: bool isShown ( ShowTypes :: ShowType category@var1 ) const ;
+82:
+|
+87:
+88: bool isShown ( Severity :: SeverityType severity@var2 ) const ;
+89:
+|
+94:
+95: void show ( ShowTypes :: ShowType category@var3 , bool showing@var4 ) ;
+96:
+|
+101:
+102: static ShowTypes :: ShowType SeverityToShowType ( Severity :: SeverityType severity@var5 ) ;
+103:
+|
+108:
+109: static Severity :: SeverityType ShowTypeToSeverity ( ShowTypes :: ShowType type@var6 ) ;
+110:
+|
+116:
+117: static ShowTypes :: ShowType VariantToShowType ( const QVariant & data@var7 ) ;
+118:
+119: bool mVisible@var8 [ ShowNone ] ;
+120: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type@var9 ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type@var10 , const QString & value@var11 ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters@var12 , bool addAllSupported@var13 = true , bool addAll@var14 = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/showtypes.cpp
+
+1:
+|
+24:
+25: ShowTypes :: ShowTypes ( )
+26: {
+27: load (@expr1073741849 ) ;
+28: }
+29:
+30: ShowTypes :: ~ ShowTypes ( )
+31: {
+32: save (@expr1073741850 ) ;
+33: }
+34:
+35: ShowTypes :: ShowType ShowTypes :: SeverityToShowType ( Severity :: SeverityType severity@var15 )
+36: {
+37: switch (@expr1073741851 severity@var15 ) {
+38: case Severity ::@expr1073741852 none :@expr29 ;
+39: return ShowTypes ::@expr30 ShowNone ;
+40: case Severity ::@expr1073741855 error :@expr29 ;
+41: return ShowTypes ::@expr1073741857 ShowErrors ;
+42: case Severity ::@expr1073741858 style :@expr29 ;
+43: return ShowTypes ::@expr1073741860 ShowStyle ;
+44: case Severity ::@expr1073741861 warning :@expr29 ;
+45: return ShowTypes ::@expr1073741863 ShowWarnings ;
+46: case Severity ::@expr1073741864 performance :@expr29 ;
+47: return ShowTypes ::@expr1073741866 ShowPerformance ;
+48: case Severity ::@expr1073741867 portability :@expr29 ;
+49: return ShowTypes ::@expr1073741869 ShowPortability ;
+50: case Severity ::@expr1073741870 information :@expr29 ;
+51: return ShowTypes ::@expr1073741872 ShowInformation ;
+52: default :@expr29 ;
+53: return ShowTypes ::@expr30 ShowNone ;
+54: }
+55: }
+56:
+57: Severity :: SeverityType ShowTypes :: ShowTypeToSeverity ( ShowTypes :: ShowType type@var16 )
+58: {
+59: switch (@expr1073741882 type@var16 ) {
+60: case ShowTypes ::@expr1073741883 ShowStyle :@expr60 ;
+61: return Severity ::@expr1073741885 style@expr1073741875 ;
+62:
+63: case ShowTypes ::@expr1073741886 ShowErrors :@expr60 ;
+64: return Severity ::@expr1073741888 error@expr1073741876 ;
+65:
+66: case ShowTypes ::@expr1073741889 ShowWarnings :@expr60 ;
+67: return Severity ::@expr1073741891 warning@expr1073741877 ;
+68:
+69: case ShowTypes ::@expr1073741892 ShowPerformance :@expr60 ;
+70: return Severity ::@expr1073741894 performance@expr1073741878 ;
+71:
+72: case ShowTypes ::@expr1073741895 ShowPortability :@expr60 ;
+73: return Severity ::@expr1073741897 portability@expr1073741879 ;
+74:
+75: case ShowTypes ::@expr1073741898 ShowInformation :@expr60 ;
+76: return Severity ::@expr1073741900 information@expr1073741880 ;
+77:
+78: case ShowTypes ::@expr1073741901 ShowNone :@expr60 ;
+79: default :@expr60 ;
+80: return Severity ::@expr1073741904 none@expr1073741881 ;
+81: }
+82: }
+83:
+84: ShowTypes :: ShowType ShowTypes :: VariantToShowType ( const QVariant & data@var17 )
+85: {
+86: const int value@var18 =@expr1073741905 data@var17 .@expr1073741906 toInt (@expr1073741907 ) ;
+87: if (@expr1073741908 value@var18 <@expr1073741909 ShowTypes ::@expr1073741910 ShowStyle ||@expr1073741911 value@var18 >@expr1073741912 ShowTypes ::@expr1073741913 ShowErrors ) {
+88: return ShowTypes ::@expr1073741914 ShowNone ;
+89: }
+90: return (@expr1073741915 ShowTypes ::@expr1073741916 ShowType ) value@var18 ;
+91: }
+92:
+93: void ShowTypes :: load ( )
+94: {
+95: QSettings settings@var19 ;
+96: mVisible@var8 [@expr1073741917 ShowStyle ] =@expr1073741918 settings@var19 .@expr95 value (@expr1073741920 $"Show style" , true ) .@expr1073741921 toBool (@expr1073741922 ) ;
+97: mVisible@var8 [@expr1073741923 ShowErrors ] =@expr1073741924 settings@var19 .@expr95 value (@expr1073741926 $"Show errors" , true ) .@expr1073741927 toBool (@expr1073741928 ) ;
+98: mVisible@var8 [@expr1073741929 ShowWarnings ] =@expr1073741930 settings@var19 .@expr95 value (@expr1073741932 $"Show warnings" , true ) .@expr1073741933 toBool (@expr1073741934 ) ;
+99: mVisible@var8 [@expr1073741935 ShowPortability ] =@expr1073741936 settings@var19 .@expr95 value (@expr1073741938 $"Show portability" , true ) .@expr1073741939 toBool (@expr1073741940 ) ;
+100: mVisible@var8 [@expr1073741941 ShowPerformance ] =@expr1073741942 settings@var19 .@expr95 value (@expr1073741944 $"Show performance" , true ) .@expr1073741945 toBool (@expr1073741946 ) ;
+101: mVisible@var8 [@expr1073741947 ShowInformation ] =@expr1073741948 settings@var19 .@expr95 value (@expr1073741950 $"Show information" , true ) .@expr1073741951 toBool (@expr1073741952 ) ;
+102: }
+103:
+104: void ShowTypes :: save ( ) const
+105: {
+106: QSettings settings@var20 ;
+107: settings@var20 .@expr129 setValue (@expr1073741954 $"Show style" , mVisible@var8 [@expr1073741955 ShowStyle ] ) ;
+108: settings@var20 .@expr129 setValue (@expr1073741957 $"Show errors" , mVisible@var8 [@expr1073741958 ShowErrors ] ) ;
+109: settings@var20 .@expr129 setValue (@expr1073741960 $"Show warnings" , mVisible@var8 [@expr1073741961 ShowWarnings ] ) ;
+110: settings@var20 .@expr129 setValue (@expr1073741963 $"Show portability" , mVisible@var8 [@expr1073741964 ShowPortability ] ) ;
+111: settings@var20 .@expr129 setValue (@expr1073741966 $"Show performance" , mVisible@var8 [@expr1073741967 ShowPerformance ] ) ;
+112: settings@var20 .@expr129 setValue (@expr1073741969 $"Show information" , mVisible@var8 [@expr1073741970 ShowInformation ] ) ;
+113: }
+114:
+115: bool ShowTypes :: isShown ( ShowTypes :: ShowType category@var21 ) const
+116: {
+117: return mVisible@var8 [@expr1073741971 category@var21 ] ;
+118: }
+119:
+120: bool ShowTypes :: isShown ( Severity :: SeverityType severity@var22 ) const
+121: {
+122: return isShown (@expr1073741972 ShowTypes ::@expr1073741973 SeverityToShowType (@expr1073741974 severity@var22 ) ) ;
+123: }
+124:
+125: void ShowTypes :: show ( ShowTypes :: ShowType category@var23 , bool showing@var24 )
+126: {
+127: mVisible@var8 [@expr1073741975 category@var23 ] =@expr1073741976 showing@var24 ;
+128: }
+
+
+
+##Value flow
+Line 45
+  ShowStyle always 0
+  = always 0
+  0 always 0
+  , always 1
+Line 46
+  ShowWarnings always 1
+  , always 2
+Line 47
+  ShowPerformance always 2
+  , always 3
+Line 48
+  ShowPortability always 3
+  , always 4
+Line 49
+  ShowInformation always 4
+  , always 5
+Line 50
+  ShowErrors always 5
+  , always 6
+Line 51
+  ShowNone always 6
+Line 81
+  ( always {!<=-1,!>=2}
+Line 88
+  ( always {!<=-1,!>=2}
+Line 119
+  ShowNone always 6
+Line 148
+  addAllSupported always {!<=-1,!>=2}
+  = always 1
+  true always 1
+  , always 1
+  addAll always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 39
+  :: always 6
+  ShowNone always 6
+Line 41
+  :: always 5
+  ShowErrors always 5
+Line 43
+  :: always 0
+  ShowStyle always 0
+Line 45
+  :: always 1
+  ShowWarnings always 1
+Line 47
+  :: always 2
+  ShowPerformance always 2
+Line 49
+  :: always 3
+  ShowPortability always 3
+Line 51
+  :: always 4
+  ShowInformation always 4
+Line 53
+  :: always 6
+  ShowNone always 6
+Line 60
+  :: always 0
+  ShowStyle always 0
+Line 63
+  :: always 5
+  ShowErrors always 5
+Line 66
+  :: always 1
+  ShowWarnings always 1
+Line 69
+  :: always 2
+  ShowPerformance always 2
+Line 72
+  :: always 3
+  ShowPortability always 3
+Line 75
+  :: always 4
+  ShowInformation always 4
+Line 78
+  :: always 6
+  ShowNone always 6
+Line 87
+  < always {!<=-1,!>=2}
+  :: always 0
+  ShowStyle always 0
+  || always {!<=-1,!>=2}
+  value {!<=-1,>=0}
+  > {!<=-1,!>=2,>=0}
+  :: always 5
+  ShowErrors always 5
+Line 88
+  :: always 6
+  ShowNone always 6
+Line 90
+  ( {!<=-1,>=0,!>=6,<=5}
+  value {!<=-1,>=0,!>=6,<=5}
+Line 96
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+  ShowStyle always 0
+  = always {!<=-1,!>=2}
+  "Show style" always "Show style"
+  true always 1
+Line 97
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+  ShowErrors always 5
+  = always {!<=-1,!>=2}
+  "Show errors" always "Show errors"
+  true always 1
+Line 98
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+  ShowWarnings always 1
+  = always {!<=-1,!>=2}
+  "Show warnings" always "Show warnings"
+  true always 1
+Line 99
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+  ShowPortability always 3
+  = always {!<=-1,!>=2}
+  "Show portability" always "Show portability"
+  true always 1
+Line 100
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+  ShowPerformance always 2
+  = always {!<=-1,!>=2}
+  "Show performance" always "Show performance"
+  true always 1
+Line 101
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+  ShowInformation always 4
+  = always {!<=-1,!>=2}
+  "Show information" always "Show information"
+  true always 1
+Line 107
+  "Show style" always "Show style"
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+  ShowStyle always 0
+Line 108
+  "Show errors" always "Show errors"
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+  ShowErrors always 5
+Line 109
+  "Show warnings" always "Show warnings"
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+  ShowWarnings always 1
+Line 110
+  "Show portability" always "Show portability"
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+  ShowPortability always 3
+Line 111
+  "Show performance" always "Show performance"
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+  ShowPerformance always 2
+Line 112
+  "Show information" always "Show information"
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+  ShowInformation always 4
+Line 115
+  ( always {!<=-1,!>=2}
+Line 117
+  return always {!<=-1,!>=2}
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+Line 120
+  ( always {!<=-1,!>=2}
+Line 122
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 125
+  , always {!<=-1,!>=2}
+  showing always {!<=-1,!>=2}
+Line 127
+  mVisible always 1
+  [ always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  showing always {!<=-1,!>=2}

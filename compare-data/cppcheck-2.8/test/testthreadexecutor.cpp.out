@@ -1,0 +1,554 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741962 expected@var22 !=@expr1073741963 actual@var23 ) {
+62: std ::@expr1073741964 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741965 expected@var22 ;
+64: std ::@expr1073741966 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741967 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741968 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741969 str (@expr1073741970 ) , actualStr@var26 .@expr1073741971 str (@expr1073741972 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741973 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741974 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741975 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741976 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testutils.h
+
+1:
+|
+34:
+35: class Token ;
+36:
+37: class givenACodeSampleToTokenize {
+38: private:
+39: Tokenizer tokenizer@var102 ;
+40: static const Settings settings@var103 ;
+41:
+42: public:
+43: explicit givenACodeSampleToTokenize ( const char sample@var104 [ ] , bool createOnly@var105 = false , bool cpp@var106 = true )
+44: : tokenizer@var102 ( & settings@var103 , nullptr ) {
+45: std ::@expr1073741977 istringstream iss@var107 (@expr1073741978 sample@var104 ) ;
+46: if (@expr1073741979 createOnly@var105 ) {
+47: tokenizer@var102 .@expr1073741980 list@var108 .@expr1073741981 createTokens (@expr1073741982 iss@var107 , cpp@var106 ?@expr159 "test.cpp" :@expr160 "test.c" ) ; }
+48: else {
+49: tokenizer@var102 .@expr1073741985 tokenize (@expr1073741986 iss@var107 , cpp@var106 ?@expr159 "test.cpp" :@expr160 "test.c" ) ; }
+50: }
+51:
+52: const Token * tokens ( ) const {
+53: return tokenizer@var102 .@expr1073741989 tokens (@expr1073741990 ) ;
+54: }
+55: } ;
+56:
+57:
+58: class SimpleSuppressor : public ErrorLogger {
+59: public:
+60: SimpleSuppressor ( Settings & settings@var109 , ErrorLogger * next@var110 )
+61: : settings@var114 ( settings@var109 ) , next@var115 ( next@var110 ) { }
+62: void reportOut ( const std :: string & outmsg@var111 , Color = Color :: Reset ) override {
+63: next@var115 .@expr1073741991 reportOut (@expr1073741992 outmsg@var111 ) ;
+64: }
+65: void reportErr ( const ErrorMessage & msg@var112 ) override {
+66: if (@expr1073741993 !@expr1073741994 msg@var112 .@expr1073741995 callStack@var113 .@expr1073741996 empty (@expr1073741997 ) &&@expr1073741998 !@expr1073741999 settings@var114 .@expr1073742000 nomsg@var116 .@expr1073742001 isSuppressed (@expr1073742002 msg@var112 .@expr1073742003 toSuppressionsErrorMessage (@expr1073742004 ) ) ) {
+67: next@var115 .@expr1073742005 reportErr (@expr1073742006 msg@var112 ) ; }
+68: }
+69: private:
+70: Settings & settings@var114 ;
+71: ErrorLogger * next@var115 ;
+72: } ;
+73:
+74: class ScopedFile {
+75: public:
+76: ScopedFile ( const std :: string & name@var117 , const std :: string & content@var118 ) : mName@var120 ( name@var117 ) {
+77: std ::@expr1073742007 ofstream of@var119 (@expr1073742008 mName@var120 ) ;
+78: of@var119 <<@expr1073742009 content@var118 ;
+79: }
+80:
+81: ~ ScopedFile ( ) {
+82: remove (@expr1073742010 mName@var120 .@expr1073742011 c_str (@expr1073742012 ) ) ;
+83: }
+84: private:
+85: std :: string mName@var120 ;
+86: } ;
+
+##file cppcheck-2.8/test/testthreadexecutor.cpp
+
+1:
+|
+31:
+32: class TestThreadExecutor : public TestFixture {
+33: public:
+34: TestThreadExecutor ( ) : TestFixture ( "TestThreadExecutor" ) { }
+35:
+36: private:
+37: Settings settings@var121 ;
+38:
+|
+42:
+43: void check ( unsigned int jobs@var122 , int files@var123 , int result@var124 , const std :: string & data@var125 ) {
+44: errout@var100 .@expr1073742013 str (@expr1073742014 "" ) ;
+45: output@var101 .@expr1073742015 str (@expr1073742016 "" ) ;
+46: if (@expr1073742017 !@expr1073742018 ThreadExecutor ::@expr1073742019 isEnabled (@expr1073742020 ) ) {
+47:
+48: return ;
+49: }
+50:
+51: std ::@expr1073742021 map < std ::@expr198 string , unsigned long > filemap@var126 ;
+52: for (@expr1073742023 int i@var127 =@expr1073742024 1 ; i@var127 <=@expr1073742025 files@var123 ; ++@expr1073742026 i@var127 ) {
+53: std ::@expr1073742027 ostringstream oss@var128 ;
+54: oss@var128 <<@expr1073742028 "file_" <<@expr1073742029 i@var127 <<@expr1073742030 ".cpp" ;
+55: filemap@var126 [@expr1073742031 oss@var128 .@expr1073742032 str (@expr1073742033 ) ] =@expr1073742034 data@var125 .@expr1073742035 size (@expr1073742036 ) ;
+56: }
+57:
+58: settings@var121 .@expr1073742037 jobs@var129 =@expr1073742038 jobs@var122 ;
+59: ThreadExecutor executor@var130 (@expr1073742039 filemap@var126 , settings@var121 , *@expr1073742040 this@expr1073742041 ) ;
+60: std ::@expr1073742042 vector < ScopedFile > scopedfiles@var131 ;
+61: scopedfiles@var131 .@expr1073742043 reserve (@expr1073742044 filemap@var126 .@expr1073742045 size (@expr1073742046 ) ) ;
+62: for (@expr1073742047 std ::@expr198 map < std ::@expr198 string , unsigned long > ::@expr198 const_iterator i@var132 =@expr1073742051 filemap@var126 .@expr1073742052 begin (@expr1073742053 ) ; i@var132 !=@expr1073742054 filemap@var126 .@expr1073742055 end (@expr1073742056 ) ; ++@expr1073742057 i@var132 ) {
+63: scopedfiles@var131 .@expr1073742058 emplace_back (@expr1073742059 i@var132 .@expr1073742060 first@var133 , data@var125 ) ; }
+64:
+65: $if $(@expr1073742061 $!@expr1073742062 $assertEquals $(@expr1073742063 "cppcheck-2.8/test/testthreadexecutor.cpp" $, 65 $, result@var124 $, executor@var130 .@expr1073742064 check (@expr1073742065 ) $) $) { $return ; }
+66: }
+67:
+68: void run ( ) override {
+69: $do ${ $if $(@expr1073742066 settings@var121 .@expr1073742067 library@var134 $.@expr1073742068 $load $(@expr1073742069 $exename@var11 $.@expr1073742070 $c_str $(@expr1073742071 $) $, "std.cfg" $) $.@expr1073742072 $errorcode $!=@expr1073742073 $Library $::@expr1073742074 $ErrorCode $::@expr1073742075 $OK $) ${ $complainMissingLib $(@expr1073742076 "std.cfg" $) $; $return $; $} $} $while $(@expr1073742077 $false $) ;
+70:
+71: $do ${ $if $(@expr1073742078 $prepareTest $(@expr1073742079 "deadlock_with_many_errors" $) $) ${ $setVerbose $(@expr1073742080 $false $) $; deadlock_with_many_errors $(@expr1073742081 $) $; $} $} $while $(@expr1073742082 $false $) ;
+72: $do ${ $if $(@expr1073742083 $prepareTest $(@expr1073742084 "many_threads" $) $) ${ $setVerbose $(@expr1073742085 $false $) $; many_threads $(@expr1073742086 $) $; $} $} $while $(@expr1073742087 $false $) ;
+73: $do ${ $if $(@expr1073742088 $prepareTest $(@expr1073742089 "no_errors_more_files" $) $) ${ $setVerbose $(@expr1073742090 $false $) $; no_errors_more_files $(@expr1073742091 $) $; $} $} $while $(@expr1073742092 $false $) ;
+74: $do ${ $if $(@expr1073742093 $prepareTest $(@expr1073742094 "no_errors_less_files" $) $) ${ $setVerbose $(@expr1073742095 $false $) $; no_errors_less_files $(@expr1073742096 $) $; $} $} $while $(@expr1073742097 $false $) ;
+75: $do ${ $if $(@expr1073742098 $prepareTest $(@expr1073742099 "no_errors_equal_amount_files" $) $) ${ $setVerbose $(@expr1073742100 $false $) $; no_errors_equal_amount_files $(@expr1073742101 $) $; $} $} $while $(@expr1073742102 $false $) ;
+76: $do ${ $if $(@expr1073742103 $prepareTest $(@expr1073742104 "one_error_less_files" $) $) ${ $setVerbose $(@expr1073742105 $false $) $; one_error_less_files $(@expr1073742106 $) $; $} $} $while $(@expr1073742107 $false $) ;
+77: $do ${ $if $(@expr1073742108 $prepareTest $(@expr1073742109 "one_error_several_files" $) $) ${ $setVerbose $(@expr1073742110 $false $) $; one_error_several_files $(@expr1073742111 $) $; $} $} $while $(@expr1073742112 $false $) ;
+78: }
+79:
+80: void deadlock_with_many_errors ( ) {
+81: std ::@expr1073742113 ostringstream oss@var135 ;
+82: oss@var135 <<@expr1073742114 "int main()\n"
+83: <<@expr1073742115 "{\n" ;
+84: for (@expr1073742116 int i@var136 =@expr1073742117 0 ; i@var136 <@expr1073742118 500 ; i@var136 ++@expr1073742119 ) {
+85: oss@var135 <<@expr1073742120 "  {char *a = malloc(10);}\n" ; }
+86:
+87: oss@var135 <<@expr1073742121 "  return 0;\n"
+88: <<@expr1073742122 "}\n" ;
+89: check (@expr1073742123 2 , 3 , 3 , oss@var135 .@expr1073742124 str (@expr1073742125 ) ) ;
+90: }
+91:
+92: void many_threads ( ) {
+93: check (@expr1073742126 16 , 100 , 100 ,
+94: "int main()\n{\n  char *a = malloc(10);\n  return 0;\n}"
+95:
+96:
+97:
+98: ) ;
+99: }
+100:
+101: void no_errors_more_files ( ) {
+102: check (@expr1073742127 2 , 3 , 0 ,
+103: "int main()\n{\n  return 0;\n}"
+104:
+105:
+106: ) ;
+107: }
+108:
+109: void no_errors_less_files ( ) {
+110: check (@expr1073742128 2 , 1 , 0 ,
+111: "int main()\n{\n  return 0;\n}"
+112:
+113:
+114: ) ;
+115: }
+116:
+117: void no_errors_equal_amount_files ( ) {
+118: check (@expr1073742129 2 , 2 , 0 ,
+119: "int main()\n{\n  return 0;\n}"
+120:
+121:
+122: ) ;
+123: }
+124:
+125: void one_error_less_files ( ) {
+126: check (@expr1073742130 2 , 1 , 1 ,
+127: "int main()\n{\n  {char *a = malloc(10);}\n  return 0;\n}"
+128:
+129:
+130:
+131: ) ;
+132: }
+133:
+134: void one_error_several_files ( ) {
+135: check (@expr1073742131 2 , 20 , 20 ,
+136: "int main()\n{\n  {char *a = malloc(10);}\n  return 0;\n}"
+137:
+138:
+139:
+140: ) ;
+141: }
+142: } ;
+143:
+144: $namespace ${ TestThreadExecutor instance_TestThreadExecutor@var137 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@8}
+  v {!<=-1,!>=2,0@8}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 43
+  createOnly always {!<=-1,!>=2}
+  = always 0
+  false always 0
+  cpp always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 44
+  & {lifetime[Address]=(settings),!0}
+  nullptr always 0
+Line 46
+  createOnly always {!<=-1,!>=2}
+Line 47
+  cpp always {!<=-1,!>=2}
+  ? possible {"test.cpp","test.c"}
+  "test.cpp" always "test.cpp"
+  : always "test.c"
+  "test.c" always "test.c"
+Line 49
+  cpp always {!<=-1,!>=2}
+  ? possible {"test.cpp","test.c"}
+  "test.cpp" always "test.cpp"
+  : always "test.c"
+  "test.c" always "test.c"
+Line 60
+  ( possible lifetime[SubObject]=(Settings&settings)
+Line 66
+  ! always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+Line 82
+  ( {lifetime[Object]=(mName),!0}
+Line 34
+  "TestThreadExecutor" always "TestThreadExecutor"
+Line 43
+  jobs always !<=-1
+Line 44
+  "" always ""
+Line 45
+  "" always ""
+Line 46
+  ! always {!<=-1,!>=2}
+Line 52
+  = always 1
+  1 always 1
+  i possible 1
+  <= always {!<=-1,!>=2}
+  files possible {20@1,1@2,2@3,3@5,100@6}
+Line 54
+  "file_" always "file_"
+  i {<=symbolic=(files),!>=symbolic=(files+1),1}
+  ".cpp" always ".cpp"
+Line 55
+  [ always !<=-1
+  = always !<=-1
+  data possible {"int main()\n{\n  {char *a = malloc(10);}\n  return 0;\n}"@1,"int main()\n{\n  {char *a = malloc(10);}\n  return 0;\n}"@2,"int main()\n{\n  return 0;\n}"@3,"int main()\n{\n  return 0;\n}"@4,"int main()\n{\n  return 0;\n}"@5,"int main()\n{\n  char *a = malloc(10);\n  return 0;\n}"@6}
+  ( always !<=-1
+Line 58
+  = {!<=-1,2@1,16@6}
+  jobs {!<=-1,2@1,16@6}
+Line 59
+  filemap possible size=0
+  this always !0
+Line 61
+  scopedfiles always size=0
+  ( always !<=-1
+Line 62
+  = {lifetime[Iterator]=(filemap),start=0}
+  ( {lifetime[Iterator]=(filemap),start=0}
+  i possible {lifetime[Iterator]=(filemap),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(filemap),end=0}
+Line 63
+  i possible lifetime[Iterator]=(filemap)
+Line 65
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testthreadexecutor.cpp" always "cppcheck-2.8/test/testthreadexecutor.cpp"
+  65 always 65
+Line 69
+  ( {lifetime[Object]=(exename),!0}
+  "std.cfg" always "std.cfg"
+  != always {!<=-1,!>=2}
+  "std.cfg" always "std.cfg"
+  false always 0
+Line 71
+  ( always {!<=-1,!>=2}
+  "deadlock_with_many_errors" always "deadlock_with_many_errors"
+  false always 0
+  false always 0
+Line 72
+  ( always {!<=-1,!>=2}
+  "many_threads" always "many_threads"
+  false always 0
+  false always 0
+Line 73
+  ( always {!<=-1,!>=2}
+  "no_errors_more_files" always "no_errors_more_files"
+  false always 0
+  false always 0
+Line 74
+  ( always {!<=-1,!>=2}
+  "no_errors_less_files" always "no_errors_less_files"
+  false always 0
+  false always 0
+Line 75
+  ( always {!<=-1,!>=2}
+  "no_errors_equal_amount_files" always "no_errors_equal_amount_files"
+  false always 0
+  false always 0
+Line 76
+  ( always {!<=-1,!>=2}
+  "one_error_less_files" always "one_error_less_files"
+  false always 0
+  false always 0
+Line 77
+  ( always {!<=-1,!>=2}
+  "one_error_several_files" always "one_error_several_files"
+  false always 0
+  false always 0
+Line 82
+  "int main()\n" always "int main()\n"
+Line 83
+  "{\n" always "{\n"
+Line 84
+  = always 0
+  0 always 0
+  i possible {0,1}
+  < {!<=-1,!>=2,1}
+  500 always 500
+  i possible 0
+  ++ possible 0
+Line 85
+  "  {char *a = malloc(10);}\n" always "  {char *a = malloc(10);}\n"
+Line 87
+  "  return 0;\n" always "  return 0;\n"
+Line 88
+  "}\n" always "}\n"
+Line 89
+  2 always 2
+  3 always 3
+  3 always 3
+Line 93
+  16 always 16
+  100 always 100
+  100 always 100
+Line 94
+  "int main()\n{\n  char *a = malloc(10);\n  return 0;\n}" always "int main()\n{\n  char *a = malloc(10);\n  return 0;\n}"
+Line 102
+  2 always 2
+  3 always 3
+  0 always 0
+Line 103
+  "int main()\n{\n  return 0;\n}" always "int main()\n{\n  return 0;\n}"
+Line 110
+  2 always 2
+  1 always 1
+  0 always 0
+Line 111
+  "int main()\n{\n  return 0;\n}" always "int main()\n{\n  return 0;\n}"
+Line 118
+  2 always 2
+  2 always 2
+  0 always 0
+Line 119
+  "int main()\n{\n  return 0;\n}" always "int main()\n{\n  return 0;\n}"
+Line 126
+  2 always 2
+  1 always 1
+  1 always 1
+Line 127
+  "int main()\n{\n  {char *a = malloc(10);}\n  return 0;\n}" always "int main()\n{\n  {char *a = malloc(10);}\n  return 0;\n}"
+Line 135
+  2 always 2
+  20 always 20
+  20 always 20
+Line 136
+  "int main()\n{\n  {char *a = malloc(10);}\n  return 0;\n}" always "int main()\n{\n  {char *a = malloc(10);}\n  return 0;\n}"

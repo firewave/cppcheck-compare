@@ -1,0 +1,1061 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073742046 expected@var22 !=@expr1073742047 actual@var23 ) {
+62: std ::@expr1073742048 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073742049 expected@var22 ;
+64: std ::@expr1073742050 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073742051 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073742052 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073742053 str (@expr1073742054 ) , actualStr@var26 .@expr1073742055 str (@expr1073742056 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073742057 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073742058 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073742059 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073742060 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/options.h
+
+1:
+|
+27:
+28: class options {
+29: public:
+30:
+31: options ( int argc@var102 , const char * const argv@var103 [ ] ) ;
+32:
+33: bool quiet ( ) const ;
+34:
+35: bool help ( ) const ;
+36:
+37: const std :: set < std :: string > & which_test ( ) const ;
+38:
+39: const std :: string & exe ( ) const ;
+40:
+41: private:
+42: options ( ) ;
+43: options ( const options & non_copy@var104 ) ;
+44: const options & operator= ( const options & non_assign@var105 ) ;
+45:
+46: private:
+47: std :: set < std :: string > mWhichTests@var106 ;
+48: const bool mQuiet@var107 ;
+49: const bool mHelp@var108 ;
+50: std :: string mExe@var109 ;
+51: } ;
+
+##file cppcheck-2.8/test/redirect.h
+
+1:
+|
+23:
+24: extern std :: ostringstream errout@var110 ;
+25: extern std :: ostringstream output@var111 ;
+26:
+|
+30:
+31: class RedirectOutputError {
+32: public:
+33:
+34: RedirectOutputError ( ) {
+35:
+36: std ::@expr237 cout .@expr1073742062 flush (@expr1073742063 ) ;
+37: std ::@expr240 cerr .@expr1073742065 flush (@expr1073742066 ) ;
+38:
+39: _oldCout@var114 =@expr1073742067 std ::@expr237 cout .@expr245 rdbuf (@expr1073742070 ) ;
+40: _oldCerr@var115 =@expr1073742071 std ::@expr240 cerr .@expr249 rdbuf (@expr1073742074 ) ;
+41:
+42: std ::@expr237 cout .@expr245 rdbuf (@expr1073742077 _out@var112 .@expr1073742078 rdbuf (@expr1073742079 ) ) ;
+43: std ::@expr240 cerr .@expr249 rdbuf (@expr1073742082 _err@var113 .@expr1073742083 rdbuf (@expr1073742084 ) ) ;
+44: }
+45:
+46:
+47: ~ RedirectOutputError ( ) {
+48: std ::@expr1073742085 cout .@expr1073742086 rdbuf (@expr1073742087 _oldCout@var114 ) ;
+49: std ::@expr1073742088 cerr .@expr1073742089 rdbuf (@expr1073742090 _oldCerr@var115 ) ;
+50:
+51: errout@var110 <<@expr1073742091 _err@var113 .@expr1073742092 str (@expr1073742093 ) ;
+52: output@var111 <<@expr1073742094 _out@var112 .@expr1073742095 str (@expr1073742096 ) ;
+53: }
+54:
+55:
+56: std :: string getOutput ( ) const {
+57: return _out@var112 .@expr1073742097 str (@expr1073742098 ) ;
+58: }
+59:
+60:
+61:
+62: void clearOutput ( ) {
+63: _out@var112 .@expr1073742099 str (@expr1073742100 "" ) ;
+64: }
+65:
+66:
+67: std :: string getErrout ( ) const {
+68: return _err@var113 .@expr1073742101 str (@expr1073742102 ) ;
+69: }
+70:
+71:
+72:
+73: void clearErrout ( ) {
+74: _err@var113 .@expr1073742103 str (@expr1073742104 "" ) ;
+75: }
+76:
+77: private:
+78: std :: ostringstream _out@var112 ;
+79: std :: ostringstream _err@var113 ;
+80: std :: streambuf * _oldCout@var114 ;
+81: std :: streambuf * _oldCerr@var115 ;
+82: } ;
+
+##file cppcheck-2.8/test/testsuite.cpp
+
+1:
+|
+29:
+30: std :: ostringstream errout@var116 ;
+31: std :: ostringstream output@var117 ;
+32:
+|
+35:
+36: namespace {
+37: struct CompareFixtures {
+38: bool operator() ( const TestFixture * lhs@var118 , const TestFixture * rhs@var119 ) const {
+39: return lhs@var118 .@expr1073742105 classname@var120 <@expr1073742106 rhs@var119 .@expr1073742107 classname@var121 ;
+40: }
+41: } ;
+42: }
+43:
+44: class TestRegistry {
+45: std :: set < TestFixture * , CompareFixtures > _tests@var122 ;
+46: public:
+47:
+48: static TestRegistry & theInstance ( ) {
+49: static TestRegistry testreg@var123 ;
+50: return testreg@var123 ;
+51: }
+52:
+53: void addTest ( TestFixture * t@var124 ) {
+54: _tests@var122 .@expr1073742108 insert (@expr1073742109 t@var124 ) ;
+55: }
+56:
+57: const std :: set < TestFixture * , CompareFixtures > & tests ( ) const {
+58: return _tests@var122 ;
+59: }
+60: } ;
+61:
+|
+68:
+69: std :: ostringstream TestFixture :: errmsg@var1 ;
+70: unsigned int TestFixture :: countTests@var2 ;
+71:
+72: unsigned long TestFixture :: fails_counter@var3 = 0 ;
+73: unsigned long TestFixture :: todos_counter@var4 = 0 ;
+74: unsigned long TestFixture :: succeeded_todos_counter@var5 = 0 ;
+75: std :: set < std :: string > TestFixture :: missingLibs@var6 ;
+76:
+77: TestFixture :: TestFixture ( const char * const _name@var125 )
+78: : mVerbose@var7 ( false ) ,
+79: exename@var11 ( ) ,
+80: quiet_tests@var13 ( false ) ,
+81: classname@var97 ( _name@var125 )
+82: {
+83: TestRegistry ::@expr1073742110 theInstance (@expr1073742111 ) .@expr1073742112 addTest (@expr1073742113 this@expr1073742114 ) ;
+84: }
+85:
+86:
+87: bool TestFixture :: prepareTest ( const char testname@var126 [ ] )
+88: {
+89: mVerbose@var7 =@expr1073742118 false ;
+90: mTemplateFormat@var8 .@expr1073742119 clear (@expr1073742120 ) ;
+91: mTemplateLocation@var9 .@expr1073742121 clear (@expr1073742122 ) ;
+92:
+93:
+94: if (@expr1073742123 testToRun@var12 .@expr1073742124 empty (@expr1073742125 ) ||@expr1073742126 testToRun@var12 ==@expr1073742127 testname@var126 ) {
+95:
+96: mTestname@var10 =@expr1073742128 testname@var126 ;
+97: ++@expr1073742129 countTests@var2 ;
+98: if (@expr1073742130 quiet_tests@var13 ) {
+99: std ::@expr1073742131 putchar (@expr1073742132 '.' ) ;
+100: std ::@expr1073742133 fflush (@expr1073742134 stdout@expr1073742115 ) ;
+101: } else {
+102: std ::@expr1073742135 cout@expr1073742116 <<@expr1073742136 classname@var97 <<@expr1073742137 "::" <<@expr1073742138 testname@var126 <<@expr1073742139 std ::@expr1073742140 endl@expr1073742117 ;
+103: }
+104: return true ;
+105: }
+106: return false ;
+107: }
+108:
+109: std :: string TestFixture :: getLocationStr ( const char * const filename@var127 , const unsigned int linenr@var128 ) const
+110: {
+111: return std ::@expr1073742141 string (@expr1073742142 filename@var127 ) +@expr1073742143 ':' +@expr1073742144 std ::@expr1073742145 to_string (@expr1073742146 linenr@var128 ) +@expr1073742147 '(' +@expr1073742148 classname@var97 +@expr1073742149 "::" +@expr1073742150 mTestname@var10 +@expr1073742151 ')' ;
+112: }
+113:
+114: static std :: string writestr ( const std :: string & str@var129 , bool gccStyle@var130 = false )
+115: {
+116: std ::@expr1073742154 ostringstream ostr@var131 ;
+117: if (@expr331 gccStyle@var130 ) {
+118: ostr@var131 <<@expr332 '\"' ; }
+119: for (@expr1073742157 std ::@expr334 string ::@expr334 const_iterator i@var132 =@expr1073742160 str@var129 .@expr1073742161 begin (@expr1073742162 ) ; i@var132 !=@expr1073742163 str@var129 .@expr340 end (@expr341 ) ; ++@expr1073742166 i@var132 ) {
+120: if (@expr1073742167 *@expr344 i@var132 ==@expr1073742169 '\n' ) {
+121: ostr@var131 <<@expr1073742170 "\\n" ;
+122: if (@expr1073742171 (@expr1073742172 i@var132 +@expr1073742173 1 ) !=@expr1073742174 str@var129 .@expr340 end (@expr341 ) &&@expr1073742177 !@expr354 gccStyle@var130 ) {
+123: ostr@var131 <<@expr355 std ::@expr356 endl@expr328 ; }
+124: } else { if (@expr1073742181 *@expr344 i@var132 ==@expr1073742183 '\t' ) {
+125: ostr@var131 <<@expr1073742184 "\\t" ; }
+126: else { if (@expr1073742185 *@expr344 i@var132 ==@expr1073742187 '\"' ) {
+127: ostr@var131 <<@expr1073742188 "\\\"" ; }
+128: else { if (@expr1073742189 std ::@expr1073742190 isprint (@expr1073742191 static_cast < unsigned char > (@expr1073742192 *@expr344 i@var132 ) ) ) {
+129: ostr@var131 <<@expr1073742194 *@expr344 i@var132 ; }
+130: else {
+131: ostr@var131 <<@expr1073742196 "\\x" <<@expr1073742197 std ::@expr1073742198 hex@expr1073742153 <<@expr1073742199 short {@expr1073742200 *@expr344 i@var132 } ; } } } }
+132: }
+133: if (@expr1073742202 !@expr1073742203 str@var129 .@expr1073742204 empty (@expr1073742205 ) &&@expr1073742206 !@expr354 gccStyle@var130 ) {
+134: ostr@var131 <<@expr355 std ::@expr356 endl@expr328 ; }
+135: else { if (@expr331 gccStyle@var130 ) {
+136: ostr@var131 <<@expr332 '\"' ; } }
+137: return ostr@var131 .@expr1073742212 str (@expr1073742213 ) ;
+138: }
+139:
+140: bool TestFixture :: assert_ ( const char * const filename@var133 , const unsigned int linenr@var134 , const bool condition@var135 ) const
+141: {
+142: if (@expr1073742215 !@expr1073742216 condition@var135 ) {
+143: ++@expr1073742217 fails_counter@var3 ;
+144: errmsg@var1 <<@expr1073742218 getLocationStr (@expr1073742219 filename@var133 , linenr@var134 ) <<@expr1073742220 ": Assertion failed." <<@expr1073742221 std ::@expr398 endl@expr390 <<@expr1073742223 "_____" <<@expr1073742224 std ::@expr398 endl@expr390 ;
+145: }
+146: return condition@var135 ;
+147: }
+148:
+149: void TestFixture :: assertEqualsFailed ( const char * const filename@var136 , const unsigned int linenr@var137 , const std :: string & expected@var138 , const std :: string & actual@var139 , const std :: string & msg@var140 ) const
+150: {
+151: ++@expr1073742227 fails_counter@var3 ;
+152: errmsg@var1 <<@expr1073742228 getLocationStr (@expr1073742229 filename@var136 , linenr@var137 ) <<@expr1073742230 ": Assertion failed. " <<@expr1073742231 std ::@expr408 endl@expr402
+153: <<@expr1073742233 "Expected: " <<@expr1073742234 std ::@expr408 endl@expr402
+154: <<@expr1073742236 writestr (@expr1073742237 expected@var138 ) <<@expr1073742238 std ::@expr408 endl@expr402
+155: <<@expr1073742240 "Actual: " <<@expr1073742241 std ::@expr408 endl@expr402
+156: <<@expr1073742243 writestr (@expr1073742244 actual@var139 ) <<@expr1073742245 std ::@expr408 endl@expr402 ;
+157: if (@expr1073742247 !@expr1073742248 msg@var140 .@expr1073742249 empty (@expr1073742250 ) ) {
+158: errmsg@var1 <<@expr1073742251 "Hint:" <<@expr1073742252 std ::@expr408 endl@expr402 <<@expr1073742254 msg@var140 <<@expr1073742255 std ::@expr408 endl@expr402 ; }
+159: errmsg@var1 <<@expr1073742257 "_____" <<@expr1073742258 std ::@expr408 endl@expr402 ;
+160: }
+161:
+162: bool TestFixture :: assertEquals ( const char * const filename@var141 , const unsigned int linenr@var142 , const std :: string & expected@var143 , const std :: string & actual@var144 , const std :: string & msg@var145 ) const
+163: {
+164: if (@expr1073742260 expected@var143 !=@expr1073742261 actual@var144 ) {
+165: assertEqualsFailed (@expr1073742262 filename@var141 , linenr@var142 , expected@var143 , actual@var144 , msg@var145 ) ;
+166: }
+167: return expected@var143 ==@expr1073742263 actual@var144 ;
+168: }
+169:
+170: std :: string TestFixture :: deleteLineNumber ( const std :: string & message@var146 )
+171: {
+172: std ::@expr1073742265 string result@var147 (@expr1073742266 message@var146 ) ;
+173:
+174: std ::@expr443 string ::@expr1073742268 size_type pos@var148 ; pos@var148 =@expr1073742269 0 ;
+175: while (@expr1073742270 (@expr1073742271 pos@var148 =@expr1073742272 result@var147 .@expr1073742273 find (@expr1073742274 ':' , pos@var148 ) ) !=@expr1073742275 std ::@expr443 string ::@expr453 npos@expr1073742264 ) {
+176:
+177: if (@expr1073742278 pos@var148 +@expr455 1 ==@expr1073742280 result@var147 .@expr1073742281 find_first_of (@expr1073742282 "0123456789" , pos@var148 +@expr455 1 ) ) {
+178: std ::@expr443 string ::@expr1073742285 size_type after@var149 ;
+179: if (@expr1073742286 (@expr1073742287 after@var149 =@expr1073742288 result@var147 .@expr1073742289 find_first_not_of (@expr1073742290 "0123456789" , pos@var148 +@expr455 1 ) ) !=@expr1073742292 std ::@expr443 string ::@expr453 npos
+180: &&@expr1073742295 result@var147 .@expr1073742296 at (@expr1073742297 after@var149 ) ==@expr1073742298 ':' ) {
+181:
+182: result@var147 .@expr1073742299 erase (@expr1073742300 pos@var148 +@expr455 1 , after@var149 -@expr1073742302 pos@var148 -@expr1073742303 1 ) ;
+183: pos@var148 =@expr1073742304 after@var149 ;
+184: } else {
+185: ++@expr1073742305 pos@var148 ;
+186: }
+187: } else {
+188: ++@expr1073742306 pos@var148 ;
+189: }
+190: }
+191: return result@var147 ;
+192: }
+193:
+194: void TestFixture :: assertEqualsWithoutLineNumbers ( const char * const filename@var150 , const unsigned int linenr@var151 , const std :: string & expected@var152 , const std :: string & actual@var153 , const std :: string & msg@var154 ) const
+195: {
+196: assertEquals (@expr1073742307 filename@var150 , linenr@var151 , deleteLineNumber (@expr1073742308 expected@var152 ) , deleteLineNumber (@expr1073742309 actual@var153 ) , msg@var154 ) ;
+197: }
+198:
+199: bool TestFixture :: assertEquals ( const char * const filename@var155 , const unsigned int linenr@var156 , const char expected@var157 [ ] , const std :: string & actual@var158 , const std :: string & msg@var159 ) const
+200: {
+201: return assertEquals (@expr1073742310 filename@var155 , linenr@var156 , std ::@expr1073742311 string (@expr1073742312 expected@var157 ) , actual@var158 , msg@var159 ) ;
+202: }
+203: bool TestFixture :: assertEquals ( const char * const filename@var160 , const unsigned int linenr@var161 , const char expected@var162 [ ] , const char actual@var163 [ ] , const std :: string & msg@var164 ) const
+204: {
+205: return assertEquals (@expr1073742313 filename@var160 , linenr@var161 , std ::@expr490 string (@expr1073742315 expected@var162 ) , std ::@expr490 string (@expr1073742317 actual@var163 ) , msg@var164 ) ;
+206: }
+207: bool TestFixture :: assertEquals ( const char * const filename@var165 , const unsigned int linenr@var166 , const std :: string & expected@var167 , const char actual@var168 [ ] , const std :: string & msg@var169 ) const
+208: {
+209: return assertEquals (@expr1073742318 filename@var165 , linenr@var166 , expected@var167 , std ::@expr1073742319 string (@expr1073742320 actual@var168 ) , msg@var169 ) ;
+210: }
+211:
+212: bool TestFixture :: assertEquals ( const char * const filename@var170 , const unsigned int linenr@var171 , const long long expected@var172 , const long long actual@var173 , const std :: string & msg@var174 ) const
+213: {
+214: if (@expr1073742321 expected@var172 !=@expr1073742322 actual@var173 ) {
+215: std ::@expr1073742323 ostringstream ostr1@var175 ;
+216: ostr1@var175 <<@expr1073742324 expected@var172 ;
+217: std ::@expr1073742325 ostringstream ostr2@var176 ;
+218: ostr2@var176 <<@expr1073742326 actual@var173 ;
+219: assertEquals (@expr1073742327 filename@var170 , linenr@var171 , ostr1@var175 .@expr1073742328 str (@expr1073742329 ) , ostr2@var176 .@expr1073742330 str (@expr1073742331 ) , msg@var174 ) ;
+220: }
+221: return expected@var172 ==@expr1073742332 actual@var173 ;
+222: }
+223:
+224: void TestFixture :: assertEqualsDouble ( const char * const filename@var177 , const unsigned int linenr@var178 , const double expected@var179 , const double actual@var180 , const double tolerance@var181 , const std :: string & msg@var182 ) const
+225: {
+226: if (@expr1073742333 expected@var179 <@expr1073742334 (@expr1073742335 actual@var180 -@expr1073742336 tolerance@var181 ) ||@expr1073742337 expected@var179 >@expr1073742338 (@expr1073742339 actual@var180 +@expr1073742340 tolerance@var181 ) ) {
+227: std ::@expr1073742341 ostringstream ostr1@var183 ;
+228: ostr1@var183 <<@expr1073742342 expected@var179 ;
+229: std ::@expr1073742343 ostringstream ostr2@var184 ;
+230: ostr2@var184 <<@expr1073742344 actual@var180 ;
+231: assertEquals (@expr1073742345 filename@var177 , linenr@var178 , ostr1@var183 .@expr1073742346 str (@expr1073742347 ) , ostr2@var184 .@expr1073742348 str (@expr1073742349 ) , msg@var182 ) ;
+232: }
+233: }
+234:
+235: void TestFixture :: todoAssertEquals ( const char * const filename@var185 , const unsigned int linenr@var186 ,
+236: const std :: string & wanted@var187 ,
+237: const std :: string & current@var188 ,
+238: const std :: string & actual@var189 ) const
+239: {
+240: if (@expr1073742351 wanted@var187 ==@expr1073742352 actual@var189 ) {
+241: errmsg@var1 <<@expr1073742353 getLocationStr (@expr1073742354 filename@var185 , linenr@var186 ) <<@expr1073742355 ": Assertion succeeded unexpectedly. "
+242: <<@expr1073742356 "Result: " <<@expr1073742357 writestr (@expr1073742358 wanted@var187 , true ) <<@expr1073742359 std ::@expr536 endl@expr526 <<@expr1073742361 "_____" <<@expr1073742362 std ::@expr536 endl@expr526 ;
+243:
+244: ++@expr1073742364 succeeded_todos_counter@var5 ;
+245: } else {
+246: assertEquals (@expr1073742365 filename@var185 , linenr@var186 , current@var188 , actual@var189 ) ;
+247: ++@expr1073742366 todos_counter@var4 ;
+248: }
+249: }
+250:
+251: void TestFixture :: todoAssertEquals ( const char * const filename@var190 , const unsigned int linenr@var191 ,
+252: const char wanted@var192 [ ] ,
+253: const char current@var193 [ ] ,
+254: const std :: string & actual@var194 ) const
+255: {
+256: todoAssertEquals (@expr1073742367 filename@var190 , linenr@var191 , std ::@expr544 string (@expr1073742369 wanted@var192 ) , std ::@expr544 string (@expr1073742371 current@var193 ) , actual@var194 ) ;
+257: }
+258:
+259:
+260: void TestFixture :: todoAssertEquals ( const char * const filename@var195 , const unsigned int linenr@var196 , const long long wanted@var197 , const long long current@var198 , const long long actual@var199 ) const
+261: {
+262: std ::@expr1073742372 ostringstream wantedStr@var200 ; std ::@expr1073742373 ostringstream currentStr@var201 ; std ::@expr1073742374 ostringstream actualStr@var202 ;
+263: wantedStr@var200 <<@expr1073742375 wanted@var197 ;
+264: currentStr@var201 <<@expr1073742376 current@var198 ;
+265: actualStr@var202 <<@expr1073742377 actual@var199 ;
+266: todoAssertEquals (@expr1073742378 filename@var195 , linenr@var196 , wantedStr@var200 .@expr1073742379 str (@expr1073742380 ) , currentStr@var201 .@expr1073742381 str (@expr1073742382 ) , actualStr@var202 .@expr1073742383 str (@expr1073742384 ) ) ;
+267: }
+268:
+269: void TestFixture :: assertThrow ( const char * const filename@var203 , const unsigned int linenr@var204 ) const
+270: {
+271: ++@expr1073742386 fails_counter@var3 ;
+272: errmsg@var1 <<@expr1073742387 getLocationStr (@expr1073742388 filename@var203 , linenr@var204 ) <<@expr1073742389 ": Assertion succeeded. "
+273: <<@expr1073742390 "The expected exception was thrown" <<@expr1073742391 std ::@expr568 endl@expr561 <<@expr1073742393 "_____" <<@expr1073742394 std ::@expr568 endl@expr561 ;
+274:
+275: }
+276:
+277: void TestFixture :: assertThrowFail ( const char * const filename@var205 , const unsigned int linenr@var206 ) const
+278: {
+279: ++@expr1073742397 fails_counter@var3 ;
+280: errmsg@var1 <<@expr1073742398 getLocationStr (@expr1073742399 filename@var205 , linenr@var206 ) <<@expr1073742400 ": Assertion failed. "
+281: <<@expr1073742401 "The expected exception was not thrown" <<@expr1073742402 std ::@expr579 endl@expr572 <<@expr1073742404 "_____" <<@expr1073742405 std ::@expr579 endl@expr572 ;
+282:
+283: }
+284:
+285: void TestFixture :: assertNoThrowFail ( const char * const filename@var207 , const unsigned int linenr@var208 ) const
+286: {
+287: ++@expr1073742408 fails_counter@var3 ;
+288: errmsg@var1 <<@expr1073742409 getLocationStr (@expr1073742410 filename@var207 , linenr@var208 ) <<@expr1073742411 ": Assertion failed. "
+289: <<@expr1073742412 "Unexpected exception was thrown" <<@expr1073742413 std ::@expr590 endl@expr583 <<@expr1073742415 "_____" <<@expr1073742416 std ::@expr590 endl@expr583 ;
+290:
+291: }
+292:
+293: void TestFixture :: complainMissingLib ( const char * const libname@var209 )
+294: {
+295: missingLibs@var6 .@expr1073742418 insert (@expr1073742419 libname@var209 ) ;
+296: }
+297:
+298: void TestFixture :: printHelp ( )
+299: {
+300: std ::@expr1073742421 cout@expr1073742420 <<@expr1073742422 "Testrunner - run Cppcheck tests\n\nSyntax:\n    testrunner [OPTIONS] [TestClass::TestCase...]\n    run all test cases:\n        testrunner\n    run all test cases in TestClass:\n        testrunner TestClass\n    run TestClass::TestCase:\n        testrunner TestClass::TestCase\n    run all test cases in TestClass1 and TestClass2::TestCase:\n        testrunner TestClass1 TestClass2::TestCase\n\nOptions:\n    -q                   Do not print the test cases that have run.\n    -h, --help           Print this help.\n"
+301:
+|
+314:
+315: ;
+316: }
+317:
+318: void TestFixture :: run ( const std :: string & str@var210 )
+319: {
+320: testToRun@var12 =@expr1073742424 str@var210 ;
+321: if (@expr1073742425 quiet_tests@var13 ) {
+322: std ::@expr1073742426 cout@expr1073742423 <<@expr1073742427 '\n' <<@expr1073742428 classname@var97 <<@expr1073742429 ':' ;
+323: $RedirectOutputError $redir@var211 $; $do ${ $} $while $(@expr1073742430 $false $) ;
+324: run (@expr607 ) ;
+325: } else {
+326: run (@expr607 ) ; }
+327: }
+328:
+329: void TestFixture :: processOptions ( const options & args@var212 )
+330: {
+331: quiet_tests@var13 =@expr1073742433 args@var212 .@expr1073742434 quiet (@expr1073742435 ) ;
+332: exename@var11 =@expr1073742436 args@var212 .@expr1073742437 exe (@expr1073742438 ) ;
+333: }
+334:
+335: unsigned long TestFixture :: runTests ( const options & args@var213 )
+336: {
+337: countTests@var2 =@expr1073742443 0 ;
+338: errmsg@var1 .@expr620 str (@expr1073742445 "" ) ;
+339:
+340: for (@expr1073742446 std ::@expr623 string classname@var214 :@expr1073742448 args@var213 .@expr1073742449 which_test (@expr1073742450 ) ) {
+341: std ::@expr1073742451 string testname@var215 ;
+342: if (@expr1073742452 classname@var214 .@expr629 find (@expr630 "::" ) !=@expr1073742455 std ::@expr1073742456 string ::@expr1073742457 npos@expr1073742439 ) {
+343: testname@var215 =@expr1073742458 classname@var214 .@expr1073742459 substr (@expr1073742460 classname@var214 .@expr629 find (@expr630 "::" ) +@expr1073742463 2 ) ;
+344: classname@var214 .@expr1073742464 erase (@expr1073742465 classname@var214 .@expr629 find (@expr630 "::" ) ) ;
+345: }
+346:
+347: for (@expr1073742468 TestFixture *@expr1073742469 test@var216 :@expr1073742470 TestRegistry ::@expr1073742471 theInstance (@expr1073742472 ) .@expr1073742473 tests (@expr1073742474 ) ) {
+348: if (@expr1073742475 classname@var214 .@expr1073742476 empty (@expr1073742477 ) ||@expr1073742478 test@var216 .@expr1073742479 classname@var217 ==@expr1073742480 classname@var214 ) {
+349: test@var216 .@expr1073742481 processOptions (@expr1073742482 args@var213 ) ;
+350: test@var216 .@expr1073742483 run (@expr1073742484 testname@var215 ) ;
+351: }
+352: }
+353: }
+354:
+355: std ::@expr661 cout@expr616 <<@expr1073742486 "\n\nTesting Complete\nNumber of tests: " <<@expr1073742487 countTests@var2 <<@expr1073742488 std ::@expr665 endl@expr617 ;
+356: std ::@expr661 cout@expr616 <<@expr1073742491 "Number of todos: " <<@expr1073742492 todos_counter@var4 ;
+357: if (@expr1073742493 succeeded_todos_counter@var5 >@expr1073742494 0 ) {
+358: std ::@expr661 cout@expr616 <<@expr1073742496 " (" <<@expr1073742497 succeeded_todos_counter@var5 <<@expr1073742498 " succeeded)" ; }
+359: std ::@expr661 cout@expr616 <<@expr1073742500 std ::@expr665 endl@expr617 ;
+360:
+361: std ::@expr661 cout .@expr1073742503 flush (@expr1073742504 ) ;
+362:
+363: std ::@expr681 cerr@expr618 <<@expr1073742506 "Tests failed: " <<@expr1073742507 fails_counter@var3 <<@expr1073742508 std ::@expr665 endl@expr617 <<@expr1073742510 std ::@expr665 endl@expr617 ;
+364: std ::@expr681 cerr@expr618 <<@expr1073742513 errmsg@var1 .@expr620 str (@expr1073742515 ) ;
+365:
+366: if (@expr1073742516 !@expr1073742517 missingLibs@var6 .@expr1073742518 empty (@expr1073742519 ) ) {
+367: std ::@expr681 cerr@expr618 <<@expr1073742521 "Missing libraries: " ;
+368: for (@expr1073742522 const std ::@expr623 string &@expr1073742524 missingLib@var218 :@expr1073742525 missingLibs@var6 ) {
+369: std ::@expr681 cerr@expr618 <<@expr1073742527 missingLib@var218 <<@expr1073742528 "  " ; }
+370: std ::@expr681 cerr@expr618 <<@expr1073742530 std ::@expr665 endl@expr617 <<@expr1073742532 std ::@expr665 endl@expr617 ;
+371: }
+372: std ::@expr681 cerr .@expr1073742535 flush (@expr1073742536 ) ;
+373: return fails_counter@var3 ;
+374: }
+375:
+376: void TestFixture :: reportOut ( const std :: string & outmsg@var219 , Color )
+377: {
+378: output@var117 <<@expr1073742538 outmsg@var219 <<@expr1073742539 std ::@expr1073742540 endl@expr1073742537 ;
+379: }
+380:
+381: void TestFixture :: reportErr ( const ErrorMessage & msg@var220 )
+382: {
+383: const std ::@expr1073742543 string errormessage@var221 (@expr1073742544 msg@var220 .@expr1073742545 toString (@expr1073742546 mVerbose@var7 , mTemplateFormat@var8 , mTemplateLocation@var9 ) ) ;
+384: if (@expr1073742547 errout@var116 .@expr1073742548 str (@expr1073742549 ) .@expr1073742550 find (@expr1073742551 errormessage@var221 ) ==@expr1073742552 std ::@expr1073742553 string ::@expr1073742554 npos@expr1073742541 ) {
+385: errout@var116 <<@expr1073742555 errormessage@var221 <<@expr1073742556 std ::@expr1073742557 endl@expr1073742542 ; }
+386: }
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 57
+  ( always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 76
+  ( always {!<=-1,!>=2}
+Line 78
+  ( always {!<=-1,!>=2}
+Line 79
+  ( always {!<=-1,!>=2}
+Line 80
+  ( always {!<=-1,!>=2}
+Line 81
+  ( always {!<=-1,!>=2}
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  v always {!<=-1,!>=2}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 33
+  ( always {!<=-1,!>=2}
+Line 35
+  ( always {!<=-1,!>=2}
+Line 48
+  mQuiet always {!<=-1,!>=2}
+Line 49
+  mHelp always {!<=-1,!>=2}
+Line 63
+  "" always ""
+Line 74
+  "" always ""
+Line 38
+  ( always {!<=-1,!>=2}
+Line 39
+  return always {!<=-1,!>=2}
+  < always {!<=-1,!>=2}
+Line 54
+  _tests possible lifetime[Object]=(t)
+Line 70
+  :: always !<=-1
+  countTests always !<=-1
+Line 72
+  fails_counter always !<=-1
+  = always 0
+  0 always 0
+Line 73
+  todos_counter always !<=-1
+  = always 0
+  0 always 0
+Line 74
+  succeeded_todos_counter always !<=-1
+  = always 0
+  0 always 0
+Line 78
+  mVerbose always {!<=-1,!>=2}
+  false always 0
+Line 80
+  quiet_tests always {!<=-1,!>=2}
+  false always 0
+Line 83
+  this always !0
+Line 87
+  ( always {!<=-1,!>=2}
+Line 89
+  mVerbose always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 94
+  testToRun possible symbolic=(testname)
+  ( always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  testToRun always !size=0
+  == always {!<=-1,!>=2}
+Line 96
+  = possible symbolic=(testToRun)
+  testname possible symbolic=(testToRun)
+Line 97
+  ++ always !<=0
+  countTests always !<=-1
+Line 98
+  quiet_tests always {!<=-1,!>=2}
+Line 99
+  '.' always 46
+Line 102
+  "::" always "::"
+Line 104
+  return always {!<=-1,!>=2}
+  true always 1
+Line 106
+  return always {!<=-1,!>=2}
+  false always 0
+Line 109
+  , always !<=-1
+  linenr always !<=-1
+Line 111
+  ':' always 58
+  linenr always !<=-1
+  '(' always 40
+  "::" always "::"
+  ')' always 41
+Line 114
+  , always 0
+  gccStyle always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 117
+  gccStyle {!<=-1,!>=2,0,1@11}
+Line 118
+  '\"' always 34
+Line 119
+  = {lifetime[Iterator]=(str),start=0}
+  ( {lifetime[Iterator]=(str),start=0}
+  i possible {lifetime[Iterator]=(str),symbolic=(str.end()),start=0}
+  != {!<=-1,!>=2,0}
+  str possible size=0
+  ( {lifetime[Iterator]=(str),symbolic=(i+1),size=0,end=0}
+  ++ possible symbolic=(str.end())
+  i possible {lifetime[Iterator]=(str),symbolic=(str.end()-1),end=-1}
+Line 120
+  * possible {9,34}
+  i {lifetime[Iterator]=(str),!symbolic=(str.end()),!end=0}
+  == {!<=-1,!>=2,0}
+  '\n' always 10
+Line 121
+  "\\n" always "\\n"
+Line 122
+  i {lifetime[Iterator]=(str),!symbolic=(str.end()),!end=0}
+  + always !end=1
+  1 always 1
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(str),end=0}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  gccStyle always {!<=-1,!>=2}
+Line 124
+  * {34,!10}
+  i {lifetime[Iterator]=(str),!symbolic=(str.end()),!end=0}
+  == {!<=-1,!>=2,0}
+  '\t' always 9
+Line 125
+  "\\t" always "\\t"
+Line 126
+  * always {!10,!9}
+  i {lifetime[Iterator]=(str),!symbolic=(str.end()),!end=0}
+  == always {!<=-1,!>=2}
+  '\"' always 34
+Line 127
+  "\\\"" always "\\\""
+Line 128
+  ( always {!<=-1,!10,!9,!34}
+  * always {!10,!9,!34}
+  i {lifetime[Iterator]=(str),!symbolic=(str.end()),!end=0}
+Line 129
+  * always {!10,!9,!34}
+  i {lifetime[Iterator]=(str),!symbolic=(str.end()),!end=0}
+Line 131
+  "\\x" always "\\x"
+  { always {!10,!9,!34}
+  * always {!10,!9,!34}
+  i {lifetime[Iterator]=(str),!symbolic=(str.end()),!end=0}
+Line 133
+  ! {!<=-1,!>=2,0}
+  str possible size=0
+  ( {!<=-1,!>=2,1}
+  && always {!<=-1,!>=2}
+  ! {!<=-1,!>=2,0@11}
+  gccStyle {!<=-1,!>=2,1@11}
+Line 135
+  gccStyle {!<=-1,!>=2,1@11}
+Line 136
+  '\"' always 34
+Line 140
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 142
+  ! always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 143
+  ++ always !<=0
+  fails_counter always !<=-1
+Line 144
+  linenr always !<=-1
+  ": Assertion failed." always ": Assertion failed."
+  "_____" always "_____"
+Line 146
+  return always {!<=-1,!>=2}
+  condition {!<=-1,!>=2,0}
+Line 149
+  , always !<=-1
+  linenr always !<=-1
+Line 151
+  ++ always !<=0
+  fails_counter always !<=-1
+Line 152
+  linenr always !<=-1
+  ": Assertion failed. " always ": Assertion failed. "
+Line 153
+  "Expected: " always "Expected: "
+Line 155
+  "Actual: " always "Actual: "
+Line 157
+  ! {!<=-1,!>=2,0}
+  msg possible size=0
+  ( {!<=-1,!>=2,1}
+Line 158
+  "Hint:" always "Hint:"
+  msg always !size=0
+Line 159
+  "_____" always "_____"
+Line 162
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 164
+  != always {!<=-1,!>=2}
+Line 165
+  linenr always !<=-1
+Line 167
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 174
+  :: always !<=-1
+  pos always !<=-1
+  pos always !<=-1
+  = always 0
+  0 always 0
+Line 175
+  pos always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  ':' always 58
+  pos {symbolic=(after),!<=-1,0}
+  != always {!<=-1,!>=2}
+Line 177
+  pos always !<=-1
+  + always !<=0
+  1 always 1
+  == always {!<=-1,!>=2}
+  ( always !<=-1
+  "0123456789" always "0123456789"
+  pos always !<=-1
+  + always !<=0
+  1 always 1
+Line 178
+  :: always !<=-1
+  after always !<=-1
+Line 179
+  after always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  "0123456789" always "0123456789"
+  pos {!<=-1,symbolic=(result.find_first_of("0123456789",pos+1)-1)}
+  + always !<=0
+  1 always 1
+  != always {!<=-1,!>=2}
+Line 180
+  && always {!<=-1,!>=2}
+  after always !<=-1
+  == always {!<=-1,!>=2}
+  ':' always 58
+Line 182
+  pos always !<=-1
+  + always !<=0
+  1 always 1
+  after always !<=-1
+  - always !<=-1
+  pos always !<=-1
+  - always !<=-1
+  1 always 1
+Line 183
+  pos always !<=-1
+  = always !<=-1
+  after always !<=-1
+Line 185
+  ++ {!<=0,symbolic=(result.find_first_of("0123456789",pos+1))}
+  pos {!<=-1,symbolic=(result.find_first_of("0123456789",pos+1)-1)}
+Line 188
+  ++ always {!<=0,!symbolic=(result.find_first_of("0123456789",pos+1))}
+  pos always {!<=-1,!symbolic=(result.find_first_of("0123456789",pos+1)-1)}
+Line 194
+  , always !<=-1
+  linenr always !<=-1
+Line 196
+  ( always {!<=-1,!>=2}
+  linenr always !<=-1
+Line 199
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 201
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  linenr always !<=-1
+Line 203
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 205
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  linenr always !<=-1
+Line 207
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 209
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  linenr always !<=-1
+Line 212
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 214
+  != always {!<=-1,!>=2}
+Line 216
+  expected always !symbolic=(actual)
+Line 218
+  actual always !symbolic=(expected)
+Line 219
+  ( always {!<=-1,!>=2}
+  linenr always !<=-1
+Line 221
+  return always {!<=-1,!>=2}
+  expected possible symbolic=(actual)
+  == {!<=-1,!>=2,1}
+  actual possible symbolic=(expected)
+Line 224
+  , always !<=-1
+  linenr always !<=-1
+Line 226
+  < always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  expected possible >=symbolic=(actual-tolerance)
+  > always {!<=-1,!>=2}
+Line 228
+  expected possible {<=symbolic=(actual-tolerance-1),>=symbolic=(actual+tolerance+1)}
+Line 231
+  ( always {!<=-1,!>=2}
+  linenr always !<=-1
+Line 235
+  , always !<=-1
+  linenr always !<=-1
+Line 240
+  == always {!<=-1,!>=2}
+Line 241
+  linenr always !<=-1
+  ": Assertion succeeded unexpectedly. " always ": Assertion succeeded unexpectedly. "
+Line 242
+  "Result: " always "Result: "
+  true always 1
+  "_____" always "_____"
+Line 244
+  ++ always !<=0
+  succeeded_todos_counter always !<=-1
+Line 246
+  ( always {!<=-1,!>=2}
+  linenr always !<=-1
+Line 247
+  ++ always !<=0
+  todos_counter always !<=-1
+Line 251
+  , always !<=-1
+  linenr always !<=-1
+Line 256
+  linenr always !<=-1
+Line 260
+  , always !<=-1
+  linenr always !<=-1
+Line 266
+  linenr always !<=-1
+Line 269
+  , always !<=-1
+  linenr always !<=-1
+Line 271
+  ++ always !<=0
+  fails_counter always !<=-1
+Line 272
+  linenr always !<=-1
+  ": Assertion succeeded. " always ": Assertion succeeded. "
+Line 273
+  "The expected exception was thrown" always "The expected exception was thrown"
+  "_____" always "_____"
+Line 277
+  , always !<=-1
+  linenr always !<=-1
+Line 279
+  ++ always !<=0
+  fails_counter always !<=-1
+Line 280
+  linenr always !<=-1
+  ": Assertion failed. " always ": Assertion failed. "
+Line 281
+  "The expected exception was not thrown" always "The expected exception was not thrown"
+  "_____" always "_____"
+Line 285
+  , always !<=-1
+  linenr always !<=-1
+Line 287
+  ++ always !<=0
+  fails_counter always !<=-1
+Line 288
+  linenr always !<=-1
+  ": Assertion failed. " always ": Assertion failed. "
+Line 289
+  "Unexpected exception was thrown" always "Unexpected exception was thrown"
+  "_____" always "_____"
+Line 300
+  "Testrunner - run Cppcheck tests\n\nSyntax:\n    testrunner [OPTIONS] [TestClass::TestCase...]\n    run all test cases:\n        testrunner\n    run all test cases in TestClass:\n        testrunner TestClass\n    run TestClass::TestCase:\n        testrunner TestClass::TestCase\n    run all test cases in TestClass1 and TestClass2::TestCase:\n        testrunner TestClass1 TestClass2::TestCase\n\nOptions:\n    -q                   Do not print the test cases that have run.\n    -h, --help           Print this help.\n" always "Testrunner - run Cppcheck tests\n\nSyntax:\n    testrunner [OPTIONS] [TestClass::TestCase...]\n    run all test cases:\n        testrunner\n    run all test cases in TestClass:\n        testrunner TestClass\n    run TestClass::TestCase:\n        testrunner TestClass::TestCase\n    run all test cases in TestClass1 and TestClass2::TestCase:\n        testrunner TestClass1 TestClass2::TestCase\n\nOptions:\n    -q                   Do not print the test cases that have run.\n    -h, --help           Print this help.\n"
+Line 321
+  quiet_tests always {!<=-1,!>=2}
+Line 322
+  '\n' always 10
+  ':' always 58
+Line 323
+  false always 0
+Line 331
+  quiet_tests always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 335
+  ( always !<=-1
+Line 337
+  countTests always !<=-1
+  = always 0
+  0 always 0
+Line 338
+  "" always ""
+Line 342
+  ( always !<=-1
+  "::" always "::"
+  != always {!<=-1,!>=2}
+Line 343
+  ( always !<=-1
+  "::" always "::"
+  + always !<=1
+  2 always 2
+Line 344
+  ( always !<=-1
+  "::" always "::"
+Line 348
+  classname possible {symbolic=(test->classname),size=0}
+  ( {!<=-1,!>=2,1}
+  || always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  classname always !size=0
+Line 355
+  "\n\nTesting Complete\nNumber of tests: " always "\n\nTesting Complete\nNumber of tests: "
+  countTests always !<=-1
+Line 356
+  "Number of todos: " always "Number of todos: "
+  todos_counter always !<=-1
+Line 357
+  succeeded_todos_counter always !<=-1
+  > always {!<=-1,!>=2}
+  0 always 0
+Line 358
+  " (" always " ("
+  succeeded_todos_counter {>=1,!<=0}
+  " succeeded)" always " succeeded)"
+Line 363
+  "Tests failed: " always "Tests failed: "
+  fails_counter always !<=-1
+Line 366
+  ! {!<=-1,!>=2,0}
+  missingLibs possible size=0
+  ( {!<=-1,!>=2,1}
+Line 367
+  "Missing libraries: " always "Missing libraries: "
+Line 368
+  missingLibs always !size=0
+Line 369
+  "  " always "  "
+Line 373
+  return always !<=-1
+  fails_counter always !<=-1
+Line 383
+  mVerbose always {!<=-1,!>=2}
+Line 384
+  == always {!<=-1,!>=2}

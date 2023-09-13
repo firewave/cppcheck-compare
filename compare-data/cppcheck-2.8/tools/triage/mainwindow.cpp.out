@@ -1,0 +1,410 @@
+
+
+##file cppcheck-2.8/tools/triage/mainwindow.h
+
+1:
+|
+26:
+27: class QListWidgetItem ;
+28: class QTextStream ;
+29: namespace Ui {
+30: class MainWindow ;
+31: }
+32:
+33: class MainWindow : public QMainWindow {
+34: Q_OBJECT
+35:
+36: public:
+37: explicit MainWindow ( QWidget * parent = nullptr ) ;
+38: MainWindow ( const MainWindow & ) = delete ;
+39: MainWindow & operator = ( const MainWindow & ) = delete ;
+40: ~ MainWindow ( ) override ;
+41:
+42: public slots :
+43: void loadFile ( ) ;
+44: void loadFromClipboard ( ) ;
+45: void filter ( const QString & filter ) ;
+46: void showResult ( QListWidgetItem * item ) ;
+47: void refreshResults ( ) ;
+48: void fileTreeFilter ( const QString & str ) ;
+49: void findInFilesClicked ( ) ;
+50: void directorytreeDoubleClick ( ) ;
+51: void searchResultsDoubleClick ( ) ;
+52: void resultsContextMenu ( const QPoint & pos ) ;
+53:
+54: private:
+55: Ui :: MainWindow * ui ;
+56:
+57: void load ( QTextStream & textStream ) ;
+58: bool runProcess ( const QString & programName , const QStringList & arguments ) ;
+59: bool wget ( const QString & url ) ;
+60: bool unpackArchive ( const QString & archiveName ) ;
+61: void showSrcFile ( const QString & fileName , const QString & url , const int lineNumber ) ;
+62:
+63: QStringList mAllErrors ;
+64: QFileSystemModel mFSmodel ;
+65: const QRegularExpression mVersionRe ;
+66:
+67: const QStringList hFiles ;
+68: const QStringList srcFiles ;
+69: } ;
+
+##file cppcheck-2.8/tools/triage/mainwindow.cpp
+
+1:
+|
+37:
+38: const QString WORK_FOLDER ( QDir :: homePath ( ) + "/triage" ) ;
+39: const QString DACA2_PACKAGES ( QDir :: homePath ( ) + "/daca2-packages" ) ;
+40:
+41: const int MAX_ERRORS = 100 ;
+42:
+43: MainWindow :: MainWindow ( QWidget * parent ) :
+44: QMainWindow ( parent ) ,
+45: ui ( new Ui :: MainWindow ) ,
+46: mVersionRe ( "^(master|main|your|head|[12].[0-9][0-9]?) (.*)$" ) ,
+47: hFiles { "*.hpp" , "*.h" , "*.hxx" , "*.hh" , "*.tpp" , "*.txx" , "*.ipp" , "*.ixx" } ,
+48: srcFiles { "*.cpp" , "*.cxx" , "*.cc" , "*.c++" , "*.C" , "*.c" , "*.cl" }
+49: {
+50: ui . setupUi ( this ) ;
+51: std :: srand ( static_cast < unsigned int > ( std :: time ( nullptr ) ) ) ;
+52: QDir workFolder ( WORK_FOLDER ) ;
+53: if ( ! workFolder . exists ( ) ) {
+54: workFolder . mkdir ( WORK_FOLDER ) ;
+55: }
+56:
+57: ui . results . setContextMenuPolicy ( Qt :: CustomContextMenu ) ;
+58: connect ( ui . results , & QListWidget :: customContextMenuRequested ,
+59: this , & MainWindow :: resultsContextMenu ) ;
+60:
+61: mFSmodel . setRootPath ( WORK_FOLDER ) ;
+62: mFSmodel . setReadOnly ( true ) ;
+63: mFSmodel . setFilter ( QDir :: Dirs | QDir :: Files | QDir :: NoDotAndDotDot ) ;
+64: ui . directoryTree . setModel ( & mFSmodel ) ;
+65: QHeaderView * header ; header = ui . directoryTree . header ( ) ;
+66: for ( int i = 1 ; i < header . length ( ) ; ++ i ) {
+67: header . hideSection ( i ) ; }
+68: ui . directoryTree . setRootIndex ( mFSmodel . index ( WORK_FOLDER ) ) ;
+69:
+70: ui . hFilesFilter . setToolTip ( hFiles . join ( ',' ) ) ;
+71: ui . srcFilesFilter . setToolTip ( srcFiles . join ( ',' ) ) ;
+72: }
+73:
+74: MainWindow :: ~ MainWindow ( )
+75: {
+76: delete ui ;
+77: }
+78:
+79: void MainWindow :: loadFile ( )
+80: {
+81: ui . statusBar . clearMessage ( ) ;
+82: const QString fileName = QFileDialog :: getOpenFileName ( this , tr ( "daca results file" ) , WORK_FOLDER , tr ( "Text files (*.txt *.log);;All (*.*)" ) ) ;
+83: if ( fileName . isEmpty ( ) ) {
+84: return ; }
+85: QFile file ( fileName ) ;
+86: file . open ( QIODevice :: ReadOnly | QIODevice :: Text ) ;
+87: QTextStream textStream ( & file ) ;
+88: load ( textStream ) ;
+89: }
+90:
+91: void MainWindow :: loadFromClipboard ( )
+92: {
+93: ui . statusBar . clearMessage ( ) ;
+94: QString clipboardContent ; clipboardContent = QApplication :: clipboard ( ) . text ( ) ;
+95: QTextStream textStream ( & clipboardContent ) ;
+96: load ( textStream ) ;
+97: }
+98:
+99: void MainWindow :: load ( QTextStream & textStream )
+100: {
+101: QString url ;
+102: QString errorMessage ;
+103: QStringList versions ;
+104: mAllErrors . clear ( ) ;
+105: while ( true ) {
+106: QString line ; line = textStream . readLine ( ) ;
+107: if ( line . isNull ( ) ) {
+108: break ; }
+109: if ( line . startsWith ( "ftp://" ) ) {
+110: url = line ;
+111: if ( ! errorMessage . isEmpty ( ) ) {
+112: mAllErrors << errorMessage ; }
+113: errorMessage . clear ( ) ;
+114: } else if ( ! url . isEmpty ( ) ) {
+115: static const QRegularExpression severityRe ( "^.*: (error|warning|style|note):.*$" ) ;
+116: if ( severityRe . match ( line ) . hasMatch ( ) ) {
+117: continue ; }
+118: const QRegularExpressionMatch matchRes = mVersionRe . match ( line ) ;
+119: if ( matchRes . hasMatch ( ) ) {
+120: const QString version = matchRes . captured ( 1 ) ;
+121: if ( versions . indexOf ( version ) < 0 ) {
+122: versions << version ; }
+123: }
+124: if ( line . indexOf ( ": note:" ) > 0 ) {
+125: errorMessage += '\n' + line ; }
+126: else if ( errorMessage . isEmpty ( ) ) {
+127: errorMessage = url + '\n' + line ;
+128: } else {
+129: mAllErrors << errorMessage ;
+130: errorMessage = url + '\n' + line ;
+131: }
+132: }
+133: }
+134: if ( ! errorMessage . isEmpty ( ) ) {
+135: mAllErrors << errorMessage ; }
+136:
+137: ui . version . clear ( ) ;
+138: if ( versions . size ( ) > 1 ) {
+139: ui . version . addItem ( "" ) ; }
+140: ui . version . addItems ( versions ) ;
+141:
+142: filter ( "" ) ;
+143: }
+144:
+145: void MainWindow :: refreshResults ( )
+146: {
+147: filter ( ui . version . currentText ( ) ) ;
+148: }
+149:
+150: void MainWindow :: filter ( const QString & filter )
+151: {
+152: QStringList allErrors ;
+153:
+154: for ( const QString & errorItem : mAllErrors ) {
+155: if ( filter . isEmpty ( ) ) {
+156: allErrors << errorItem ;
+157: continue ;
+158: }
+159:
+160: const QStringList lines = errorItem . split ( "\n" ) ;
+161: if ( lines . size ( ) < 2 ) {
+162: continue ; }
+163:
+164: if ( lines [ 1 ] . startsWith ( filter ) ) {
+165: allErrors << errorItem ; }
+166: }
+167:
+168: ui . results . clear ( ) ;
+169:
+170: if ( ui . random100 . isChecked ( ) && allErrors . size ( ) > MAX_ERRORS ) {
+171:
+172: for ( int i = allErrors . size ( ) - 1 ; i >= 0 && allErrors . size ( ) > MAX_ERRORS ; -- i ) {
+173: if ( allErrors [ i ] . indexOf ( "test" ) > 0 ) {
+174: allErrors . removeAt ( i ) ; }
+175: }
+176: std :: random_shuffle ( allErrors . begin ( ) , allErrors . end ( ) ) ;
+177: ui . results . addItems ( allErrors . mid ( 0 , MAX_ERRORS ) ) ;
+178: ui . results . sortItems ( ) ;
+179: } else {
+180: ui . results . addItems ( allErrors ) ;
+181: }
+182: }
+183:
+184: bool MainWindow :: runProcess ( const QString & programName , const QStringList & arguments )
+185: {
+186: QProgressDialog dialog ( "Running external process: " + programName , "Kill" , 0 , 1 , this ) ;
+187: dialog . setWindowModality ( Qt :: WindowModal ) ;
+188: dialog . setMinimumDuration ( 0 ) ;
+189: dialog . setValue ( 0 ) ;
+190:
+191: QProcess process ;
+192: process . setWorkingDirectory ( WORK_FOLDER ) ;
+193: process . start ( programName , arguments ) ;
+194:
+195: bool success ; success = false ;
+196: bool state ; state = ( QProcess :: Running == process . state ( ) || QProcess :: Starting == process . state ( ) ) ;
+197: while ( ! success && state ) {
+198: success = process . waitForFinished ( 50 ) ;
+199:
+200: QCoreApplication :: processEvents ( ) ;
+201: if ( dialog . wasCanceled ( ) ) {
+202: process . kill ( ) ;
+203: success = false ;
+204: break ;
+205: }
+206: state = ( QProcess :: Running == process . state ( ) || QProcess :: Starting == process . state ( ) ) ;
+207: }
+208: dialog . setValue ( 1 ) ;
+209: if ( ! success ) {
+210: QString errorstr ( programName ) ;
+211: errorstr . append ( ": " ) ;
+212: errorstr . append ( process . errorString ( ) ) ;
+213: ui . statusBar . showMessage ( errorstr ) ;
+214: } else {
+215: int exitCode ; exitCode = process . exitCode ( ) ;
+216: if ( exitCode != 0 ) {
+217: success = false ;
+218: const QByteArray stderrOutput = process . readAllStandardError ( ) ;
+219: QString errorstr ( programName ) ;
+220: errorstr . append ( QString ( ": exited with %1: " ) . arg ( exitCode ) ) ;
+221: errorstr . append ( stderrOutput ) ;
+222: ui . statusBar . showMessage ( errorstr ) ;
+223: }
+224: }
+225: return success ;
+226: }
+227:
+228: bool MainWindow :: wget ( const QString & url )
+229: {
+230: return runProcess ( "wget" , QStringList { url } ) ;
+231: }
+232:
+233: bool MainWindow :: unpackArchive ( const QString & archiveName )
+234: {
+235:
+236: QStringList args ;
+237:
+|
+242:
+243: if ( archiveName . endsWith ( ".tar.gz" ) ) {
+244: args << "-xzvf" ; }
+245: else if ( archiveName . endsWith ( ".tar.bz2" ) ) {
+246: args << "-xjvf" ; }
+247: else if ( archiveName . endsWith ( ".tar.xz" ) ) {
+248: args << "-xJvf" ; }
+249: else {
+250:
+251: args << "-xavf" ;
+252: }
+253: args << archiveName ;
+254:
+255: return runProcess ( "tar" , args ) ;
+256: }
+257:
+258: void MainWindow :: showResult ( QListWidgetItem * item )
+259: {
+260: ui . statusBar . clearMessage ( ) ;
+261: if ( ! item . text ( ) . startsWith ( "ftp://" ) ) {
+262: return ; }
+263: const QStringList lines = item . text ( ) . split ( "\n" ) ;
+264: if ( lines . size ( ) < 2 ) {
+265: return ; }
+266: const QString url = lines [ 0 ] ;
+267: QString msg ; msg = lines [ 1 ] ;
+268: const QRegularExpressionMatch matchRes = mVersionRe . match ( msg ) ;
+269: if ( matchRes . hasMatch ( ) ) {
+270: msg = matchRes . captured ( 2 ) ; }
+271: const QString archiveName = url . mid ( url . lastIndexOf ( "/" ) + 1 ) ;
+272: const int pos1 = msg . indexOf ( ":" ) ;
+273: const int pos2 = msg . indexOf ( ":" , pos1 + 1 ) ;
+274: const QString fileName = WORK_FOLDER + '/' + msg . left ( msg . indexOf ( ":" ) ) ;
+275: const int lineNumber = msg . mid ( pos1 + 1 , pos2 - pos1 - 1 ) . toInt ( ) ;
+276:
+277: if ( ! QFileInfo :: exists ( fileName ) ) {
+278: const QString daca2archiveFile { DACA2_PACKAGES + '/' + archiveName . mid ( 0 , archiveName . indexOf ( ".tar." ) ) + ".tar.xz" } ;
+279: if ( QFileInfo :: exists ( daca2archiveFile ) ) {
+280: if ( ! unpackArchive ( daca2archiveFile ) ) {
+281: return ; }
+282: } else {
+283: const QString archiveFullPath { WORK_FOLDER + '/' + archiveName } ;
+284: if ( ! QFileInfo :: exists ( archiveFullPath ) ) {
+285:
+286: if ( ! wget ( url ) ) {
+287: return ; }
+288: }
+289: if ( ! unpackArchive ( archiveFullPath ) ) {
+290: return ; }
+291: }
+292: }
+293: showSrcFile ( fileName , url , lineNumber ) ;
+294: }
+295:
+296: void MainWindow :: showSrcFile ( const QString & fileName , const QString & url , const int lineNumber )
+297: {
+298:
+299: ui . code . setFocus ( ) ;
+300: QFile f ( fileName ) ;
+301: if ( ! f . open ( QIODevice :: ReadOnly | QIODevice :: Text ) ) {
+302: const QString errorMsg =
+303: QString ( "Opening file %1 failed: %2" ) . arg ( f . fileName ( ) , f . errorString ( ) ) ;
+304: ui . statusBar . showMessage ( errorMsg ) ;
+305: } else {
+306: QTextStream textStream ( & f ) ;
+307: const QString fileData = textStream . readAll ( ) ;
+308: ui . code . setError ( fileData , lineNumber , QStringList ( ) ) ;
+309: f . close ( ) ;
+310:
+311: ui . urlEdit . setText ( url ) ;
+312: ui . fileEdit . setText ( fileName ) ;
+313: ui . directoryTree . setCurrentIndex ( mFSmodel . index ( fileName ) ) ;
+314: }
+315: }
+316:
+317: void MainWindow :: fileTreeFilter ( const QString & str )
+318: {
+319: mFSmodel . setNameFilters ( QStringList { "*" + str + "*" } ) ;
+320: mFSmodel . setNameFilterDisables ( false ) ;
+321: }
+322:
+323: void MainWindow :: findInFilesClicked ( )
+324: {
+325: ui . tabWidget . setCurrentIndex ( 1 ) ;
+326: ui . inFilesResult . clear ( ) ;
+327: const QString text = ui . filterEdit . text ( ) ;
+328:
+329: QStringList filter ;
+330: if ( ui . hFilesFilter . isChecked ( ) ) {
+331: filter . append ( hFiles ) ; }
+332: if ( ui . srcFilesFilter . isChecked ( ) ) {
+333: filter . append ( srcFiles ) ; }
+334:
+335: QMimeDatabase mimeDatabase ;
+336: QDirIterator it ( WORK_FOLDER , filter , QDir :: AllEntries | QDir :: NoSymLinks | QDir :: NoDotAndDotDot , QDirIterator :: Subdirectories ) ;
+337:
+338: const auto common_path_len = WORK_FOLDER . length ( ) + 1 ;
+339:
+340: while ( it . hasNext ( ) ) {
+341: const QString fileName = it . next ( ) ;
+342: const QMimeType mimeType = mimeDatabase . mimeTypeForFile ( fileName ) ;
+343:
+344: if ( mimeType . isValid ( ) && ! mimeType . inherits ( QStringLiteral ( "text/plain" ) ) ) {
+345: continue ;
+346: }
+347:
+348: QFile file ( fileName ) ;
+349: if ( file . open ( QIODevice :: ReadOnly ) ) {
+350: int lineN ; lineN = 0 ;
+351: QTextStream in ( & file ) ;
+352: while ( ! in . atEnd ( ) ) {
+353: ++ lineN ;
+354: QString line ; line = in . readLine ( ) ;
+355: if ( line . contains ( text , Qt :: CaseInsensitive ) ) {
+356: ui . inFilesResult . addItem ( fileName . mid ( common_path_len ) + QString { ":" } + QString :: number ( lineN ) ) ;
+357: }
+358: }
+359: }
+360: }
+361: }
+362:
+363: void MainWindow :: directorytreeDoubleClick ( )
+364: {
+365: showSrcFile ( mFSmodel . filePath ( ui . directoryTree . currentIndex ( ) ) , "" , 1 ) ;
+366: }
+367:
+368: void MainWindow :: searchResultsDoubleClick ( )
+369: {
+370: QString filename ; filename = ui . inFilesResult . currentItem ( ) . text ( ) ;
+371: const auto idx = filename . lastIndexOf ( ':' ) ;
+372: const int line = filename . mid ( idx + 1 ) . toInt ( ) ;
+373: showSrcFile ( WORK_FOLDER + QString { "/" } + filename . left ( idx ) , "" , line ) ;
+374: }
+375:
+376: void MainWindow :: resultsContextMenu ( const QPoint & pos )
+377: {
+378: if ( ui . results . selectedItems ( ) . isEmpty ( ) ) {
+379: return ; }
+380: QMenu submenu ;
+381: submenu . addAction ( "Copy" ) ;
+382: QAction * menuItem ; menuItem = submenu . exec ( ui . results . mapToGlobal ( pos ) ) ;
+383: if ( menuItem && menuItem . text ( ) . contains ( "Copy" ) )
+384: {
+385: QString text ;
+386: for ( const auto * res : ui . results . selectedItems ( ) ) {
+387: text += res . text ( ) + "\n" ; }
+388: QApplication :: clipboard ( ) . setText ( text ) ;
+389: }
+390: }
+
+
+
+##Value flow

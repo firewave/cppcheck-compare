@@ -1,0 +1,996 @@
+
+
+##file cppcheck-2.8/gui/threadresult.h
+
+1:
+|
+33:
+34: class ErrorItem ;
+35:
+|
+42:
+43: class ThreadResult : public QObject , public ErrorLogger {
+44: Q_OBJECT
+45: public:
+46: ThreadResult ( ) ;
+47: ~ ThreadResult ( ) override ;
+48:
+|
+52:
+53: QString getNextFile ( ) ;
+54:
+55: ImportProject :: FileSettings getNextFileSettings ( ) ;
+56:
+|
+60:
+61: void setFiles ( const QStringList & files ) ;
+62:
+63: void setProject ( const ImportProject & prj ) ;
+64:
+|
+68:
+69: void clearFiles ( ) ;
+70:
+|
+74:
+75: int getFileCount ( ) const ;
+76:
+|
+79:
+80: void reportOut ( const std :: string & outmsg , Color c = Color :: Reset ) override ;
+81: void reportErr ( const ErrorMessage & msg ) override ;
+82:
+83: public slots :
+84:
+|
+88:
+89: void fileChecked ( const QString & file ) ;
+90: signals :
+91:
+|
+95:
+96: void progress ( int value , const QString & description ) ;
+97:
+|
+102:
+103: void error ( const ErrorItem & item ) ;
+104:
+|
+109:
+110: void log ( const QString & logline ) ;
+111:
+|
+116:
+117: void debugError ( const ErrorItem & item ) ;
+118:
+119: protected:
+120:
+|
+124:
+125: mutable QMutex mutex ;
+126:
+|
+130:
+131: QStringList mFiles ;
+132:
+133: std :: list < ImportProject :: FileSettings > mFileSettings ;
+134:
+|
+138:
+139: quint64 mMaxProgress ;
+140:
+|
+144:
+145: quint64 mProgress ;
+146:
+|
+150:
+151: unsigned long mFilesChecked ;
+152:
+|
+156:
+157: unsigned long mTotalFiles ;
+158: } ;
+
+##file cppcheck-2.8/gui/threadhandler.h
+
+1:
+|
+32:
+33: class ResultsView ;
+34: class CheckThread ;
+35: class QSettings ;
+36: class Settings ;
+37: class ImportProject ;
+38: class ErrorItem ;
+39:
+|
+47:
+48: class ThreadHandler : public QObject {
+49: Q_OBJECT
+50: public:
+51: explicit ThreadHandler ( QObject * parent = nullptr ) ;
+52: ~ ThreadHandler ( ) override ;
+53:
+|
+57:
+58: void setThreadCount ( const int count ) ;
+59:
+|
+64:
+65: void initialize ( ResultsView * view ) ;
+66:
+|
+70:
+71: void loadSettings ( const QSettings & settings ) ;
+72:
+|
+76:
+77: void saveSettings ( QSettings & settings ) const ;
+78:
+79: void setAddonsAndTools ( const QStringList & addonsAndTools ) {
+80: mAddonsAndTools = addonsAndTools ;
+81: }
+82:
+83: void setSuppressions ( const QList < Suppressions :: Suppression > & s ) {
+84: mSuppressions = s ;
+85: }
+86:
+87: void setClangIncludePaths ( const QStringList & s ) {
+88: mClangIncludePaths = s ;
+89: }
+90:
+|
+94:
+95: void clearFiles ( ) ;
+96:
+|
+101:
+102: void setFiles ( const QStringList & files ) ;
+103:
+|
+108:
+109: void setProject ( const ImportProject & prj ) ;
+110:
+|
+115:
+116: void check ( const Settings & settings ) ;
+117:
+|
+122:
+123: void setCheckFiles ( bool all ) ;
+124:
+|
+129:
+130: void setCheckFiles ( const QStringList & files ) ;
+131:
+|
+136:
+137: bool isChecking ( ) const ;
+138:
+|
+143:
+144: bool hasPreviousFiles ( ) const ;
+145:
+|
+150:
+151: int getPreviousFilesCount ( ) const ;
+152:
+|
+157:
+158: int getPreviousScanDuration ( ) const ;
+159:
+|
+163:
+164: QStringList getReCheckFiles ( bool all ) const ;
+165:
+|
+170:
+171: QDateTime getCheckStartTime ( ) const ;
+172:
+|
+177:
+178: void setCheckStartTime ( QDateTime checkStartTime ) ;
+179:
+180: signals :
+181:
+|
+184:
+185: void done ( ) ;
+186:
+187: void log ( const QString & msg ) ;
+188:
+189: void debugError ( const ErrorItem & item ) ;
+190:
+191: public slots :
+192:
+|
+196:
+197: void stop ( ) ;
+198: protected slots :
+199:
+|
+202:
+203: void threadDone ( ) ;
+204: protected:
+205:
+|
+208:
+209: QStringList mLastFiles ;
+210:
+211:
+212: QDateTime mCheckStartTime ;
+213:
+|
+216:
+217: QDateTime mLastCheckTime ;
+218:
+|
+222:
+223: QElapsedTimer mTimer ;
+224:
+|
+228:
+229: int mScanDuration ;
+230:
+|
+234:
+235: void removeThreads ( ) ;
+236:
+|
+240:
+241: ThreadResult mResults ;
+242:
+|
+246:
+247: QList < CheckThread * > mThreads ;
+248:
+|
+252:
+253: int mRunningThreadCount ;
+254:
+255: bool mAnalyseWholeProgram ;
+256:
+257: QStringList mAddonsAndTools ;
+258: QList < Suppressions :: Suppression > mSuppressions ;
+259: QStringList mClangIncludePaths ;
+260: private:
+261:
+|
+265:
+266: bool needsReCheck ( const QString & filename , std :: set < QString > & modified , std :: set < QString > & unmodified ) const ;
+267: } ;
+
+##file cppcheck-2.8/gui/checkthread.h
+
+1:
+|
+27:
+28: class QObject ;
+29: class Settings ;
+30: class ThreadResult ;
+31:
+|
+38:
+39: class CheckThread : public QThread {
+40: Q_OBJECT
+41: public:
+42: explicit CheckThread ( ThreadResult & result ) ;
+43: ~ CheckThread ( ) override ;
+44:
+|
+49:
+50: void check ( const Settings & settings ) ;
+51:
+|
+55:
+56: void analyseWholeProgram ( const QStringList & files ) ;
+57:
+58: void setAddonsAndTools ( const QStringList & addonsAndTools ) {
+59: mAddonsAndTools = addonsAndTools ;
+60: }
+61:
+62: void setClangIncludePaths ( const QStringList & s ) {
+63: mClangIncludePaths = s ;
+64: }
+65:
+66: void setSuppressions ( const QList < Suppressions :: Suppression > & s ) {
+67: mSuppressions = s ;
+68: }
+69:
+|
+73:
+74: void run ( ) override ;
+75:
+76: void stop ( ) ;
+77:
+|
+81:
+82: static QString clangCmd ( ) ;
+83:
+|
+87:
+88: static QString clangTidyCmd ( ) ;
+89:
+90: signals :
+91:
+|
+95:
+96: void done ( ) ;
+97:
+98: void fileChecked ( const QString & file ) ;
+99: protected:
+100:
+|
+107:
+108: enum State {
+109: Running ,
+110: Stopping ,
+111: Stopped ,
+112: Ready ,
+113: } ;
+114:
+|
+117:
+118: State mState ;
+119:
+120: ThreadResult & mResult ;
+121:
+122:
+123:
+124: CppCheck mCppcheck ;
+125:
+126: private:
+127: void runAddonsAndTools ( const ImportProject :: FileSettings * fileSettings , const QString & fileName ) ;
+128:
+129: void parseClangErrors ( const QString & tool , const QString & file0 , QString err ) ;
+130:
+131: bool isSuppressed ( const Suppressions :: ErrorMessage & errorMessage ) const ;
+132:
+133: QStringList mFiles ;
+134: bool mAnalyseWholeProgram ;
+135: QStringList mAddonsAndTools ;
+136: QStringList mClangIncludePaths ;
+137: QList < Suppressions :: Suppression > mSuppressions ;
+138: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type , const QString & value ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters , bool addAllSupported = true , bool addAll = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/report.h
+
+1:
+|
+25:
+26: class ErrorItem ;
+27:
+|
+33:
+34: class Report : public QObject {
+35: public:
+36: enum Type {
+37: TXT ,
+38: XMLV2 ,
+39: CSV ,
+40: } ;
+41:
+42: explicit Report ( const QString & filename ) ;
+43: ~ Report ( ) override ;
+44:
+|
+48:
+49: virtual bool create ( ) ;
+50:
+|
+54:
+55: virtual bool open ( ) ;
+56:
+|
+59:
+60: void close ( ) ;
+61:
+|
+64:
+65: virtual void writeHeader ( ) = 0 ;
+66:
+|
+69:
+70: virtual void writeFooter ( ) = 0 ;
+71:
+|
+75:
+76: virtual void writeError ( const ErrorItem & error ) = 0 ;
+77:
+78: protected:
+79:
+|
+82:
+83: QFile * getFile ( ) ;
+84:
+85: private:
+86:
+|
+89:
+90: QString mFilename ;
+91:
+|
+94:
+95: QFile mFile ;
+96: } ;
+
+##file cppcheck-2.8/gui/showtypes.h
+
+1:
+|
+37:
+38: class ShowTypes {
+39: public:
+40:
+|
+43:
+44: enum ShowType {
+45: ShowStyle = 0 ,
+46: ShowWarnings ,
+47: ShowPerformance ,
+48: ShowPortability ,
+49: ShowInformation ,
+50: ShowErrors ,
+51: ShowNone
+52: } ;
+53:
+|
+57:
+58: ShowTypes ( ) ;
+59:
+|
+63:
+64: ~ ShowTypes ( ) ;
+65:
+|
+68:
+69: void load ( ) ;
+70:
+|
+73:
+74: void save ( ) const ;
+75:
+|
+80:
+81: bool isShown ( ShowTypes :: ShowType category ) const ;
+82:
+|
+87:
+88: bool isShown ( Severity :: SeverityType severity ) const ;
+89:
+|
+94:
+95: void show ( ShowTypes :: ShowType category , bool showing ) ;
+96:
+|
+101:
+102: static ShowTypes :: ShowType SeverityToShowType ( Severity :: SeverityType severity ) ;
+103:
+|
+108:
+109: static Severity :: SeverityType ShowTypeToSeverity ( ShowTypes :: ShowType type ) ;
+110:
+|
+116:
+117: static ShowTypes :: ShowType VariantToShowType ( const QVariant & data ) ;
+118:
+119: bool mVisible [ ShowNone ] ;
+120: } ;
+
+##file cppcheck-2.8/gui/resultsview.h
+
+1:
+|
+29:
+30: class ErrorItem ;
+31: class ApplicationList ;
+32: class ThreadHandler ;
+33: class QModelIndex ;
+34: class QPrinter ;
+35: class QSettings ;
+36: class CheckStatistics ;
+37: class QObject ;
+38: class QPoint ;
+39: namespace Ui {
+40: class ResultsView ;
+41: }
+42:
+|
+49:
+50: class ResultsView : public QWidget {
+51: Q_OBJECT
+52: public:
+53:
+54: explicit ResultsView ( QWidget * parent = nullptr ) ;
+55: void initialize ( QSettings * settings , ApplicationList * list , ThreadHandler * checkThreadHandler ) ;
+56: ResultsView ( const ResultsView & ) = delete ;
+57: ~ ResultsView ( ) override ;
+58: ResultsView & operator = ( const ResultsView & ) = delete ;
+59:
+|
+63:
+64: void clear ( bool results ) ;
+65:
+|
+68:
+69: void clear ( const QString & filename ) ;
+70:
+|
+73:
+74: void clearRecheckFile ( const QString & filename ) ;
+75:
+|
+80:
+81: void saveStatistics ( const QString & filename ) const ;
+82:
+|
+88:
+89: void save ( const QString & filename , Report :: Type type ) const ;
+90:
+|
+93:
+94: void updateFromOldReport ( const QString & filename ) const ;
+95:
+|
+105:
+106: void updateSettings ( bool showFullPath ,
+107: bool saveFullPath ,
+108: bool saveAllErrors ,
+109: bool showNoErrorsMessage ,
+110: bool showErrorId ,
+111: bool showInconclusive ) ;
+112:
+|
+120:
+121: void updateStyleSetting ( QSettings * settings ) ;
+122:
+|
+128:
+129: void setCheckDirectory ( const QString & dir ) ;
+130:
+|
+136:
+137: QString getCheckDirectory ( ) ;
+138:
+|
+143:
+144: void checkingStarted ( int count ) ;
+145:
+|
+149:
+150: void checkingFinished ( ) ;
+151:
+|
+156:
+157: bool hasVisibleResults ( ) const ;
+158:
+|
+163:
+164: bool hasResults ( ) const ;
+165:
+|
+170:
+171: void saveSettings ( QSettings * settings ) ;
+172:
+|
+176:
+177: void translate ( ) ;
+178:
+179: void disableProgressbar ( ) ;
+180:
+|
+185:
+186: void readErrorsXml ( const QString & filename ) ;
+187:
+|
+191:
+192: CheckStatistics * getStatistics ( ) const {
+193: return mStatistics ;
+194: }
+195:
+|
+199:
+200: ShowTypes * getShowTypes ( ) const ;
+201:
+202: signals :
+203:
+|
+207:
+208: void gotResults ( ) ;
+209:
+|
+214:
+215: void resultsHidden ( bool hidden ) ;
+216:
+|
+221:
+222: void checkSelected ( QStringList selectedFilesList ) ;
+223:
+224:
+225: void suppressIds ( QStringList ids ) ;
+226:
+|
+233:
+234: void showResults ( ShowTypes :: ShowType type , bool show ) ;
+235:
+|
+241:
+242: void showCppcheckResults ( bool show ) ;
+243:
+|
+249:
+250: void showClangResults ( bool show ) ;
+251:
+|
+254:
+255: void collapseAllResults ( ) ;
+256:
+|
+259:
+260: void expandAllResults ( ) ;
+261:
+|
+264:
+265: void showHiddenResults ( ) ;
+266:
+267: public slots :
+268:
+|
+274:
+275: void progress ( int value , const QString & description ) ;
+276:
+|
+281:
+282: void error ( const ErrorItem & item ) ;
+283:
+|
+286:
+287: void filterResults ( const QString & filter ) ;
+288:
+|
+293:
+294: void updateDetails ( const QModelIndex & index ) ;
+295:
+|
+298:
+299: void print ( ) ;
+300:
+|
+304:
+305: void print ( QPrinter * printer ) ;
+306:
+|
+309:
+310: void printPreview ( ) ;
+311:
+|
+314:
+315: void log ( const QString & str ) ;
+316:
+|
+319:
+320: void debugError ( const ErrorItem & item ) ;
+321:
+|
+324:
+325: void logClear ( ) ;
+326:
+|
+329:
+330: void logCopyEntry ( ) ;
+331:
+|
+334:
+335: void logCopyComplete ( ) ;
+336:
+337: protected:
+338:
+339:
+340:
+341: bool mShowNoErrorsMessage ;
+342:
+343: Ui :: ResultsView * mUI ;
+344:
+345: CheckStatistics * mStatistics ;
+346:
+347: private slots :
+348:
+|
+351:
+352: void on_mListLog_customContextMenuRequested ( const QPoint & pos ) ;
+353: } ;
+
+##file cppcheck-2.8/gui/threadhandler.cpp
+
+1:
+|
+33:
+34: ThreadHandler :: ThreadHandler ( QObject * parent ) :
+35: QObject ( parent ) ,
+36: mScanDuration ( 0 ) ,
+37: mRunningThreadCount ( 0 ) ,
+38: mAnalyseWholeProgram ( false )
+39:
+40: {
+41: setThreadCount ( 1 ) ;
+42: }
+43:
+44: ThreadHandler :: ~ ThreadHandler ( )
+45: {
+46: removeThreads ( ) ;
+47: }
+48:
+49: void ThreadHandler :: clearFiles ( )
+50: {
+51: mLastFiles . clear ( ) ;
+52: mResults . clearFiles ( ) ;
+53: mAnalyseWholeProgram = false ;
+54: mAddonsAndTools . clear ( ) ;
+55: mSuppressions . clear ( ) ;
+56: }
+57:
+58: void ThreadHandler :: setFiles ( const QStringList & files )
+59: {
+60: mResults . setFiles ( files ) ;
+61: mLastFiles = files ;
+62: }
+63:
+64: void ThreadHandler :: setProject ( const ImportProject & prj )
+65: {
+66: mResults . setProject ( prj ) ;
+67: mLastFiles . clear ( ) ;
+68: }
+69:
+70: void ThreadHandler :: setCheckFiles ( bool all )
+71: {
+72: if ( mRunningThreadCount == 0 ) {
+73: mResults . setFiles ( getReCheckFiles ( all ) ) ;
+74: }
+75: }
+76:
+77: void ThreadHandler :: setCheckFiles ( const QStringList & files )
+78: {
+79: if ( mRunningThreadCount == 0 ) {
+80: mResults . setFiles ( files ) ;
+81: }
+82: }
+83:
+84: void ThreadHandler :: check ( const Settings & settings )
+85: {
+86: if ( mResults . getFileCount ( ) == 0 || mRunningThreadCount > 0 || settings . jobs == 0 ) {
+87: qDebug ( ) << "Can't start checking if there's no files to check or if check is in progress." ;
+88: emit done ( ) ;
+89: return ;
+90: }
+91:
+92: setThreadCount ( settings . jobs ) ;
+93:
+94: mRunningThreadCount = mThreads . size ( ) ;
+95:
+96: if ( mResults . getFileCount ( ) < mRunningThreadCount ) {
+97: mRunningThreadCount = mResults . getFileCount ( ) ;
+98: }
+99:
+100: QStringList addonsAndTools ; addonsAndTools = mAddonsAndTools ;
+101: for ( const std :: string & addon : settings . addons ) {
+102: QString s ; s = QString :: fromStdString ( addon ) ;
+103: if ( ! addonsAndTools . contains ( s ) ) {
+104: addonsAndTools << s ; }
+105: }
+106:
+107: for ( int i = 0 ; i < mRunningThreadCount ; i ++ ) {
+108: mThreads [ i ] . setAddonsAndTools ( addonsAndTools ) ;
+109: mThreads [ i ] . setSuppressions ( mSuppressions ) ;
+110: mThreads [ i ] . setClangIncludePaths ( mClangIncludePaths ) ;
+111: mThreads [ i ] . check ( settings ) ;
+112: }
+113:
+114:
+115: mCheckStartTime = QDateTime :: currentDateTime ( ) ;
+116:
+117: mAnalyseWholeProgram = true ;
+118:
+119: mTimer . start ( ) ;
+120: }
+121:
+122: bool ThreadHandler :: isChecking ( ) const
+123: {
+124: return mRunningThreadCount > 0 ;
+125: }
+126:
+127: void ThreadHandler :: setThreadCount ( const int count )
+128: {
+129: if ( mRunningThreadCount > 0 ||
+130: count == mThreads . size ( ) ||
+131: count <= 0 ) {
+132: return ;
+133: }
+134:
+135:
+136: removeThreads ( ) ;
+137:
+138: for ( int i = mThreads . size ( ) ; i < count ; i ++ ) {
+139: mThreads << new CheckThread ( mResults ) ;
+140: connect ( mThreads . last ( ) , & CheckThread :: done ,
+141: this , & ThreadHandler :: threadDone ) ;
+142: connect ( mThreads . last ( ) , & CheckThread :: fileChecked ,
+143: & mResults , & ThreadResult :: fileChecked ) ;
+144: }
+145: }
+146:
+147:
+148: void ThreadHandler :: removeThreads ( )
+149: {
+150: for ( CheckThread * thread : mThreads ) {
+151: thread . terminate ( ) ;
+152: disconnect ( thread , & CheckThread :: done ,
+153: this , & ThreadHandler :: threadDone ) ;
+154: disconnect ( thread , & CheckThread :: fileChecked ,
+155: & mResults , & ThreadResult :: fileChecked ) ;
+156: delete thread ;
+157: }
+158:
+159: mThreads . clear ( ) ;
+160: mAnalyseWholeProgram = false ;
+161: }
+162:
+163: void ThreadHandler :: threadDone ( )
+164: {
+165: if ( mRunningThreadCount == 1 && mAnalyseWholeProgram ) {
+166: mThreads [ 0 ] . analyseWholeProgram ( mLastFiles ) ;
+167: mAnalyseWholeProgram = false ;
+168: return ;
+169: }
+170:
+171: mRunningThreadCount -- ;
+172: if ( mRunningThreadCount == 0 ) {
+173: emit done ( ) ;
+174:
+175: mScanDuration = mTimer . elapsed ( ) ;
+176:
+177:
+178: if ( ! mCheckStartTime . isNull ( ) ) {
+179: mLastCheckTime = mCheckStartTime ;
+180: mCheckStartTime = QDateTime ( ) ;
+181: }
+182: }
+183: }
+184:
+185: void ThreadHandler :: stop ( )
+186: {
+187: mCheckStartTime = QDateTime ( ) ;
+188: mAnalyseWholeProgram = false ;
+189: for ( CheckThread * thread : mThreads ) {
+190: thread . stop ( ) ;
+191: }
+192: }
+193:
+194: void ThreadHandler :: initialize ( ResultsView * view )
+195: {
+196: connect ( & mResults , & ThreadResult :: progress ,
+197: view , & ResultsView :: progress ) ;
+198:
+199: connect ( & mResults , & ThreadResult :: error ,
+200: view , & ResultsView :: error ) ;
+201:
+202: connect ( & mResults , & ThreadResult :: log ,
+203: this , & ThreadHandler :: log ) ;
+204:
+205: connect ( & mResults , & ThreadResult :: debugError ,
+206: this , & ThreadHandler :: debugError ) ;
+207: }
+208:
+209: void ThreadHandler :: loadSettings ( const QSettings & settings )
+210: {
+211: setThreadCount ( settings . value ( $"Check threads" , 1 ) . toInt ( ) ) ;
+212: }
+213:
+214: void ThreadHandler :: saveSettings ( QSettings & settings ) const
+215: {
+216: settings . setValue ( $"Check threads" , mThreads . size ( ) ) ;
+217: }
+218:
+219: bool ThreadHandler :: hasPreviousFiles ( ) const
+220: {
+221: return ! mLastFiles . isEmpty ( ) ;
+222: }
+223:
+224: int ThreadHandler :: getPreviousFilesCount ( ) const
+225: {
+226: return mLastFiles . size ( ) ;
+227: }
+228:
+229: int ThreadHandler :: getPreviousScanDuration ( ) const
+230: {
+231: return mScanDuration ;
+232: }
+233:
+234: QStringList ThreadHandler :: getReCheckFiles ( bool all ) const
+235: {
+236: if ( mLastCheckTime . isNull ( ) || all ) {
+237: return mLastFiles ; }
+238:
+239: std :: set < QString > modified ;
+240: std :: set < QString > unmodified ;
+241:
+242: QStringList files ;
+243: for ( int i = 0 ; i < mLastFiles . size ( ) ; ++ i ) {
+244: if ( needsReCheck ( mLastFiles [ i ] , modified , unmodified ) ) {
+245: files . push_back ( mLastFiles [ i ] ) ; }
+246: }
+247: return files ;
+248: }
+249:
+250: bool ThreadHandler :: needsReCheck ( const QString & filename , std :: set < QString > & modified , std :: set < QString > & unmodified ) const
+251: {
+252: if ( modified . find ( filename ) != modified . end ( ) ) {
+253: return true ; }
+254:
+255: if ( unmodified . find ( filename ) != unmodified . end ( ) ) {
+256: return false ; }
+257:
+258: if ( QFileInfo ( filename ) . lastModified ( ) > mLastCheckTime ) {
+259: return true ;
+260: }
+261:
+262:
+263: QFile f ( filename ) ;
+264: if ( ! f . open ( QIODevice :: ReadOnly | QIODevice :: Text ) ) {
+265: return false ; }
+266:
+267:
+268: unmodified . insert ( filename ) ;
+269:
+270: QTextStream in ( & f ) ;
+271: while ( ! in . atEnd ( ) ) {
+272: QString line ; line = in . readLine ( ) ;
+273: if ( line . startsWith ( "#include \"" ) ) {
+274: line . remove ( 0 , 10 ) ;
+275: int i ; i = line . indexOf ( "\"" ) ;
+276: if ( i > 0 ) {
+277: line . remove ( i , line . length ( ) ) ;
+278: line = QFileInfo ( filename ) . absolutePath ( ) + "/" + line ;
+279: if ( needsReCheck ( line , modified , unmodified ) ) {
+280: modified . insert ( line ) ;
+281: return true ;
+282: }
+283: }
+284: }
+285: }
+286:
+287: return false ;
+288: }
+289:
+290: QDateTime ThreadHandler :: getCheckStartTime ( ) const
+291: {
+292: return mCheckStartTime ;
+293: }
+294:
+295: void ThreadHandler :: setCheckStartTime ( QDateTime checkStartTime )
+296: {
+297: mCheckStartTime = std :: move ( checkStartTime ) ;
+298: }
+
+
+
+##Value flow

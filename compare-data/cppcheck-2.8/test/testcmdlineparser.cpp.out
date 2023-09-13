@@ -1,0 +1,3948 @@
+
+
+##file cppcheck-2.8/test/redirect.h
+
+1:
+|
+23:
+24: extern std :: ostringstream errout@var1 ;
+25: extern std :: ostringstream output@var2 ;
+26:
+|
+30:
+31: class RedirectOutputError {
+32: public:
+33:
+34: RedirectOutputError ( ) {
+35:
+36: std ::@expr351 cout .@expr1073742176 flush (@expr1073742177 ) ;
+37: std ::@expr354 cerr .@expr1073742179 flush (@expr1073742180 ) ;
+38:
+39: _oldCout@var5 =@expr1073742181 std ::@expr351 cout .@expr359 rdbuf (@expr1073742184 ) ;
+40: _oldCerr@var6 =@expr1073742185 std ::@expr354 cerr .@expr363 rdbuf (@expr1073742188 ) ;
+41:
+42: std ::@expr351 cout .@expr359 rdbuf (@expr1073742191 _out@var3 .@expr1073742192 rdbuf (@expr1073742193 ) ) ;
+43: std ::@expr354 cerr .@expr363 rdbuf (@expr1073742196 _err@var4 .@expr1073742197 rdbuf (@expr1073742198 ) ) ;
+44: }
+45:
+46:
+47: ~ RedirectOutputError ( ) {
+48: std ::@expr1073742199 cout .@expr1073742200 rdbuf (@expr1073742201 _oldCout@var5 ) ;
+49: std ::@expr1073742202 cerr .@expr1073742203 rdbuf (@expr1073742204 _oldCerr@var6 ) ;
+50:
+51: errout@var1 <<@expr1073742205 _err@var4 .@expr1073742206 str (@expr1073742207 ) ;
+52: output@var2 <<@expr1073742208 _out@var3 .@expr1073742209 str (@expr1073742210 ) ;
+53: }
+54:
+55:
+56: std :: string getOutput ( ) const {
+57: return _out@var3 .@expr1073742211 str (@expr1073742212 ) ;
+58: }
+59:
+60:
+61:
+62: void clearOutput ( ) {
+63: _out@var3 .@expr1073742213 str (@expr1073742214 "" ) ;
+64: }
+65:
+66:
+67: std :: string getErrout ( ) const {
+68: return _err@var4 .@expr1073742215 str (@expr1073742216 ) ;
+69: }
+70:
+71:
+72:
+73: void clearErrout ( ) {
+74: _err@var4 .@expr1073742217 str (@expr1073742218 "" ) ;
+75: }
+76:
+77: private:
+78: std :: ostringstream _out@var3 ;
+79: std :: ostringstream _err@var4 ;
+80: std :: streambuf * _oldCout@var5 ;
+81: std :: streambuf * _oldCerr@var6 ;
+82: } ;
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var7 ;
+37: static unsigned int countTests@var8 ;
+38: static unsigned long fails_counter@var9 ;
+39: static unsigned long todos_counter@var10 ;
+40: static unsigned long succeeded_todos_counter@var11 ;
+41: static std :: set < std :: string > missingLibs@var12 ;
+42: bool mVerbose@var13 ;
+43: std :: string mTemplateFormat@var14 ;
+44: std :: string mTemplateLocation@var15 ;
+45: std :: string mTestname@var16 ;
+46:
+47: protected:
+48: std :: string exename@var17 ;
+49: std :: string testToRun@var18 ;
+50: bool quiet_tests@var19 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var20 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var21 , const unsigned int linenr@var22 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var23 , const unsigned int linenr@var24 , const bool condition@var25 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var26 , const unsigned int linenr@var27 , const T & expected@var28 , const U & actual@var29 , const std :: string & msg@var30 = emptyString ) const {
+61: if (@expr1073742219 expected@var28 !=@expr1073742220 actual@var29 ) {
+62: std ::@expr1073742221 ostringstream expectedStr@var31 ;
+63: expectedStr@var31 <<@expr1073742222 expected@var28 ;
+64: std ::@expr1073742223 ostringstream actualStr@var32 ;
+65: actualStr@var32 <<@expr1073742224 actual@var29 ;
+66:
+67: assertEqualsFailed (@expr1073742225 filename@var26 , linenr@var27 , expectedStr@var31 .@expr1073742226 str (@expr1073742227 ) , actualStr@var32 .@expr1073742228 str (@expr1073742229 ) , msg@var30 ) ;
+68: }
+69: return expected@var28 ==@expr1073742230 actual@var29 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var33 , const unsigned int linenr@var34 , const std :: string & expected@var35 , const std :: string & actual@var36 , const std :: string & msg@var37 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var38 , const unsigned int linenr@var39 , const std :: string & expected@var40 , const std :: string & actual@var41 , const std :: string & msg@var42 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var43 , const unsigned int linenr@var44 , const std :: string & expected@var45 , const std :: string & actual@var46 , const std :: string & msg@var47 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var48 , const unsigned int linenr@var49 , const char expected@var50 [ ] , const std :: string & actual@var51 , const std :: string & msg@var52 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var53 , const unsigned int linenr@var54 , const char expected@var55 [ ] , const char actual@var56 [ ] , const std :: string & msg@var57 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var58 , const unsigned int linenr@var59 , const std :: string & expected@var60 , const char actual@var61 [ ] , const std :: string & msg@var62 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var63 , const unsigned int linenr@var64 , const long long expected@var65 , const long long actual@var66 , const std :: string & msg@var67 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var68 , const unsigned int linenr@var69 , const double expected@var70 , const double actual@var71 , const double tolerance@var72 , const std :: string & msg@var73 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var74 , const unsigned int linenr@var75 , const std :: string & wanted@var76 ,
+85: const std :: string & current@var77 , const std :: string & actual@var78 ) const ;
+86: void todoAssertEquals ( const char * const filename@var79 , const unsigned int linenr@var80 , const char wanted@var81 [ ] ,
+87: const char current@var82 [ ] , const std :: string & actual@var83 ) const ;
+88: void todoAssertEquals ( const char * const filename@var84 , const unsigned int linenr@var85 , const long long wanted@var86 ,
+89: const long long current@var87 , const long long actual@var88 ) const ;
+90: void assertThrow ( const char * const filename@var89 , const unsigned int linenr@var90 ) const ;
+91: void assertThrowFail ( const char * const filename@var91 , const unsigned int linenr@var92 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var93 , const unsigned int linenr@var94 ) const ;
+93: static void complainMissingLib ( const char * const libname@var95 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var96 ) ;
+95:
+96: void setVerbose ( bool v@var97 ) {
+97: mVerbose@var13 =@expr1073742231 v@var97 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var14 =@expr1073742232 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var15 =@expr1073742233 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var98 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var99 , Color c@var100 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var101 ) override ;
+109: void run ( const std :: string & str@var102 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var103 ;
+112:
+113: explicit TestFixture ( const char * const _name@var104 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var105 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var106 ;
+120: extern std :: ostringstream output@var107 ;
+
+##file cppcheck-2.8/test/testcmdlineparser.cpp
+
+1:
+|
+33:
+34: class TestCmdlineParser : public TestFixture {
+35: public:
+36: TestCmdlineParser ( )
+37: : TestFixture ( "TestCmdlineParser" )
+38: , defParser@var109 ( & settings@var108 ) { }
+39:
+40: private:
+41: Settings settings@var108 ;
+42: CmdLineParser defParser@var109 ;
+43:
+44: void run ( ) override {
+45: $do ${ $if $(@expr1073742234 $prepareTest $(@expr1073742235 "nooptions" $) $) ${ $setVerbose $(@expr1073742236 $false $) $; nooptions $(@expr1073742237 $) $; $} $} $while $(@expr1073742238 $false $) ;
+46: $do ${ $if $(@expr1073742239 $prepareTest $(@expr1073742240 "helpshort" $) $) ${ $setVerbose $(@expr1073742241 $false $) $; helpshort $(@expr1073742242 $) $; $} $} $while $(@expr1073742243 $false $) ;
+47: $do ${ $if $(@expr1073742244 $prepareTest $(@expr1073742245 "helplong" $) $) ${ $setVerbose $(@expr1073742246 $false $) $; helplong $(@expr1073742247 $) $; $} $} $while $(@expr1073742248 $false $) ;
+48: $do ${ $if $(@expr1073742249 $prepareTest $(@expr1073742250 "showversion" $) $) ${ $setVerbose $(@expr1073742251 $false $) $; showversion $(@expr1073742252 $) $; $} $} $while $(@expr1073742253 $false $) ;
+49: $do ${ $if $(@expr1073742254 $prepareTest $(@expr1073742255 "onefile" $) $) ${ $setVerbose $(@expr1073742256 $false $) $; onefile $(@expr1073742257 $) $; $} $} $while $(@expr1073742258 $false $) ;
+50: $do ${ $if $(@expr1073742259 $prepareTest $(@expr1073742260 "onepath" $) $) ${ $setVerbose $(@expr1073742261 $false $) $; onepath $(@expr1073742262 $) $; $} $} $while $(@expr1073742263 $false $) ;
+51: $do ${ $if $(@expr1073742264 $prepareTest $(@expr1073742265 "optionwithoutfile" $) $) ${ $setVerbose $(@expr1073742266 $false $) $; optionwithoutfile $(@expr1073742267 $) $; $} $} $while $(@expr1073742268 $false $) ;
+52: $do ${ $if $(@expr1073742269 $prepareTest $(@expr1073742270 "verboseshort" $) $) ${ $setVerbose $(@expr1073742271 $false $) $; verboseshort $(@expr1073742272 $) $; $} $} $while $(@expr1073742273 $false $) ;
+53: $do ${ $if $(@expr1073742274 $prepareTest $(@expr1073742275 "verboselong" $) $) ${ $setVerbose $(@expr1073742276 $false $) $; verboselong $(@expr1073742277 $) $; $} $} $while $(@expr1073742278 $false $) ;
+54: $do ${ $if $(@expr1073742279 $prepareTest $(@expr1073742280 "debugSimplified" $) $) ${ $setVerbose $(@expr1073742281 $false $) $; debugSimplified $(@expr1073742282 $) $; $} $} $while $(@expr1073742283 $false $) ;
+55: $do ${ $if $(@expr1073742284 $prepareTest $(@expr1073742285 "debugwarnings" $) $) ${ $setVerbose $(@expr1073742286 $false $) $; debugwarnings $(@expr1073742287 $) $; $} $} $while $(@expr1073742288 $false $) ;
+56: $do ${ $if $(@expr1073742289 $prepareTest $(@expr1073742290 "forceshort" $) $) ${ $setVerbose $(@expr1073742291 $false $) $; forceshort $(@expr1073742292 $) $; $} $} $while $(@expr1073742293 $false $) ;
+57: $do ${ $if $(@expr1073742294 $prepareTest $(@expr1073742295 "forcelong" $) $) ${ $setVerbose $(@expr1073742296 $false $) $; forcelong $(@expr1073742297 $) $; $} $} $while $(@expr1073742298 $false $) ;
+58: $do ${ $if $(@expr1073742299 $prepareTest $(@expr1073742300 "relativePaths" $) $) ${ $setVerbose $(@expr1073742301 $false $) $; relativePaths $(@expr1073742302 $) $; $} $} $while $(@expr1073742303 $false $) ;
+59: $do ${ $if $(@expr1073742304 $prepareTest $(@expr1073742305 "quietshort" $) $) ${ $setVerbose $(@expr1073742306 $false $) $; quietshort $(@expr1073742307 $) $; $} $} $while $(@expr1073742308 $false $) ;
+60: $do ${ $if $(@expr1073742309 $prepareTest $(@expr1073742310 "quietlong" $) $) ${ $setVerbose $(@expr1073742311 $false $) $; quietlong $(@expr1073742312 $) $; $} $} $while $(@expr1073742313 $false $) ;
+61: $do ${ $if $(@expr1073742314 $prepareTest $(@expr1073742315 "defines_noarg" $) $) ${ $setVerbose $(@expr1073742316 $false $) $; defines_noarg $(@expr1073742317 $) $; $} $} $while $(@expr1073742318 $false $) ;
+62: $do ${ $if $(@expr1073742319 $prepareTest $(@expr1073742320 "defines_noarg2" $) $) ${ $setVerbose $(@expr1073742321 $false $) $; defines_noarg2 $(@expr1073742322 $) $; $} $} $while $(@expr1073742323 $false $) ;
+63: $do ${ $if $(@expr1073742324 $prepareTest $(@expr1073742325 "defines_noarg3" $) $) ${ $setVerbose $(@expr1073742326 $false $) $; defines_noarg3 $(@expr1073742327 $) $; $} $} $while $(@expr1073742328 $false $) ;
+64: $do ${ $if $(@expr1073742329 $prepareTest $(@expr1073742330 "defines" $) $) ${ $setVerbose $(@expr1073742331 $false $) $; defines $(@expr1073742332 $) $; $} $} $while $(@expr1073742333 $false $) ;
+65: $do ${ $if $(@expr1073742334 $prepareTest $(@expr1073742335 "defines2" $) $) ${ $setVerbose $(@expr1073742336 $false $) $; defines2 $(@expr1073742337 $) $; $} $} $while $(@expr1073742338 $false $) ;
+66: $do ${ $if $(@expr1073742339 $prepareTest $(@expr1073742340 "defines3" $) $) ${ $setVerbose $(@expr1073742341 $false $) $; defines3 $(@expr1073742342 $) $; $} $} $while $(@expr1073742343 $false $) ;
+67: $do ${ $if $(@expr1073742344 $prepareTest $(@expr1073742345 "defines4" $) $) ${ $setVerbose $(@expr1073742346 $false $) $; defines4 $(@expr1073742347 $) $; $} $} $while $(@expr1073742348 $false $) ;
+68: $do ${ $if $(@expr1073742349 $prepareTest $(@expr1073742350 "enforceLanguage" $) $) ${ $setVerbose $(@expr1073742351 $false $) $; enforceLanguage $(@expr1073742352 $) $; $} $} $while $(@expr1073742353 $false $) ;
+69: $do ${ $if $(@expr1073742354 $prepareTest $(@expr1073742355 "includesnopath" $) $) ${ $setVerbose $(@expr1073742356 $false $) $; includesnopath $(@expr1073742357 $) $; $} $} $while $(@expr1073742358 $false $) ;
+70: $do ${ $if $(@expr1073742359 $prepareTest $(@expr1073742360 "includes" $) $) ${ $setVerbose $(@expr1073742361 $false $) $; includes $(@expr1073742362 $) $; $} $} $while $(@expr1073742363 $false $) ;
+71: $do ${ $if $(@expr1073742364 $prepareTest $(@expr1073742365 "includesslash" $) $) ${ $setVerbose $(@expr1073742366 $false $) $; includesslash $(@expr1073742367 $) $; $} $} $while $(@expr1073742368 $false $) ;
+72: $do ${ $if $(@expr1073742369 $prepareTest $(@expr1073742370 "includesbackslash" $) $) ${ $setVerbose $(@expr1073742371 $false $) $; includesbackslash $(@expr1073742372 $) $; $} $} $while $(@expr1073742373 $false $) ;
+73: $do ${ $if $(@expr1073742374 $prepareTest $(@expr1073742375 "includesnospace" $) $) ${ $setVerbose $(@expr1073742376 $false $) $; includesnospace $(@expr1073742377 $) $; $} $} $while $(@expr1073742378 $false $) ;
+74: $do ${ $if $(@expr1073742379 $prepareTest $(@expr1073742380 "includes2" $) $) ${ $setVerbose $(@expr1073742381 $false $) $; includes2 $(@expr1073742382 $) $; $} $} $while $(@expr1073742383 $false $) ;
+75: $do ${ $if $(@expr1073742384 $prepareTest $(@expr1073742385 "includesFile" $) $) ${ $setVerbose $(@expr1073742386 $false $) $; includesFile $(@expr1073742387 $) $; $} $} $while $(@expr1073742388 $false $) ;
+76: $do ${ $if $(@expr1073742389 $prepareTest $(@expr1073742390 "configExcludesFile" $) $) ${ $setVerbose $(@expr1073742391 $false $) $; configExcludesFile $(@expr1073742392 $) $; $} $} $while $(@expr1073742393 $false $) ;
+77: $do ${ $if $(@expr1073742394 $prepareTest $(@expr1073742395 "enabledAll" $) $) ${ $setVerbose $(@expr1073742396 $false $) $; enabledAll $(@expr1073742397 $) $; $} $} $while $(@expr1073742398 $false $) ;
+78: $do ${ $if $(@expr1073742399 $prepareTest $(@expr1073742400 "enabledStyle" $) $) ${ $setVerbose $(@expr1073742401 $false $) $; enabledStyle $(@expr1073742402 $) $; $} $} $while $(@expr1073742403 $false $) ;
+79: $do ${ $if $(@expr1073742404 $prepareTest $(@expr1073742405 "enabledPerformance" $) $) ${ $setVerbose $(@expr1073742406 $false $) $; enabledPerformance $(@expr1073742407 $) $; $} $} $while $(@expr1073742408 $false $) ;
+80: $do ${ $if $(@expr1073742409 $prepareTest $(@expr1073742410 "enabledPortability" $) $) ${ $setVerbose $(@expr1073742411 $false $) $; enabledPortability $(@expr1073742412 $) $; $} $} $while $(@expr1073742413 $false $) ;
+81: $do ${ $if $(@expr1073742414 $prepareTest $(@expr1073742415 "enabledUnusedFunction" $) $) ${ $setVerbose $(@expr1073742416 $false $) $; enabledUnusedFunction $(@expr1073742417 $) $; $} $} $while $(@expr1073742418 $false $) ;
+82: $do ${ $if $(@expr1073742419 $prepareTest $(@expr1073742420 "enabledMissingInclude" $) $) ${ $setVerbose $(@expr1073742421 $false $) $; enabledMissingInclude $(@expr1073742422 $) $; $} $} $while $(@expr1073742423 $false $) ;
+83:
+84:
+85:
+86: $do ${ $if $(@expr1073742424 $prepareTest $(@expr1073742425 "enabledMultiple" $) $) ${ $setVerbose $(@expr1073742426 $false $) $; enabledMultiple $(@expr1073742427 $) $; $} $} $while $(@expr1073742428 $false $) ;
+87: $do ${ $if $(@expr1073742429 $prepareTest $(@expr1073742430 "inconclusive" $) $) ${ $setVerbose $(@expr1073742431 $false $) $; inconclusive $(@expr1073742432 $) $; $} $} $while $(@expr1073742433 $false $) ;
+88: $do ${ $if $(@expr1073742434 $prepareTest $(@expr1073742435 "errorExitcode" $) $) ${ $setVerbose $(@expr1073742436 $false $) $; errorExitcode $(@expr1073742437 $) $; $} $} $while $(@expr1073742438 $false $) ;
+89: $do ${ $if $(@expr1073742439 $prepareTest $(@expr1073742440 "errorExitcodeMissing" $) $) ${ $setVerbose $(@expr1073742441 $false $) $; errorExitcodeMissing $(@expr1073742442 $) $; $} $} $while $(@expr1073742443 $false $) ;
+90: $do ${ $if $(@expr1073742444 $prepareTest $(@expr1073742445 "errorExitcodeStr" $) $) ${ $setVerbose $(@expr1073742446 $false $) $; errorExitcodeStr $(@expr1073742447 $) $; $} $} $while $(@expr1073742448 $false $) ;
+91: $do ${ $if $(@expr1073742449 $prepareTest $(@expr1073742450 "exitcodeSuppressionsOld" $) $) ${ $setVerbose $(@expr1073742451 $false $) $; exitcodeSuppressionsOld $(@expr1073742452 $) $; $} $} $while $(@expr1073742453 $false $) ;
+92: $do ${ $if $(@expr1073742454 $prepareTest $(@expr1073742455 "exitcodeSuppressions" $) $) ${ $setVerbose $(@expr1073742456 $false $) $; exitcodeSuppressions $(@expr1073742457 $) $; $} $} $while $(@expr1073742458 $false $) ;
+93: $do ${ $if $(@expr1073742459 $prepareTest $(@expr1073742460 "exitcodeSuppressionsNoFile" $) $) ${ $setVerbose $(@expr1073742461 $false $) $; exitcodeSuppressionsNoFile $(@expr1073742462 $) $; $} $} $while $(@expr1073742463 $false $) ;
+94: $do ${ $if $(@expr1073742464 $prepareTest $(@expr1073742465 "fileList" $) $) ${ $setVerbose $(@expr1073742466 $false $) $; fileList $(@expr1073742467 $) $; $} $} $while $(@expr1073742468 $false $) ;
+95:
+96: $do ${ $if $(@expr1073742469 $prepareTest $(@expr1073742470 "inlineSuppr" $) $) ${ $setVerbose $(@expr1073742471 $false $) $; inlineSuppr $(@expr1073742472 $) $; $} $} $while $(@expr1073742473 $false $) ;
+97: $do ${ $if $(@expr1073742474 $prepareTest $(@expr1073742475 "jobs" $) $) ${ $setVerbose $(@expr1073742476 $false $) $; jobs $(@expr1073742477 $) $; $} $} $while $(@expr1073742478 $false $) ;
+98: $do ${ $if $(@expr1073742479 $prepareTest $(@expr1073742480 "jobsMissingCount" $) $) ${ $setVerbose $(@expr1073742481 $false $) $; jobsMissingCount $(@expr1073742482 $) $; $} $} $while $(@expr1073742483 $false $) ;
+99: $do ${ $if $(@expr1073742484 $prepareTest $(@expr1073742485 "jobsInvalid" $) $) ${ $setVerbose $(@expr1073742486 $false $) $; jobsInvalid $(@expr1073742487 $) $; $} $} $while $(@expr1073742488 $false $) ;
+100: $do ${ $if $(@expr1073742489 $prepareTest $(@expr1073742490 "maxConfigs" $) $) ${ $setVerbose $(@expr1073742491 $false $) $; maxConfigs $(@expr1073742492 $) $; $} $} $while $(@expr1073742493 $false $) ;
+101: $do ${ $if $(@expr1073742494 $prepareTest $(@expr1073742495 "maxConfigsMissingCount" $) $) ${ $setVerbose $(@expr1073742496 $false $) $; maxConfigsMissingCount $(@expr1073742497 $) $; $} $} $while $(@expr1073742498 $false $) ;
+102: $do ${ $if $(@expr1073742499 $prepareTest $(@expr1073742500 "maxConfigsInvalid" $) $) ${ $setVerbose $(@expr1073742501 $false $) $; maxConfigsInvalid $(@expr1073742502 $) $; $} $} $while $(@expr1073742503 $false $) ;
+103: $do ${ $if $(@expr1073742504 $prepareTest $(@expr1073742505 "maxConfigsTooSmall" $) $) ${ $setVerbose $(@expr1073742506 $false $) $; maxConfigsTooSmall $(@expr1073742507 $) $; $} $} $while $(@expr1073742508 $false $) ;
+104: $do ${ $if $(@expr1073742509 $prepareTest $(@expr1073742510 "reportProgressTest" $) $) ${ $setVerbose $(@expr1073742511 $false $) $; reportProgressTest $(@expr1073742512 $) $; $} $} $while $(@expr1073742513 $false $) ;
+105: $do ${ $if $(@expr1073742514 $prepareTest $(@expr1073742515 "stdc99" $) $) ${ $setVerbose $(@expr1073742516 $false $) $; stdc99 $(@expr1073742517 $) $; $} $} $while $(@expr1073742518 $false $) ;
+106: $do ${ $if $(@expr1073742519 $prepareTest $(@expr1073742520 "stdcpp11" $) $) ${ $setVerbose $(@expr1073742521 $false $) $; stdcpp11 $(@expr1073742522 $) $; $} $} $while $(@expr1073742523 $false $) ;
+107: $do ${ $if $(@expr1073742524 $prepareTest $(@expr1073742525 "stdunknown" $) $) ${ $setVerbose $(@expr1073742526 $false $) $; stdunknown $(@expr1073742527 $) $; $} $} $while $(@expr1073742528 $false $) ;
+108: $do ${ $if $(@expr1073742529 $prepareTest $(@expr1073742530 "platform" $) $) ${ $setVerbose $(@expr1073742531 $false $) $; platform $(@expr1073742532 $) $; $} $} $while $(@expr1073742533 $false $) ;
+109: $do ${ $if $(@expr1073742534 $prepareTest $(@expr1073742535 "plistEmpty" $) $) ${ $setVerbose $(@expr1073742536 $false $) $; plistEmpty $(@expr1073742537 $) $; $} $} $while $(@expr1073742538 $false $) ;
+110: $do ${ $if $(@expr1073742539 $prepareTest $(@expr1073742540 "plistDoesNotExist" $) $) ${ $setVerbose $(@expr1073742541 $false $) $; plistDoesNotExist $(@expr1073742542 $) $; $} $} $while $(@expr1073742543 $false $) ;
+111: $do ${ $if $(@expr1073742544 $prepareTest $(@expr1073742545 "suppressionsOld" $) $) ${ $setVerbose $(@expr1073742546 $false $) $; suppressionsOld $(@expr1073742547 $) $; $} $} $while $(@expr1073742548 $false $) ;
+112: $do ${ $if $(@expr1073742549 $prepareTest $(@expr1073742550 "suppressions" $) $) ${ $setVerbose $(@expr1073742551 $false $) $; suppressions $(@expr1073742552 $) $; $} $} $while $(@expr1073742553 $false $) ;
+113: $do ${ $if $(@expr1073742554 $prepareTest $(@expr1073742555 "suppressionsNoFile" $) $) ${ $setVerbose $(@expr1073742556 $false $) $; suppressionsNoFile $(@expr1073742557 $) $; $} $} $while $(@expr1073742558 $false $) ;
+114: $do ${ $if $(@expr1073742559 $prepareTest $(@expr1073742560 "suppressionSingle" $) $) ${ $setVerbose $(@expr1073742561 $false $) $; suppressionSingle $(@expr1073742562 $) $; $} $} $while $(@expr1073742563 $false $) ;
+115: $do ${ $if $(@expr1073742564 $prepareTest $(@expr1073742565 "suppressionSingleFile" $) $) ${ $setVerbose $(@expr1073742566 $false $) $; suppressionSingleFile $(@expr1073742567 $) $; $} $} $while $(@expr1073742568 $false $) ;
+116: $do ${ $if $(@expr1073742569 $prepareTest $(@expr1073742570 "suppressionTwo" $) $) ${ $setVerbose $(@expr1073742571 $false $) $; suppressionTwo $(@expr1073742572 $) $; $} $} $while $(@expr1073742573 $false $) ;
+117: $do ${ $if $(@expr1073742574 $prepareTest $(@expr1073742575 "suppressionTwoSeparate" $) $) ${ $setVerbose $(@expr1073742576 $false $) $; suppressionTwoSeparate $(@expr1073742577 $) $; $} $} $while $(@expr1073742578 $false $) ;
+118: $do ${ $if $(@expr1073742579 $prepareTest $(@expr1073742580 "templates" $) $) ${ $setVerbose $(@expr1073742581 $false $) $; templates $(@expr1073742582 $) $; $} $} $while $(@expr1073742583 $false $) ;
+119: $do ${ $if $(@expr1073742584 $prepareTest $(@expr1073742585 "templatesGcc" $) $) ${ $setVerbose $(@expr1073742586 $false $) $; templatesGcc $(@expr1073742587 $) $; $} $} $while $(@expr1073742588 $false $) ;
+120: $do ${ $if $(@expr1073742589 $prepareTest $(@expr1073742590 "templatesVs" $) $) ${ $setVerbose $(@expr1073742591 $false $) $; templatesVs $(@expr1073742592 $) $; $} $} $while $(@expr1073742593 $false $) ;
+121: $do ${ $if $(@expr1073742594 $prepareTest $(@expr1073742595 "templatesEdit" $) $) ${ $setVerbose $(@expr1073742596 $false $) $; templatesEdit $(@expr1073742597 $) $; $} $} $while $(@expr1073742598 $false $) ;
+122: $do ${ $if $(@expr1073742599 $prepareTest $(@expr1073742600 "xml" $) $) ${ $setVerbose $(@expr1073742601 $false $) $; xml $(@expr1073742602 $) $; $} $} $while $(@expr1073742603 $false $) ;
+123: $do ${ $if $(@expr1073742604 $prepareTest $(@expr1073742605 "xmlver2" $) $) ${ $setVerbose $(@expr1073742606 $false $) $; xmlver2 $(@expr1073742607 $) $; $} $} $while $(@expr1073742608 $false $) ;
+124: $do ${ $if $(@expr1073742609 $prepareTest $(@expr1073742610 "xmlver2both" $) $) ${ $setVerbose $(@expr1073742611 $false $) $; xmlver2both $(@expr1073742612 $) $; $} $} $while $(@expr1073742613 $false $) ;
+125: $do ${ $if $(@expr1073742614 $prepareTest $(@expr1073742615 "xmlver2both2" $) $) ${ $setVerbose $(@expr1073742616 $false $) $; xmlver2both2 $(@expr1073742617 $) $; $} $} $while $(@expr1073742618 $false $) ;
+126: $do ${ $if $(@expr1073742619 $prepareTest $(@expr1073742620 "xmlverunknown" $) $) ${ $setVerbose $(@expr1073742621 $false $) $; xmlverunknown $(@expr1073742622 $) $; $} $} $while $(@expr1073742623 $false $) ;
+127: $do ${ $if $(@expr1073742624 $prepareTest $(@expr1073742625 "xmlverinvalid" $) $) ${ $setVerbose $(@expr1073742626 $false $) $; xmlverinvalid $(@expr1073742627 $) $; $} $} $while $(@expr1073742628 $false $) ;
+128: $do ${ $if $(@expr1073742629 $prepareTest $(@expr1073742630 "doc" $) $) ${ $setVerbose $(@expr1073742631 $false $) $; doc $(@expr1073742632 $) $; $} $} $while $(@expr1073742633 $false $) ;
+129: $do ${ $if $(@expr1073742634 $prepareTest $(@expr1073742635 "showtime" $) $) ${ $setVerbose $(@expr1073742636 $false $) $; showtime $(@expr1073742637 $) $; $} $} $while $(@expr1073742638 $false $) ;
+130: $do ${ $if $(@expr1073742639 $prepareTest $(@expr1073742640 "errorlist1" $) $) ${ $setVerbose $(@expr1073742641 $false $) $; errorlist1 $(@expr1073742642 $) $; $} $} $while $(@expr1073742643 $false $) ;
+131: $do ${ $if $(@expr1073742644 $prepareTest $(@expr1073742645 "errorlistverbose1" $) $) ${ $setVerbose $(@expr1073742646 $false $) $; errorlistverbose1 $(@expr1073742647 $) $; $} $} $while $(@expr1073742648 $false $) ;
+132: $do ${ $if $(@expr1073742649 $prepareTest $(@expr1073742650 "errorlistverbose2" $) $) ${ $setVerbose $(@expr1073742651 $false $) $; errorlistverbose2 $(@expr1073742652 $) $; $} $} $while $(@expr1073742653 $false $) ;
+133: $do ${ $if $(@expr1073742654 $prepareTest $(@expr1073742655 "ignorepathsnopath" $) $) ${ $setVerbose $(@expr1073742656 $false $) $; ignorepathsnopath $(@expr1073742657 $) $; $} $} $while $(@expr1073742658 $false $) ;
+134:
+|
+144:
+145: $do ${ $if $(@expr1073742659 $prepareTest $(@expr1073742660 "checkconfig" $) $) ${ $setVerbose $(@expr1073742661 $false $) $; checkconfig $(@expr1073742662 $) $; $} $} $while $(@expr1073742663 $false $) ;
+146: $do ${ $if $(@expr1073742664 $prepareTest $(@expr1073742665 "unknownParam" $) $) ${ $setVerbose $(@expr1073742666 $false $) $; unknownParam $(@expr1073742667 $) $; $} $} $while $(@expr1073742668 $false $) ;
+147:
+148: $do ${ $if $(@expr1073742669 $prepareTest $(@expr1073742670 "undefs_noarg" $) $) ${ $setVerbose $(@expr1073742671 $false $) $; undefs_noarg $(@expr1073742672 $) $; $} $} $while $(@expr1073742673 $false $) ;
+149: $do ${ $if $(@expr1073742674 $prepareTest $(@expr1073742675 "undefs_noarg2" $) $) ${ $setVerbose $(@expr1073742676 $false $) $; undefs_noarg2 $(@expr1073742677 $) $; $} $} $while $(@expr1073742678 $false $) ;
+150: $do ${ $if $(@expr1073742679 $prepareTest $(@expr1073742680 "undefs_noarg3" $) $) ${ $setVerbose $(@expr1073742681 $false $) $; undefs_noarg3 $(@expr1073742682 $) $; $} $} $while $(@expr1073742683 $false $) ;
+151: $do ${ $if $(@expr1073742684 $prepareTest $(@expr1073742685 "undefs" $) $) ${ $setVerbose $(@expr1073742686 $false $) $; undefs $(@expr1073742687 $) $; $} $} $while $(@expr1073742688 $false $) ;
+152: $do ${ $if $(@expr1073742689 $prepareTest $(@expr1073742690 "undefs2" $) $) ${ $setVerbose $(@expr1073742691 $false $) $; undefs2 $(@expr1073742692 $) $; $} $} $while $(@expr1073742693 $false $) ;
+153: }
+154:
+155:
+156: void nooptions ( ) {
+157: $RedirectOutputError $redir@var110 $; $do ${ $} $while $(@expr1073742694 $false $) ;
+158: const char * const argv@var111 [@expr1073742695 9 ] =@expr1073742696 "cppcheck" ;
+159: CmdLineParser parser@var112 (@expr1073742697 &@expr1073742698 settings@var108 ) ;
+160: $if $(@expr1073742699 $!@expr1073742700 $assert_ $(@expr1073742701 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 160 $, $(@expr1073742702 parser@var112 .@expr1073742703 parseFromArgs (@expr1073742704 1 , argv@var111 ) $) $) $) { $return ; }
+161: $if $(@expr1073742705 $!@expr1073742706 $assertEquals $(@expr1073742707 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 161 $, true $, parser@var112 .@expr1073742708 getShowHelp (@expr1073742709 ) $) $) { $return ; }
+162: }
+163:
+164: void helpshort ( ) {
+165: $RedirectOutputError $redir@var113 $; $do ${ $} $while $(@expr1073742710 $false $) ;
+166: const char * const argv@var114 [@expr1073742711 2 ] =@expr1073742712 {@expr1073742713 "cppcheck" , "-h" } ;
+167: CmdLineParser parser@var115 (@expr1073742714 &@expr1073742715 settings@var108 ) ;
+168: $if $(@expr1073742716 $!@expr1073742717 $assert_ $(@expr1073742718 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 168 $, $(@expr1073742719 parser@var115 .@expr1073742720 parseFromArgs (@expr1073742721 2 , argv@var114 ) $) $) $) { $return ; }
+169: $if $(@expr1073742722 $!@expr1073742723 $assertEquals $(@expr1073742724 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 169 $, true $, parser@var115 .@expr1073742725 getShowHelp (@expr1073742726 ) $) $) { $return ; }
+170: }
+171:
+172: void helplong ( ) {
+173: $RedirectOutputError $redir@var116 $; $do ${ $} $while $(@expr1073742727 $false $) ;
+174: const char * const argv@var117 [@expr1073742728 2 ] =@expr1073742729 {@expr1073742730 "cppcheck" , "--help" } ;
+175: CmdLineParser parser@var118 (@expr1073742731 &@expr1073742732 settings@var108 ) ;
+176: $if $(@expr1073742733 $!@expr1073742734 $assert_ $(@expr1073742735 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 176 $, $(@expr1073742736 parser@var118 .@expr1073742737 parseFromArgs (@expr1073742738 2 , argv@var117 ) $) $) $) { $return ; }
+177: $if $(@expr1073742739 $!@expr1073742740 $assertEquals $(@expr1073742741 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 177 $, true $, parser@var118 .@expr1073742742 getShowHelp (@expr1073742743 ) $) $) { $return ; }
+178: }
+179:
+180: void showversion ( ) {
+181: $RedirectOutputError $redir@var119 $; $do ${ $} $while $(@expr1073742744 $false $) ;
+182: const char * const argv@var120 [@expr1073742745 2 ] =@expr1073742746 {@expr1073742747 "cppcheck" , "--version" } ;
+183: CmdLineParser parser@var121 (@expr1073742748 &@expr1073742749 settings@var108 ) ;
+184: $if $(@expr1073742750 $!@expr1073742751 $assert_ $(@expr1073742752 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 184 $, $(@expr1073742753 parser@var121 .@expr1073742754 parseFromArgs (@expr1073742755 2 , argv@var120 ) $) $) $) { $return ; }
+185: $if $(@expr1073742756 $!@expr1073742757 $assertEquals $(@expr1073742758 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 185 $, true $, parser@var121 .@expr1073742759 getShowVersion (@expr1073742760 ) $) $) { $return ; }
+186: }
+187:
+188: void onefile ( ) {
+189: $RedirectOutputError $redir@var122 $; $do ${ $} $while $(@expr1073742761 $false $) ;
+190: const char * const argv@var123 [@expr1073742762 2 ] =@expr1073742763 {@expr1073742764 "cppcheck" , "file.cpp" } ;
+191: CmdLineParser parser@var124 (@expr1073742765 &@expr1073742766 settings@var108 ) ;
+192: $if $(@expr1073742767 $!@expr1073742768 $assert_ $(@expr1073742769 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 192 $, $(@expr1073742770 parser@var124 .@expr1073742771 parseFromArgs (@expr1073742772 2 , argv@var123 ) $) $) $) { $return ; }
+193: $if $(@expr1073742773 $!@expr1073742774 $assertEquals $(@expr1073742775 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 193 $, 1 $, (@expr1073742776 int ) parser@var124 .@expr953 getPathNames (@expr954 ) .@expr1073742779 size (@expr1073742780 ) $) $) { $return ; }
+194: $if $(@expr1073742781 $!@expr1073742782 $assertEquals $(@expr1073742783 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 194 $, "file.cpp" $, parser@var124 .@expr953 getPathNames (@expr954 ) .@expr1073742786 at (@expr1073742787 0 ) $) $) { $return ; }
+195: }
+196:
+197: void onepath ( ) {
+198: $RedirectOutputError $redir@var125 $; $do ${ $} $while $(@expr1073742788 $false $) ;
+199: const char * const argv@var126 [@expr1073742789 2 ] =@expr1073742790 {@expr1073742791 "cppcheck" , "src" } ;
+200: CmdLineParser parser@var127 (@expr1073742792 &@expr1073742793 settings@var108 ) ;
+201: $if $(@expr1073742794 $!@expr1073742795 $assert_ $(@expr1073742796 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 201 $, $(@expr1073742797 parser@var127 .@expr1073742798 parseFromArgs (@expr1073742799 2 , argv@var126 ) $) $) $) { $return ; }
+202: $if $(@expr1073742800 $!@expr1073742801 $assertEquals $(@expr1073742802 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 202 $, 1 $, (@expr1073742803 int ) parser@var127 .@expr980 getPathNames (@expr981 ) .@expr1073742806 size (@expr1073742807 ) $) $) { $return ; }
+203: $if $(@expr1073742808 $!@expr1073742809 $assertEquals $(@expr1073742810 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 203 $, "src" $, parser@var127 .@expr980 getPathNames (@expr981 ) .@expr1073742813 at (@expr1073742814 0 ) $) $) { $return ; }
+204: }
+205:
+206: void optionwithoutfile ( ) {
+207: $RedirectOutputError $redir@var128 $; $do ${ $} $while $(@expr1073742815 $false $) ;
+208: const char * const argv@var129 [@expr1073742816 2 ] =@expr1073742817 {@expr1073742818 "cppcheck" , "-v" } ;
+209: CmdLineParser parser@var130 (@expr1073742819 &@expr1073742820 settings@var108 ) ;
+210: $if $(@expr1073742821 $!@expr1073742822 $assertEquals $(@expr1073742823 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 210 $, false $, $(@expr1073742824 parser@var130 .@expr1073742825 parseFromArgs (@expr1073742826 2 , argv@var129 ) $) $) $) { $return ; }
+211: $if $(@expr1073742827 $!@expr1073742828 $assertEquals $(@expr1073742829 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 211 $, 0 $, (@expr1073742830 int ) parser@var130 .@expr1073742831 getPathNames (@expr1073742832 ) .@expr1073742833 size (@expr1073742834 ) $) $) { $return ; }
+212: }
+213:
+214: void verboseshort ( ) {
+215: $RedirectOutputError $redir@var131 $; $do ${ $} $while $(@expr1073742835 $false $) ;
+216: const char * const argv@var132 [@expr1073742836 3 ] =@expr1073742837 {@expr1073742838 "cppcheck" , "-v" , "file.cpp" } ;
+217: settings@var108 .@expr1015 verbose@var133 =@expr1073742840 false ;
+218: $if $(@expr1073742841 $!@expr1073742842 $assert_ $(@expr1073742843 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 218 $, $(@expr1073742844 defParser@var109 .@expr1073742845 parseFromArgs (@expr1073742846 3 , argv@var132 ) $) $) $) { $return ; }
+219: $if $(@expr1073742847 $!@expr1073742848 $assertEquals $(@expr1073742849 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 219 $, true $, settings@var108 .@expr1015 verbose@var133 $) $) { $return ; }
+220: }
+221:
+222: void verboselong ( ) {
+223: $RedirectOutputError $redir@var134 $; $do ${ $} $while $(@expr1073742851 $false $) ;
+224: const char * const argv@var135 [@expr1073742852 3 ] =@expr1073742853 {@expr1073742854 "cppcheck" , "--verbose" , "file.cpp" } ;
+225: settings@var108 .@expr1031 verbose@var133 =@expr1073742856 false ;
+226: $if $(@expr1073742857 $!@expr1073742858 $assert_ $(@expr1073742859 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 226 $, $(@expr1073742860 defParser@var109 .@expr1073742861 parseFromArgs (@expr1073742862 3 , argv@var135 ) $) $) $) { $return ; }
+227: $if $(@expr1073742863 $!@expr1073742864 $assertEquals $(@expr1073742865 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 227 $, true $, settings@var108 .@expr1031 verbose@var133 $) $) { $return ; }
+228: }
+229:
+230: void debugSimplified ( ) {
+231: $RedirectOutputError $redir@var136 $; $do ${ $} $while $(@expr1073742867 $false $) ;
+232: const char * const argv@var137 [@expr1073742868 3 ] =@expr1073742869 {@expr1073742870 "cppcheck" , "--debug-simplified" , "file.cpp" } ;
+233: settings@var108 .@expr1047 debugSimplified@var138 =@expr1073742872 false ;
+234: $if $(@expr1073742873 $!@expr1073742874 $assert_ $(@expr1073742875 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 234 $, $(@expr1073742876 defParser@var109 .@expr1073742877 parseFromArgs (@expr1073742878 3 , argv@var137 ) $) $) $) { $return ; }
+235: $if $(@expr1073742879 $!@expr1073742880 $assertEquals $(@expr1073742881 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 235 $, true $, settings@var108 .@expr1047 debugSimplified@var138 $) $) { $return ; }
+236: }
+237:
+238: void debugwarnings ( ) {
+239: $RedirectOutputError $redir@var139 $; $do ${ $} $while $(@expr1073742883 $false $) ;
+240: const char * const argv@var140 [@expr1073742884 3 ] =@expr1073742885 {@expr1073742886 "cppcheck" , "--debug-warnings" , "file.cpp" } ;
+241: settings@var108 .@expr1063 debugwarnings@var141 =@expr1073742888 false ;
+242: $if $(@expr1073742889 $!@expr1073742890 $assert_ $(@expr1073742891 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 242 $, $(@expr1073742892 defParser@var109 .@expr1073742893 parseFromArgs (@expr1073742894 3 , argv@var140 ) $) $) $) { $return ; }
+243: $if $(@expr1073742895 $!@expr1073742896 $assertEquals $(@expr1073742897 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 243 $, true $, settings@var108 .@expr1063 debugwarnings@var141 $) $) { $return ; }
+244: }
+245:
+246: void forceshort ( ) {
+247: $RedirectOutputError $redir@var142 $; $do ${ $} $while $(@expr1073742899 $false $) ;
+248: const char * const argv@var143 [@expr1073742900 3 ] =@expr1073742901 {@expr1073742902 "cppcheck" , "-f" , "file.cpp" } ;
+249: settings@var108 .@expr1079 force@var144 =@expr1073742904 false ;
+250: $if $(@expr1073742905 $!@expr1073742906 $assert_ $(@expr1073742907 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 250 $, $(@expr1073742908 defParser@var109 .@expr1073742909 parseFromArgs (@expr1073742910 3 , argv@var143 ) $) $) $) { $return ; }
+251: $if $(@expr1073742911 $!@expr1073742912 $assertEquals $(@expr1073742913 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 251 $, true $, settings@var108 .@expr1079 force@var144 $) $) { $return ; }
+252: }
+253:
+254: void forcelong ( ) {
+255: $RedirectOutputError $redir@var145 $; $do ${ $} $while $(@expr1073742915 $false $) ;
+256: const char * const argv@var146 [@expr1073742916 3 ] =@expr1073742917 {@expr1073742918 "cppcheck" , "--force" , "file.cpp" } ;
+257: settings@var108 .@expr1095 force@var144 =@expr1073742920 false ;
+258: $if $(@expr1073742921 $!@expr1073742922 $assert_ $(@expr1073742923 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 258 $, $(@expr1073742924 defParser@var109 .@expr1073742925 parseFromArgs (@expr1073742926 3 , argv@var146 ) $) $) $) { $return ; }
+259: $if $(@expr1073742927 $!@expr1073742928 $assertEquals $(@expr1073742929 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 259 $, true $, settings@var108 .@expr1095 force@var144 $) $) { $return ; }
+260: }
+261:
+262: void relativePaths ( ) {
+263: $RedirectOutputError $redir@var147 $; $do ${ $} $while $(@expr1073742931 $false $) ;
+264: settings@var108 .@expr1108 relativePaths@var148 =@expr1073742933 false ;
+265:
+266: const char * const argvs@var149 [@expr1073742934 3 ] =@expr1073742935 {@expr1073742936 "cppcheck" , "-rp" , "file.cpp" } ;
+267: $if $(@expr1073742937 $!@expr1073742938 $assert_ $(@expr1073742939 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 267 $, $(@expr1073742940 defParser@var109 .@expr1117 parseFromArgs (@expr1073742942 3 , argvs@var149 ) $) $) $) { $return ; }
+268: $if $(@expr1073742943 $!@expr1073742944 $assertEquals $(@expr1073742945 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 268 $, true $, settings@var108 .@expr1108 relativePaths@var148 $) $) { $return ; }
+269:
+270: settings@var108 .@expr1108 relativePaths@var148 =@expr1073742948 false ;
+271:
+272: const char * const argvl@var150 [@expr1073742949 3 ] =@expr1073742950 {@expr1073742951 "cppcheck" , "--relative-paths" , "file.cpp" } ;
+273: $if $(@expr1073742952 $!@expr1073742953 $assert_ $(@expr1073742954 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 273 $, $(@expr1073742955 defParser@var109 .@expr1117 parseFromArgs (@expr1073742957 3 , argvl@var150 ) $) $) $) { $return ; }
+274: $if $(@expr1073742958 $!@expr1073742959 $assertEquals $(@expr1073742960 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 274 $, true $, settings@var108 .@expr1108 relativePaths@var148 $) $) { $return ; }
+275:
+276: settings@var108 .@expr1108 relativePaths@var148 =@expr1073742963 false ;
+277: settings@var108 .@expr1140 basePaths@var151 .@expr1141 clear (@expr1142 ) ;
+278:
+279: const char * const argvsp@var152 [@expr1073742967 3 ] =@expr1073742968 {@expr1073742969 "cppcheck" , "-rp=C:/foo;C:\\bar" , "file.cpp" } ;
+280: $if $(@expr1073742970 $!@expr1073742971 $assert_ $(@expr1073742972 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 280 $, $(@expr1073742973 defParser@var109 .@expr1117 parseFromArgs (@expr1073742975 3 , argvsp@var152 ) $) $) $) { $return ; }
+281: $if $(@expr1073742976 $!@expr1073742977 $assertEquals $(@expr1073742978 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 281 $, true $, settings@var108 .@expr1108 relativePaths@var148 $) $) { $return ; }
+282: $if $(@expr1073742980 $!@expr1073742981 $assertEquals $(@expr1073742982 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 282 $, 2 $, settings@var108 .@expr1140 basePaths@var151 .@expr1160 size (@expr1161 ) $) $) { $return ; }
+283: $if $(@expr1073742986 $!@expr1073742987 $assertEquals $(@expr1073742988 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 283 $, "C:/foo" $, settings@var108 .@expr1140 basePaths@var151 [@expr1166 0 ] $) $) { $return ; }
+284: $if $(@expr1073742991 $!@expr1073742992 $assertEquals $(@expr1073742993 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 284 $, "C:/bar" $, settings@var108 .@expr1140 basePaths@var151 [@expr1171 1 ] $) $) { $return ; }
+285:
+286: settings@var108 .@expr1108 relativePaths@var148 =@expr1073742997 false ;
+287: settings@var108 .@expr1140 basePaths@var151 .@expr1141 clear (@expr1142 ) ;
+288:
+289: const char * const argvlp@var153 [@expr1073743001 3 ] =@expr1073743002 {@expr1073743003 "cppcheck" , "--relative-paths=C:/foo;C:\\bar" , "file.cpp" } ;
+290: $if $(@expr1073743004 $!@expr1073743005 $assert_ $(@expr1073743006 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 290 $, $(@expr1073743007 defParser@var109 .@expr1117 parseFromArgs (@expr1073743009 3 , argvlp@var153 ) $) $) $) { $return ; }
+291: $if $(@expr1073743010 $!@expr1073743011 $assertEquals $(@expr1073743012 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 291 $, true $, settings@var108 .@expr1108 relativePaths@var148 $) $) { $return ; }
+292: $if $(@expr1073743014 $!@expr1073743015 $assertEquals $(@expr1073743016 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 292 $, 2 $, settings@var108 .@expr1140 basePaths@var151 .@expr1160 size (@expr1161 ) $) $) { $return ; }
+293: $if $(@expr1073743020 $!@expr1073743021 $assertEquals $(@expr1073743022 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 293 $, "C:/foo" $, settings@var108 .@expr1140 basePaths@var151 [@expr1166 0 ] $) $) { $return ; }
+294: $if $(@expr1073743025 $!@expr1073743026 $assertEquals $(@expr1073743027 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 294 $, "C:/bar" $, settings@var108 .@expr1140 basePaths@var151 [@expr1171 1 ] $) $) { $return ; }
+295: }
+296:
+297: void quietshort ( ) {
+298: $RedirectOutputError $redir@var154 $; $do ${ $} $while $(@expr1073743030 $false $) ;
+299: const char * const argv@var155 [@expr1073743031 3 ] =@expr1073743032 {@expr1073743033 "cppcheck" , "-q" , "file.cpp" } ;
+300: settings@var108 .@expr1210 quiet@var156 =@expr1073743035 false ;
+301: $if $(@expr1073743036 $!@expr1073743037 $assert_ $(@expr1073743038 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 301 $, $(@expr1073743039 defParser@var109 .@expr1073743040 parseFromArgs (@expr1073743041 3 , argv@var155 ) $) $) $) { $return ; }
+302: $if $(@expr1073743042 $!@expr1073743043 $assertEquals $(@expr1073743044 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 302 $, true $, settings@var108 .@expr1210 quiet@var156 $) $) { $return ; }
+303: }
+304:
+305: void quietlong ( ) {
+306: $RedirectOutputError $redir@var157 $; $do ${ $} $while $(@expr1073743046 $false $) ;
+307: const char * const argv@var158 [@expr1073743047 3 ] =@expr1073743048 {@expr1073743049 "cppcheck" , "--quiet" , "file.cpp" } ;
+308: settings@var108 .@expr1226 quiet@var156 =@expr1073743051 false ;
+309: $if $(@expr1073743052 $!@expr1073743053 $assert_ $(@expr1073743054 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 309 $, $(@expr1073743055 defParser@var109 .@expr1073743056 parseFromArgs (@expr1073743057 3 , argv@var158 ) $) $) $) { $return ; }
+310: $if $(@expr1073743058 $!@expr1073743059 $assertEquals $(@expr1073743060 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 310 $, true $, settings@var108 .@expr1226 quiet@var156 $) $) { $return ; }
+311: }
+312:
+313: void defines_noarg ( ) {
+314: $RedirectOutputError $redir@var159 $; $do ${ $} $while $(@expr1073743062 $false $) ;
+315: const char * const argv@var160 [@expr1073743063 2 ] =@expr1073743064 {@expr1073743065 "cppcheck" , "-D" } ;
+316:
+317: $if $(@expr1073743066 $!@expr1073743067 $assertEquals $(@expr1073743068 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 317 $, false $, $(@expr1073743069 defParser@var109 .@expr1073743070 parseFromArgs (@expr1073743071 2 , argv@var160 ) $) $) $) { $return ; }
+318: }
+319:
+320: void defines_noarg2 ( ) {
+321: $RedirectOutputError $redir@var161 $; $do ${ $} $while $(@expr1073743072 $false $) ;
+322: const char * const argv@var162 [@expr1073743073 4 ] =@expr1073743074 {@expr1073743075 "cppcheck" , "-D" , "-v" , "file.cpp" } ;
+323:
+324: $if $(@expr1073743076 $!@expr1073743077 $assertEquals $(@expr1073743078 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 324 $, false $, $(@expr1073743079 defParser@var109 .@expr1073743080 parseFromArgs (@expr1073743081 4 , argv@var162 ) $) $) $) { $return ; }
+325: }
+326:
+327: void defines_noarg3 ( ) {
+328: $RedirectOutputError $redir@var163 $; $do ${ $} $while $(@expr1073743082 $false $) ;
+329: const char * const argv@var164 [@expr1073743083 4 ] =@expr1073743084 {@expr1073743085 "cppcheck" , "-D" , "--quiet" , "file.cpp" } ;
+330:
+331: $if $(@expr1073743086 $!@expr1073743087 $assertEquals $(@expr1073743088 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 331 $, false $, $(@expr1073743089 defParser@var109 .@expr1073743090 parseFromArgs (@expr1073743091 4 , argv@var164 ) $) $) $) { $return ; }
+332: }
+333:
+334: void defines ( ) {
+335: $RedirectOutputError $redir@var165 $; $do ${ $} $while $(@expr1073743092 $false $) ;
+336: const char * const argv@var166 [@expr1073743093 3 ] =@expr1073743094 {@expr1073743095 "cppcheck" , "-D_WIN32" , "file.cpp" } ;
+337: settings@var108 .@expr1272 userDefines@var167 .@expr1073743097 clear (@expr1073743098 ) ;
+338: $if $(@expr1073743099 $!@expr1073743100 $assert_ $(@expr1073743101 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 338 $, $(@expr1073743102 defParser@var109 .@expr1073743103 parseFromArgs (@expr1073743104 3 , argv@var166 ) $) $) $) { $return ; }
+339: $if $(@expr1073743105 $!@expr1073743106 $assertEquals $(@expr1073743107 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 339 $, "_WIN32=1" $, settings@var108 .@expr1272 userDefines@var167 $) $) { $return ; }
+340: }
+341:
+342: void defines2 ( ) {
+343: $RedirectOutputError $redir@var168 $; $do ${ $} $while $(@expr1073743109 $false $) ;
+344: const char * const argv@var169 [@expr1073743110 4 ] =@expr1073743111 {@expr1073743112 "cppcheck" , "-D_WIN32" , "-DNODEBUG" , "file.cpp" } ;
+345: settings@var108 .@expr1289 userDefines@var167 .@expr1073743114 clear (@expr1073743115 ) ;
+346: $if $(@expr1073743116 $!@expr1073743117 $assert_ $(@expr1073743118 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 346 $, $(@expr1073743119 defParser@var109 .@expr1073743120 parseFromArgs (@expr1073743121 4 , argv@var169 ) $) $) $) { $return ; }
+347: $if $(@expr1073743122 $!@expr1073743123 $assertEquals $(@expr1073743124 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 347 $, "_WIN32=1;NODEBUG=1" $, settings@var108 .@expr1289 userDefines@var167 $) $) { $return ; }
+348: }
+349:
+350: void defines3 ( ) {
+351: $RedirectOutputError $redir@var170 $; $do ${ $} $while $(@expr1073743126 $false $) ;
+352: const char * const argv@var171 [@expr1073743127 4 ] =@expr1073743128 {@expr1073743129 "cppcheck" , "-D" , "DEBUG" , "file.cpp" } ;
+353: settings@var108 .@expr1306 userDefines@var167 .@expr1073743131 clear (@expr1073743132 ) ;
+354: $if $(@expr1073743133 $!@expr1073743134 $assert_ $(@expr1073743135 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 354 $, $(@expr1073743136 defParser@var109 .@expr1073743137 parseFromArgs (@expr1073743138 4 , argv@var171 ) $) $) $) { $return ; }
+355: $if $(@expr1073743139 $!@expr1073743140 $assertEquals $(@expr1073743141 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 355 $, "DEBUG=1" $, settings@var108 .@expr1306 userDefines@var167 $) $) { $return ; }
+356: }
+357:
+358: void defines4 ( ) {
+359: $RedirectOutputError $redir@var172 $; $do ${ $} $while $(@expr1073743143 $false $) ;
+360: const char * const argv@var173 [@expr1073743144 3 ] =@expr1073743145 {@expr1073743146 "cppcheck" , "-DDEBUG=" , "file.cpp" } ;
+361: settings@var108 .@expr1323 userDefines@var167 .@expr1073743148 clear (@expr1073743149 ) ;
+362: $if $(@expr1073743150 $!@expr1073743151 $assert_ $(@expr1073743152 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 362 $, $(@expr1073743153 defParser@var109 .@expr1073743154 parseFromArgs (@expr1073743155 3 , argv@var173 ) $) $) $) { $return ; }
+363: $if $(@expr1073743156 $!@expr1073743157 $assertEquals $(@expr1073743158 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 363 $, "DEBUG=" $, settings@var108 .@expr1323 userDefines@var167 $) $) { $return ; }
+364: }
+365:
+366: void enforceLanguage ( ) {
+367: $RedirectOutputError $redir@var174 $; $do ${ $} $while $(@expr1073743163 $false $) ;
+368: {
+369: const char * const argv@var175 [@expr1073743164 2 ] =@expr1073743165 {@expr1073743166 "cppcheck" , "file.cpp" } ;
+370: settings@var108 .@expr1343 enforcedLang@var176 =@expr1073743168 Settings ::@expr1345 None@expr1336 ;
+371: $if $(@expr1073743170 $!@expr1073743171 $assert_ $(@expr1073743172 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 371 $, $(@expr1073743173 defParser@var109 .@expr1350 parseFromArgs (@expr1073743175 2 , argv@var175 ) $) $) $) { $return ; }
+372: $if $(@expr1073743176 $!@expr1073743177 $assertEquals $(@expr1073743178 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 372 $, Settings ::@expr1345 None@expr1336 $, settings@var108 .@expr1343 enforcedLang@var176 $) $) { $return ; }
+373: }
+374: {
+375: const char * const argv@var177 [@expr1073743181 4 ] =@expr1073743182 {@expr1073743183 "cppcheck" , "-x" , "c++" , "file.cpp" } ;
+376: settings@var108 .@expr1343 enforcedLang@var176 =@expr1073743185 Settings ::@expr1345 None@expr1336 ;
+377: $if $(@expr1073743187 $!@expr1073743188 $assert_ $(@expr1073743189 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 377 $, $(@expr1073743190 defParser@var109 .@expr1350 parseFromArgs (@expr1073743192 4 , argv@var177 ) $) $) $) { $return ; }
+378: $if $(@expr1073743193 $!@expr1073743194 $assertEquals $(@expr1073743195 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 378 $, Settings ::@expr1372 CPP@expr1337 $, settings@var108 .@expr1343 enforcedLang@var176 $) $) { $return ; }
+379: }
+380: {
+381: const char * const argv@var178 [@expr1073743198 2 ] =@expr1073743199 {@expr1073743200 "cppcheck" , "-x" } ;
+382: $if $(@expr1073743201 $!@expr1073743202 $assert_ $(@expr1073743203 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 382 $, $(@expr1073743204 !@expr1073743205 defParser@var109 .@expr1350 parseFromArgs (@expr1073743207 2 , argv@var178 ) $) $) $) { $return ; }
+383: }
+384: {
+385: const char * const argv@var179 [@expr1073743208 4 ] =@expr1073743209 {@expr1073743210 "cppcheck" , "-x" , "--inconclusive" , "file.cpp" } ;
+386: $if $(@expr1073743211 $!@expr1073743212 $assert_ $(@expr1073743213 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 386 $, $(@expr1073743214 !@expr1073743215 defParser@var109 .@expr1350 parseFromArgs (@expr1073743217 4 , argv@var179 ) $) $) $) { $return ; }
+387: }
+388: {
+389: const char * const argv@var180 [@expr1073743218 3 ] =@expr1073743219 {@expr1073743220 "cppcheck" , "--language=c++" , "file.cpp" } ;
+390: settings@var108 .@expr1343 enforcedLang@var176 =@expr1073743222 Settings ::@expr1345 None@expr1336 ;
+391: $if $(@expr1073743224 $!@expr1073743225 $assert_ $(@expr1073743226 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 391 $, $(@expr1073743227 defParser@var109 .@expr1350 parseFromArgs (@expr1073743229 3 , argv@var180 ) $) $) $) { $return ; }
+392: $if $(@expr1073743230 $!@expr1073743231 $assertEquals $(@expr1073743232 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 392 $, Settings ::@expr1372 CPP@expr1337 $, settings@var108 .@expr1343 enforcedLang@var176 $) $) { $return ; }
+393: }
+394: {
+395: const char * const argv@var181 [@expr1073743235 3 ] =@expr1073743236 {@expr1073743237 "cppcheck" , "--language=c" , "file.cpp" } ;
+396: settings@var108 .@expr1343 enforcedLang@var176 =@expr1073743239 Settings ::@expr1345 None@expr1336 ;
+397: $if $(@expr1073743241 $!@expr1073743242 $assert_ $(@expr1073743243 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 397 $, $(@expr1073743244 defParser@var109 .@expr1350 parseFromArgs (@expr1073743246 3 , argv@var181 ) $) $) $) { $return ; }
+398: $if $(@expr1073743247 $!@expr1073743248 $assertEquals $(@expr1073743249 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 398 $, Settings ::@expr1073743250 C@expr1073743162 $, settings@var108 .@expr1343 enforcedLang@var176 $) $) { $return ; }
+399: }
+400: {
+401: const char * const argv@var182 [@expr1073743252 3 ] =@expr1073743253 {@expr1073743254 "cppcheck" , "--language=unknownLanguage" , "file.cpp" } ;
+402: $if $(@expr1073743255 $!@expr1073743256 $assert_ $(@expr1073743257 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 402 $, $(@expr1073743258 !@expr1073743259 defParser@var109 .@expr1350 parseFromArgs (@expr1073743261 3 , argv@var182 ) $) $) $) { $return ; }
+403: }
+404: }
+405:
+406: void includesnopath ( ) {
+407: $RedirectOutputError $redir@var183 $; $do ${ $} $while $(@expr1073743262 $false $) ;
+408: const char * const argv@var184 [@expr1073743263 2 ] =@expr1073743264 {@expr1073743265 "cppcheck" , "-I" } ;
+409:
+410: $if $(@expr1073743266 $!@expr1073743267 $assertEquals $(@expr1073743268 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 410 $, false $, $(@expr1073743269 defParser@var109 .@expr1073743270 parseFromArgs (@expr1073743271 2 , argv@var184 ) $) $) $) { $return ; }
+411: }
+412:
+413: void includes ( ) {
+414: $RedirectOutputError $redir@var185 $; $do ${ $} $while $(@expr1073743272 $false $) ;
+415: const char * const argv@var186 [@expr1073743273 4 ] =@expr1073743274 {@expr1073743275 "cppcheck" , "-I" , "include" , "file.cpp" } ;
+416: settings@var108 .@expr1452 includePaths@var187 .@expr1073743277 clear (@expr1073743278 ) ;
+417: $if $(@expr1073743279 $!@expr1073743280 $assert_ $(@expr1073743281 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 417 $, $(@expr1073743282 defParser@var109 .@expr1073743283 parseFromArgs (@expr1073743284 4 , argv@var186 ) $) $) $) { $return ; }
+418: $if $(@expr1073743285 $!@expr1073743286 $assertEquals $(@expr1073743287 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 418 $, "include/" $, settings@var108 .@expr1452 includePaths@var187 .@expr1073743289 front (@expr1073743290 ) $) $) { $return ; }
+419: }
+420:
+421: void includesslash ( ) {
+422: $RedirectOutputError $redir@var188 $; $do ${ $} $while $(@expr1073743291 $false $) ;
+423: const char * const argv@var189 [@expr1073743292 4 ] =@expr1073743293 {@expr1073743294 "cppcheck" , "-I" , "include/" , "file.cpp" } ;
+424: settings@var108 .@expr1471 includePaths@var187 .@expr1073743296 clear (@expr1073743297 ) ;
+425: $if $(@expr1073743298 $!@expr1073743299 $assert_ $(@expr1073743300 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 425 $, $(@expr1073743301 defParser@var109 .@expr1073743302 parseFromArgs (@expr1073743303 4 , argv@var189 ) $) $) $) { $return ; }
+426: $if $(@expr1073743304 $!@expr1073743305 $assertEquals $(@expr1073743306 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 426 $, "include/" $, settings@var108 .@expr1471 includePaths@var187 .@expr1073743308 front (@expr1073743309 ) $) $) { $return ; }
+427: }
+428:
+429: void includesbackslash ( ) {
+430: $RedirectOutputError $redir@var190 $; $do ${ $} $while $(@expr1073743310 $false $) ;
+431: const char * const argv@var191 [@expr1073743311 4 ] =@expr1073743312 {@expr1073743313 "cppcheck" , "-I" , "include\\" , "file.cpp" } ;
+432: settings@var108 .@expr1490 includePaths@var187 .@expr1073743315 clear (@expr1073743316 ) ;
+433: $if $(@expr1073743317 $!@expr1073743318 $assert_ $(@expr1073743319 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 433 $, $(@expr1073743320 defParser@var109 .@expr1073743321 parseFromArgs (@expr1073743322 4 , argv@var191 ) $) $) $) { $return ; }
+434: $if $(@expr1073743323 $!@expr1073743324 $assertEquals $(@expr1073743325 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 434 $, "include/" $, settings@var108 .@expr1490 includePaths@var187 .@expr1073743327 front (@expr1073743328 ) $) $) { $return ; }
+435: }
+436:
+437: void includesnospace ( ) {
+438: $RedirectOutputError $redir@var192 $; $do ${ $} $while $(@expr1073743329 $false $) ;
+439: const char * const argv@var193 [@expr1073743330 3 ] =@expr1073743331 {@expr1073743332 "cppcheck" , "-Iinclude" , "file.cpp" } ;
+440: settings@var108 .@expr1509 includePaths@var187 .@expr1073743334 clear (@expr1073743335 ) ;
+441: $if $(@expr1073743336 $!@expr1073743337 $assert_ $(@expr1073743338 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 441 $, $(@expr1073743339 defParser@var109 .@expr1073743340 parseFromArgs (@expr1073743341 3 , argv@var193 ) $) $) $) { $return ; }
+442: $if $(@expr1073743342 $!@expr1073743343 $assertEquals $(@expr1073743344 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 442 $, "include/" $, settings@var108 .@expr1509 includePaths@var187 .@expr1073743346 front (@expr1073743347 ) $) $) { $return ; }
+443: }
+444:
+445: void includes2 ( ) {
+446: $RedirectOutputError $redir@var194 $; $do ${ $} $while $(@expr1073743348 $false $) ;
+447: const char * const argv@var195 [@expr1073743349 6 ] =@expr1073743350 {@expr1073743351 "cppcheck" , "-I" , "include/" , "-I" , "framework/" , "file.cpp" } ;
+448: settings@var108 .@expr1528 includePaths@var187 .@expr1073743353 clear (@expr1073743354 ) ;
+449: $if $(@expr1073743355 $!@expr1073743356 $assert_ $(@expr1073743357 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 449 $, $(@expr1073743358 defParser@var109 .@expr1073743359 parseFromArgs (@expr1073743360 6 , argv@var195 ) $) $) $) { $return ; }
+450: $if $(@expr1073743361 $!@expr1073743362 $assertEquals $(@expr1073743363 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 450 $, "include/" $, settings@var108 .@expr1528 includePaths@var187 .@expr1541 front (@expr1542 ) $) $) { $return ; }
+451: settings@var108 .@expr1528 includePaths@var187 .@expr1073743368 pop_front (@expr1073743369 ) ;
+452: $if $(@expr1073743370 $!@expr1073743371 $assertEquals $(@expr1073743372 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 452 $, "framework/" $, settings@var108 .@expr1528 includePaths@var187 .@expr1541 front (@expr1542 ) $) $) { $return ; }
+453: }
+454:
+455: void includesFile ( ) {
+456: $RedirectOutputError $redir@var196 $; $do ${ $} $while $(@expr1073743376 $false $) ;
+457: const char * const argv@var197 [@expr1073743377 3 ] =@expr1073743378 {@expr1073743379 "cppcheck" , "--includes-file=fileThatDoesNotExist.txt" , "file.cpp" } ;
+458: settings@var108 .@expr1073743380 includePaths@var187 .@expr1073743381 clear (@expr1073743382 ) ;
+459: $if $(@expr1073743383 $!@expr1073743384 $assertEquals $(@expr1073743385 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 459 $, false $, $(@expr1073743386 defParser@var109 .@expr1073743387 parseFromArgs (@expr1073743388 3 , argv@var197 ) $) $) $) { $return ; }
+460: }
+461:
+462: void configExcludesFile ( ) {
+463: $RedirectOutputError $redir@var198 $; $do ${ $} $while $(@expr1073743389 $false $) ;
+464: const char * const argv@var199 [@expr1073743390 3 ] =@expr1073743391 {@expr1073743392 "cppcheck" , "--config-excludes-file=fileThatDoesNotExist.txt" , "file.cpp" } ;
+465: settings@var108 .@expr1073743393 includePaths@var187 .@expr1073743394 clear (@expr1073743395 ) ;
+466: $if $(@expr1073743396 $!@expr1073743397 $assertEquals $(@expr1073743398 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 466 $, false $, $(@expr1073743399 defParser@var109 .@expr1073743400 parseFromArgs (@expr1073743401 3 , argv@var199 ) $) $) $) { $return ; }
+467: }
+468:
+469: void enabledAll ( ) {
+470: $RedirectOutputError $redir@var200 $; $do ${ $} $while $(@expr1073743407 $false $) ;
+471: const char * const argv@var201 [@expr1073743408 3 ] =@expr1073743409 {@expr1073743410 "cppcheck" , "--enable=all" , "file.cpp" } ;
+472: settings@var108 =@expr1073743411 Settings (@expr1073743412 ) ;
+473: $if $(@expr1073743413 $!@expr1073743414 $assert_ $(@expr1073743415 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 473 $, $(@expr1073743416 defParser@var109 .@expr1073743417 parseFromArgs (@expr1073743418 3 , argv@var201 ) $) $) $) { $return ; }
+474: $if $(@expr1073743419 $!@expr1073743420 $assert_ $(@expr1073743421 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 474 $, settings@var108 .@expr1598 severity@var202 .@expr1599 isEnabled (@expr1073743424 Severity ::@expr1073743425 style@expr1073743402 ) $) $) { $return ; }
+475: $if $(@expr1073743426 $!@expr1073743427 $assert_ $(@expr1073743428 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 475 $, settings@var108 .@expr1598 severity@var202 .@expr1599 isEnabled (@expr1073743431 Severity ::@expr1073743432 warning@expr1073743403 ) $) $) { $return ; }
+476: $if $(@expr1073743433 $!@expr1073743434 $assert_ $(@expr1073743435 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 476 $, settings@var108 .@expr1612 checks@var203 .@expr1613 isEnabled (@expr1073743438 Checks ::@expr1073743439 unusedFunction@expr1073743404 ) $) $) { $return ; }
+477: $if $(@expr1073743440 $!@expr1073743441 $assert_ $(@expr1073743442 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 477 $, settings@var108 .@expr1612 checks@var203 .@expr1613 isEnabled (@expr1073743445 Checks ::@expr1073743446 missingInclude@expr1073743405 ) $) $) { $return ; }
+478: $if $(@expr1073743447 $!@expr1073743448 $assert_ $(@expr1073743449 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 478 $, !@expr1073743450 settings@var108 .@expr1612 checks@var203 .@expr1613 isEnabled (@expr1073743453 Checks ::@expr1073743454 internalCheck@expr1073743406 ) $) $) { $return ; }
+479: }
+480:
+481: void enabledStyle ( ) {
+482: $RedirectOutputError $redir@var204 $; $do ${ $} $while $(@expr1073743461 $false $) ;
+483: const char * const argv@var205 [@expr1073743462 3 ] =@expr1073743463 {@expr1073743464 "cppcheck" , "--enable=style" , "file.cpp" } ;
+484: settings@var108 =@expr1073743465 Settings (@expr1073743466 ) ;
+485: $if $(@expr1073743467 $!@expr1073743468 $assert_ $(@expr1073743469 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 485 $, $(@expr1073743470 defParser@var109 .@expr1073743471 parseFromArgs (@expr1073743472 3 , argv@var205 ) $) $) $) { $return ; }
+486: $if $(@expr1073743473 $!@expr1073743474 $assert_ $(@expr1073743475 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 486 $, settings@var108 .@expr1652 severity@var202 .@expr1653 isEnabled (@expr1073743478 Severity ::@expr1073743479 style@expr1073743455 ) $) $) { $return ; }
+487: $if $(@expr1073743480 $!@expr1073743481 $assert_ $(@expr1073743482 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 487 $, settings@var108 .@expr1652 severity@var202 .@expr1653 isEnabled (@expr1073743485 Severity ::@expr1073743486 warning@expr1073743456 ) $) $) { $return ; }
+488: $if $(@expr1073743487 $!@expr1073743488 $assert_ $(@expr1073743489 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 488 $, settings@var108 .@expr1652 severity@var202 .@expr1653 isEnabled (@expr1073743492 Severity ::@expr1073743493 performance@expr1073743457 ) $) $) { $return ; }
+489: $if $(@expr1073743494 $!@expr1073743495 $assert_ $(@expr1073743496 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 489 $, settings@var108 .@expr1652 severity@var202 .@expr1653 isEnabled (@expr1073743499 Severity ::@expr1073743500 portability@expr1073743458 ) $) $) { $return ; }
+490: $if $(@expr1073743501 $!@expr1073743502 $assert_ $(@expr1073743503 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 490 $, !@expr1073743504 settings@var108 .@expr1681 checks@var203 .@expr1682 isEnabled (@expr1073743507 Checks ::@expr1073743508 unusedFunction@expr1073743459 ) $) $) { $return ; }
+491: $if $(@expr1073743509 $!@expr1073743510 $assert_ $(@expr1073743511 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 491 $, !@expr1073743512 settings@var108 .@expr1681 checks@var203 .@expr1682 isEnabled (@expr1073743515 Checks ::@expr1073743516 internalCheck@expr1073743460 ) $) $) { $return ; }
+492: }
+493:
+494: void enabledPerformance ( ) {
+495: $RedirectOutputError $redir@var206 $; $do ${ $} $while $(@expr1073743523 $false $) ;
+496: const char * const argv@var207 [@expr1073743524 3 ] =@expr1073743525 {@expr1073743526 "cppcheck" , "--enable=performance" , "file.cpp" } ;
+497: settings@var108 =@expr1073743527 Settings (@expr1073743528 ) ;
+498: $if $(@expr1073743529 $!@expr1073743530 $assert_ $(@expr1073743531 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 498 $, $(@expr1073743532 defParser@var109 .@expr1073743533 parseFromArgs (@expr1073743534 3 , argv@var207 ) $) $) $) { $return ; }
+499: $if $(@expr1073743535 $!@expr1073743536 $assert_ $(@expr1073743537 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 499 $, !@expr1073743538 settings@var108 .@expr1715 severity@var202 .@expr1716 isEnabled (@expr1073743541 Severity ::@expr1073743542 style@expr1073743517 ) $) $) { $return ; }
+500: $if $(@expr1073743543 $!@expr1073743544 $assert_ $(@expr1073743545 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 500 $, !@expr1073743546 settings@var108 .@expr1715 severity@var202 .@expr1716 isEnabled (@expr1073743549 Severity ::@expr1073743550 warning@expr1073743518 ) $) $) { $return ; }
+501: $if $(@expr1073743551 $!@expr1073743552 $assert_ $(@expr1073743553 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 501 $, settings@var108 .@expr1715 severity@var202 .@expr1716 isEnabled (@expr1073743556 Severity ::@expr1073743557 performance@expr1073743519 ) $) $) { $return ; }
+502: $if $(@expr1073743558 $!@expr1073743559 $assert_ $(@expr1073743560 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 502 $, !@expr1073743561 settings@var108 .@expr1715 severity@var202 .@expr1716 isEnabled (@expr1073743564 Severity ::@expr1073743565 portability@expr1073743520 ) $) $) { $return ; }
+503: $if $(@expr1073743566 $!@expr1073743567 $assert_ $(@expr1073743568 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 503 $, !@expr1073743569 settings@var108 .@expr1746 checks@var203 .@expr1747 isEnabled (@expr1073743572 Checks ::@expr1073743573 unusedFunction@expr1073743521 ) $) $) { $return ; }
+504: $if $(@expr1073743574 $!@expr1073743575 $assert_ $(@expr1073743576 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 504 $, !@expr1073743577 settings@var108 .@expr1746 checks@var203 .@expr1747 isEnabled (@expr1073743580 Checks ::@expr1073743581 missingInclude@expr1073743522 ) $) $) { $return ; }
+505: }
+506:
+507: void enabledPortability ( ) {
+508: $RedirectOutputError $redir@var208 $; $do ${ $} $while $(@expr1073743588 $false $) ;
+509: const char * const argv@var209 [@expr1073743589 3 ] =@expr1073743590 {@expr1073743591 "cppcheck" , "--enable=portability" , "file.cpp" } ;
+510: settings@var108 =@expr1073743592 Settings (@expr1073743593 ) ;
+511: $if $(@expr1073743594 $!@expr1073743595 $assert_ $(@expr1073743596 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 511 $, $(@expr1073743597 defParser@var109 .@expr1073743598 parseFromArgs (@expr1073743599 3 , argv@var209 ) $) $) $) { $return ; }
+512: $if $(@expr1073743600 $!@expr1073743601 $assert_ $(@expr1073743602 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 512 $, !@expr1073743603 settings@var108 .@expr1780 severity@var202 .@expr1781 isEnabled (@expr1073743606 Severity ::@expr1073743607 style@expr1073743582 ) $) $) { $return ; }
+513: $if $(@expr1073743608 $!@expr1073743609 $assert_ $(@expr1073743610 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 513 $, !@expr1073743611 settings@var108 .@expr1780 severity@var202 .@expr1781 isEnabled (@expr1073743614 Severity ::@expr1073743615 warning@expr1073743583 ) $) $) { $return ; }
+514: $if $(@expr1073743616 $!@expr1073743617 $assert_ $(@expr1073743618 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 514 $, !@expr1073743619 settings@var108 .@expr1780 severity@var202 .@expr1781 isEnabled (@expr1073743622 Severity ::@expr1073743623 performance@expr1073743584 ) $) $) { $return ; }
+515: $if $(@expr1073743624 $!@expr1073743625 $assert_ $(@expr1073743626 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 515 $, settings@var108 .@expr1780 severity@var202 .@expr1781 isEnabled (@expr1073743629 Severity ::@expr1073743630 portability@expr1073743585 ) $) $) { $return ; }
+516: $if $(@expr1073743631 $!@expr1073743632 $assert_ $(@expr1073743633 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 516 $, !@expr1073743634 settings@var108 .@expr1811 checks@var203 .@expr1812 isEnabled (@expr1073743637 Checks ::@expr1073743638 unusedFunction@expr1073743586 ) $) $) { $return ; }
+517: $if $(@expr1073743639 $!@expr1073743640 $assert_ $(@expr1073743641 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 517 $, !@expr1073743642 settings@var108 .@expr1811 checks@var203 .@expr1812 isEnabled (@expr1073743645 Checks ::@expr1073743646 missingInclude@expr1073743587 ) $) $) { $return ; }
+518: }
+519:
+520: void enabledUnusedFunction ( ) {
+521: $RedirectOutputError $redir@var210 $; $do ${ $} $while $(@expr1073743648 $false $) ;
+522: const char * const argv@var211 [@expr1073743649 3 ] =@expr1073743650 {@expr1073743651 "cppcheck" , "--enable=unusedFunction" , "file.cpp" } ;
+523: settings@var108 =@expr1073743652 Settings (@expr1073743653 ) ;
+524: $if $(@expr1073743654 $!@expr1073743655 $assert_ $(@expr1073743656 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 524 $, $(@expr1073743657 defParser@var109 .@expr1073743658 parseFromArgs (@expr1073743659 3 , argv@var211 ) $) $) $) { $return ; }
+525: $if $(@expr1073743660 $!@expr1073743661 $assert_ $(@expr1073743662 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 525 $, settings@var108 .@expr1073743663 checks@var203 .@expr1073743664 isEnabled (@expr1073743665 Checks ::@expr1073743666 unusedFunction@expr1073743647 ) $) $) { $return ; }
+526: }
+527:
+528: void enabledMissingInclude ( ) {
+529: $RedirectOutputError $redir@var212 $; $do ${ $} $while $(@expr1073743668 $false $) ;
+530: const char * const argv@var213 [@expr1073743669 3 ] =@expr1073743670 {@expr1073743671 "cppcheck" , "--enable=missingInclude" , "file.cpp" } ;
+531: settings@var108 =@expr1073743672 Settings (@expr1073743673 ) ;
+532: $if $(@expr1073743674 $!@expr1073743675 $assert_ $(@expr1073743676 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 532 $, $(@expr1073743677 defParser@var109 .@expr1073743678 parseFromArgs (@expr1073743679 3 , argv@var213 ) $) $) $) { $return ; }
+533: $if $(@expr1073743680 $!@expr1073743681 $assert_ $(@expr1073743682 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 533 $, settings@var108 .@expr1073743683 checks@var203 .@expr1073743684 isEnabled (@expr1073743685 Checks ::@expr1073743686 missingInclude@expr1073743667 ) $) $) { $return ; }
+534: }
+535:
+|
+545:
+546: void enabledMultiple ( ) {
+547: $RedirectOutputError $redir@var214 $; $do ${ $} $while $(@expr1073743693 $false $) ;
+548: const char * const argv@var215 [@expr1073743694 3 ] =@expr1073743695 {@expr1073743696 "cppcheck" , "--enable=missingInclude,portability,warning" , "file.cpp" } ;
+549: settings@var108 =@expr1073743697 Settings (@expr1073743698 ) ;
+550: $if $(@expr1073743699 $!@expr1073743700 $assert_ $(@expr1073743701 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 550 $, $(@expr1073743702 defParser@var109 .@expr1073743703 parseFromArgs (@expr1073743704 3 , argv@var215 ) $) $) $) { $return ; }
+551: $if $(@expr1073743705 $!@expr1073743706 $assert_ $(@expr1073743707 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 551 $, !@expr1073743708 settings@var108 .@expr1885 severity@var202 .@expr1886 isEnabled (@expr1073743711 Severity ::@expr1073743712 style@expr1073743687 ) $) $) { $return ; }
+552: $if $(@expr1073743713 $!@expr1073743714 $assert_ $(@expr1073743715 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 552 $, settings@var108 .@expr1885 severity@var202 .@expr1886 isEnabled (@expr1073743718 Severity ::@expr1073743719 warning@expr1073743688 ) $) $) { $return ; }
+553: $if $(@expr1073743720 $!@expr1073743721 $assert_ $(@expr1073743722 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 553 $, !@expr1073743723 settings@var108 .@expr1885 severity@var202 .@expr1886 isEnabled (@expr1073743726 Severity ::@expr1073743727 performance@expr1073743689 ) $) $) { $return ; }
+554: $if $(@expr1073743728 $!@expr1073743729 $assert_ $(@expr1073743730 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 554 $, settings@var108 .@expr1885 severity@var202 .@expr1886 isEnabled (@expr1073743733 Severity ::@expr1073743734 portability@expr1073743690 ) $) $) { $return ; }
+555: $if $(@expr1073743735 $!@expr1073743736 $assert_ $(@expr1073743737 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 555 $, !@expr1073743738 settings@var108 .@expr1915 checks@var203 .@expr1916 isEnabled (@expr1073743741 Checks ::@expr1073743742 unusedFunction@expr1073743691 ) $) $) { $return ; }
+556: $if $(@expr1073743743 $!@expr1073743744 $assert_ $(@expr1073743745 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 556 $, settings@var108 .@expr1915 checks@var203 .@expr1916 isEnabled (@expr1073743748 Checks ::@expr1073743749 missingInclude@expr1073743692 ) $) $) { $return ; }
+557: }
+558:
+559: void inconclusive ( ) {
+560: $RedirectOutputError $redir@var216 $; $do ${ $} $while $(@expr1073743751 $false $) ;
+561: const char * const argv@var217 [@expr1073743752 2 ] =@expr1073743753 {@expr1073743754 "cppcheck" , "--inconclusive" } ;
+562: settings@var108 .@expr1931 certainty@var218 .@expr1073743756 clear (@expr1073743757 ) ;
+563: $if $(@expr1073743758 $!@expr1073743759 $assert_ $(@expr1073743760 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 563 $, $(@expr1073743761 defParser@var109 .@expr1073743762 parseFromArgs (@expr1073743763 2 , argv@var217 ) $) $) $) { $return ; }
+564: $if $(@expr1073743764 $!@expr1073743765 $assertEquals $(@expr1073743766 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 564 $, true $, settings@var108 .@expr1931 certainty@var218 .@expr1073743768 isEnabled (@expr1073743769 Certainty ::@expr1073743770 inconclusive@expr1073743750 ) $) $) { $return ; }
+565: }
+566:
+567: void errorExitcode ( ) {
+568: $RedirectOutputError $redir@var219 $; $do ${ $} $while $(@expr1073743771 $false $) ;
+569: const char * const argv@var220 [@expr1073743772 3 ] =@expr1073743773 {@expr1073743774 "cppcheck" , "--error-exitcode=5" , "file.cpp" } ;
+570: settings@var108 .@expr1951 exitCode@var221 =@expr1073743776 0 ;
+571: $if $(@expr1073743777 $!@expr1073743778 $assert_ $(@expr1073743779 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 571 $, $(@expr1073743780 defParser@var109 .@expr1073743781 parseFromArgs (@expr1073743782 3 , argv@var220 ) $) $) $) { $return ; }
+572: $if $(@expr1073743783 $!@expr1073743784 $assertEquals $(@expr1073743785 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 572 $, 5 $, settings@var108 .@expr1951 exitCode@var221 $) $) { $return ; }
+573: }
+574:
+575: void errorExitcodeMissing ( ) {
+576: $RedirectOutputError $redir@var222 $; $do ${ $} $while $(@expr1073743787 $false $) ;
+577: const char * const argv@var223 [@expr1073743788 3 ] =@expr1073743789 {@expr1073743790 "cppcheck" , "--error-exitcode=" , "file.cpp" } ;
+578: settings@var108 .@expr1073743791 exitCode@var221 =@expr1073743792 0 ;
+579:
+580: $if $(@expr1073743793 $!@expr1073743794 $assertEquals $(@expr1073743795 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 580 $, false $, $(@expr1073743796 defParser@var109 .@expr1073743797 parseFromArgs (@expr1073743798 3 , argv@var223 ) $) $) $) { $return ; }
+581: }
+582:
+583: void errorExitcodeStr ( ) {
+584: $RedirectOutputError $redir@var224 $; $do ${ $} $while $(@expr1073743799 $false $) ;
+585: const char * const argv@var225 [@expr1073743800 3 ] =@expr1073743801 {@expr1073743802 "cppcheck" , "--error-exitcode=foo" , "file.cpp" } ;
+586: settings@var108 .@expr1073743803 exitCode@var221 =@expr1073743804 0 ;
+587:
+588: $if $(@expr1073743805 $!@expr1073743806 $assertEquals $(@expr1073743807 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 588 $, false $, $(@expr1073743808 defParser@var109 .@expr1073743809 parseFromArgs (@expr1073743810 3 , argv@var225 ) $) $) $) { $return ; }
+589: }
+590:
+591: void exitcodeSuppressionsOld ( ) {
+592:
+593: $RedirectOutputError $redir@var226 $; $do ${ $} $while $(@expr1073743811 $false $) ;
+594: const char * const argv@var227 [@expr1073743812 4 ] =@expr1073743813 {@expr1073743814 "cppcheck" , "--exitcode-suppressions" , "suppr.txt" , "file.cpp" } ;
+595: settings@var108 .@expr1073743815 exitCode@var221 =@expr1073743816 0 ;
+596: $todoAssertEquals $(@expr1073743817 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 596 $, true $, false $, defParser@var109 .@expr1073743818 parseFromArgs (@expr1073743819 4 , argv@var227 ) $) ;
+597: }
+598:
+599: void exitcodeSuppressions ( ) {
+600:
+601: $RedirectOutputError $redir@var228 $; $do ${ $} $while $(@expr1073743820 $false $) ;
+602: const char * const argv@var229 [@expr1073743821 3 ] =@expr1073743822 {@expr1073743823 "cppcheck" , "--exitcode-suppressions=suppr.txt" , "file.cpp" } ;
+603: settings@var108 .@expr1073743824 exitCode@var221 =@expr1073743825 0 ;
+604: $todoAssertEquals $(@expr1073743826 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 604 $, true $, false $, defParser@var109 .@expr1073743827 parseFromArgs (@expr1073743828 3 , argv@var229 ) $) ;
+605: }
+606:
+607: void exitcodeSuppressionsNoFile ( ) {
+608:
+609: $RedirectOutputError $redir@var230 $; $do ${ $} $while $(@expr1073743829 $false $) ;
+610: const char * const argv@var231 [@expr1073743830 3 ] =@expr1073743831 {@expr1073743832 "cppcheck" , "--exitcode-suppressions" , "file.cpp" } ;
+611: settings@var108 .@expr1073743833 exitCode@var221 =@expr1073743834 0 ;
+612: $todoAssertEquals $(@expr1073743835 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 612 $, true $, false $, defParser@var109 .@expr1073743836 parseFromArgs (@expr1073743837 3 , argv@var231 ) $) ;
+613: }
+614:
+615: void fileList ( ) {
+616:
+617: $RedirectOutputError $redir@var232 $; $do ${ $} $while $(@expr1073743838 $false $) ;
+618: const char * const argv@var233 [@expr1073743839 4 ] =@expr1073743840 {@expr1073743841 "cppcheck" , "--file-list" , "files.txt" , "file.cpp" } ;
+619: $todoAssertEquals $(@expr1073743842 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 619 $, true $, false $, defParser@var109 .@expr1073743843 parseFromArgs (@expr1073743844 4 , argv@var233 ) $) ;
+620: }
+621:
+|
+629:
+630: void inlineSuppr ( ) {
+631: $RedirectOutputError $redir@var234 $; $do ${ $} $while $(@expr1073743845 $false $) ;
+632: const char * const argv@var235 [@expr1073743846 3 ] =@expr1073743847 {@expr1073743848 "cppcheck" , "--inline-suppr" , "file.cpp" } ;
+633: $if $(@expr1073743849 $!@expr1073743850 $assert_ $(@expr1073743851 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 633 $, $(@expr1073743852 defParser@var109 .@expr1073743853 parseFromArgs (@expr1073743854 3 , argv@var235 ) $) $) $) { $return ; }
+634: }
+635:
+636: void jobs ( ) {
+637: $RedirectOutputError $redir@var236 $; $do ${ $} $while $(@expr1073743855 $false $) ;
+638: const char * const argv@var237 [@expr1073743856 4 ] =@expr1073743857 {@expr1073743858 "cppcheck" , "-j" , "3" , "file.cpp" } ;
+639: settings@var108 .@expr2035 jobs@var238 =@expr1073743860 0 ;
+640: $if $(@expr1073743861 $!@expr1073743862 $assert_ $(@expr1073743863 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 640 $, $(@expr1073743864 defParser@var109 .@expr1073743865 parseFromArgs (@expr1073743866 4 , argv@var237 ) $) $) $) { $return ; }
+641: $if $(@expr1073743867 $!@expr1073743868 $assertEquals $(@expr1073743869 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 641 $, 3 $, settings@var108 .@expr2035 jobs@var238 $) $) { $return ; }
+642: }
+643:
+644: void jobsMissingCount ( ) {
+645: $RedirectOutputError $redir@var239 $; $do ${ $} $while $(@expr1073743871 $false $) ;
+646: const char * const argv@var240 [@expr1073743872 3 ] =@expr1073743873 {@expr1073743874 "cppcheck" , "-j" , "file.cpp" } ;
+647: settings@var108 .@expr1073743875 jobs@var238 =@expr1073743876 0 ;
+648:
+649: $if $(@expr1073743877 $!@expr1073743878 $assertEquals $(@expr1073743879 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 649 $, false $, $(@expr1073743880 defParser@var109 .@expr1073743881 parseFromArgs (@expr1073743882 3 , argv@var240 ) $) $) $) { $return ; }
+650: }
+651:
+652: void jobsInvalid ( ) {
+653: $RedirectOutputError $redir@var241 $; $do ${ $} $while $(@expr1073743883 $false $) ;
+654: const char * const argv@var242 [@expr1073743884 4 ] =@expr1073743885 {@expr1073743886 "cppcheck" , "-j" , "e" , "file.cpp" } ;
+655: settings@var108 .@expr1073743887 jobs@var238 =@expr1073743888 0 ;
+656:
+657: $if $(@expr1073743889 $!@expr1073743890 $assertEquals $(@expr1073743891 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 657 $, false $, $(@expr1073743892 defParser@var109 .@expr1073743893 parseFromArgs (@expr1073743894 4 , argv@var242 ) $) $) $) { $return ; }
+658: }
+659:
+660: void maxConfigs ( ) {
+661: $RedirectOutputError $redir@var243 $; $do ${ $} $while $(@expr1073743895 $false $) ;
+662: const char * const argv@var244 [@expr1073743896 4 ] =@expr1073743897 {@expr1073743898 "cppcheck" , "-f" , "--max-configs=12" , "file.cpp" } ;
+663: settings@var108 .@expr2075 force@var144 =@expr1073743900 false ;
+664: settings@var108 .@expr2077 maxConfigs@var245 =@expr1073743902 12 ;
+665: $if $(@expr1073743903 $!@expr1073743904 $assert_ $(@expr1073743905 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 665 $, $(@expr1073743906 defParser@var109 .@expr1073743907 parseFromArgs (@expr1073743908 4 , argv@var244 ) $) $) $) { $return ; }
+666: $if $(@expr1073743909 $!@expr1073743910 $assertEquals $(@expr1073743911 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 666 $, 12 $, settings@var108 .@expr2077 maxConfigs@var245 $) $) { $return ; }
+667: $if $(@expr1073743913 $!@expr1073743914 $assertEquals $(@expr1073743915 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 667 $, false $, settings@var108 .@expr2075 force@var144 $) $) { $return ; }
+668: }
+669:
+670: void maxConfigsMissingCount ( ) {
+671: $RedirectOutputError $redir@var246 $; $do ${ $} $while $(@expr1073743917 $false $) ;
+672: const char * const argv@var247 [@expr1073743918 3 ] =@expr1073743919 {@expr1073743920 "cppcheck" , "--max-configs=" , "file.cpp" } ;
+673:
+674: $if $(@expr1073743921 $!@expr1073743922 $assertEquals $(@expr1073743923 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 674 $, false $, $(@expr1073743924 defParser@var109 .@expr1073743925 parseFromArgs (@expr1073743926 3 , argv@var247 ) $) $) $) { $return ; }
+675: }
+676:
+677: void maxConfigsInvalid ( ) {
+678: $RedirectOutputError $redir@var248 $; $do ${ $} $while $(@expr1073743927 $false $) ;
+679: const char * const argv@var249 [@expr1073743928 3 ] =@expr1073743929 {@expr1073743930 "cppcheck" , "--max-configs=e" , "file.cpp" } ;
+680:
+681: $if $(@expr1073743931 $!@expr1073743932 $assertEquals $(@expr1073743933 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 681 $, false $, $(@expr1073743934 defParser@var109 .@expr1073743935 parseFromArgs (@expr1073743936 3 , argv@var249 ) $) $) $) { $return ; }
+682: }
+683:
+684: void maxConfigsTooSmall ( ) {
+685: $RedirectOutputError $redir@var250 $; $do ${ $} $while $(@expr1073743937 $false $) ;
+686: const char * const argv@var251 [@expr1073743938 3 ] =@expr1073743939 {@expr1073743940 "cppcheck" , "--max-configs=0" , "file.cpp" } ;
+687:
+688: $if $(@expr1073743941 $!@expr1073743942 $assertEquals $(@expr1073743943 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 688 $, false $, $(@expr1073743944 defParser@var109 .@expr1073743945 parseFromArgs (@expr1073743946 3 , argv@var251 ) $) $) $) { $return ; }
+689: }
+690:
+691: void reportProgressTest ( ) {
+692: $RedirectOutputError $redir@var252 $; $do ${ $} $while $(@expr1073743947 $false $) ;
+693: const char * const argv@var253 [@expr1073743948 3 ] =@expr1073743949 {@expr1073743950 "cppcheck" , "--report-progress" , "file.cpp" } ;
+694: settings@var108 .@expr2127 reportProgress@var254 =@expr1073743952 false ;
+695: $if $(@expr1073743953 $!@expr1073743954 $assert_ $(@expr1073743955 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 695 $, $(@expr1073743956 defParser@var109 .@expr1073743957 parseFromArgs (@expr1073743958 3 , argv@var253 ) $) $) $) { $return ; }
+696: $if $(@expr1073743959 $!@expr1073743960 $assert_ $(@expr1073743961 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 696 $, settings@var108 .@expr2127 reportProgress@var254 $) $) { $return ; }
+697: }
+698:
+699: void stdc99 ( ) {
+700: $RedirectOutputError $redir@var255 $; $do ${ $} $while $(@expr1073743965 $false $) ;
+701: const char * const argv@var256 [@expr1073743966 3 ] =@expr1073743967 {@expr1073743968 "cppcheck" , "--std=c99" , "file.cpp" } ;
+702: settings@var108 .@expr2145 standards@var257 .@expr2146 c@var258 =@expr1073743971 Standards ::@expr1073743972 C89@expr1073743963 ;
+703: $if $(@expr1073743973 $!@expr1073743974 $assert_ $(@expr1073743975 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 703 $, $(@expr1073743976 defParser@var109 .@expr1073743977 parseFromArgs (@expr1073743978 3 , argv@var256 ) $) $) $) { $return ; }
+704: $if $(@expr1073743979 $!@expr1073743980 $assert_ $(@expr1073743981 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 704 $, settings@var108 .@expr2145 standards@var257 .@expr2146 c@var258 ==@expr1073743984 Standards ::@expr1073743985 C99@expr1073743964 $) $) { $return ; }
+705: }
+706:
+707: void stdcpp11 ( ) {
+708: $RedirectOutputError $redir@var259 $; $do ${ $} $while $(@expr1073743988 $false $) ;
+709: const char * const argv@var260 [@expr1073743989 3 ] =@expr1073743990 {@expr1073743991 "cppcheck" , "--std=c++11" , "file.cpp" } ;
+710: settings@var108 .@expr2168 standards@var257 .@expr2169 cpp@var261 =@expr1073743994 Standards ::@expr1073743995 CPP03@expr1073743986 ;
+711: $if $(@expr1073743996 $!@expr1073743997 $assert_ $(@expr1073743998 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 711 $, $(@expr1073743999 defParser@var109 .@expr1073744000 parseFromArgs (@expr1073744001 3 , argv@var260 ) $) $) $) { $return ; }
+712: $if $(@expr1073744002 $!@expr1073744003 $assert_ $(@expr1073744004 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 712 $, settings@var108 .@expr2168 standards@var257 .@expr2169 cpp@var261 ==@expr1073744007 Standards ::@expr1073744008 CPP11@expr1073743987 $) $) { $return ; }
+713: }
+714:
+715: void stdunknown ( ) {
+716: $RedirectOutputError $redir@var262 $; $do ${ $} $while $(@expr1073744009 $false $) ;
+717: {
+718: $redir@var262 $.@expr1073744010 $clearOutput $(@expr1073744011 $) ;
+719: const char * const argv@var263 [@expr1073744012 3 ] =@expr1073744013 {@expr1073744014 "cppcheck" , "--std=d++11" , "file.cpp" } ;
+720: $if $(@expr1073744015 $!@expr1073744016 $assert_ $(@expr1073744017 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 720 $, $(@expr1073744018 !@expr1073744019 defParser@var109 .@expr2196 parseFromArgs (@expr1073744021 3 , argv@var263 ) $) $) $) { $return ; }
+721: $if $(@expr1073744022 $!@expr1073744023 $assertEquals $(@expr1073744024 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 721 $, "cppcheck: error: unknown --std value 'd++11'\n" $, $redir@var262 $.@expr1073744025 $getOutput $(@expr1073744026 $) $) $) { $return ; }
+722: }
+723: {
+724: $redir@var262 $.@expr1073744027 $clearOutput $(@expr1073744028 $) ;
+725: const char * const argv@var264 [@expr1073744029 3 ] =@expr1073744030 {@expr1073744031 "cppcheck" , "--std=cplusplus11" , "file.cpp" } ;
+726: $do ${ $const $bool $condition@var265 $=@expr1073744032 !@expr1073744033 defParser@var109 .@expr2196 parseFromArgs (@expr1073744035 3 , argv@var264 ) $; $todoAssertEquals $(@expr1073744036 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 726 $, $true $, $false $, $condition@var265 $) $; $} $while $(@expr1073744037 $false $) ;
+727: $todoAssertEquals $(@expr1073744038 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 727 $, "cppcheck: error: unknown --std value 'cplusplus11'\n" $, "" $, $redir@var262 $.@expr1073744039 $getOutput $(@expr1073744040 $) $) ;
+728: }
+729: }
+730:
+731: void platform ( ) {
+732: $RedirectOutputError $redir@var266 $; $do ${ $} $while $(@expr1073744043 $false $) ;
+733: const char * const argv@var267 [@expr1073744044 3 ] =@expr1073744045 {@expr1073744046 "cppcheck" , "--platform=win64" , "file.cpp" } ;
+734: settings@var108 .@expr1073744047 platform (@expr1073744048 Settings ::@expr1073744049 Unspecified@expr1073744041 ) ;
+735: $if $(@expr1073744050 $!@expr1073744051 $assert_ $(@expr1073744052 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 735 $, $(@expr1073744053 defParser@var109 .@expr1073744054 parseFromArgs (@expr1073744055 3 , argv@var267 ) $) $) $) { $return ; }
+736: $if $(@expr1073744056 $!@expr1073744057 $assert_ $(@expr1073744058 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 736 $, settings@var108 .@expr1073744059 platformType@var268 ==@expr1073744060 Settings ::@expr1073744061 Win64@expr1073744042 $) $) { $return ; }
+737: }
+738:
+739: void plistEmpty ( ) {
+740: $RedirectOutputError $redir@var269 $; $do ${ $} $while $(@expr1073744062 $false $) ;
+741: const char * const argv@var270 [@expr1073744063 3 ] =@expr1073744064 {@expr1073744065 "cppcheck" , "--plist-output=" , "file.cpp" } ;
+742: settings@var108 .@expr2242 plistOutput@var271 =@expr1073744067 "" ;
+743: $if $(@expr1073744068 $!@expr1073744069 $assert_ $(@expr1073744070 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 743 $, $(@expr1073744071 defParser@var109 .@expr1073744072 parseFromArgs (@expr1073744073 3 , argv@var270 ) $) $) $) { $return ; }
+744: $if $(@expr1073744074 $!@expr1073744075 $assert_ $(@expr1073744076 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 744 $, settings@var108 .@expr2242 plistOutput@var271 ==@expr1073744078 "./" $) $) { $return ; }
+745: }
+746:
+747: void plistDoesNotExist ( ) {
+748: $RedirectOutputError $redir@var272 $; $do ${ $} $while $(@expr1073744079 $false $) ;
+749: const char * const argv@var273 [@expr1073744080 3 ] =@expr1073744081 {@expr1073744082 "cppcheck" , "--plist-output=./cppcheck_reports" , "file.cpp" } ;
+750: settings@var108 .@expr1073744083 plistOutput@var271 =@expr1073744084 "" ;
+751:
+752: $if $(@expr1073744085 $!@expr1073744086 $assertEquals $(@expr1073744087 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 752 $, false $, $(@expr1073744088 defParser@var109 .@expr1073744089 parseFromArgs (@expr1073744090 3 , argv@var273 ) $) $) $) { $return ; }
+753: }
+754:
+755: void suppressionsOld ( ) {
+756:
+757: $RedirectOutputError $redir@var274 $; $do ${ $} $while $(@expr1073744091 $false $) ;
+758: const char * const argv@var275 [@expr1073744092 4 ] =@expr1073744093 {@expr1073744094 "cppcheck" , "--suppressions" , "suppr.txt" , "file.cpp" } ;
+759: $if $(@expr1073744095 $!@expr1073744096 $assert_ $(@expr1073744097 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 759 $, $(@expr1073744098 !@expr1073744099 defParser@var109 .@expr1073744100 parseFromArgs (@expr1073744101 4 , argv@var275 ) $) $) $) { $return ; }
+760: }
+761:
+762: void suppressions ( ) {
+763:
+764: $RedirectOutputError $redir@var276 $; $do ${ $} $while $(@expr1073744102 $false $) ;
+765: const char * const argv@var277 [@expr1073744103 3 ] =@expr1073744104 {@expr1073744105 "cppcheck" , "--suppressions-list=suppr.txt" , "file.cpp" } ;
+766: $todoAssertEquals $(@expr1073744106 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 766 $, true $, false $, defParser@var109 .@expr1073744107 parseFromArgs (@expr1073744108 3 , argv@var277 ) $) ;
+767: }
+768:
+769: void suppressionsNoFile ( ) {
+770: $RedirectOutputError $redir@var278 $; $do ${ $} $while $(@expr1073744110 $false $) ;
+771: {
+772: $redir@var278 $.@expr1073744111 $clearOutput $(@expr1073744112 $) ;
+773: const char * const argv@var279 [@expr1073744113 3 ] =@expr1073744114 {@expr1073744115 "cppcheck" , "--suppressions-list=" , "file.cpp" } ;
+774: $if $(@expr1073744116 $!@expr1073744117 $assertEquals $(@expr1073744118 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 774 $, false $, $(@expr1073744119 defParser@var109 .@expr2296 parseFromArgs (@expr1073744121 3 , argv@var279 ) $) $) $) { $return ; }
+775: $if $(@expr1073744122 $!@expr1073744123 $assertEquals $(@expr1073744124 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 775 $, false $, $redir@var278 $.@expr1073744125 $getOutput $(@expr1073744126 $) .@expr1073744127 find (@expr1073744128 "If you want to pass two files" ) !=@expr1073744129 std ::@expr2306 string ::@expr2307 npos@expr2285 $) $) { $return ; }
+776: }
+777:
+778: {
+779: $redir@var278 $.@expr1073744132 $clearOutput $(@expr1073744133 $) ;
+780: const char * const argv@var280 [@expr1073744134 3 ] =@expr1073744135 {@expr1073744136 "cppcheck" , "--suppressions-list=a.suppr,b.suppr" , "file.cpp" } ;
+781: $if $(@expr1073744137 $!@expr1073744138 $assertEquals $(@expr1073744139 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 781 $, false $, $(@expr1073744140 defParser@var109 .@expr2296 parseFromArgs (@expr1073744142 3 , argv@var280 ) $) $) $) { $return ; }
+782: $if $(@expr1073744143 $!@expr1073744144 $assertEquals $(@expr1073744145 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 782 $, true $, $redir@var278 $.@expr1073744146 $getOutput $(@expr1073744147 $) .@expr1073744148 find (@expr1073744149 "If you want to pass two files" ) !=@expr1073744150 std ::@expr2306 string ::@expr2307 npos@expr2285 $) $) { $return ; }
+783: }
+784:
+785: {
+786: $redir@var278 $.@expr1073744153 $clearOutput $(@expr1073744154 $) ;
+787: const char * const argv@var281 [@expr1073744155 3 ] =@expr1073744156 {@expr1073744157 "cppcheck" , "--suppressions-list=a.suppr b.suppr" , "file.cpp" } ;
+788: $if $(@expr1073744158 $!@expr1073744159 $assertEquals $(@expr1073744160 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 788 $, false $, $(@expr1073744161 defParser@var109 .@expr2296 parseFromArgs (@expr1073744163 3 , argv@var281 ) $) $) $) { $return ; }
+789: $if $(@expr1073744164 $!@expr1073744165 $assertEquals $(@expr1073744166 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 789 $, true $, $redir@var278 $.@expr1073744167 $getOutput $(@expr1073744168 $) .@expr1073744169 find (@expr1073744170 "If you want to pass two files" ) !=@expr1073744171 std ::@expr2306 string ::@expr2307 npos@expr2285 $) $) { $return ; }
+790: }
+791: }
+792:
+793: static Suppressions :: ErrorMessage errorMessage ( const std :: string & errorId@var282 , const std :: string & fileName@var283 , int lineNumber@var284 ) {
+794: Suppressions ::@expr1073744174 ErrorMessage e@var285 ;
+795: e@var285 .@expr1073744175 errorId@var286 =@expr1073744176 errorId@var282 ;
+796: e@var285 .@expr1073744177 setFileName (@expr1073744178 fileName@var283 ) ;
+797: e@var285 .@expr1073744179 lineNumber@var287 =@expr1073744180 lineNumber@var284 ;
+798: return e@var285 ;
+799: }
+800:
+801: void suppressionSingle ( ) {
+802: $RedirectOutputError $redir@var288 $; $do ${ $} $while $(@expr1073744181 $false $) ;
+803: const char * const argv@var289 [@expr1073744182 3 ] =@expr1073744183 {@expr1073744184 "cppcheck" , "--suppress=uninitvar" , "file.cpp" } ;
+804: settings@var108 =@expr1073744185 Settings (@expr1073744186 ) ;
+805: $if $(@expr1073744187 $!@expr1073744188 $assert_ $(@expr1073744189 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 805 $, $(@expr1073744190 defParser@var109 .@expr1073744191 parseFromArgs (@expr1073744192 3 , argv@var289 ) $) $) $) { $return ; }
+806: $if $(@expr1073744193 $!@expr1073744194 $assertEquals $(@expr1073744195 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 806 $, true $, $(@expr1073744196 settings@var108 .@expr1073744197 nomsg@var290 .@expr1073744198 isSuppressed (@expr1073744199 errorMessage (@expr1073744200 "uninitvar" , "file.cpp" , 1 ) ) $) $) $) { $return ; }
+807: }
+808:
+809: void suppressionSingleFile ( ) {
+810: $RedirectOutputError $redir@var291 $; $do ${ $} $while $(@expr1073744201 $false $) ;
+811: const char * const argv@var292 [@expr1073744202 3 ] =@expr1073744203 {@expr1073744204 "cppcheck" , "--suppress=uninitvar:file.cpp" , "file.cpp" } ;
+812: settings@var108 =@expr1073744205 Settings (@expr1073744206 ) ;
+813: $if $(@expr1073744207 $!@expr1073744208 $assert_ $(@expr1073744209 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 813 $, $(@expr1073744210 defParser@var109 .@expr1073744211 parseFromArgs (@expr1073744212 3 , argv@var292 ) $) $) $) { $return ; }
+814: $if $(@expr1073744213 $!@expr1073744214 $assertEquals $(@expr1073744215 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 814 $, true $, $(@expr1073744216 settings@var108 .@expr1073744217 nomsg@var290 .@expr1073744218 isSuppressed (@expr1073744219 errorMessage (@expr1073744220 "uninitvar" , "file.cpp" , 1U ) ) $) $) $) { $return ; }
+815: }
+816:
+817: void suppressionTwo ( ) {
+818: $RedirectOutputError $redir@var293 $; $do ${ $} $while $(@expr1073744221 $false $) ;
+819: const char * const argv@var294 [@expr1073744222 3 ] =@expr1073744223 {@expr1073744224 "cppcheck" , "--suppress=uninitvar,noConstructor" , "file.cpp" } ;
+820: settings@var108 =@expr1073744225 Settings (@expr1073744226 ) ;
+821: $todoAssertEquals $(@expr1073744227 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 821 $, true $, false $, defParser@var109 .@expr1073744228 parseFromArgs (@expr1073744229 3 , argv@var294 ) $) ;
+822: $todoAssertEquals $(@expr1073744230 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 822 $, true $, false $, settings@var108 .@expr2407 nomsg@var290 .@expr2408 isSuppressed (@expr1073744233 errorMessage (@expr1073744234 "uninitvar" , "file.cpp" , 1U ) ) $) ;
+823: $todoAssertEquals $(@expr1073744235 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 823 $, true $, false $, settings@var108 .@expr2407 nomsg@var290 .@expr2408 isSuppressed (@expr1073744238 errorMessage (@expr1073744239 "noConstructor" , "file.cpp" , 1U ) ) $) ;
+824: }
+825:
+826: void suppressionTwoSeparate ( ) {
+827: $RedirectOutputError $redir@var295 $; $do ${ $} $while $(@expr1073744240 $false $) ;
+828: const char * const argv@var296 [@expr1073744241 4 ] =@expr1073744242 {@expr1073744243 "cppcheck" , "--suppress=uninitvar" , "--suppress=noConstructor" , "file.cpp" } ;
+829: settings@var108 =@expr1073744244 Settings (@expr1073744245 ) ;
+830: $if $(@expr1073744246 $!@expr1073744247 $assert_ $(@expr1073744248 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 830 $, $(@expr1073744249 defParser@var109 .@expr1073744250 parseFromArgs (@expr1073744251 4 , argv@var296 ) $) $) $) { $return ; }
+831: $if $(@expr1073744252 $!@expr1073744253 $assertEquals $(@expr1073744254 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 831 $, true $, $(@expr1073744255 settings@var108 .@expr2432 nomsg@var290 .@expr2433 isSuppressed (@expr1073744258 errorMessage (@expr1073744259 "uninitvar" , "file.cpp" , 1U ) ) $) $) $) { $return ; }
+832: $if $(@expr1073744260 $!@expr1073744261 $assertEquals $(@expr1073744262 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 832 $, true $, $(@expr1073744263 settings@var108 .@expr2432 nomsg@var290 .@expr2433 isSuppressed (@expr1073744266 errorMessage (@expr1073744267 "noConstructor" , "file.cpp" , 1U ) ) $) $) $) { $return ; }
+833: }
+834:
+835: void templates ( ) {
+836: $RedirectOutputError $redir@var297 $; $do ${ $} $while $(@expr1073744268 $false $) ;
+837: const char * const argv@var298 [@expr1073744269 4 ] =@expr1073744270 {@expr1073744271 "cppcheck" , "--template" , "{file}:{line},{severity},{id},{message}" , "file.cpp" } ;
+838: settings@var108 .@expr2448 templateFormat@var299 .@expr1073744273 clear (@expr1073744274 ) ;
+839: $if $(@expr1073744275 $!@expr1073744276 $assert_ $(@expr1073744277 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 839 $, $(@expr1073744278 defParser@var109 .@expr1073744279 parseFromArgs (@expr1073744280 4 , argv@var298 ) $) $) $) { $return ; }
+840: $if $(@expr1073744281 $!@expr1073744282 $assertEquals $(@expr1073744283 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 840 $, "{file}:{line},{severity},{id},{message}" $, settings@var108 .@expr2448 templateFormat@var299 $) $) { $return ; }
+841: }
+842:
+843: void templatesGcc ( ) {
+844: $RedirectOutputError $redir@var300 $; $do ${ $} $while $(@expr1073744285 $false $) ;
+845: const char * const argv@var301 [@expr1073744286 4 ] =@expr1073744287 {@expr1073744288 "cppcheck" , "--template" , "gcc" , "file.cpp" } ;
+846: settings@var108 .@expr2465 templateFormat@var299 .@expr1073744290 clear (@expr1073744291 ) ;
+847: $if $(@expr1073744292 $!@expr1073744293 $assert_ $(@expr1073744294 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 847 $, $(@expr1073744295 defParser@var109 .@expr1073744296 parseFromArgs (@expr1073744297 4 , argv@var301 ) $) $) $) { $return ; }
+848: $if $(@expr1073744298 $!@expr1073744299 $assertEquals $(@expr1073744300 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 848 $, "{bold}{file}:{line}:{column}: {magenta}warning:{default} {message} [{id}]{reset}\\n{code}" $, settings@var108 .@expr2465 templateFormat@var299 $) $) { $return ; }
+849: }
+850:
+851: void templatesVs ( ) {
+852: $RedirectOutputError $redir@var302 $; $do ${ $} $while $(@expr1073744302 $false $) ;
+853: const char * const argv@var303 [@expr1073744303 4 ] =@expr1073744304 {@expr1073744305 "cppcheck" , "--template" , "vs" , "file.cpp" } ;
+854: settings@var108 .@expr2482 templateFormat@var299 .@expr1073744307 clear (@expr1073744308 ) ;
+855: $if $(@expr1073744309 $!@expr1073744310 $assert_ $(@expr1073744311 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 855 $, $(@expr1073744312 defParser@var109 .@expr1073744313 parseFromArgs (@expr1073744314 4 , argv@var303 ) $) $) $) { $return ; }
+856: $if $(@expr1073744315 $!@expr1073744316 $assertEquals $(@expr1073744317 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 856 $, "{file}({line}): {severity}: {message}" $, settings@var108 .@expr2482 templateFormat@var299 $) $) { $return ; }
+857: }
+858:
+859: void templatesEdit ( ) {
+860: $RedirectOutputError $redir@var304 $; $do ${ $} $while $(@expr1073744319 $false $) ;
+861: const char * const argv@var305 [@expr1073744320 4 ] =@expr1073744321 {@expr1073744322 "cppcheck" , "--template" , "edit" , "file.cpp" } ;
+862: settings@var108 .@expr2499 templateFormat@var299 .@expr1073744324 clear (@expr1073744325 ) ;
+863: $if $(@expr1073744326 $!@expr1073744327 $assert_ $(@expr1073744328 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 863 $, $(@expr1073744329 defParser@var109 .@expr1073744330 parseFromArgs (@expr1073744331 4 , argv@var305 ) $) $) $) { $return ; }
+864: $if $(@expr1073744332 $!@expr1073744333 $assertEquals $(@expr1073744334 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 864 $, "{file} +{line}: {severity}: {message}" $, settings@var108 .@expr2499 templateFormat@var299 $) $) { $return ; }
+865: }
+866:
+867: void xml ( ) {
+868: $RedirectOutputError $redir@var306 $; $do ${ $} $while $(@expr1073744336 $false $) ;
+869: const char * const argv@var307 [@expr1073744337 3 ] =@expr1073744338 {@expr1073744339 "cppcheck" , "--xml" , "file.cpp" } ;
+870: settings@var108 .@expr2516 xml_version@var308 =@expr1073744341 1 ;
+871: settings@var108 .@expr2518 xml@var309 =@expr1073744343 false ;
+872: $if $(@expr1073744344 $!@expr1073744345 $assert_ $(@expr1073744346 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 872 $, $(@expr1073744347 defParser@var109 .@expr1073744348 parseFromArgs (@expr1073744349 3 , argv@var307 ) $) $) $) { $return ; }
+873: $if $(@expr1073744350 $!@expr1073744351 $assert_ $(@expr1073744352 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 873 $, settings@var108 .@expr2518 xml@var309 $) $) { $return ; }
+874: $if $(@expr1073744354 $!@expr1073744355 $assertEquals $(@expr1073744356 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 874 $, 1 $, settings@var108 .@expr2516 xml_version@var308 $) $) { $return ; }
+875: }
+876:
+877: void xmlver2 ( ) {
+878: $RedirectOutputError $redir@var310 $; $do ${ $} $while $(@expr1073744358 $false $) ;
+879: const char * const argv@var311 [@expr1073744359 3 ] =@expr1073744360 {@expr1073744361 "cppcheck" , "--xml-version=2" , "file.cpp" } ;
+880: settings@var108 .@expr2538 xml_version@var308 =@expr1073744363 1 ;
+881: settings@var108 .@expr2540 xml@var309 =@expr1073744365 false ;
+882: $if $(@expr1073744366 $!@expr1073744367 $assert_ $(@expr1073744368 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 882 $, $(@expr1073744369 defParser@var109 .@expr1073744370 parseFromArgs (@expr1073744371 3 , argv@var311 ) $) $) $) { $return ; }
+883: $if $(@expr1073744372 $!@expr1073744373 $assert_ $(@expr1073744374 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 883 $, settings@var108 .@expr2540 xml@var309 $) $) { $return ; }
+884: $if $(@expr1073744376 $!@expr1073744377 $assertEquals $(@expr1073744378 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 884 $, 2 $, settings@var108 .@expr2538 xml_version@var308 $) $) { $return ; }
+885: }
+886:
+887: void xmlver2both ( ) {
+888: $RedirectOutputError $redir@var312 $; $do ${ $} $while $(@expr1073744380 $false $) ;
+889: const char * const argv@var313 [@expr1073744381 4 ] =@expr1073744382 {@expr1073744383 "cppcheck" , "--xml" , "--xml-version=2" , "file.cpp" } ;
+890: settings@var108 .@expr2560 xml_version@var308 =@expr1073744385 1 ;
+891: settings@var108 .@expr2562 xml@var309 =@expr1073744387 false ;
+892: $if $(@expr1073744388 $!@expr1073744389 $assert_ $(@expr1073744390 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 892 $, $(@expr1073744391 defParser@var109 .@expr1073744392 parseFromArgs (@expr1073744393 4 , argv@var313 ) $) $) $) { $return ; }
+893: $if $(@expr1073744394 $!@expr1073744395 $assert_ $(@expr1073744396 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 893 $, settings@var108 .@expr2562 xml@var309 $) $) { $return ; }
+894: $if $(@expr1073744398 $!@expr1073744399 $assertEquals $(@expr1073744400 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 894 $, 2 $, settings@var108 .@expr2560 xml_version@var308 $) $) { $return ; }
+895: }
+896:
+897: void xmlver2both2 ( ) {
+898: $RedirectOutputError $redir@var314 $; $do ${ $} $while $(@expr1073744402 $false $) ;
+899: const char * const argv@var315 [@expr1073744403 4 ] =@expr1073744404 {@expr1073744405 "cppcheck" , "--xml-version=2" , "--xml" , "file.cpp" } ;
+900: settings@var108 .@expr2582 xml_version@var308 =@expr1073744407 1 ;
+901: settings@var108 .@expr2584 xml@var309 =@expr1073744409 false ;
+902: $if $(@expr1073744410 $!@expr1073744411 $assert_ $(@expr1073744412 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 902 $, $(@expr1073744413 defParser@var109 .@expr1073744414 parseFromArgs (@expr1073744415 4 , argv@var315 ) $) $) $) { $return ; }
+903: $if $(@expr1073744416 $!@expr1073744417 $assert_ $(@expr1073744418 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 903 $, settings@var108 .@expr2584 xml@var309 $) $) { $return ; }
+904: $if $(@expr1073744420 $!@expr1073744421 $assertEquals $(@expr1073744422 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 904 $, 2 $, settings@var108 .@expr2582 xml_version@var308 $) $) { $return ; }
+905: }
+906:
+907: void xmlverunknown ( ) {
+908: $RedirectOutputError $redir@var316 $; $do ${ $} $while $(@expr1073744424 $false $) ;
+909: const char * const argv@var317 [@expr1073744425 4 ] =@expr1073744426 {@expr1073744427 "cppcheck" , "--xml" , "--xml-version=3" , "file.cpp" } ;
+910:
+911: $if $(@expr1073744428 $!@expr1073744429 $assertEquals $(@expr1073744430 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 911 $, false $, $(@expr1073744431 defParser@var109 .@expr1073744432 parseFromArgs (@expr1073744433 4 , argv@var317 ) $) $) $) { $return ; }
+912: }
+913:
+914: void xmlverinvalid ( ) {
+915: $RedirectOutputError $redir@var318 $; $do ${ $} $while $(@expr1073744434 $false $) ;
+916: const char * const argv@var319 [@expr1073744435 4 ] =@expr1073744436 {@expr1073744437 "cppcheck" , "--xml" , "--xml-version=a" , "file.cpp" } ;
+917:
+918: $if $(@expr1073744438 $!@expr1073744439 $assertEquals $(@expr1073744440 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 918 $, false $, $(@expr1073744441 defParser@var109 .@expr1073744442 parseFromArgs (@expr1073744443 4 , argv@var319 ) $) $) $) { $return ; }
+919: }
+920:
+921: void doc ( ) {
+922: $RedirectOutputError $redir@var320 $; $do ${ $} $while $(@expr1073744444 $false $) ;
+923: const char * const argv@var321 [@expr1073744445 2 ] =@expr1073744446 {@expr1073744447 "cppcheck" , "--doc" } ;
+924: $if $(@expr1073744448 $!@expr1073744449 $assert_ $(@expr1073744450 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 924 $, $(@expr1073744451 defParser@var109 .@expr1073744452 parseFromArgs (@expr1073744453 2 , argv@var321 ) $) $) $) { $return ; }
+925: $if $(@expr1073744454 $!@expr1073744455 $assert_ $(@expr1073744456 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 925 $, defParser@var109 .@expr1073744457 exitAfterPrinting (@expr1073744458 ) $) $) { $return ; }
+926: }
+927:
+928: void showtime ( ) {
+929: $RedirectOutputError $redir@var322 $; $do ${ $} $while $(@expr1073744461 $false $) ;
+930: const char * const argv@var323 [@expr1073744462 2 ] =@expr1073744463 {@expr1073744464 "cppcheck" , "--showtime=summary" } ;
+931: settings@var108 .@expr2641 showtime@var324 =@expr1073744466 SHOWTIME_MODES ::@expr1073744467 SHOWTIME_NONE@expr1073744459 ;
+932: $if $(@expr1073744468 $!@expr1073744469 $assert_ $(@expr1073744470 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 932 $, $(@expr1073744471 defParser@var109 .@expr1073744472 parseFromArgs (@expr1073744473 2 , argv@var323 ) $) $) $) { $return ; }
+933: $if $(@expr1073744474 $!@expr1073744475 $assert_ $(@expr1073744476 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 933 $, settings@var108 .@expr2641 showtime@var324 ==@expr1073744478 SHOWTIME_MODES ::@expr1073744479 SHOWTIME_SUMMARY@expr1073744460 $) $) { $return ; }
+934: }
+935:
+936: void errorlist1 ( ) {
+937: $RedirectOutputError $redir@var325 $; $do ${ $} $while $(@expr1073744480 $false $) ;
+938: const char * const argv@var326 [@expr1073744481 2 ] =@expr1073744482 {@expr1073744483 "cppcheck" , "--errorlist" } ;
+939: $if $(@expr1073744484 $!@expr1073744485 $assert_ $(@expr1073744486 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 939 $, $(@expr1073744487 defParser@var109 .@expr1073744488 parseFromArgs (@expr1073744489 2 , argv@var326 ) $) $) $) { $return ; }
+940: $if $(@expr1073744490 $!@expr1073744491 $assert_ $(@expr1073744492 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 940 $, defParser@var109 .@expr1073744493 getShowErrorMessages (@expr1073744494 ) $) $) { $return ; }
+941: }
+942:
+943: void errorlistverbose1 ( ) {
+944: $RedirectOutputError $redir@var327 $; $do ${ $} $while $(@expr1073744495 $false $) ;
+945: const char * const argv@var328 [@expr1073744496 3 ] =@expr1073744497 {@expr1073744498 "cppcheck" , "--verbose" , "--errorlist" } ;
+946: settings@var108 .@expr2675 verbose@var133 =@expr1073744500 false ;
+947: $if $(@expr1073744501 $!@expr1073744502 $assert_ $(@expr1073744503 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 947 $, $(@expr1073744504 defParser@var109 .@expr1073744505 parseFromArgs (@expr1073744506 3 , argv@var328 ) $) $) $) { $return ; }
+948: $if $(@expr1073744507 $!@expr1073744508 $assert_ $(@expr1073744509 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 948 $, settings@var108 .@expr2675 verbose@var133 $) $) { $return ; }
+949: }
+950:
+951: void errorlistverbose2 ( ) {
+952: $RedirectOutputError $redir@var329 $; $do ${ $} $while $(@expr1073744511 $false $) ;
+953: const char * const argv@var330 [@expr1073744512 3 ] =@expr1073744513 {@expr1073744514 "cppcheck" , "--errorlist" , "--verbose" } ;
+954: settings@var108 .@expr2691 verbose@var133 =@expr1073744516 false ;
+955: $if $(@expr1073744517 $!@expr1073744518 $assert_ $(@expr1073744519 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 955 $, $(@expr1073744520 defParser@var109 .@expr1073744521 parseFromArgs (@expr1073744522 3 , argv@var330 ) $) $) $) { $return ; }
+956: $if $(@expr1073744523 $!@expr1073744524 $assert_ $(@expr1073744525 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 956 $, settings@var108 .@expr2691 verbose@var133 $) $) { $return ; }
+957: }
+958:
+959: void ignorepathsnopath ( ) {
+960: $RedirectOutputError $redir@var331 $; $do ${ $} $while $(@expr1073744527 $false $) ;
+961: const char * const argv@var332 [@expr1073744528 2 ] =@expr1073744529 {@expr1073744530 "cppcheck" , "-i" } ;
+962: CmdLineParser parser@var333 (@expr1073744531 &@expr1073744532 settings@var108 ) ;
+963:
+964: $if $(@expr1073744533 $!@expr1073744534 $assertEquals $(@expr1073744535 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 964 $, false $, $(@expr1073744536 parser@var333 .@expr1073744537 parseFromArgs (@expr1073744538 2 , argv@var332 ) $) $) $) { $return ; }
+965: $if $(@expr1073744539 $!@expr1073744540 $assertEquals $(@expr1073744541 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 965 $, 0 $, parser@var333 .@expr1073744542 getIgnoredPaths (@expr1073744543 ) .@expr1073744544 size (@expr1073744545 ) $) $) { $return ; }
+966: }
+967:
+|
+1025:
+1026: void checkconfig ( ) {
+1027: $RedirectOutputError $redir@var334 $; $do ${ $} $while $(@expr1073744546 $false $) ;
+1028: const char * const argv@var335 [@expr1073744547 3 ] =@expr1073744548 {@expr1073744549 "cppcheck" , "--check-config" , "file.cpp" } ;
+1029: settings@var108 .@expr2726 checkConfiguration@var336 =@expr1073744551 false ;
+1030: $if $(@expr1073744552 $!@expr1073744553 $assert_ $(@expr1073744554 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 1030 $, $(@expr1073744555 defParser@var109 .@expr1073744556 parseFromArgs (@expr1073744557 3 , argv@var335 ) $) $) $) { $return ; }
+1031: $if $(@expr1073744558 $!@expr1073744559 $assertEquals $(@expr1073744560 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 1031 $, true $, settings@var108 .@expr2726 checkConfiguration@var336 $) $) { $return ; }
+1032: }
+1033:
+1034: void unknownParam ( ) {
+1035: $RedirectOutputError $redir@var337 $; $do ${ $} $while $(@expr1073744562 $false $) ;
+1036: const char * const argv@var338 [@expr1073744563 3 ] =@expr1073744564 {@expr1073744565 "cppcheck" , "--foo" , "file.cpp" } ;
+1037: $if $(@expr1073744566 $!@expr1073744567 $assert_ $(@expr1073744568 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 1037 $, $(@expr1073744569 !@expr1073744570 defParser@var109 .@expr1073744571 parseFromArgs (@expr1073744572 3 , argv@var338 ) $) $) $) { $return ; }
+1038: }
+1039:
+1040: void undefs ( ) {
+1041: $RedirectOutputError $redir@var339 $; $do ${ $} $while $(@expr1073744573 $false $) ;
+1042: const char * const argv@var340 [@expr1073744574 3 ] =@expr1073744575 {@expr1073744576 "cppcheck" , "-U_WIN32" , "file.cpp" } ;
+1043: settings@var108 =@expr1073744577 Settings (@expr1073744578 ) ;
+1044: $if $(@expr1073744579 $!@expr1073744580 $assert_ $(@expr1073744581 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 1044 $, $(@expr1073744582 defParser@var109 .@expr1073744583 parseFromArgs (@expr1073744584 3 , argv@var340 ) $) $) $) { $return ; }
+1045: $if $(@expr1073744585 $!@expr1073744586 $assertEquals $(@expr1073744587 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 1045 $, 1 $, settings@var108 .@expr2764 userUndefs@var341 .@expr1073744589 size (@expr1073744590 ) $) $) { $return ; }
+1046: $if $(@expr1073744591 $!@expr1073744592 $assert_ $(@expr1073744593 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 1046 $, settings@var108 .@expr2764 userUndefs@var341 .@expr1073744595 find (@expr1073744596 "_WIN32" ) !=@expr1073744597 settings@var108 .@expr2764 userUndefs@var341 .@expr1073744599 end (@expr1073744600 ) $) $) { $return ; }
+1047: }
+1048:
+1049: void undefs2 ( ) {
+1050: $RedirectOutputError $redir@var342 $; $do ${ $} $while $(@expr1073744601 $false $) ;
+1051: const char * const argv@var343 [@expr1073744602 4 ] =@expr1073744603 {@expr1073744604 "cppcheck" , "-U_WIN32" , "-UNODEBUG" , "file.cpp" } ;
+1052: settings@var108 =@expr1073744605 Settings (@expr1073744606 ) ;
+1053: $if $(@expr1073744607 $!@expr1073744608 $assert_ $(@expr1073744609 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 1053 $, $(@expr1073744610 defParser@var109 .@expr1073744611 parseFromArgs (@expr1073744612 4 , argv@var343 ) $) $) $) { $return ; }
+1054: $if $(@expr1073744613 $!@expr1073744614 $assertEquals $(@expr1073744615 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 1054 $, 2 $, settings@var108 .@expr2792 userUndefs@var341 .@expr1073744617 size (@expr1073744618 ) $) $) { $return ; }
+1055: $if $(@expr1073744619 $!@expr1073744620 $assert_ $(@expr1073744621 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 1055 $, settings@var108 .@expr2792 userUndefs@var341 .@expr2799 find (@expr1073744624 "_WIN32" ) !=@expr1073744625 settings@var108 .@expr2792 userUndefs@var341 .@expr2803 end (@expr2804 ) $) $) { $return ; }
+1056: $if $(@expr1073744629 $!@expr1073744630 $assert_ $(@expr1073744631 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 1056 $, settings@var108 .@expr2792 userUndefs@var341 .@expr2799 find (@expr1073744634 "NODEBUG" ) !=@expr1073744635 settings@var108 .@expr2792 userUndefs@var341 .@expr2803 end (@expr2804 ) $) $) { $return ; }
+1057: }
+1058:
+1059: void undefs_noarg ( ) {
+1060: $RedirectOutputError $redir@var344 $; $do ${ $} $while $(@expr1073744639 $false $) ;
+1061: const char * const argv@var345 [@expr1073744640 2 ] =@expr1073744641 {@expr1073744642 "cppcheck" , "-U" } ;
+1062:
+1063: $if $(@expr1073744643 $!@expr1073744644 $assertEquals $(@expr1073744645 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 1063 $, false $, $(@expr1073744646 defParser@var109 .@expr1073744647 parseFromArgs (@expr1073744648 2 , argv@var345 ) $) $) $) { $return ; }
+1064: }
+1065:
+1066: void undefs_noarg2 ( ) {
+1067: $RedirectOutputError $redir@var346 $; $do ${ $} $while $(@expr1073744649 $false $) ;
+1068: const char * const argv@var347 [@expr1073744650 4 ] =@expr1073744651 {@expr1073744652 "cppcheck" , "-U" , "-v" , "file.cpp" } ;
+1069:
+1070: $if $(@expr1073744653 $!@expr1073744654 $assertEquals $(@expr1073744655 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 1070 $, false $, $(@expr1073744656 defParser@var109 .@expr1073744657 parseFromArgs (@expr1073744658 4 , argv@var347 ) $) $) $) { $return ; }
+1071: }
+1072:
+1073: void undefs_noarg3 ( ) {
+1074: $RedirectOutputError $redir@var348 $; $do ${ $} $while $(@expr1073744659 $false $) ;
+1075: const char * const argv@var349 [@expr1073744660 4 ] =@expr1073744661 {@expr1073744662 "cppcheck" , "-U" , "--quiet" , "file.cpp" } ;
+1076:
+1077: $if $(@expr1073744663 $!@expr1073744664 $assertEquals $(@expr1073744665 "cppcheck-2.8/test/testcmdlineparser.cpp" $, 1077 $, false $, $(@expr1073744666 defParser@var109 .@expr1073744667 parseFromArgs (@expr1073744668 4 , argv@var349 ) $) $) $) { $return ; }
+1078: }
+1079: } ;
+1080:
+1081: $namespace ${ TestCmdlineParser instance_TestCmdlineParser@var350 $; $}
+
+
+
+##Value flow
+Line 63
+  "" always ""
+Line 74
+  "" always ""
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@17}
+  v {!<=-1,!>=2,0@17}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 37
+  "TestCmdlineParser" always "TestCmdlineParser"
+Line 38
+  & {lifetime[Address]=(settings),!0}
+Line 45
+  ( always {!<=-1,!>=2}
+  "nooptions" always "nooptions"
+  false always 0
+  false always 0
+Line 46
+  ( always {!<=-1,!>=2}
+  "helpshort" always "helpshort"
+  false always 0
+  false always 0
+Line 47
+  ( always {!<=-1,!>=2}
+  "helplong" always "helplong"
+  false always 0
+  false always 0
+Line 48
+  ( always {!<=-1,!>=2}
+  "showversion" always "showversion"
+  false always 0
+  false always 0
+Line 49
+  ( always {!<=-1,!>=2}
+  "onefile" always "onefile"
+  false always 0
+  false always 0
+Line 50
+  ( always {!<=-1,!>=2}
+  "onepath" always "onepath"
+  false always 0
+  false always 0
+Line 51
+  ( always {!<=-1,!>=2}
+  "optionwithoutfile" always "optionwithoutfile"
+  false always 0
+  false always 0
+Line 52
+  ( always {!<=-1,!>=2}
+  "verboseshort" always "verboseshort"
+  false always 0
+  false always 0
+Line 53
+  ( always {!<=-1,!>=2}
+  "verboselong" always "verboselong"
+  false always 0
+  false always 0
+Line 54
+  ( always {!<=-1,!>=2}
+  "debugSimplified" always "debugSimplified"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "debugwarnings" always "debugwarnings"
+  false always 0
+  false always 0
+Line 56
+  ( always {!<=-1,!>=2}
+  "forceshort" always "forceshort"
+  false always 0
+  false always 0
+Line 57
+  ( always {!<=-1,!>=2}
+  "forcelong" always "forcelong"
+  false always 0
+  false always 0
+Line 58
+  ( always {!<=-1,!>=2}
+  "relativePaths" always "relativePaths"
+  false always 0
+  false always 0
+Line 59
+  ( always {!<=-1,!>=2}
+  "quietshort" always "quietshort"
+  false always 0
+  false always 0
+Line 60
+  ( always {!<=-1,!>=2}
+  "quietlong" always "quietlong"
+  false always 0
+  false always 0
+Line 61
+  ( always {!<=-1,!>=2}
+  "defines_noarg" always "defines_noarg"
+  false always 0
+  false always 0
+Line 62
+  ( always {!<=-1,!>=2}
+  "defines_noarg2" always "defines_noarg2"
+  false always 0
+  false always 0
+Line 63
+  ( always {!<=-1,!>=2}
+  "defines_noarg3" always "defines_noarg3"
+  false always 0
+  false always 0
+Line 64
+  ( always {!<=-1,!>=2}
+  "defines" always "defines"
+  false always 0
+  false always 0
+Line 65
+  ( always {!<=-1,!>=2}
+  "defines2" always "defines2"
+  false always 0
+  false always 0
+Line 66
+  ( always {!<=-1,!>=2}
+  "defines3" always "defines3"
+  false always 0
+  false always 0
+Line 67
+  ( always {!<=-1,!>=2}
+  "defines4" always "defines4"
+  false always 0
+  false always 0
+Line 68
+  ( always {!<=-1,!>=2}
+  "enforceLanguage" always "enforceLanguage"
+  false always 0
+  false always 0
+Line 69
+  ( always {!<=-1,!>=2}
+  "includesnopath" always "includesnopath"
+  false always 0
+  false always 0
+Line 70
+  ( always {!<=-1,!>=2}
+  "includes" always "includes"
+  false always 0
+  false always 0
+Line 71
+  ( always {!<=-1,!>=2}
+  "includesslash" always "includesslash"
+  false always 0
+  false always 0
+Line 72
+  ( always {!<=-1,!>=2}
+  "includesbackslash" always "includesbackslash"
+  false always 0
+  false always 0
+Line 73
+  ( always {!<=-1,!>=2}
+  "includesnospace" always "includesnospace"
+  false always 0
+  false always 0
+Line 74
+  ( always {!<=-1,!>=2}
+  "includes2" always "includes2"
+  false always 0
+  false always 0
+Line 75
+  ( always {!<=-1,!>=2}
+  "includesFile" always "includesFile"
+  false always 0
+  false always 0
+Line 76
+  ( always {!<=-1,!>=2}
+  "configExcludesFile" always "configExcludesFile"
+  false always 0
+  false always 0
+Line 77
+  ( always {!<=-1,!>=2}
+  "enabledAll" always "enabledAll"
+  false always 0
+  false always 0
+Line 78
+  ( always {!<=-1,!>=2}
+  "enabledStyle" always "enabledStyle"
+  false always 0
+  false always 0
+Line 79
+  ( always {!<=-1,!>=2}
+  "enabledPerformance" always "enabledPerformance"
+  false always 0
+  false always 0
+Line 80
+  ( always {!<=-1,!>=2}
+  "enabledPortability" always "enabledPortability"
+  false always 0
+  false always 0
+Line 81
+  ( always {!<=-1,!>=2}
+  "enabledUnusedFunction" always "enabledUnusedFunction"
+  false always 0
+  false always 0
+Line 82
+  ( always {!<=-1,!>=2}
+  "enabledMissingInclude" always "enabledMissingInclude"
+  false always 0
+  false always 0
+Line 86
+  ( always {!<=-1,!>=2}
+  "enabledMultiple" always "enabledMultiple"
+  false always 0
+  false always 0
+Line 87
+  ( always {!<=-1,!>=2}
+  "inconclusive" always "inconclusive"
+  false always 0
+  false always 0
+Line 88
+  ( always {!<=-1,!>=2}
+  "errorExitcode" always "errorExitcode"
+  false always 0
+  false always 0
+Line 89
+  ( always {!<=-1,!>=2}
+  "errorExitcodeMissing" always "errorExitcodeMissing"
+  false always 0
+  false always 0
+Line 90
+  ( always {!<=-1,!>=2}
+  "errorExitcodeStr" always "errorExitcodeStr"
+  false always 0
+  false always 0
+Line 91
+  ( always {!<=-1,!>=2}
+  "exitcodeSuppressionsOld" always "exitcodeSuppressionsOld"
+  false always 0
+  false always 0
+Line 92
+  ( always {!<=-1,!>=2}
+  "exitcodeSuppressions" always "exitcodeSuppressions"
+  false always 0
+  false always 0
+Line 93
+  ( always {!<=-1,!>=2}
+  "exitcodeSuppressionsNoFile" always "exitcodeSuppressionsNoFile"
+  false always 0
+  false always 0
+Line 94
+  ( always {!<=-1,!>=2}
+  "fileList" always "fileList"
+  false always 0
+  false always 0
+Line 96
+  ( always {!<=-1,!>=2}
+  "inlineSuppr" always "inlineSuppr"
+  false always 0
+  false always 0
+Line 97
+  ( always {!<=-1,!>=2}
+  "jobs" always "jobs"
+  false always 0
+  false always 0
+Line 98
+  ( always {!<=-1,!>=2}
+  "jobsMissingCount" always "jobsMissingCount"
+  false always 0
+  false always 0
+Line 99
+  ( always {!<=-1,!>=2}
+  "jobsInvalid" always "jobsInvalid"
+  false always 0
+  false always 0
+Line 100
+  ( always {!<=-1,!>=2}
+  "maxConfigs" always "maxConfigs"
+  false always 0
+  false always 0
+Line 101
+  ( always {!<=-1,!>=2}
+  "maxConfigsMissingCount" always "maxConfigsMissingCount"
+  false always 0
+  false always 0
+Line 102
+  ( always {!<=-1,!>=2}
+  "maxConfigsInvalid" always "maxConfigsInvalid"
+  false always 0
+  false always 0
+Line 103
+  ( always {!<=-1,!>=2}
+  "maxConfigsTooSmall" always "maxConfigsTooSmall"
+  false always 0
+  false always 0
+Line 104
+  ( always {!<=-1,!>=2}
+  "reportProgressTest" always "reportProgressTest"
+  false always 0
+  false always 0
+Line 105
+  ( always {!<=-1,!>=2}
+  "stdc99" always "stdc99"
+  false always 0
+  false always 0
+Line 106
+  ( always {!<=-1,!>=2}
+  "stdcpp11" always "stdcpp11"
+  false always 0
+  false always 0
+Line 107
+  ( always {!<=-1,!>=2}
+  "stdunknown" always "stdunknown"
+  false always 0
+  false always 0
+Line 108
+  ( always {!<=-1,!>=2}
+  "platform" always "platform"
+  false always 0
+  false always 0
+Line 109
+  ( always {!<=-1,!>=2}
+  "plistEmpty" always "plistEmpty"
+  false always 0
+  false always 0
+Line 110
+  ( always {!<=-1,!>=2}
+  "plistDoesNotExist" always "plistDoesNotExist"
+  false always 0
+  false always 0
+Line 111
+  ( always {!<=-1,!>=2}
+  "suppressionsOld" always "suppressionsOld"
+  false always 0
+  false always 0
+Line 112
+  ( always {!<=-1,!>=2}
+  "suppressions" always "suppressions"
+  false always 0
+  false always 0
+Line 113
+  ( always {!<=-1,!>=2}
+  "suppressionsNoFile" always "suppressionsNoFile"
+  false always 0
+  false always 0
+Line 114
+  ( always {!<=-1,!>=2}
+  "suppressionSingle" always "suppressionSingle"
+  false always 0
+  false always 0
+Line 115
+  ( always {!<=-1,!>=2}
+  "suppressionSingleFile" always "suppressionSingleFile"
+  false always 0
+  false always 0
+Line 116
+  ( always {!<=-1,!>=2}
+  "suppressionTwo" always "suppressionTwo"
+  false always 0
+  false always 0
+Line 117
+  ( always {!<=-1,!>=2}
+  "suppressionTwoSeparate" always "suppressionTwoSeparate"
+  false always 0
+  false always 0
+Line 118
+  ( always {!<=-1,!>=2}
+  "templates" always "templates"
+  false always 0
+  false always 0
+Line 119
+  ( always {!<=-1,!>=2}
+  "templatesGcc" always "templatesGcc"
+  false always 0
+  false always 0
+Line 120
+  ( always {!<=-1,!>=2}
+  "templatesVs" always "templatesVs"
+  false always 0
+  false always 0
+Line 121
+  ( always {!<=-1,!>=2}
+  "templatesEdit" always "templatesEdit"
+  false always 0
+  false always 0
+Line 122
+  ( always {!<=-1,!>=2}
+  "xml" always "xml"
+  false always 0
+  false always 0
+Line 123
+  ( always {!<=-1,!>=2}
+  "xmlver2" always "xmlver2"
+  false always 0
+  false always 0
+Line 124
+  ( always {!<=-1,!>=2}
+  "xmlver2both" always "xmlver2both"
+  false always 0
+  false always 0
+Line 125
+  ( always {!<=-1,!>=2}
+  "xmlver2both2" always "xmlver2both2"
+  false always 0
+  false always 0
+Line 126
+  ( always {!<=-1,!>=2}
+  "xmlverunknown" always "xmlverunknown"
+  false always 0
+  false always 0
+Line 127
+  ( always {!<=-1,!>=2}
+  "xmlverinvalid" always "xmlverinvalid"
+  false always 0
+  false always 0
+Line 128
+  ( always {!<=-1,!>=2}
+  "doc" always "doc"
+  false always 0
+  false always 0
+Line 129
+  ( always {!<=-1,!>=2}
+  "showtime" always "showtime"
+  false always 0
+  false always 0
+Line 130
+  ( always {!<=-1,!>=2}
+  "errorlist1" always "errorlist1"
+  false always 0
+  false always 0
+Line 131
+  ( always {!<=-1,!>=2}
+  "errorlistverbose1" always "errorlistverbose1"
+  false always 0
+  false always 0
+Line 132
+  ( always {!<=-1,!>=2}
+  "errorlistverbose2" always "errorlistverbose2"
+  false always 0
+  false always 0
+Line 133
+  ( always {!<=-1,!>=2}
+  "ignorepathsnopath" always "ignorepathsnopath"
+  false always 0
+  false always 0
+Line 145
+  ( always {!<=-1,!>=2}
+  "checkconfig" always "checkconfig"
+  false always 0
+  false always 0
+Line 146
+  ( always {!<=-1,!>=2}
+  "unknownParam" always "unknownParam"
+  false always 0
+  false always 0
+Line 148
+  ( always {!<=-1,!>=2}
+  "undefs_noarg" always "undefs_noarg"
+  false always 0
+  false always 0
+Line 149
+  ( always {!<=-1,!>=2}
+  "undefs_noarg2" always "undefs_noarg2"
+  false always 0
+  false always 0
+Line 150
+  ( always {!<=-1,!>=2}
+  "undefs_noarg3" always "undefs_noarg3"
+  false always 0
+  false always 0
+Line 151
+  ( always {!<=-1,!>=2}
+  "undefs" always "undefs"
+  false always 0
+  false always 0
+Line 152
+  ( always {!<=-1,!>=2}
+  "undefs2" always "undefs2"
+  false always 0
+  false always 0
+Line 157
+  false always 0
+Line 158
+  9 always 9
+  = always "cppcheck"
+  "cppcheck" always "cppcheck"
+Line 159
+  & {lifetime[Address]=(settings),!0}
+Line 160
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  160 always 160
+  1 always 1
+Line 161
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  161 always 161
+  true always 1
+Line 165
+  false always 0
+Line 166
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "-h" always "-h"
+Line 167
+  & {lifetime[Address]=(settings),!0}
+Line 168
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  168 always 168
+  2 always 2
+  argv always {
+Line 169
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  169 always 169
+  true always 1
+Line 173
+  false always 0
+Line 174
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "--help" always "--help"
+Line 175
+  & {lifetime[Address]=(settings),!0}
+Line 176
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  176 always 176
+  2 always 2
+  argv always {
+Line 177
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  177 always 177
+  true always 1
+Line 181
+  false always 0
+Line 182
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "--version" always "--version"
+Line 183
+  & {lifetime[Address]=(settings),!0}
+Line 184
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  184 always 184
+  2 always 2
+  argv always {
+Line 185
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  185 always 185
+  true always 1
+Line 189
+  false always 0
+Line 190
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "file.cpp" always "file.cpp"
+Line 191
+  & {lifetime[Address]=(settings),!0}
+Line 192
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  192 always 192
+  2 always 2
+  argv always {
+Line 193
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  193 always 193
+  1 always 1
+Line 194
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  194 always 194
+  "file.cpp" always "file.cpp"
+  0 always 0
+Line 198
+  false always 0
+Line 199
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "src" always "src"
+Line 200
+  & {lifetime[Address]=(settings),!0}
+Line 201
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  201 always 201
+  2 always 2
+  argv always {
+Line 202
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  202 always 202
+  1 always 1
+Line 203
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  203 always 203
+  "src" always "src"
+  0 always 0
+Line 207
+  false always 0
+Line 208
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "-v" always "-v"
+Line 209
+  & {lifetime[Address]=(settings),!0}
+Line 210
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  210 always 210
+  false always 0
+  2 always 2
+  argv always {
+Line 211
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  211 always 211
+  0 always 0
+Line 215
+  false always 0
+Line 216
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "-v" always "-v"
+  "file.cpp" always "file.cpp"
+Line 217
+  = always 0
+  false always 0
+Line 218
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  218 always 218
+  3 always 3
+  argv always {
+Line 219
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  219 always 219
+  true always 1
+Line 223
+  false always 0
+Line 224
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--verbose" always "--verbose"
+  "file.cpp" always "file.cpp"
+Line 225
+  = always 0
+  false always 0
+Line 226
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  226 always 226
+  3 always 3
+  argv always {
+Line 227
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  227 always 227
+  true always 1
+Line 231
+  false always 0
+Line 232
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--debug-simplified" always "--debug-simplified"
+  "file.cpp" always "file.cpp"
+Line 233
+  = always 0
+  false always 0
+Line 234
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  234 always 234
+  3 always 3
+  argv always {
+Line 235
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  235 always 235
+  true always 1
+Line 239
+  false always 0
+Line 240
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--debug-warnings" always "--debug-warnings"
+  "file.cpp" always "file.cpp"
+Line 241
+  = always 0
+  false always 0
+Line 242
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  242 always 242
+  3 always 3
+  argv always {
+Line 243
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  243 always 243
+  true always 1
+Line 247
+  false always 0
+Line 248
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "-f" always "-f"
+  "file.cpp" always "file.cpp"
+Line 249
+  = always 0
+  false always 0
+Line 250
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  250 always 250
+  3 always 3
+  argv always {
+Line 251
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  251 always 251
+  true always 1
+Line 255
+  false always 0
+Line 256
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--force" always "--force"
+  "file.cpp" always "file.cpp"
+Line 257
+  = always 0
+  false always 0
+Line 258
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  258 always 258
+  3 always 3
+  argv always {
+Line 259
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  259 always 259
+  true always 1
+Line 263
+  false always 0
+Line 264
+  = always 0
+  false always 0
+Line 266
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "-rp" always "-rp"
+  "file.cpp" always "file.cpp"
+Line 267
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  267 always 267
+  3 always 3
+  argvs always {
+Line 268
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  268 always 268
+  true always 1
+Line 270
+  = always 0
+  false always 0
+Line 272
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--relative-paths" always "--relative-paths"
+  "file.cpp" always "file.cpp"
+Line 273
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  273 always 273
+  3 always 3
+  argvl always {
+Line 274
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  274 always 274
+  true always 1
+Line 276
+  = always 0
+  false always 0
+Line 279
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "-rp=C:/foo;C:\\bar" always "-rp=C:/foo;C:\\bar"
+  "file.cpp" always "file.cpp"
+Line 280
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  280 always 280
+  3 always 3
+  argvsp always {
+Line 281
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  281 always 281
+  true always 1
+Line 282
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  282 always 282
+  2 always 2
+Line 283
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  283 always 283
+  "C:/foo" always "C:/foo"
+  0 always 0
+Line 284
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  284 always 284
+  "C:/bar" always "C:/bar"
+  1 always 1
+Line 286
+  = always 0
+  false always 0
+Line 289
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--relative-paths=C:/foo;C:\\bar" always "--relative-paths=C:/foo;C:\\bar"
+  "file.cpp" always "file.cpp"
+Line 290
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  290 always 290
+  3 always 3
+  argvlp always {
+Line 291
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  291 always 291
+  true always 1
+Line 292
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  292 always 292
+  2 always 2
+Line 293
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  293 always 293
+  "C:/foo" always "C:/foo"
+  0 always 0
+Line 294
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  294 always 294
+  "C:/bar" always "C:/bar"
+  1 always 1
+Line 298
+  false always 0
+Line 299
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "-q" always "-q"
+  "file.cpp" always "file.cpp"
+Line 300
+  = always 0
+  false always 0
+Line 301
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  301 always 301
+  3 always 3
+  argv always {
+Line 302
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  302 always 302
+  true always 1
+Line 306
+  false always 0
+Line 307
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--quiet" always "--quiet"
+  "file.cpp" always "file.cpp"
+Line 308
+  = always 0
+  false always 0
+Line 309
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  309 always 309
+  3 always 3
+  argv always {
+Line 310
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  310 always 310
+  true always 1
+Line 314
+  false always 0
+Line 315
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "-D" always "-D"
+Line 317
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  317 always 317
+  false always 0
+  2 always 2
+  argv always {
+Line 321
+  false always 0
+Line 322
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-D" always "-D"
+  "-v" always "-v"
+  "file.cpp" always "file.cpp"
+Line 324
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  324 always 324
+  false always 0
+  4 always 4
+  argv always {
+Line 328
+  false always 0
+Line 329
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-D" always "-D"
+  "--quiet" always "--quiet"
+  "file.cpp" always "file.cpp"
+Line 331
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  331 always 331
+  false always 0
+  4 always 4
+  argv always {
+Line 335
+  false always 0
+Line 336
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "-D_WIN32" always "-D_WIN32"
+  "file.cpp" always "file.cpp"
+Line 338
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  338 always 338
+  3 always 3
+  argv always {
+Line 339
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  339 always 339
+  "_WIN32=1" always "_WIN32=1"
+Line 343
+  false always 0
+Line 344
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-D_WIN32" always "-D_WIN32"
+  "-DNODEBUG" always "-DNODEBUG"
+  "file.cpp" always "file.cpp"
+Line 346
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  346 always 346
+  4 always 4
+  argv always {
+Line 347
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  347 always 347
+  "_WIN32=1;NODEBUG=1" always "_WIN32=1;NODEBUG=1"
+Line 351
+  false always 0
+Line 352
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-D" always "-D"
+  "DEBUG" always "DEBUG"
+  "file.cpp" always "file.cpp"
+Line 354
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  354 always 354
+  4 always 4
+  argv always {
+Line 355
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  355 always 355
+  "DEBUG=1" always "DEBUG=1"
+Line 359
+  false always 0
+Line 360
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "-DDEBUG=" always "-DDEBUG="
+  "file.cpp" always "file.cpp"
+Line 362
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  362 always 362
+  3 always 3
+  argv always {
+Line 363
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  363 always 363
+  "DEBUG=" always "DEBUG="
+Line 367
+  false always 0
+Line 369
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "file.cpp" always "file.cpp"
+Line 371
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  371 always 371
+  2 always 2
+  argv always {
+Line 372
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  372 always 372
+Line 375
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-x" always "-x"
+  "c++" always "c++"
+  "file.cpp" always "file.cpp"
+Line 377
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  377 always 377
+  4 always 4
+  argv always {
+Line 378
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  378 always 378
+Line 381
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "-x" always "-x"
+Line 382
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  382 always 382
+  ! always {!<=-1,!>=2}
+  2 always 2
+  argv always {
+Line 385
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-x" always "-x"
+  "--inconclusive" always "--inconclusive"
+  "file.cpp" always "file.cpp"
+Line 386
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  386 always 386
+  ! always {!<=-1,!>=2}
+  4 always 4
+  argv always {
+Line 389
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--language=c++" always "--language=c++"
+  "file.cpp" always "file.cpp"
+Line 391
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  391 always 391
+  3 always 3
+  argv always {
+Line 392
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  392 always 392
+Line 395
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--language=c" always "--language=c"
+  "file.cpp" always "file.cpp"
+Line 397
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  397 always 397
+  3 always 3
+  argv always {
+Line 398
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  398 always 398
+Line 401
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--language=unknownLanguage" always "--language=unknownLanguage"
+  "file.cpp" always "file.cpp"
+Line 402
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  402 always 402
+  ! always {!<=-1,!>=2}
+  3 always 3
+  argv always {
+Line 407
+  false always 0
+Line 408
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "-I" always "-I"
+Line 410
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  410 always 410
+  false always 0
+  2 always 2
+  argv always {
+Line 414
+  false always 0
+Line 415
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-I" always "-I"
+  "include" always "include"
+  "file.cpp" always "file.cpp"
+Line 417
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  417 always 417
+  4 always 4
+  argv always {
+Line 418
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  418 always 418
+  "include/" always "include/"
+Line 422
+  false always 0
+Line 423
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-I" always "-I"
+  "include/" always "include/"
+  "file.cpp" always "file.cpp"
+Line 425
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  425 always 425
+  4 always 4
+  argv always {
+Line 426
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  426 always 426
+  "include/" always "include/"
+Line 430
+  false always 0
+Line 431
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-I" always "-I"
+  "include\\" always "include\\"
+  "file.cpp" always "file.cpp"
+Line 433
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  433 always 433
+  4 always 4
+  argv always {
+Line 434
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  434 always 434
+  "include/" always "include/"
+Line 438
+  false always 0
+Line 439
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "-Iinclude" always "-Iinclude"
+  "file.cpp" always "file.cpp"
+Line 441
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  441 always 441
+  3 always 3
+  argv always {
+Line 442
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  442 always 442
+  "include/" always "include/"
+Line 446
+  false always 0
+Line 447
+  6 always 6
+  "cppcheck" always "cppcheck"
+  "-I" always "-I"
+  "include/" always "include/"
+  "-I" always "-I"
+  "framework/" always "framework/"
+  "file.cpp" always "file.cpp"
+Line 449
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  449 always 449
+  6 always 6
+  argv always {
+Line 450
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  450 always 450
+  "include/" always "include/"
+Line 452
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  452 always 452
+  "framework/" always "framework/"
+Line 456
+  false always 0
+Line 457
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--includes-file=fileThatDoesNotExist.txt" always "--includes-file=fileThatDoesNotExist.txt"
+  "file.cpp" always "file.cpp"
+Line 459
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  459 always 459
+  false always 0
+  3 always 3
+  argv always {
+Line 463
+  false always 0
+Line 464
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--config-excludes-file=fileThatDoesNotExist.txt" always "--config-excludes-file=fileThatDoesNotExist.txt"
+  "file.cpp" always "file.cpp"
+Line 466
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  466 always 466
+  false always 0
+  3 always 3
+  argv always {
+Line 470
+  false always 0
+Line 471
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--enable=all" always "--enable=all"
+  "file.cpp" always "file.cpp"
+Line 473
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  473 always 473
+  3 always 3
+  argv always {
+Line 474
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  474 always 474
+Line 475
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  475 always 475
+Line 476
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  476 always 476
+Line 477
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  477 always 477
+Line 478
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  478 always 478
+  ! always {!<=-1,!>=2}
+Line 482
+  false always 0
+Line 483
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--enable=style" always "--enable=style"
+  "file.cpp" always "file.cpp"
+Line 485
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  485 always 485
+  3 always 3
+  argv always {
+Line 486
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  486 always 486
+Line 487
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  487 always 487
+Line 488
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  488 always 488
+Line 489
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  489 always 489
+Line 490
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  490 always 490
+  ! always {!<=-1,!>=2}
+Line 491
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  491 always 491
+  ! always {!<=-1,!>=2}
+Line 495
+  false always 0
+Line 496
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--enable=performance" always "--enable=performance"
+  "file.cpp" always "file.cpp"
+Line 498
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  498 always 498
+  3 always 3
+  argv always {
+Line 499
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  499 always 499
+  ! always {!<=-1,!>=2}
+Line 500
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  500 always 500
+  ! always {!<=-1,!>=2}
+Line 501
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  501 always 501
+Line 502
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  502 always 502
+  ! always {!<=-1,!>=2}
+Line 503
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  503 always 503
+  ! always {!<=-1,!>=2}
+Line 504
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  504 always 504
+  ! always {!<=-1,!>=2}
+Line 508
+  false always 0
+Line 509
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--enable=portability" always "--enable=portability"
+  "file.cpp" always "file.cpp"
+Line 511
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  511 always 511
+  3 always 3
+  argv always {
+Line 512
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  512 always 512
+  ! always {!<=-1,!>=2}
+Line 513
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  513 always 513
+  ! always {!<=-1,!>=2}
+Line 514
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  514 always 514
+  ! always {!<=-1,!>=2}
+Line 515
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  515 always 515
+Line 516
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  516 always 516
+  ! always {!<=-1,!>=2}
+Line 517
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  517 always 517
+  ! always {!<=-1,!>=2}
+Line 521
+  false always 0
+Line 522
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--enable=unusedFunction" always "--enable=unusedFunction"
+  "file.cpp" always "file.cpp"
+Line 524
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  524 always 524
+  3 always 3
+  argv always {
+Line 525
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  525 always 525
+Line 529
+  false always 0
+Line 530
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--enable=missingInclude" always "--enable=missingInclude"
+  "file.cpp" always "file.cpp"
+Line 532
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  532 always 532
+  3 always 3
+  argv always {
+Line 533
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  533 always 533
+Line 547
+  false always 0
+Line 548
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--enable=missingInclude,portability,warning" always "--enable=missingInclude,portability,warning"
+  "file.cpp" always "file.cpp"
+Line 550
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  550 always 550
+  3 always 3
+  argv always {
+Line 551
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  551 always 551
+  ! always {!<=-1,!>=2}
+Line 552
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  552 always 552
+Line 553
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  553 always 553
+  ! always {!<=-1,!>=2}
+Line 554
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  554 always 554
+Line 555
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  555 always 555
+  ! always {!<=-1,!>=2}
+Line 556
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  556 always 556
+Line 560
+  false always 0
+Line 561
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "--inconclusive" always "--inconclusive"
+Line 563
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  563 always 563
+  2 always 2
+  argv always {
+Line 564
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  564 always 564
+  true always 1
+Line 568
+  false always 0
+Line 569
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--error-exitcode=5" always "--error-exitcode=5"
+  "file.cpp" always "file.cpp"
+Line 570
+  = always 0
+  0 always 0
+Line 571
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  571 always 571
+  3 always 3
+  argv always {
+Line 572
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  572 always 572
+  5 always 5
+Line 576
+  false always 0
+Line 577
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--error-exitcode=" always "--error-exitcode="
+  "file.cpp" always "file.cpp"
+Line 578
+  = always 0
+  0 always 0
+Line 580
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  580 always 580
+  false always 0
+  3 always 3
+  argv always {
+Line 584
+  false always 0
+Line 585
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--error-exitcode=foo" always "--error-exitcode=foo"
+  "file.cpp" always "file.cpp"
+Line 586
+  = always 0
+  0 always 0
+Line 588
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  588 always 588
+  false always 0
+  3 always 3
+  argv always {
+Line 593
+  false always 0
+Line 594
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "--exitcode-suppressions" always "--exitcode-suppressions"
+  "suppr.txt" always "suppr.txt"
+  "file.cpp" always "file.cpp"
+Line 595
+  = always 0
+  0 always 0
+Line 596
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  596 always 596
+  true always 1
+  false always 0
+  4 always 4
+  argv always {
+Line 601
+  false always 0
+Line 602
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--exitcode-suppressions=suppr.txt" always "--exitcode-suppressions=suppr.txt"
+  "file.cpp" always "file.cpp"
+Line 603
+  = always 0
+  0 always 0
+Line 604
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  604 always 604
+  true always 1
+  false always 0
+  3 always 3
+  argv always {
+Line 609
+  false always 0
+Line 610
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--exitcode-suppressions" always "--exitcode-suppressions"
+  "file.cpp" always "file.cpp"
+Line 611
+  = always 0
+  0 always 0
+Line 612
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  612 always 612
+  true always 1
+  false always 0
+  3 always 3
+  argv always {
+Line 617
+  false always 0
+Line 618
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "--file-list" always "--file-list"
+  "files.txt" always "files.txt"
+  "file.cpp" always "file.cpp"
+Line 619
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  619 always 619
+  true always 1
+  false always 0
+  4 always 4
+  argv always {
+Line 631
+  false always 0
+Line 632
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--inline-suppr" always "--inline-suppr"
+  "file.cpp" always "file.cpp"
+Line 633
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  633 always 633
+  3 always 3
+  argv always {
+Line 637
+  false always 0
+Line 638
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-j" always "-j"
+  "3" always "3"
+  "file.cpp" always "file.cpp"
+Line 639
+  = always 0
+  0 always 0
+Line 640
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  640 always 640
+  4 always 4
+  argv always {
+Line 641
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  641 always 641
+  3 always 3
+Line 645
+  false always 0
+Line 646
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "-j" always "-j"
+  "file.cpp" always "file.cpp"
+Line 647
+  = always 0
+  0 always 0
+Line 649
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  649 always 649
+  false always 0
+  3 always 3
+  argv always {
+Line 653
+  false always 0
+Line 654
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-j" always "-j"
+  "e" always "e"
+  "file.cpp" always "file.cpp"
+Line 655
+  = always 0
+  0 always 0
+Line 657
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  657 always 657
+  false always 0
+  4 always 4
+  argv always {
+Line 661
+  false always 0
+Line 662
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-f" always "-f"
+  "--max-configs=12" always "--max-configs=12"
+  "file.cpp" always "file.cpp"
+Line 663
+  = always 0
+  false always 0
+Line 664
+  = always 12
+  12 always 12
+Line 665
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  665 always 665
+  4 always 4
+  argv always {
+Line 666
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  666 always 666
+  12 always 12
+Line 667
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  667 always 667
+  false always 0
+Line 671
+  false always 0
+Line 672
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--max-configs=" always "--max-configs="
+  "file.cpp" always "file.cpp"
+Line 674
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  674 always 674
+  false always 0
+  3 always 3
+  argv always {
+Line 678
+  false always 0
+Line 679
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--max-configs=e" always "--max-configs=e"
+  "file.cpp" always "file.cpp"
+Line 681
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  681 always 681
+  false always 0
+  3 always 3
+  argv always {
+Line 685
+  false always 0
+Line 686
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--max-configs=0" always "--max-configs=0"
+  "file.cpp" always "file.cpp"
+Line 688
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  688 always 688
+  false always 0
+  3 always 3
+  argv always {
+Line 692
+  false always 0
+Line 693
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--report-progress" always "--report-progress"
+  "file.cpp" always "file.cpp"
+Line 694
+  = always 0
+  false always 0
+Line 695
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  695 always 695
+  3 always 3
+  argv always {
+Line 696
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  696 always 696
+Line 700
+  false always 0
+Line 701
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--std=c99" always "--std=c99"
+  "file.cpp" always "file.cpp"
+Line 703
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  703 always 703
+  3 always 3
+  argv always {
+Line 704
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  704 always 704
+  == always {!<=-1,!>=2}
+Line 708
+  false always 0
+Line 709
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--std=c++11" always "--std=c++11"
+  "file.cpp" always "file.cpp"
+Line 711
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  711 always 711
+  3 always 3
+  argv always {
+Line 712
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  712 always 712
+  == always {!<=-1,!>=2}
+Line 716
+  false always 0
+Line 719
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--std=d++11" always "--std=d++11"
+  "file.cpp" always "file.cpp"
+Line 720
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  720 always 720
+  ! always {!<=-1,!>=2}
+  3 always 3
+  argv always {
+Line 721
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  721 always 721
+  "cppcheck: error: unknown --std value 'd++11'\n" always "cppcheck: error: unknown --std value 'd++11'\n"
+Line 725
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--std=cplusplus11" always "--std=cplusplus11"
+  "file.cpp" always "file.cpp"
+Line 726
+  condition always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  3 always 3
+  argv always {
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  726 always 726
+  true always 1
+  false always 0
+  condition always {!<=-1,!>=2}
+  false always 0
+Line 727
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  727 always 727
+  "cppcheck: error: unknown --std value 'cplusplus11'\n" always "cppcheck: error: unknown --std value 'cplusplus11'\n"
+  "" always ""
+Line 732
+  false always 0
+Line 733
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--platform=win64" always "--platform=win64"
+  "file.cpp" always "file.cpp"
+Line 735
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  735 always 735
+  3 always 3
+  argv always {
+Line 736
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  736 always 736
+  == always {!<=-1,!>=2}
+Line 740
+  false always 0
+Line 741
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--plist-output=" always "--plist-output="
+  "file.cpp" always "file.cpp"
+Line 742
+  = always ""
+  "" always ""
+Line 743
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  743 always 743
+  3 always 3
+  argv always {
+Line 744
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  744 always 744
+  == always {!<=-1,!>=2}
+  "./" always "./"
+Line 748
+  false always 0
+Line 749
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--plist-output=./cppcheck_reports" always "--plist-output=./cppcheck_reports"
+  "file.cpp" always "file.cpp"
+Line 750
+  = always ""
+  "" always ""
+Line 752
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  752 always 752
+  false always 0
+  3 always 3
+  argv always {
+Line 757
+  false always 0
+Line 758
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "--suppressions" always "--suppressions"
+  "suppr.txt" always "suppr.txt"
+  "file.cpp" always "file.cpp"
+Line 759
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  759 always 759
+  ! always {!<=-1,!>=2}
+  4 always 4
+  argv always {
+Line 764
+  false always 0
+Line 765
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--suppressions-list=suppr.txt" always "--suppressions-list=suppr.txt"
+  "file.cpp" always "file.cpp"
+Line 766
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  766 always 766
+  true always 1
+  false always 0
+  3 always 3
+  argv always {
+Line 770
+  false always 0
+Line 773
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--suppressions-list=" always "--suppressions-list="
+  "file.cpp" always "file.cpp"
+Line 774
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  774 always 774
+  false always 0
+  3 always 3
+  argv always {
+Line 775
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  775 always 775
+  false always 0
+  ( always !<=-1
+  "If you want to pass two files" always "If you want to pass two files"
+  != always {!<=-1,!>=2}
+Line 780
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--suppressions-list=a.suppr,b.suppr" always "--suppressions-list=a.suppr,b.suppr"
+  "file.cpp" always "file.cpp"
+Line 781
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  781 always 781
+  false always 0
+  3 always 3
+  argv always {
+Line 782
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  782 always 782
+  true always 1
+  ( always !<=-1
+  "If you want to pass two files" always "If you want to pass two files"
+  != always {!<=-1,!>=2}
+Line 787
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--suppressions-list=a.suppr b.suppr" always "--suppressions-list=a.suppr b.suppr"
+  "file.cpp" always "file.cpp"
+Line 788
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  788 always 788
+  false always 0
+  3 always 3
+  argv always {
+Line 789
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  789 always 789
+  true always 1
+  ( always !<=-1
+  "If you want to pass two files" always "If you want to pass two files"
+  != always {!<=-1,!>=2}
+Line 795
+  = possible {"uninitvar"@1,"noConstructor"@2,"uninitvar"@3,"noConstructor"@4,"uninitvar"@5,"uninitvar"@6}
+  errorId possible {"uninitvar"@1,"noConstructor"@2,"uninitvar"@3,"noConstructor"@4,"uninitvar"@5,"uninitvar"@6}
+Line 796
+  fileName possible {"file.cpp"@1,"file.cpp"@2,"file.cpp"@3,"file.cpp"@4,"file.cpp"@5,"file.cpp"@6}
+Line 797
+  = inconclusive 1@1
+  lineNumber inconclusive 1@1
+Line 802
+  false always 0
+Line 803
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--suppress=uninitvar" always "--suppress=uninitvar"
+  "file.cpp" always "file.cpp"
+Line 805
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  805 always 805
+  3 always 3
+  argv always {
+Line 806
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  806 always 806
+  true always 1
+  "uninitvar" always "uninitvar"
+  "file.cpp" always "file.cpp"
+  1 always 1
+Line 810
+  false always 0
+Line 811
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--suppress=uninitvar:file.cpp" always "--suppress=uninitvar:file.cpp"
+  "file.cpp" always "file.cpp"
+Line 813
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  813 always 813
+  3 always 3
+  argv always {
+Line 814
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  814 always 814
+  true always 1
+  "uninitvar" always "uninitvar"
+  "file.cpp" always "file.cpp"
+  1U always 1
+Line 818
+  false always 0
+Line 819
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--suppress=uninitvar,noConstructor" always "--suppress=uninitvar,noConstructor"
+  "file.cpp" always "file.cpp"
+Line 821
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  821 always 821
+  true always 1
+  false always 0
+  3 always 3
+  argv always {
+Line 822
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  822 always 822
+  true always 1
+  false always 0
+  "uninitvar" always "uninitvar"
+  "file.cpp" always "file.cpp"
+  1U always 1
+Line 823
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  823 always 823
+  true always 1
+  false always 0
+  "noConstructor" always "noConstructor"
+  "file.cpp" always "file.cpp"
+  1U always 1
+Line 827
+  false always 0
+Line 828
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "--suppress=uninitvar" always "--suppress=uninitvar"
+  "--suppress=noConstructor" always "--suppress=noConstructor"
+  "file.cpp" always "file.cpp"
+Line 830
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  830 always 830
+  4 always 4
+  argv always {
+Line 831
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  831 always 831
+  true always 1
+  "uninitvar" always "uninitvar"
+  "file.cpp" always "file.cpp"
+  1U always 1
+Line 832
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  832 always 832
+  true always 1
+  "noConstructor" always "noConstructor"
+  "file.cpp" always "file.cpp"
+  1U always 1
+Line 836
+  false always 0
+Line 837
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "--template" always "--template"
+  "{file}:{line},{severity},{id},{message}" always "{file}:{line},{severity},{id},{message}"
+  "file.cpp" always "file.cpp"
+Line 839
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  839 always 839
+  4 always 4
+  argv always {
+Line 840
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  840 always 840
+  "{file}:{line},{severity},{id},{message}" always "{file}:{line},{severity},{id},{message}"
+Line 844
+  false always 0
+Line 845
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "--template" always "--template"
+  "gcc" always "gcc"
+  "file.cpp" always "file.cpp"
+Line 847
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  847 always 847
+  4 always 4
+  argv always {
+Line 848
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  848 always 848
+  "{bold}{file}:{line}:{column}: {magenta}warning:{default} {message} [{id}]{reset}\\n{code}" always "{bold}{file}:{line}:{column}: {magenta}warning:{default} {message} [{id}]{reset}\\n{code}"
+Line 852
+  false always 0
+Line 853
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "--template" always "--template"
+  "vs" always "vs"
+  "file.cpp" always "file.cpp"
+Line 855
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  855 always 855
+  4 always 4
+  argv always {
+Line 856
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  856 always 856
+  "{file}({line}): {severity}: {message}" always "{file}({line}): {severity}: {message}"
+Line 860
+  false always 0
+Line 861
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "--template" always "--template"
+  "edit" always "edit"
+  "file.cpp" always "file.cpp"
+Line 863
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  863 always 863
+  4 always 4
+  argv always {
+Line 864
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  864 always 864
+  "{file} +{line}: {severity}: {message}" always "{file} +{line}: {severity}: {message}"
+Line 868
+  false always 0
+Line 869
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--xml" always "--xml"
+  "file.cpp" always "file.cpp"
+Line 870
+  = always 1
+  1 always 1
+Line 871
+  = always 0
+  false always 0
+Line 872
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  872 always 872
+  3 always 3
+  argv always {
+Line 873
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  873 always 873
+Line 874
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  874 always 874
+  1 always 1
+Line 878
+  false always 0
+Line 879
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--xml-version=2" always "--xml-version=2"
+  "file.cpp" always "file.cpp"
+Line 880
+  = always 1
+  1 always 1
+Line 881
+  = always 0
+  false always 0
+Line 882
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  882 always 882
+  3 always 3
+  argv always {
+Line 883
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  883 always 883
+Line 884
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  884 always 884
+  2 always 2
+Line 888
+  false always 0
+Line 889
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "--xml" always "--xml"
+  "--xml-version=2" always "--xml-version=2"
+  "file.cpp" always "file.cpp"
+Line 890
+  = always 1
+  1 always 1
+Line 891
+  = always 0
+  false always 0
+Line 892
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  892 always 892
+  4 always 4
+  argv always {
+Line 893
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  893 always 893
+Line 894
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  894 always 894
+  2 always 2
+Line 898
+  false always 0
+Line 899
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "--xml-version=2" always "--xml-version=2"
+  "--xml" always "--xml"
+  "file.cpp" always "file.cpp"
+Line 900
+  = always 1
+  1 always 1
+Line 901
+  = always 0
+  false always 0
+Line 902
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  902 always 902
+  4 always 4
+  argv always {
+Line 903
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  903 always 903
+Line 904
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  904 always 904
+  2 always 2
+Line 908
+  false always 0
+Line 909
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "--xml" always "--xml"
+  "--xml-version=3" always "--xml-version=3"
+  "file.cpp" always "file.cpp"
+Line 911
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  911 always 911
+  false always 0
+  4 always 4
+  argv always {
+Line 915
+  false always 0
+Line 916
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "--xml" always "--xml"
+  "--xml-version=a" always "--xml-version=a"
+  "file.cpp" always "file.cpp"
+Line 918
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  918 always 918
+  false always 0
+  4 always 4
+  argv always {
+Line 922
+  false always 0
+Line 923
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "--doc" always "--doc"
+Line 924
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  924 always 924
+  2 always 2
+  argv always {
+Line 925
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  925 always 925
+Line 929
+  false always 0
+Line 930
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "--showtime=summary" always "--showtime=summary"
+Line 932
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  932 always 932
+  2 always 2
+  argv always {
+Line 933
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  933 always 933
+  == always {!<=-1,!>=2}
+Line 937
+  false always 0
+Line 938
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "--errorlist" always "--errorlist"
+Line 939
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  939 always 939
+  2 always 2
+  argv always {
+Line 940
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  940 always 940
+Line 944
+  false always 0
+Line 945
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--verbose" always "--verbose"
+  "--errorlist" always "--errorlist"
+Line 946
+  = always 0
+  false always 0
+Line 947
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  947 always 947
+  3 always 3
+  argv always {
+Line 948
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  948 always 948
+Line 952
+  false always 0
+Line 953
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--errorlist" always "--errorlist"
+  "--verbose" always "--verbose"
+Line 954
+  = always 0
+  false always 0
+Line 955
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  955 always 955
+  3 always 3
+  argv always {
+Line 956
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  956 always 956
+Line 960
+  false always 0
+Line 961
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "-i" always "-i"
+Line 962
+  & {lifetime[Address]=(settings),!0}
+Line 964
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  964 always 964
+  false always 0
+  2 always 2
+  argv always {
+Line 965
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  965 always 965
+  0 always 0
+Line 1027
+  false always 0
+Line 1028
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--check-config" always "--check-config"
+  "file.cpp" always "file.cpp"
+Line 1029
+  = always 0
+  false always 0
+Line 1030
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  1030 always 1030
+  3 always 3
+  argv always {
+Line 1031
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  1031 always 1031
+  true always 1
+Line 1035
+  false always 0
+Line 1036
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "--foo" always "--foo"
+  "file.cpp" always "file.cpp"
+Line 1037
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  1037 always 1037
+  ! always {!<=-1,!>=2}
+  3 always 3
+  argv always {
+Line 1041
+  false always 0
+Line 1042
+  3 always 3
+  "cppcheck" always "cppcheck"
+  "-U_WIN32" always "-U_WIN32"
+  "file.cpp" always "file.cpp"
+Line 1044
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  1044 always 1044
+  3 always 3
+  argv always {
+Line 1045
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  1045 always 1045
+  1 always 1
+Line 1046
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  1046 always 1046
+  "_WIN32" always "_WIN32"
+  != always {!<=-1,!>=2}
+Line 1050
+  false always 0
+Line 1051
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-U_WIN32" always "-U_WIN32"
+  "-UNODEBUG" always "-UNODEBUG"
+  "file.cpp" always "file.cpp"
+Line 1053
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  1053 always 1053
+  4 always 4
+  argv always {
+Line 1054
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  1054 always 1054
+  2 always 2
+Line 1055
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  1055 always 1055
+  "_WIN32" always "_WIN32"
+  != always {!<=-1,!>=2}
+Line 1056
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  1056 always 1056
+  "NODEBUG" always "NODEBUG"
+  != always {!<=-1,!>=2}
+Line 1060
+  false always 0
+Line 1061
+  2 always 2
+  "cppcheck" always "cppcheck"
+  "-U" always "-U"
+Line 1063
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  1063 always 1063
+  false always 0
+  2 always 2
+  argv always {
+Line 1067
+  false always 0
+Line 1068
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-U" always "-U"
+  "-v" always "-v"
+  "file.cpp" always "file.cpp"
+Line 1070
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  1070 always 1070
+  false always 0
+  4 always 4
+  argv always {
+Line 1074
+  false always 0
+Line 1075
+  4 always 4
+  "cppcheck" always "cppcheck"
+  "-U" always "-U"
+  "--quiet" always "--quiet"
+  "file.cpp" always "file.cpp"
+Line 1077
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcmdlineparser.cpp" always "cppcheck-2.8/test/testcmdlineparser.cpp"
+  1077 always 1077
+  false always 0
+  4 always 4
+  argv always {

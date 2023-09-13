@@ -1,0 +1,2191 @@
+
+
+##file cppcheck-2.8/gui/cppchecklibrarydata.h
+
+1:
+|
+25:
+26: class QIODevice ;
+27:
+28: class CppcheckLibraryData {
+29: public:
+30: CppcheckLibraryData ( ) ;
+31:
+32: struct Container {
+33: Container ( ) : access_arrayLike@var7 ( false ) , size_templateParameter@var8 ( -1 ) { }
+34:
+35: QString id@var1 ;
+36: QString inherits@var2 ;
+37: QString startPattern@var3 ;
+38: QString endPattern@var4 ;
+39: QString opLessAllowed@var5 ;
+40: QString itEndPattern@var6 ;
+41:
+42: bool access_arrayLike@var7 ;
+43: int size_templateParameter@var8 ;
+44:
+45: struct Anonymous0 {
+46: QString templateParameter@var9 ;
+47: QString string@var10 ;
+48: } ; struct Anonymous0 type@var11 ;
+49:
+50: struct Function {
+51: QString name@var12 ;
+52: QString yields@var13 ;
+53: QString action@var14 ;
+54: } ;
+55: QList < struct Function > accessFunctions@var15 ;
+56: QList < struct Function > otherFunctions@var16 ;
+57: QList < struct Function > sizeFunctions@var17 ;
+58: } ;
+59:
+60: struct Define {
+61: QString name@var18 ;
+62: QString value@var19 ;
+63: } ;
+64:
+65: struct Function {
+66: Function ( ) : noreturn@var22 ( Unknown ) , gccPure@var23 ( false ) , gccConst@var24 ( false ) ,
+67: leakignore@var25 ( false ) , useretval@var26 ( false ) { }
+68:
+69: QString comments@var20 ;
+70: QString name@var21 ;
+71: enum TrueFalseUnknown { False , True , Unknown } ; enum TrueFalseUnknown noreturn@var22 ;
+72: bool gccPure@var23 ;
+73: bool gccConst@var24 ;
+74: bool leakignore@var25 ;
+75: bool useretval@var26 ;
+76: struct ReturnValue {
+77: ReturnValue ( ) : container@var29 ( -1 ) { }
+78: QString type@var27 ;
+79: QString value@var28 ;
+80: int container@var29 ;
+81: bool empty ( ) const {
+82: return type@var27 .@expr1073742240 isNull (@expr1073742241 ) &&@expr1073742242 value@var28 .@expr1073742243 isNull (@expr1073742244 ) &&@expr1073742245 container@var29 <@expr1073742246 0 ;
+83: }
+84: } ; struct ReturnValue returnValue@var30 ;
+85: struct Anonymous1 {
+86: QString scan@var31 ;
+87: QString secure@var32 ;
+88: } ; struct Anonymous1 formatstr@var33 ;
+89: struct Arg {
+90: Arg ( ) : nr@var35 ( 0 ) , notbool@var39 ( false ) , notnull@var40 ( false ) , notuninit@var41 ( false ) ,
+91: formatstr@var42 ( false ) , strz@var43 ( false ) { }
+92:
+93: QString name@var34 ;
+94: unsigned int nr@var35 ;
+95: static const unsigned int ANY@var36 ;
+96: static const unsigned int VARIADIC@var37 ;
+97: QString defaultValue@var38 ;
+98: bool notbool@var39 ;
+99: bool notnull@var40 ;
+100: bool notuninit@var41 ;
+101: bool formatstr@var42 ;
+102: bool strz@var43 ;
+103: QString valid@var44 ;
+104: struct MinSize {
+105: QString type@var45 ;
+106: QString arg@var46 ;
+107: QString arg2@var47 ;
+108: } ;
+109: QList < struct MinSize > minsizes@var48 ;
+110: struct Iterator {
+111: Iterator ( ) : container@var49 ( -1 ) { }
+112: int container@var49 ;
+113: QString type@var50 ;
+114: } ; struct Iterator iterator@var51 ;
+115: } ;
+116: QList < struct Arg > args@var52 ;
+117:
+118: struct Anonymous2 {
+119: QString severity@var53 ;
+120: QString cstd@var54 ;
+121: QString reason@var55 ;
+122: QString alternatives@var56 ;
+123: QString msg@var57 ;
+124:
+125: bool isEmpty ( ) const {
+126: return cstd@var54 .@expr1073742247 isEmpty (@expr1073742248 ) &&@expr1073742249
+127: severity@var53 .@expr1073742250 isEmpty (@expr1073742251 ) &&@expr1073742252
+128: reason@var55 .@expr1073742253 isEmpty (@expr1073742254 ) &&@expr1073742255
+129: alternatives@var56 .@expr1073742256 isEmpty (@expr1073742257 ) &&@expr1073742258
+130: msg@var57 .@expr1073742259 isEmpty (@expr1073742260 ) ;
+131: }
+132: } ; struct Anonymous2 warn@var58 ;
+133: } ;
+134:
+135: struct MemoryResource {
+136: QString type@var59 ;
+137: struct Alloc {
+138: Alloc ( ) :
+139: isRealloc@var60 ( false ) ,
+140: init@var61 ( false ) ,
+141: arg@var62 ( -1 ) ,
+142: reallocArg@var63 ( -1 )
+143: { }
+144:
+145: bool isRealloc@var60 ;
+146: bool init@var61 ;
+147: int arg@var62 ;
+148: int reallocArg@var63 ;
+149: QString bufferSize@var64 ;
+150: QString name@var65 ;
+151: } ;
+152: struct Dealloc {
+153: Dealloc ( ) :
+154: arg@var66 ( -1 )
+155: { }
+156:
+157: int arg@var66 ;
+158: QString name@var67 ;
+159: } ;
+160:
+161: QList < struct Alloc > alloc@var68 ;
+162: QList < struct Dealloc > dealloc@var69 ;
+163: QStringList use@var70 ;
+164: } ;
+165:
+166: struct PodType {
+167: QString name@var71 ;
+168: QString stdtype@var72 ;
+169: QString size@var73 ;
+170: QString sign@var74 ;
+171: } ;
+172:
+173: struct PlatformType {
+174: QString name@var75 ;
+175: QString value@var76 ;
+176: QStringList types@var77 ;
+177: QStringList platforms@var78 ;
+178: } ;
+179:
+180:
+181:
+182: struct Reflection {
+183: struct Call {
+184: Call ( ) :
+185: arg@var79 { -1 }
+186: { }
+187:
+188: int arg@var79 ;
+189: QString name@var80 ;
+190: } ;
+191:
+192: QList < struct Call > calls@var81 ;
+193: } ;
+194:
+195: struct Markup {
+196: struct CodeBlocks {
+197: CodeBlocks ( ) :
+198: offset@var83 { -1 }
+199: { }
+200:
+201: QStringList blocks@var82 ;
+202: int offset@var83 ;
+203: QString start@var84 ;
+204: QString end@var85 ;
+205: } ;
+206:
+207: struct Exporter {
+208: QString prefix@var86 ;
+209: QStringList prefixList@var87 ;
+210: QStringList suffixList@var88 ;
+211: } ;
+212:
+213: QString ext@var89 ;
+214: bool afterCode@var90 ;
+215: bool reportErrors@var91 ;
+216: QStringList keywords@var92 ;
+217: QStringList importer@var93 ;
+218: QList < CodeBlocks > codeBlocks@var94 ;
+219: QList < Exporter > exporter@var95 ;
+220: } ;
+221:
+222: void clear ( ) {
+223: containers@var109 .@expr1073742261 clear (@expr1073742262 ) ;
+224: defines@var110 .@expr1073742263 clear (@expr1073742264 ) ;
+225: undefines@var116 .@expr1073742265 clear (@expr1073742266 ) ;
+226: functions@var111 .@expr1073742267 clear (@expr1073742268 ) ;
+227: memoryresource@var112 .@expr1073742269 clear (@expr1073742270 ) ;
+228: podtypes@var113 .@expr1073742271 clear (@expr1073742272 ) ;
+229: smartPointers@var117 .@expr1073742273 clear (@expr1073742274 ) ;
+230: typeChecks@var114 .@expr1073742275 clear (@expr1073742276 ) ;
+231: platformTypes@var115 .@expr1073742277 clear (@expr1073742278 ) ;
+232: reflections@var118 .@expr1073742279 clear (@expr1073742280 ) ;
+233: markups@var119 .@expr1073742281 clear (@expr1073742282 ) ;
+234: }
+235:
+236: void swap ( CppcheckLibraryData & other@var96 ) {
+237: containers@var109 .@expr1073742283 swap (@expr1073742284 other@var96 .@expr1073742285 containers@var97 ) ;
+238: defines@var110 .@expr1073742286 swap (@expr1073742287 other@var96 .@expr1073742288 defines@var98 ) ;
+239: undefines@var116 .@expr1073742289 swap (@expr1073742290 other@var96 .@expr1073742291 undefines@var99 ) ;
+240: functions@var111 .@expr1073742292 swap (@expr1073742293 other@var96 .@expr1073742294 functions@var100 ) ;
+241: memoryresource@var112 .@expr1073742295 swap (@expr1073742296 other@var96 .@expr1073742297 memoryresource@var101 ) ;
+242: podtypes@var113 .@expr1073742298 swap (@expr1073742299 other@var96 .@expr1073742300 podtypes@var102 ) ;
+243: smartPointers@var117 .@expr1073742301 swap (@expr1073742302 other@var96 .@expr1073742303 smartPointers@var103 ) ;
+244: typeChecks@var114 .@expr1073742304 swap (@expr1073742305 other@var96 .@expr1073742306 typeChecks@var104 ) ;
+245: platformTypes@var115 .@expr1073742307 swap (@expr1073742308 other@var96 .@expr1073742309 platformTypes@var105 ) ;
+246: reflections@var118 .@expr1073742310 swap (@expr1073742311 other@var96 .@expr1073742312 reflections@var106 ) ;
+247: markups@var119 .@expr1073742313 swap (@expr1073742314 other@var96 .@expr1073742315 markups@var107 ) ;
+248: }
+249:
+250: QString open ( QIODevice & file@var108 ) ;
+251: QString toString ( ) const ;
+252:
+253: QList < struct Container > containers@var109 ;
+254: QList < struct Define > defines@var110 ;
+255: QList < struct Function > functions@var111 ;
+256: QList < struct MemoryResource > memoryresource@var112 ;
+257: QList < struct PodType > podtypes@var113 ;
+258: QList < QList < QPair < QString , QString > > > typeChecks@var114 ;
+259: QList < struct PlatformType > platformTypes@var115 ;
+260: QStringList undefines@var116 ;
+261: QStringList smartPointers@var117 ;
+262: QList < struct Reflection > reflections@var118 ;
+263: QList < struct Markup > markups@var119 ;
+264: } ;
+
+##file cppcheck-2.8/gui/cppchecklibrarydata.cpp
+
+1:
+|
+25:
+26: const unsigned int CppcheckLibraryData :: Function :: Arg :: ANY@var36 = ~ 0U ;
+27: const unsigned int CppcheckLibraryData :: Function :: Arg :: VARIADIC@var37 = ~ 1U ;
+28:
+29: CppcheckLibraryData :: CppcheckLibraryData ( )
+30: { }
+31:
+32: static std :: string unhandledElement ( const QXmlStreamReader & xmlReader@var120 )
+33: {
+34: throw std ::@expr1073742316 runtime_error (@expr1073742317 QObject ::@expr1073742318 tr (@expr1073742319 "line %1: Unhandled element %2" ) .@expr1073742320 arg (@expr1073742321 xmlReader@var120 .@expr1073742322 lineNumber (@expr1073742323 ) ) .@expr1073742324 arg (@expr1073742325 xmlReader@var120 .@expr1073742326 name (@expr1073742327 ) .@expr1073742328 toString (@expr1073742329 ) ) .@expr1073742330 toStdString (@expr1073742331 ) ) ;
+35: }
+36:
+37: static std :: string mandatoryAttibuteMissing ( const QXmlStreamReader & xmlReader@var121 , const QString & attributeName@var122 )
+38: {
+39: throw std ::@expr1073742332 runtime_error (@expr1073742333 QObject ::@expr1073742334 tr (@expr1073742335 "line %1: Mandatory attribute '%2' missing in '%3'" )
+40: .@expr1073742336 arg (@expr1073742337 xmlReader@var121 .@expr1073742338 lineNumber (@expr1073742339 ) )
+41: .@expr1073742340 arg (@expr1073742341 attributeName@var122 )
+42: .@expr1073742342 arg (@expr1073742343 xmlReader@var121 .@expr1073742344 name (@expr1073742345 ) .@expr1073742346 toString (@expr1073742347 ) ) .@expr1073742348 toStdString (@expr1073742349 ) ) ;
+43: }
+44:
+45: static CppcheckLibraryData :: Container loadContainer ( QXmlStreamReader & xmlReader@var123 )
+46: {
+47: CppcheckLibraryData ::@expr1073742352 Container container@var124 ;
+48: container@var124 .@expr1073742353 id@var125 =@expr1073742354 xmlReader@var123 .@expr531 attributes (@expr532 ) .@expr533 value (@expr1073742358 "id" ) .@expr1073742359 toString (@expr1073742360 ) ;
+49: container@var124 .@expr1073742361 inherits@var126 =@expr1073742362 xmlReader@var123 .@expr531 attributes (@expr532 ) .@expr533 value (@expr1073742366 "inherits" ) .@expr1073742367 toString (@expr1073742368 ) ;
+50: container@var124 .@expr1073742369 startPattern@var127 =@expr1073742370 xmlReader@var123 .@expr531 attributes (@expr532 ) .@expr533 value (@expr1073742374 "startPattern" ) .@expr1073742375 toString (@expr1073742376 ) ;
+51: container@var124 .@expr1073742377 endPattern@var128 =@expr1073742378 xmlReader@var123 .@expr531 attributes (@expr532 ) .@expr533 value (@expr1073742382 "endPattern" ) .@expr1073742383 toString (@expr1073742384 ) ;
+52: container@var124 .@expr1073742385 opLessAllowed@var129 =@expr1073742386 xmlReader@var123 .@expr531 attributes (@expr532 ) .@expr533 value (@expr1073742390 "opLessAllowed" ) .@expr1073742391 toString (@expr1073742392 ) ;
+53: container@var124 .@expr1073742393 itEndPattern@var130 =@expr1073742394 xmlReader@var123 .@expr531 attributes (@expr532 ) .@expr533 value (@expr1073742398 "itEndPattern" ) .@expr1073742399 toString (@expr1073742400 ) ;
+54:
+55: QXmlStreamReader ::@expr1073742401 TokenType type@var131 ;
+56: while (@expr1073742402 (@expr1073742403 type@var131 =@expr1073742404 xmlReader@var123 .@expr581 readNext (@expr582 ) ) !=@expr1073742407 QXmlStreamReader ::@expr1073742408 EndElement@expr1073742350 ||@expr1073742409
+57: xmlReader@var123 .@expr586 name (@expr587 ) .@expr588 toString (@expr589 ) !=@expr1073742414 "container" ) {
+58: if (@expr591 type@var131 !=@expr592 QXmlStreamReader ::@expr593 StartElement@expr527 ) {
+59: continue ; }
+60: const QString elementName@var132 =@expr1073742418 xmlReader@var123 .@expr586 name (@expr587 ) .@expr588 toString (@expr589 ) ;
+61: if (@expr1073742423 elementName@var132 ==@expr1073742424 "type" ) {
+62: container@var124 .@expr601 type@var133 .@expr1073742426 templateParameter@var134 =@expr1073742427 xmlReader@var123 .@expr531 attributes (@expr532 ) .@expr533 value (@expr607 "templateParameter" ) .@expr608 toString (@expr609 ) ;
+63: container@var124 .@expr601 type@var133 .@expr1073742435 string@var135 =@expr1073742436 xmlReader@var123 .@expr531 attributes (@expr532 ) .@expr533 value (@expr1073742440 "string" ) .@expr1073742441 toString (@expr1073742442 ) ;
+64: } else { if (@expr1073742443 elementName@var132 ==@expr620 "size" ||@expr1073742445 elementName@var132 ==@expr622 "access" ||@expr1073742447 elementName@var132 ==@expr1073742448 "other" ) {
+65: const QString indexOperator@var136 =@expr1073742449 xmlReader@var123 .@expr531 attributes (@expr532 ) .@expr533 value (@expr1073742453 "indexOperator" ) .@expr1073742454 toString (@expr1073742455 ) ;
+66: if (@expr1073742456 elementName@var132 ==@expr622 "access" &&@expr1073742458 indexOperator@var136 ==@expr1073742459 "array-like" ) {
+67: container@var124 .@expr1073742460 access_arrayLike@var137 =@expr1073742461 true ; }
+68: const QString templateParameter@var138 =@expr1073742462 xmlReader@var123 .@expr531 attributes (@expr532 ) .@expr533 value (@expr607 "templateParameter" ) .@expr608 toString (@expr609 ) ;
+69: if (@expr1073742469 elementName@var132 ==@expr620 "size" &&@expr1073742471 !@expr1073742472 templateParameter@var138 .@expr1073742473 isEmpty (@expr1073742474 ) ) {
+70: container@var124 .@expr1073742475 size_templateParameter@var139 =@expr1073742476 templateParameter@var138 .@expr1073742477 toInt (@expr1073742478 ) ; }
+71: for (@expr1073742479 ; ; ) {
+72: type@var131 =@expr1073742480 xmlReader@var123 .@expr581 readNext (@expr582 ) ;
+73: if (@expr1073742483 xmlReader@var123 .@expr586 name (@expr587 ) .@expr588 toString (@expr589 ) ==@expr1073742488 elementName@var132 ) {
+74: break ; }
+75: if (@expr591 type@var131 !=@expr592 QXmlStreamReader ::@expr593 StartElement@expr527 ) {
+76: continue ; }
+77: struct CppcheckLibraryData ::@expr1073742492 Container ::@expr1073742493 Function function@var140 ;
+78: function@var140 .@expr1073742494 name@var141 =@expr1073742495 xmlReader@var123 .@expr531 attributes (@expr532 ) .@expr533 value (@expr1073742499 "name" ) .@expr1073742500 toString (@expr1073742501 ) ;
+79: function@var140 .@expr1073742502 action@var142 =@expr1073742503 xmlReader@var123 .@expr531 attributes (@expr532 ) .@expr533 value (@expr1073742507 "action" ) .@expr1073742508 toString (@expr1073742509 ) ;
+80: function@var140 .@expr1073742510 yields@var143 =@expr1073742511 xmlReader@var123 .@expr531 attributes (@expr532 ) .@expr533 value (@expr1073742515 "yields" ) .@expr1073742516 toString (@expr1073742517 ) ;
+81: if (@expr1073742518 elementName@var132 ==@expr620 "size" ) {
+82: container@var124 .@expr1073742520 sizeFunctions@var144 .@expr1073742521 append (@expr1073742522 function@var140 ) ; }
+83: else { if (@expr1073742523 elementName@var132 ==@expr622 "access" ) {
+84: container@var124 .@expr1073742525 accessFunctions@var145 .@expr1073742526 append (@expr1073742527 function@var140 ) ; }
+85: else {
+86: container@var124 .@expr1073742528 otherFunctions@var146 .@expr1073742529 append (@expr1073742530 function@var140 ) ; } }
+87: }
+88: } else {
+89: unhandledElement (@expr1073742531 xmlReader@var123 ) ;
+90: } }
+91: }
+92: return container@var124 ;
+93: }
+94:
+95: static CppcheckLibraryData :: Define loadDefine ( const QXmlStreamReader & xmlReader@var147 )
+96: {
+97: CppcheckLibraryData ::@expr1073742532 Define define@var148 ;
+98: define@var148 .@expr1073742533 name@var149 =@expr1073742534 xmlReader@var147 .@expr711 attributes (@expr712 ) .@expr713 value (@expr1073742538 "name" ) .@expr1073742539 toString (@expr1073742540 ) ;
+99: define@var148 .@expr1073742541 value@var150 =@expr1073742542 xmlReader@var147 .@expr711 attributes (@expr712 ) .@expr713 value (@expr1073742546 "value" ) .@expr1073742547 toString (@expr1073742548 ) ;
+100: return define@var148 ;
+101: }
+102:
+103: static QString loadUndefine ( const QXmlStreamReader & xmlReader@var151 )
+104: {
+105: return xmlReader@var151 .@expr1073742549 attributes (@expr1073742550 ) .@expr1073742551 value (@expr1073742552 "name" ) .@expr1073742553 toString (@expr1073742554 ) ;
+106: }
+107:
+108: static QString loadSmartPointer ( const QXmlStreamReader & xmlReader@var152 )
+109: {
+110: return xmlReader@var152 .@expr1073742555 attributes (@expr1073742556 ) .@expr1073742557 value (@expr1073742558 "class-name" ) .@expr1073742559 toString (@expr1073742560 ) ;
+111: }
+112:
+113: static QList < QPair < QString , QString > > loadTypeChecks ( QXmlStreamReader & xmlReader@var153 )
+114: {
+115: QList < QPair < QString , QString > > typeChecks@var154 ;
+116: QXmlStreamReader ::@expr1073742563 TokenType type@var155 ;
+117: while (@expr1073742564 (@expr1073742565 type@var155 =@expr1073742566 xmlReader@var153 .@expr1073742567 readNext (@expr1073742568 ) ) !=@expr1073742569 QXmlStreamReader ::@expr1073742570 EndElement@expr1073742561 ||@expr1073742571
+118: xmlReader@var153 .@expr748 name (@expr749 ) .@expr750 toString (@expr751 ) !=@expr1073742576 "type-checks" ) {
+119: if (@expr1073742577 type@var155 !=@expr1073742578 QXmlStreamReader ::@expr1073742579 StartElement@expr1073742562 ) {
+120: continue ; }
+121: const QString elementName@var156 =@expr1073742580 xmlReader@var153 .@expr748 name (@expr749 ) .@expr750 toString (@expr751 ) ;
+122: if (@expr1073742585 elementName@var156 ==@expr1073742586 "suppress" ||@expr1073742587 elementName@var156 ==@expr1073742588 "check" ) {
+123: QPair < QString , QString > entry@var157 (@expr1073742589 elementName@var156 , xmlReader@var153 .@expr1073742590 readElementText (@expr1073742591 ) ) ;
+124: typeChecks@var154 .@expr1073742592 append (@expr1073742593 entry@var157 ) ;
+125: }
+126: }
+127: return typeChecks@var154 ;
+128: }
+129:
+130: static CppcheckLibraryData :: Function :: Arg loadFunctionArg ( QXmlStreamReader & xmlReader@var158 )
+131: {
+132: CppcheckLibraryData ::@expr772 Function ::@expr1073742597 Arg arg@var159 ;
+133: QString argnr@var160 ; argnr@var160 =@expr1073742598 xmlReader@var158 .@expr775 attributes (@expr776 ) .@expr777 value (@expr1073742602 "nr" ) .@expr1073742603 toString (@expr1073742604 ) ;
+134: if (@expr1073742605 argnr@var160 ==@expr1073742606 "any" ) {
+135: arg@var159 .@expr783 nr@var161 =@expr1073742608 CppcheckLibraryData ::@expr772 Function ::@expr786 Arg ::@expr1073742611 ANY@var36 ; }
+136: else { if (@expr1073742612 argnr@var160 ==@expr1073742613 "variadic" ) {
+137: arg@var159 .@expr783 nr@var161 =@expr1073742615 CppcheckLibraryData ::@expr772 Function ::@expr786 Arg ::@expr1073742618 VARIADIC@var37 ; }
+138: else {
+139: arg@var159 .@expr783 nr@var161 =@expr1073742620 argnr@var160 .@expr1073742621 toUInt (@expr1073742622 ) ; } }
+140: arg@var159 .@expr1073742623 defaultValue@var162 =@expr1073742624 xmlReader@var158 .@expr775 attributes (@expr776 ) .@expr777 value (@expr1073742628 "default" ) .@expr1073742629 toString (@expr1073742630 ) ;
+141:
+142: QXmlStreamReader ::@expr1073742631 TokenType type@var163 ;
+143: while (@expr1073742632 (@expr1073742633 type@var163 =@expr1073742634 xmlReader@var158 .@expr1073742635 readNext (@expr1073742636 ) ) !=@expr1073742637 QXmlStreamReader ::@expr1073742638 EndElement@expr1073742594 ||@expr1073742639
+144: xmlReader@var158 .@expr816 name (@expr817 ) .@expr818 toString (@expr819 ) !=@expr1073742644 "arg" ) {
+145: if (@expr1073742645 type@var163 !=@expr1073742646 QXmlStreamReader ::@expr1073742647 StartElement@expr1073742595 ) {
+146: continue ; }
+147: const QString elementName@var164 =@expr1073742648 xmlReader@var158 .@expr816 name (@expr817 ) .@expr818 toString (@expr819 ) ;
+148: if (@expr1073742653 elementName@var164 ==@expr1073742654 "not-bool" ) {
+149: arg@var159 .@expr1073742655 notbool@var165 =@expr1073742656 true ; }
+150: else { if (@expr1073742657 elementName@var164 ==@expr1073742658 "not-null" ) {
+151: arg@var159 .@expr1073742659 notnull@var166 =@expr1073742660 true ; }
+152: else { if (@expr1073742661 elementName@var164 ==@expr1073742662 "not-uninit" ) {
+153: arg@var159 .@expr1073742663 notuninit@var167 =@expr1073742664 true ; }
+154: else { if (@expr1073742665 elementName@var164 ==@expr1073742666 "strz" ) {
+155: arg@var159 .@expr1073742667 strz@var168 =@expr1073742668 true ; }
+156: else { if (@expr1073742669 elementName@var164 ==@expr1073742670 "formatstr" ) {
+157: arg@var159 .@expr1073742671 formatstr@var169 =@expr1073742672 true ; }
+158: else { if (@expr1073742673 elementName@var164 ==@expr1073742674 "valid" ) {
+159: arg@var159 .@expr1073742675 valid@var170 =@expr1073742676 xmlReader@var158 .@expr1073742677 readElementText (@expr1073742678 ) ; }
+160: else { if (@expr1073742679 elementName@var164 ==@expr1073742680 "minsize" ) {
+161: CppcheckLibraryData ::@expr772 Function ::@expr786 Arg ::@expr1073742683 MinSize minsize@var171 ;
+162: minsize@var171 .@expr1073742684 type@var172 =@expr1073742685 xmlReader@var158 .@expr775 attributes (@expr776 ) .@expr777 value (@expr865 "type" ) .@expr866 toString (@expr867 ) ;
+163: minsize@var171 .@expr1073742692 arg@var173 =@expr1073742693 xmlReader@var158 .@expr775 attributes (@expr776 ) .@expr777 value (@expr1073742697 "arg" ) .@expr1073742698 toString (@expr1073742699 ) ;
+164: minsize@var171 .@expr1073742700 arg2@var174 =@expr1073742701 xmlReader@var158 .@expr775 attributes (@expr776 ) .@expr777 value (@expr1073742705 "arg2" ) .@expr1073742706 toString (@expr1073742707 ) ;
+165: arg@var159 .@expr1073742708 minsizes@var175 .@expr1073742709 append (@expr1073742710 minsize@var171 ) ;
+166: } else { if (@expr1073742711 elementName@var164 ==@expr1073742712 "iterator" ) {
+167: arg@var159 .@expr889 iterator@var176 .@expr1073742714 container@var177 =@expr1073742715 xmlReader@var158 .@expr775 attributes (@expr776 ) .@expr777 value (@expr1073742719 "container" ) .@expr1073742720 toInt (@expr1073742721 ) ;
+168: arg@var159 .@expr889 iterator@var176 .@expr1073742723 type@var178 =@expr1073742724 xmlReader@var158 .@expr775 attributes (@expr776 ) .@expr777 value (@expr865 "type" ) .@expr866 toString (@expr867 ) ;
+169: } else {
+170: unhandledElement (@expr1073742731 xmlReader@var158 ) ;
+171: } } } } } } } }
+172: }
+173: return arg@var159 ;
+174: }
+175:
+176: static CppcheckLibraryData :: Function loadFunction ( QXmlStreamReader & xmlReader@var179 , const QString & comments@var180 )
+177: {
+178: CppcheckLibraryData ::@expr1073742734 Function function@var181 ;
+179: function@var181 .@expr1073742735 comments@var182 =@expr1073742736 comments@var180 ;
+180: function@var181 .@expr1073742737 name@var183 =@expr1073742738 xmlReader@var179 .@expr915 attributes (@expr916 ) .@expr917 value (@expr1073742742 "name" ) .@expr1073742743 toString (@expr1073742744 ) ;
+181: QXmlStreamReader ::@expr1073742745 TokenType type@var184 ;
+182: while (@expr1073742746 (@expr1073742747 type@var184 =@expr1073742748 xmlReader@var179 .@expr1073742749 readNext (@expr1073742750 ) ) !=@expr1073742751 QXmlStreamReader ::@expr1073742752 EndElement@expr1073742732 ||@expr1073742753
+183: xmlReader@var179 .@expr930 name (@expr931 ) .@expr932 toString (@expr933 ) !=@expr1073742758 "function" ) {
+184: if (@expr1073742759 type@var184 !=@expr1073742760 QXmlStreamReader ::@expr1073742761 StartElement@expr1073742733 ) {
+185: continue ; }
+186: const QString elementName@var185 =@expr1073742762 xmlReader@var179 .@expr930 name (@expr931 ) .@expr932 toString (@expr933 ) ;
+187: if (@expr1073742767 elementName@var185 ==@expr1073742768 "noreturn" ) {
+188: function@var181 .@expr1073742769 noreturn@var186 =@expr1073742770 (@expr1073742771 xmlReader@var179 .@expr948 readElementText (@expr949 ) ==@expr1073742774 "true" ) ?@expr1073742775 CppcheckLibraryData ::@expr952 Function ::@expr1073742777 True :@expr1073742778 CppcheckLibraryData ::@expr952 Function ::@expr1073742780 False ; }
+189: else { if (@expr1073742781 elementName@var185 ==@expr1073742782 "pure" ) {
+190: function@var181 .@expr1073742783 gccPure@var187 =@expr1073742784 true ; }
+191: else { if (@expr1073742785 elementName@var185 ==@expr1073742786 "const" ) {
+192: function@var181 .@expr1073742787 gccConst@var188 =@expr1073742788 true ; }
+193: else { if (@expr1073742789 elementName@var185 ==@expr1073742790 "leak-ignore" ) {
+194: function@var181 .@expr1073742791 leakignore@var189 =@expr1073742792 true ; }
+195: else { if (@expr1073742793 elementName@var185 ==@expr1073742794 "use-retval" ) {
+196: function@var181 .@expr1073742795 useretval@var190 =@expr1073742796 true ; }
+197: else { if (@expr1073742797 elementName@var185 ==@expr1073742798 "returnValue" ) {
+198: const QString container@var191 =@expr1073742799 xmlReader@var179 .@expr915 attributes (@expr916 ) .@expr917 value (@expr1073742803 "container" ) .@expr1073742804 toString (@expr1073742805 ) ;
+199: function@var181 .@expr982 returnValue@var192 .@expr1073742807 container@var193 =@expr1073742808 container@var191 .@expr1073742809 isNull (@expr1073742810 ) ?@expr1073742811 -1 :@expr1073742812 container@var191 .@expr1073742813 toInt (@expr1073742814 ) ;
+200: function@var181 .@expr982 returnValue@var192 .@expr1073742816 type@var194 =@expr1073742817 xmlReader@var179 .@expr915 attributes (@expr916 ) .@expr917 value (@expr1073742821 "type" ) .@expr1073742822 toString (@expr1073742823 ) ;
+201: function@var181 .@expr982 returnValue@var192 .@expr1073742825 value@var195 =@expr1073742826 xmlReader@var179 .@expr948 readElementText (@expr949 ) ;
+202: } else { if (@expr1073742829 elementName@var185 ==@expr1073742830 "formatstr" ) {
+203: function@var181 .@expr1007 formatstr@var196 .@expr1073742832 scan@var197 =@expr1073742833 xmlReader@var179 .@expr915 attributes (@expr916 ) .@expr917 value (@expr1073742837 "scan" ) .@expr1073742838 toString (@expr1073742839 ) ;
+204: function@var181 .@expr1007 formatstr@var196 .@expr1073742841 secure@var198 =@expr1073742842 xmlReader@var179 .@expr915 attributes (@expr916 ) .@expr917 value (@expr1073742846 "secure" ) .@expr1073742847 toString (@expr1073742848 ) ;
+205: } else { if (@expr1073742849 elementName@var185 ==@expr1073742850 "arg" ) {
+206: function@var181 .@expr1073742851 args@var199 .@expr1073742852 append (@expr1073742853 loadFunctionArg (@expr1073742854 xmlReader@var179 ) ) ; }
+207: else { if (@expr1073742855 elementName@var185 ==@expr1073742856 "warn" ) {
+208: function@var181 .@expr1033 warn@var200 .@expr1073742858 severity@var201 =@expr1073742859 xmlReader@var179 .@expr915 attributes (@expr916 ) .@expr917 value (@expr1073742863 "severity" ) .@expr1073742864 toString (@expr1073742865 ) ;
+209: function@var181 .@expr1033 warn@var200 .@expr1073742867 cstd@var202 =@expr1073742868 xmlReader@var179 .@expr915 attributes (@expr916 ) .@expr917 value (@expr1073742872 "cstd" ) .@expr1073742873 toString (@expr1073742874 ) ;
+210: function@var181 .@expr1033 warn@var200 .@expr1073742876 reason@var203 =@expr1073742877 xmlReader@var179 .@expr915 attributes (@expr916 ) .@expr917 value (@expr1073742881 "reason" ) .@expr1073742882 toString (@expr1073742883 ) ;
+211: function@var181 .@expr1033 warn@var200 .@expr1073742885 alternatives@var204 =@expr1073742886 xmlReader@var179 .@expr915 attributes (@expr916 ) .@expr917 value (@expr1073742890 "alternatives" ) .@expr1073742891 toString (@expr1073742892 ) ;
+212: function@var181 .@expr1033 warn@var200 .@expr1073742894 msg@var205 =@expr1073742895 xmlReader@var179 .@expr948 readElementText (@expr949 ) ;
+213: } else {
+214: unhandledElement (@expr1073742898 xmlReader@var179 ) ;
+215: } } } } } } } } }
+216: }
+217: return function@var181 ;
+218: }
+219:
+220: static CppcheckLibraryData :: MemoryResource loadMemoryResource ( QXmlStreamReader & xmlReader@var206 )
+221: {
+222: CppcheckLibraryData ::@expr1073742901 MemoryResource memoryresource@var207 ;
+223: memoryresource@var207 .@expr1078 type@var208 =@expr1073742903 xmlReader@var206 .@expr1080 name (@expr1081 ) .@expr1082 toString (@expr1083 ) ;
+224: QXmlStreamReader ::@expr1073742908 TokenType type@var209 ;
+225: while (@expr1073742909 (@expr1073742910 type@var209 =@expr1073742911 xmlReader@var206 .@expr1073742912 readNext (@expr1073742913 ) ) !=@expr1073742914 QXmlStreamReader ::@expr1073742915 EndElement@expr1073742899 ||@expr1073742916
+226: xmlReader@var206 .@expr1080 name (@expr1081 ) .@expr1082 toString (@expr1083 ) !=@expr1073742921 memoryresource@var207 .@expr1078 type@var208 ) {
+227: if (@expr1073742923 type@var209 !=@expr1073742924 QXmlStreamReader ::@expr1073742925 StartElement@expr1073742900 ) {
+228: continue ; }
+229: const QString elementName@var210 =@expr1073742926 xmlReader@var206 .@expr1080 name (@expr1081 ) .@expr1082 toString (@expr1083 ) ;
+230: if (@expr1073742931 elementName@var210 ==@expr1073742932 "alloc" ||@expr1073742933 elementName@var210 ==@expr1110 "realloc" ) {
+231: CppcheckLibraryData ::@expr1111 MemoryResource ::@expr1073742936 Alloc alloc@var211 ;
+232: alloc@var211 .@expr1113 isRealloc@var212 =@expr1073742938 elementName@var210 ==@expr1110 "realloc" ;
+233: alloc@var211 .@expr1073742940 init@var213 =@expr1073742941 xmlReader@var206 .@expr1118 attributes (@expr1119 ) .@expr1120 value (@expr1073742945 "init" ) .@expr1073742946 toString (@expr1073742947 ) ==@expr1073742948 "true" ;
+234: if (@expr1125 xmlReader@var206 .@expr1118 attributes (@expr1119 ) .@expr1128 hasAttribute (@expr1129 "arg" ) ) {
+235: alloc@var211 .@expr1073742954 arg@var214 =@expr1073742955 xmlReader@var206 .@expr1118 attributes (@expr1119 ) .@expr1120 value (@expr1135 "arg" ) .@expr1136 toInt (@expr1137 ) ;
+236: }
+237: if (@expr1073742962 alloc@var211 .@expr1113 isRealloc@var212 &&@expr1073742964 xmlReader@var206 .@expr1118 attributes (@expr1119 ) .@expr1128 hasAttribute (@expr1073742968 "realloc-arg" ) ) {
+238: alloc@var211 .@expr1073742969 reallocArg@var215 =@expr1073742970 xmlReader@var206 .@expr1118 attributes (@expr1119 ) .@expr1120 value (@expr1073742974 "realloc-arg" ) .@expr1073742975 toInt (@expr1073742976 ) ;
+239: }
+240: if (@expr1073742977 memoryresource@var207 .@expr1078 type@var208 ==@expr1073742979 "memory" ) {
+241: alloc@var211 .@expr1073742980 bufferSize@var216 =@expr1073742981 xmlReader@var206 .@expr1118 attributes (@expr1119 ) .@expr1120 value (@expr1073742985 "buffer-size" ) .@expr1073742986 toString (@expr1073742987 ) ;
+242: }
+243: alloc@var211 .@expr1073742988 name@var217 =@expr1073742989 xmlReader@var206 .@expr1166 readElementText (@expr1167 ) ;
+244: memoryresource@var207 .@expr1073742992 alloc@var218 .@expr1073742993 append (@expr1073742994 alloc@var211 ) ;
+245: } else { if (@expr1073742995 elementName@var210 ==@expr1073742996 "dealloc" ) {
+246: CppcheckLibraryData ::@expr1111 MemoryResource ::@expr1073742998 Dealloc dealloc@var219 ;
+247: if (@expr1125 xmlReader@var206 .@expr1118 attributes (@expr1119 ) .@expr1128 hasAttribute (@expr1129 "arg" ) ) {
+248: dealloc@var219 .@expr1073743004 arg@var220 =@expr1073743005 xmlReader@var206 .@expr1118 attributes (@expr1119 ) .@expr1120 value (@expr1135 "arg" ) .@expr1136 toInt (@expr1137 ) ;
+249: }
+250: dealloc@var219 .@expr1073743012 name@var221 =@expr1073743013 xmlReader@var206 .@expr1166 readElementText (@expr1167 ) ;
+251: memoryresource@var207 .@expr1073743016 dealloc@var222 .@expr1073743017 append (@expr1073743018 dealloc@var219 ) ;
+252: } else { if (@expr1073743019 elementName@var210 ==@expr1073743020 "use" ) {
+253: memoryresource@var207 .@expr1073743021 use@var223 .@expr1073743022 append (@expr1073743023 xmlReader@var206 .@expr1166 readElementText (@expr1167 ) ) ; }
+254: else {
+255: unhandledElement (@expr1073743026 xmlReader@var206 ) ; } } }
+256: }
+257: return memoryresource@var207 ;
+258: }
+259:
+260: static CppcheckLibraryData :: PodType loadPodType ( const QXmlStreamReader & xmlReader@var224 )
+261: {
+262: CppcheckLibraryData ::@expr1073743027 PodType podtype@var225 ;
+263: podtype@var225 .@expr1204 name@var226 =@expr1073743029 xmlReader@var224 .@expr1206 attributes (@expr1207 ) .@expr1208 value (@expr1073743033 "name" ) .@expr1073743034 toString (@expr1073743035 ) ;
+264: if (@expr1073743036 podtype@var225 .@expr1204 name@var226 .@expr1073743038 isEmpty (@expr1073743039 ) ) {
+265: mandatoryAttibuteMissing (@expr1073743040 xmlReader@var224 , "name" ) ;
+266: }
+267: podtype@var225 .@expr1073743041 stdtype@var227 =@expr1073743042 xmlReader@var224 .@expr1206 attributes (@expr1207 ) .@expr1208 value (@expr1073743046 "stdtype" ) .@expr1073743047 toString (@expr1073743048 ) ;
+268: podtype@var225 .@expr1073743049 size@var228 =@expr1073743050 xmlReader@var224 .@expr1206 attributes (@expr1207 ) .@expr1208 value (@expr1073743054 "size" ) .@expr1073743055 toString (@expr1073743056 ) ;
+269: podtype@var225 .@expr1073743057 sign@var229 =@expr1073743058 xmlReader@var224 .@expr1206 attributes (@expr1207 ) .@expr1208 value (@expr1073743062 "sign" ) .@expr1073743063 toString (@expr1073743064 ) ;
+270: return podtype@var225 ;
+271: }
+272:
+273: static CppcheckLibraryData :: PlatformType loadPlatformType ( QXmlStreamReader & xmlReader@var230 )
+274: {
+275: CppcheckLibraryData ::@expr1073743067 PlatformType platformType@var231 ;
+276: platformType@var231 .@expr1073743068 name@var232 =@expr1073743069 xmlReader@var230 .@expr1246 attributes (@expr1247 ) .@expr1248 value (@expr1073743073 "name" ) .@expr1073743074 toString (@expr1073743075 ) ;
+277: platformType@var231 .@expr1073743076 value@var233 =@expr1073743077 xmlReader@var230 .@expr1246 attributes (@expr1247 ) .@expr1248 value (@expr1073743081 "value" ) .@expr1073743082 toString (@expr1073743083 ) ;
+278:
+279: QXmlStreamReader ::@expr1073743084 TokenType type@var234 ;
+280: while (@expr1073743085 (@expr1073743086 type@var234 =@expr1073743087 xmlReader@var230 .@expr1073743088 readNext (@expr1073743089 ) ) !=@expr1073743090 QXmlStreamReader ::@expr1073743091 EndElement@expr1073743065 ||@expr1073743092
+281: xmlReader@var230 .@expr1269 name (@expr1270 ) .@expr1271 toString (@expr1272 ) !=@expr1073743097 "platformtype" ) {
+282: if (@expr1073743098 type@var234 !=@expr1073743099 QXmlStreamReader ::@expr1073743100 StartElement@expr1073743066 ) {
+283: continue ; }
+284: const QString elementName@var235 =@expr1073743101 xmlReader@var230 .@expr1269 name (@expr1270 ) .@expr1271 toString (@expr1272 ) ;
+285: if (@expr1073743106 QStringList (@expr1073743107 {@expr1073743108 "unsigned" , "long" , "pointer" , "const_ptr" , "ptr_ptr" } ) .@expr1073743109 contains (@expr1073743110 elementName@var235 ) ) {
+286: platformType@var231 .@expr1073743111 types@var236 .@expr1073743112 append (@expr1073743113 elementName@var235 ) ;
+287: } else { if (@expr1073743114 elementName@var235 ==@expr1073743115 "platform" ) {
+288: platformType@var231 .@expr1073743116 platforms@var237 .@expr1073743117 append (@expr1073743118 xmlReader@var230 .@expr1246 attributes (@expr1247 ) .@expr1248 value (@expr1073743122 "type" ) .@expr1073743123 toString (@expr1073743124 ) ) ;
+289: } else {
+290: unhandledElement (@expr1073743125 xmlReader@var230 ) ;
+291: } }
+292: }
+293: return platformType@var231 ;
+294: }
+295:
+296: static CppcheckLibraryData :: Reflection loadReflection ( QXmlStreamReader & xmlReader@var238 )
+297: {
+298: CppcheckLibraryData ::@expr1073743128 Reflection reflection@var239 ;
+299:
+300: QXmlStreamReader ::@expr1073743129 TokenType type@var240 ;
+301: while (@expr1073743130 (@expr1073743131 type@var240 =@expr1073743132 xmlReader@var238 .@expr1073743133 readNext (@expr1073743134 ) ) !=@expr1073743135 QXmlStreamReader ::@expr1073743136 EndElement@expr1073743126 ||@expr1073743137
+302: xmlReader@var238 .@expr1314 name (@expr1315 ) .@expr1316 toString (@expr1317 ) !=@expr1073743142 "reflection" ) {
+303: if (@expr1073743143 type@var240 !=@expr1073743144 QXmlStreamReader ::@expr1073743145 StartElement@expr1073743127 ) {
+304: continue ; }
+305: const QString elementName@var241 =@expr1073743146 xmlReader@var238 .@expr1314 name (@expr1315 ) .@expr1316 toString (@expr1317 ) ;
+306: if (@expr1073743151 elementName@var241 ==@expr1073743152 "call" ) {
+307: CppcheckLibraryData ::@expr1073743153 Reflection ::@expr1073743154 Call call@var242 ;
+308: if (@expr1073743155 xmlReader@var238 .@expr1332 attributes (@expr1333 ) .@expr1073743158 hasAttribute (@expr1073743159 "arg" ) ) {
+309: call@var242 .@expr1073743160 arg@var243 =@expr1073743161 xmlReader@var238 .@expr1332 attributes (@expr1333 ) .@expr1073743164 value (@expr1073743165 "arg" ) .@expr1073743166 toInt (@expr1073743167 ) ;
+310: } else {
+311: mandatoryAttibuteMissing (@expr1073743168 xmlReader@var238 , "arg" ) ;
+312: }
+313: call@var242 .@expr1073743169 name@var244 =@expr1073743170 xmlReader@var238 .@expr1073743171 readElementText (@expr1073743172 ) ;
+314: reflection@var239 .@expr1073743173 calls@var245 .@expr1073743174 append (@expr1073743175 call@var242 ) ;
+315: } else {
+316: unhandledElement (@expr1073743176 xmlReader@var238 ) ;
+317: }
+318: }
+319:
+320: return reflection@var239 ;
+321: }
+322:
+323: static CppcheckLibraryData :: Markup loadMarkup ( QXmlStreamReader & xmlReader@var246 )
+324: {
+325: CppcheckLibraryData ::@expr1073743179 Markup markup@var247 ;
+326:
+327: QXmlStreamReader ::@expr1073743180 TokenType type@var248 ;
+328: if (@expr1073743181 xmlReader@var246 .@expr1358 attributes (@expr1359 ) .@expr1360 hasAttribute (@expr1073743185 "ext" ) ) {
+329: markup@var247 .@expr1073743186 ext@var249 =@expr1073743187 xmlReader@var246 .@expr1358 attributes (@expr1359 ) .@expr1366 value (@expr1073743191 "ext" ) .@expr1073743192 toString (@expr1073743193 ) ;
+330: } else {
+331: mandatoryAttibuteMissing (@expr1073743194 xmlReader@var246 , "ext" ) ;
+332: }
+333: if (@expr1073743195 xmlReader@var246 .@expr1358 attributes (@expr1359 ) .@expr1360 hasAttribute (@expr1073743199 "aftercode" ) ) {
+334: markup@var247 .@expr1073743200 afterCode@var250 =@expr1073743201 (@expr1073743202 xmlReader@var246 .@expr1358 attributes (@expr1359 ) .@expr1366 value (@expr1073743206 "aftercode" ) ==@expr1073743207 QString (@expr1384 "true" ) ) ?@expr1073743209 true :@expr1386 false ;
+335: } else {
+336: mandatoryAttibuteMissing (@expr1073743211 xmlReader@var246 , "aftercode" ) ;
+337: }
+338: if (@expr1073743212 xmlReader@var246 .@expr1358 attributes (@expr1359 ) .@expr1360 hasAttribute (@expr1073743216 "reporterrors" ) ) {
+339: markup@var247 .@expr1073743217 reportErrors@var251 =@expr1073743218 (@expr1073743219 xmlReader@var246 .@expr1358 attributes (@expr1359 ) .@expr1366 value (@expr1073743223 "reporterrors" ) ==@expr1073743224 QString (@expr1384 "true" ) ) ?@expr1073743226 true :@expr1386 false ;
+340: } else {
+341: mandatoryAttibuteMissing (@expr1073743228 xmlReader@var246 , "reporterrors" ) ;
+342: }
+343:
+344: while (@expr1073743229 (@expr1073743230 type@var248 =@expr1073743231 xmlReader@var246 .@expr1408 readNext (@expr1409 ) ) !=@expr1073743234 QXmlStreamReader ::@expr1411 EndElement@expr1353 ||@expr1073743236
+345: xmlReader@var246 .@expr1413 name (@expr1414 ) .@expr1415 toString (@expr1416 ) !=@expr1073743241 "markup" ) {
+346: if (@expr1418 type@var248 !=@expr1419 QXmlStreamReader ::@expr1420 StartElement@expr1354 ) {
+347: continue ; }
+348: const QString elementName@var252 =@expr1073743245 xmlReader@var246 .@expr1413 name (@expr1414 ) .@expr1415 toString (@expr1416 ) ;
+349: if (@expr1073743250 elementName@var252 ==@expr1073743251 "keywords" ) {
+350: while (@expr1073743252 (@expr1073743253 type@var248 =@expr1073743254 xmlReader@var246 .@expr1408 readNext (@expr1409 ) ) !=@expr1073743257 QXmlStreamReader ::@expr1411 EndElement@expr1353 ||@expr1073743259
+351: xmlReader@var246 .@expr1413 name (@expr1414 ) .@expr1415 toString (@expr1416 ) !=@expr1073743264 "keywords" ) {
+352: if (@expr1418 type@var248 !=@expr1419 QXmlStreamReader ::@expr1420 StartElement@expr1354 ) {
+353: continue ; }
+354: if (@expr1073743268 xmlReader@var246 .@expr1413 name (@expr1414 ) .@expr1415 toString (@expr1416 ) ==@expr1073743273 "keyword" ) {
+355: markup@var247 .@expr1073743274 keywords@var253 .@expr1073743275 append (@expr1073743276 xmlReader@var246 .@expr1358 attributes (@expr1359 ) .@expr1366 value (@expr1456 "name" ) .@expr1457 toString (@expr1458 ) ) ;
+356: } else {
+357: unhandledElement (@expr1459 xmlReader@var246 ) ;
+358: }
+359: }
+360: } else { if (@expr1073743284 elementName@var252 ==@expr1073743285 "codeblocks" ) {
+361: CppcheckLibraryData ::@expr1462 Markup ::@expr1073743287 CodeBlocks codeBlock@var254 ;
+362:
+363: while (@expr1073743288 (@expr1073743289 type@var248 =@expr1073743290 xmlReader@var246 .@expr1408 readNext (@expr1409 ) ) !=@expr1073743293 QXmlStreamReader ::@expr1411 EndElement@expr1353 ||@expr1073743295
+364: xmlReader@var246 .@expr1413 name (@expr1414 ) .@expr1415 toString (@expr1416 ) !=@expr1073743300 "codeblocks" ) {
+365: if (@expr1418 type@var248 !=@expr1419 QXmlStreamReader ::@expr1420 StartElement@expr1354 ) {
+366: continue ; }
+367: if (@expr1073743304 xmlReader@var246 .@expr1413 name (@expr1414 ) .@expr1415 toString (@expr1416 ) ==@expr1073743309 "block" ) {
+368: codeBlock@var254 .@expr1073743310 blocks@var255 .@expr1073743311 append (@expr1073743312 xmlReader@var246 .@expr1358 attributes (@expr1359 ) .@expr1366 value (@expr1456 "name" ) .@expr1457 toString (@expr1458 ) ) ;
+369: } else { if (@expr1073743319 xmlReader@var246 .@expr1413 name (@expr1414 ) .@expr1415 toString (@expr1416 ) ==@expr1073743324 "structure" ) {
+370: codeBlock@var254 .@expr1073743325 offset@var256 =@expr1073743326 xmlReader@var246 .@expr1358 attributes (@expr1359 ) .@expr1366 value (@expr1073743330 "offset" ) .@expr1073743331 toInt (@expr1073743332 ) ;
+371: codeBlock@var254 .@expr1073743333 start@var257 =@expr1073743334 xmlReader@var246 .@expr1358 attributes (@expr1359 ) .@expr1366 value (@expr1073743338 "start" ) .@expr1073743339 toString (@expr1073743340 ) ;
+372: codeBlock@var254 .@expr1073743341 end@var258 =@expr1073743342 xmlReader@var246 .@expr1358 attributes (@expr1359 ) .@expr1366 value (@expr1073743346 "end" ) .@expr1073743347 toString (@expr1073743348 ) ;
+373: } else {
+374: unhandledElement (@expr1459 xmlReader@var246 ) ;
+375: } }
+376: }
+377: markup@var247 .@expr1073743350 codeBlocks@var259 .@expr1073743351 append (@expr1073743352 codeBlock@var254 ) ;
+378: } else { if (@expr1073743353 elementName@var252 ==@expr1073743354 "exported" ) {
+379: CppcheckLibraryData ::@expr1462 Markup ::@expr1073743356 Exporter exporter@var260 ;
+380:
+381: while (@expr1073743357 (@expr1073743358 type@var248 =@expr1073743359 xmlReader@var246 .@expr1408 readNext (@expr1409 ) ) !=@expr1073743362 QXmlStreamReader ::@expr1411 EndElement@expr1353 ||@expr1073743364
+382: xmlReader@var246 .@expr1413 name (@expr1414 ) .@expr1415 toString (@expr1416 ) !=@expr1073743369 "exported" ) {
+383: if (@expr1418 type@var248 !=@expr1419 QXmlStreamReader ::@expr1420 StartElement@expr1354 ) {
+384: continue ; }
+385: if (@expr1073743373 xmlReader@var246 .@expr1413 name (@expr1414 ) .@expr1415 toString (@expr1416 ) ==@expr1073743378 "exporter" ) {
+386: exporter@var260 .@expr1073743379 prefix@var261 =@expr1073743380 xmlReader@var246 .@expr1358 attributes (@expr1359 ) .@expr1366 value (@expr1073743384 "prefix" ) .@expr1073743385 toString (@expr1073743386 ) ;
+387: } else { if (@expr1073743387 xmlReader@var246 .@expr1413 name (@expr1414 ) .@expr1415 toString (@expr1416 ) ==@expr1073743392 "prefix" ) {
+388: exporter@var260 .@expr1073743393 prefixList@var262 .@expr1073743394 append (@expr1073743395 xmlReader@var246 .@expr1572 readElementText (@expr1573 ) ) ;
+389: } else { if (@expr1073743398 xmlReader@var246 .@expr1413 name (@expr1414 ) .@expr1415 toString (@expr1416 ) ==@expr1073743403 "suffix" ) {
+390: exporter@var260 .@expr1073743404 suffixList@var263 .@expr1073743405 append (@expr1073743406 xmlReader@var246 .@expr1572 readElementText (@expr1573 ) ) ;
+391: } else {
+392: unhandledElement (@expr1459 xmlReader@var246 ) ;
+393: } } }
+394: }
+395: markup@var247 .@expr1073743410 exporter@var264 .@expr1073743411 append (@expr1073743412 exporter@var260 ) ;
+396: } else { if (@expr1073743413 elementName@var252 ==@expr1073743414 "imported" ) {
+397: while (@expr1073743415 (@expr1073743416 type@var248 =@expr1073743417 xmlReader@var246 .@expr1408 readNext (@expr1409 ) ) !=@expr1073743420 QXmlStreamReader ::@expr1411 EndElement@expr1353 ||@expr1073743422
+398: xmlReader@var246 .@expr1413 name (@expr1414 ) .@expr1415 toString (@expr1416 ) !=@expr1073743427 "imported" ) {
+399: if (@expr1418 type@var248 !=@expr1419 QXmlStreamReader ::@expr1420 StartElement@expr1354 ) {
+400: continue ; }
+401: if (@expr1073743431 xmlReader@var246 .@expr1413 name (@expr1414 ) .@expr1415 toString (@expr1416 ) ==@expr1073743436 "importer" ) {
+402: markup@var247 .@expr1073743437 importer@var265 .@expr1073743438 append (@expr1073743439 xmlReader@var246 .@expr1572 readElementText (@expr1573 ) ) ;
+403: } else {
+404: unhandledElement (@expr1459 xmlReader@var246 ) ;
+405: }
+406: }
+407: } else {
+408: unhandledElement (@expr1459 xmlReader@var246 ) ;
+409: } } } }
+410: }
+411:
+412: return markup@var247 ;
+413: }
+414:
+415: QString CppcheckLibraryData :: open ( QIODevice & file@var266 )
+416: {
+417: clear (@expr1073743444 ) ;
+418: QString comments@var267 ;
+419: QXmlStreamReader xmlReader@var268 (@expr1073743445 &@expr1073743446 file@var266 ) ;
+420: while (@expr1073743447 !@expr1073743448 xmlReader@var268 .@expr1073743449 atEnd (@expr1073743450 ) ) {
+421: const QXmlStreamReader ::@expr1073743451 TokenType t@var269 =@expr1073743452 xmlReader@var268 .@expr1073743453 readNext (@expr1073743454 ) ;
+422: switch (@expr1073743455 t@var269 ) {
+423: case QXmlStreamReader ::@expr1073743456 Comment :@expr1633 ;
+424: if (@expr1073743458 !@expr1073743459 comments@var267 .@expr1073743460 isEmpty (@expr1073743461 ) ) {
+425: comments@var267 +=@expr1073743462 "\n" ; }
+426: comments@var267 +=@expr1073743463 xmlReader@var268 .@expr1073743464 text (@expr1073743465 ) .@expr1073743466 toString (@expr1073743467 ) ;
+427: break ;
+428: case QXmlStreamReader ::@expr1073743468 StartElement :@expr1633 ;
+429: try {
+430: const QString elementName@var270 (@expr1073743470 xmlReader@var268 .@expr1073743471 name (@expr1073743472 ) .@expr1073743473 toString (@expr1073743474 ) ) ;
+431: if (@expr1073743475 elementName@var270 ==@expr1073743476 "def" ) {
+432: ; }
+433: else { if (@expr1073743477 elementName@var270 ==@expr1073743478 "container" ) {
+434: containers@var109 .@expr1073743479 append (@expr1073743480 loadContainer (@expr1073743481 xmlReader@var268 ) ) ; }
+435: else { if (@expr1073743482 elementName@var270 ==@expr1073743483 "define" ) {
+436: defines@var110 .@expr1073743484 append (@expr1073743485 loadDefine (@expr1073743486 xmlReader@var268 ) ) ; }
+437: else { if (@expr1073743487 elementName@var270 ==@expr1073743488 "undefine" ) {
+438: undefines@var116 .@expr1073743489 append (@expr1073743490 loadUndefine (@expr1073743491 xmlReader@var268 ) ) ; }
+439: else { if (@expr1073743492 elementName@var270 ==@expr1073743493 "function" ) {
+440: functions@var111 .@expr1073743494 append (@expr1073743495 loadFunction (@expr1073743496 xmlReader@var268 , comments@var267 ) ) ; }
+441: else { if (@expr1073743497 elementName@var270 ==@expr1073743498 "memory" ||@expr1073743499 elementName@var270 ==@expr1073743500 "resource" ) {
+442: memoryresource@var112 .@expr1073743501 append (@expr1073743502 loadMemoryResource (@expr1073743503 xmlReader@var268 ) ) ; }
+443: else { if (@expr1073743504 elementName@var270 ==@expr1073743505 "podtype" ) {
+444: podtypes@var113 .@expr1073743506 append (@expr1073743507 loadPodType (@expr1073743508 xmlReader@var268 ) ) ; }
+445: else { if (@expr1073743509 elementName@var270 ==@expr1073743510 "smart-pointer" ) {
+446: smartPointers@var117 .@expr1073743511 append (@expr1073743512 loadSmartPointer (@expr1073743513 xmlReader@var268 ) ) ; }
+447: else { if (@expr1073743514 elementName@var270 ==@expr1073743515 "type-checks" ) {
+448: typeChecks@var114 .@expr1073743516 append (@expr1073743517 loadTypeChecks (@expr1073743518 xmlReader@var268 ) ) ; }
+449: else { if (@expr1073743519 elementName@var270 ==@expr1073743520 "platformtype" ) {
+450: platformTypes@var115 .@expr1073743521 append (@expr1073743522 loadPlatformType (@expr1073743523 xmlReader@var268 ) ) ; }
+451: else { if (@expr1073743524 elementName@var270 ==@expr1073743525 "reflection" ) {
+452: reflections@var118 .@expr1073743526 append (@expr1073743527 loadReflection (@expr1073743528 xmlReader@var268 ) ) ; }
+453: else { if (@expr1073743529 elementName@var270 ==@expr1073743530 "markup" ) {
+454: markups@var119 .@expr1073743531 append (@expr1073743532 loadMarkup (@expr1073743533 xmlReader@var268 ) ) ; }
+455: else {
+456: unhandledElement (@expr1073743534 xmlReader@var268 ) ; } } } } } } } } } } } }
+457: } catch (@expr1073743535 std ::@expr1073743536 runtime_error & e@var271 ) {
+458: return e@var271 .@expr1073743537 what (@expr1073743538 ) ;
+459: }
+460: comments@var267 .@expr1073743539 clear (@expr1073743540 ) ;
+461: break ;
+462: default :@expr1633 ;
+463: break ;
+464: }
+465: }
+466: if (@expr1073743542 xmlReader@var268 .@expr1073743543 hasError (@expr1073743544 ) ) {
+467: return xmlReader@var268 .@expr1073743545 errorString (@expr1073743546 ) ;
+468: } else {
+469: return QString (@expr1073743547 ) ;
+470: }
+471: }
+472:
+473: static void writeContainerFunctions ( QXmlStreamWriter & xmlWriter@var272 , const QString & name@var273 , int extra@var274 , const QList < struct CppcheckLibraryData :: Container :: Function > & functions@var275 )
+474: {
+475: if (@expr1073743548 functions@var275 .@expr1073743549 isEmpty (@expr1073743550 ) &&@expr1073743551 extra@var274 <@expr1073743552 0 ) {
+476: return ; }
+477: xmlWriter@var272 .@expr1729 writeStartElement (@expr1073743554 name@var273 ) ;
+478: if (@expr1073743555 extra@var274 >=@expr1073743556 0 ) {
+479: if (@expr1073743557 name@var273 ==@expr1073743558 "access" ) {
+480: xmlWriter@var272 .@expr1735 writeAttribute (@expr1073743560 "indexOperator" , "array-like" ) ; }
+481: else { if (@expr1073743561 name@var273 ==@expr1073743562 "size" ) {
+482: xmlWriter@var272 .@expr1735 writeAttribute (@expr1073743564 "templateParameter" , QString ::@expr1073743565 number (@expr1073743566 extra@var274 ) ) ; } }
+483: }
+484: for (@expr1073743567 const CppcheckLibraryData ::@expr1744 Container ::@expr1744 Function &@expr1073743570 function@var276 :@expr1073743571 functions@var275 ) {
+485: xmlWriter@var272 .@expr1729 writeStartElement (@expr1073743573 "function" ) ;
+486: xmlWriter@var272 .@expr1735 writeAttribute (@expr1073743575 "name" , function@var276 .@expr1073743576 name@var277 ) ;
+487: if (@expr1073743577 !@expr1073743578 function@var276 .@expr1755 action@var278 .@expr1073743580 isEmpty (@expr1073743581 ) ) {
+488: xmlWriter@var272 .@expr1735 writeAttribute (@expr1073743583 "action" , function@var276 .@expr1755 action@var278 ) ; }
+489: if (@expr1073743585 !@expr1073743586 function@var276 .@expr1763 yields@var279 .@expr1073743588 isEmpty (@expr1073743589 ) ) {
+490: xmlWriter@var272 .@expr1735 writeAttribute (@expr1073743591 "yields" , function@var276 .@expr1763 yields@var279 ) ; }
+491: xmlWriter@var272 .@expr1769 writeEndElement (@expr1770 ) ;
+492: }
+493: xmlWriter@var272 .@expr1769 writeEndElement (@expr1770 ) ;
+494: }
+495:
+496: static void writeContainer ( QXmlStreamWriter & xmlWriter@var280 , const CppcheckLibraryData :: Container & container@var281 )
+497: {
+498: xmlWriter@var280 .@expr1773 writeStartElement (@expr1073743598 "container" ) ;
+499: xmlWriter@var280 .@expr1775 writeAttribute (@expr1073743600 "id" , container@var281 .@expr1073743601 id@var282 ) ;
+500: if (@expr1073743602 !@expr1073743603 container@var281 .@expr1780 startPattern@var283 .@expr1073743605 isEmpty (@expr1073743606 ) ) {
+501: xmlWriter@var280 .@expr1775 writeAttribute (@expr1073743608 "startPattern" , container@var281 .@expr1780 startPattern@var283 ) ; }
+502: if (@expr1073743610 !@expr1073743611 container@var281 .@expr1788 endPattern@var284 .@expr1073743613 isNull (@expr1073743614 ) ) {
+503: xmlWriter@var280 .@expr1775 writeAttribute (@expr1073743616 "endPattern" , container@var281 .@expr1788 endPattern@var284 ) ; }
+504: if (@expr1073743618 !@expr1073743619 container@var281 .@expr1796 inherits@var285 .@expr1073743621 isEmpty (@expr1073743622 ) ) {
+505: xmlWriter@var280 .@expr1775 writeAttribute (@expr1073743624 "inherits" , container@var281 .@expr1796 inherits@var285 ) ; }
+506: if (@expr1073743626 !@expr1073743627 container@var281 .@expr1804 opLessAllowed@var286 .@expr1073743629 isEmpty (@expr1073743630 ) ) {
+507: xmlWriter@var280 .@expr1775 writeAttribute (@expr1073743632 "opLessAllowed" , container@var281 .@expr1804 opLessAllowed@var286 ) ; }
+508: if (@expr1073743634 !@expr1073743635 container@var281 .@expr1812 itEndPattern@var287 .@expr1073743637 isEmpty (@expr1073743638 ) ) {
+509: xmlWriter@var280 .@expr1775 writeAttribute (@expr1073743640 "itEndPattern" , container@var281 .@expr1812 itEndPattern@var287 ) ; }
+510:
+511: if (@expr1073743642 !@expr1819 container@var281 .@expr1820 type@var288 .@expr1821 templateParameter@var289 .@expr1822 isEmpty (@expr1823 ) ||@expr1073743648 !@expr1825 container@var281 .@expr1820 type@var288 .@expr1827 string@var290 .@expr1828 isEmpty (@expr1829 ) ) {
+512: xmlWriter@var280 .@expr1773 writeStartElement (@expr1073743655 "type" ) ;
+513: if (@expr1073743656 !@expr1819 container@var281 .@expr1820 type@var288 .@expr1821 templateParameter@var289 .@expr1822 isEmpty (@expr1823 ) ) {
+514: xmlWriter@var280 .@expr1775 writeAttribute (@expr1073743663 "templateParameter" , container@var281 .@expr1820 type@var288 .@expr1821 templateParameter@var289 ) ; }
+515: if (@expr1073743666 !@expr1825 container@var281 .@expr1820 type@var288 .@expr1827 string@var290 .@expr1828 isEmpty (@expr1829 ) ) {
+516: xmlWriter@var280 .@expr1775 writeAttribute (@expr1073743673 "string" , container@var281 .@expr1820 type@var288 .@expr1827 string@var290 ) ; }
+517: xmlWriter@var280 .@expr1852 writeEndElement (@expr1853 ) ;
+518: }
+519: writeContainerFunctions (@expr1073743678 xmlWriter@var280 , "size" , container@var281 .@expr1073743679 size_templateParameter@var291 , container@var281 .@expr1073743680 sizeFunctions@var292 ) ;
+520: writeContainerFunctions (@expr1073743681 xmlWriter@var280 , "access" , container@var281 .@expr1073743682 access_arrayLike@var293 ?@expr1073743683 1 :@expr1073743684 -1 , container@var281 .@expr1073743685 accessFunctions@var294 ) ;
+521: writeContainerFunctions (@expr1073743686 xmlWriter@var280 , "other" , -1 , container@var281 .@expr1073743687 otherFunctions@var295 ) ;
+522: xmlWriter@var280 .@expr1852 writeEndElement (@expr1853 ) ;
+523: }
+524:
+525: static void writeFunction ( QXmlStreamWriter & xmlWriter@var296 , const CppcheckLibraryData :: Function & function@var297 )
+526: {
+527: QString comments@var298 ; comments@var298 =@expr1073743690 function@var297 .@expr1073743691 comments@var299 ;
+528: while (@expr1073743692 comments@var298 .@expr1073743693 startsWith (@expr1073743694 "\n" ) ) {
+529: comments@var298 =@expr1073743695 comments@var298 .@expr1073743696 mid (@expr1073743697 1 ) ; }
+530: while (@expr1073743698 comments@var298 .@expr1073743699 endsWith (@expr1073743700 "\n" ) ) {
+531: comments@var298 .@expr1073743701 chop (@expr1073743702 1 ) ; }
+532: for (@expr1073743703 const QString &@expr1880 comment@var300 :@expr1073743705 comments@var298 .@expr1073743706 split (@expr1073743707 '\n' ) ) {
+533: if (@expr1073743708 comment@var300 .@expr1073743709 length (@expr1073743710 ) >=@expr1073743711 1 ) {
+534: xmlWriter@var296 .@expr1073743712 writeComment (@expr1073743713 comment@var300 ) ; }
+535: }
+536:
+537: xmlWriter@var296 .@expr1890 writeStartElement (@expr1073743715 "function" ) ;
+538: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743717 "name" , function@var297 .@expr1073743718 name@var301 ) ;
+539:
+540: if (@expr1073743719 function@var297 .@expr1073743720 useretval@var302 ) {
+541: xmlWriter@var296 .@expr1897 writeEmptyElement (@expr1073743722 "use-retval" ) ; }
+542: if (@expr1073743723 function@var297 .@expr1073743724 gccConst@var303 ) {
+543: xmlWriter@var296 .@expr1897 writeEmptyElement (@expr1073743726 "const" ) ; }
+544: if (@expr1073743727 function@var297 .@expr1073743728 gccPure@var304 ) {
+545: xmlWriter@var296 .@expr1897 writeEmptyElement (@expr1073743730 "pure" ) ; }
+546: if (@expr1073743731 !@expr1073743732 function@var297 .@expr1909 returnValue@var305 .@expr1073743734 empty (@expr1073743735 ) ) {
+547: xmlWriter@var296 .@expr1890 writeStartElement (@expr1073743737 "returnValue" ) ;
+548: if (@expr1073743738 !@expr1073743739 function@var297 .@expr1909 returnValue@var305 .@expr1917 type@var306 .@expr1073743742 isNull (@expr1073743743 ) ) {
+549: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743745 "type" , function@var297 .@expr1909 returnValue@var305 .@expr1917 type@var306 ) ; }
+550: if (@expr1073743748 function@var297 .@expr1909 returnValue@var305 .@expr1926 container@var307 >=@expr1073743751 0 ) {
+551: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743753 "container" , QString ::@expr1930 number (@expr1073743755 function@var297 .@expr1909 returnValue@var305 .@expr1926 container@var307 ) ) ; }
+552: if (@expr1073743758 !@expr1073743759 function@var297 .@expr1909 returnValue@var305 .@expr1937 value@var308 .@expr1073743762 isNull (@expr1073743763 ) ) {
+553: xmlWriter@var296 .@expr1940 writeCharacters (@expr1073743765 function@var297 .@expr1909 returnValue@var305 .@expr1937 value@var308 ) ; }
+554: xmlWriter@var296 .@expr1944 writeEndElement (@expr1945 ) ;
+555: }
+556: if (@expr1073743770 function@var297 .@expr1947 noreturn@var309 !=@expr1073743772 CppcheckLibraryData ::@expr1949 Function ::@expr1073743774 Unknown ) {
+557: xmlWriter@var296 .@expr1951 writeTextElement (@expr1073743776 "noreturn" , (@expr1073743777 function@var297 .@expr1947 noreturn@var309 ==@expr1073743779 CppcheckLibraryData ::@expr1949 Function ::@expr1073743781 True ) ?@expr1073743782 "true" :@expr1073743783 "false" ) ; }
+558: if (@expr1073743784 function@var297 .@expr1073743785 leakignore@var310 ) {
+559: xmlWriter@var296 .@expr1897 writeEmptyElement (@expr1073743787 "leak-ignore" ) ; }
+560:
+561: for (@expr1073743788 const CppcheckLibraryData ::@expr1965 Function ::@expr1965 Arg &@expr1880 arg@var311 :@expr1073743792 function@var297 .@expr1073743793 args@var312 ) {
+562: if (@expr1970 arg@var311 .@expr1971 formatstr@var313 ) {
+563: xmlWriter@var296 .@expr1890 writeStartElement (@expr1073743797 "formatstr" ) ;
+564: if (@expr1073743798 !@expr1073743799 function@var297 .@expr1976 formatstr@var314 .@expr1977 scan@var315 .@expr1073743802 isNull (@expr1073743803 ) ) {
+565: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743805 "scan" , function@var297 .@expr1976 formatstr@var314 .@expr1977 scan@var315 ) ; }
+566: if (@expr1073743808 !@expr1073743809 function@var297 .@expr1976 formatstr@var314 .@expr1987 secure@var316 .@expr1073743812 isNull (@expr1073743813 ) ) {
+567: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743815 "secure" , function@var297 .@expr1976 formatstr@var314 .@expr1987 secure@var316 ) ; }
+568: xmlWriter@var296 .@expr1944 writeEndElement (@expr1945 ) ;
+569: }
+570:
+571: xmlWriter@var296 .@expr1890 writeStartElement (@expr1073743821 "arg" ) ;
+572: if (@expr1073743822 arg@var311 .@expr1999 nr@var317 ==@expr1073743824 CppcheckLibraryData ::@expr1949 Function ::@expr2002 Arg ::@expr1073743827 ANY@var36 ) {
+573: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743829 "nr" , "any" ) ; }
+574: else { if (@expr1073743830 arg@var311 .@expr1999 nr@var317 ==@expr1073743832 CppcheckLibraryData ::@expr1949 Function ::@expr2002 Arg ::@expr1073743835 VARIADIC@var37 ) {
+575: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743837 "nr" , "variadic" ) ; }
+576: else {
+577: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743839 "nr" , QString ::@expr1930 number (@expr1073743841 arg@var311 .@expr1999 nr@var317 ) ) ; } }
+578: if (@expr1073743843 !@expr1073743844 arg@var311 .@expr2021 defaultValue@var318 .@expr1073743846 isNull (@expr1073743847 ) ) {
+579: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743849 "default" , arg@var311 .@expr2021 defaultValue@var318 ) ; }
+580: if (@expr1970 arg@var311 .@expr1971 formatstr@var313 ) {
+581: xmlWriter@var296 .@expr1897 writeEmptyElement (@expr1073743854 "formatstr" ) ; }
+582: if (@expr1073743855 arg@var311 .@expr1073743856 notnull@var319 ) {
+583: xmlWriter@var296 .@expr1897 writeEmptyElement (@expr1073743858 "not-null" ) ; }
+584: if (@expr1073743859 arg@var311 .@expr1073743860 notuninit@var320 ) {
+585: xmlWriter@var296 .@expr1897 writeEmptyElement (@expr1073743862 "not-uninit" ) ; }
+586: if (@expr1073743863 arg@var311 .@expr1073743864 notbool@var321 ) {
+587: xmlWriter@var296 .@expr1897 writeEmptyElement (@expr1073743866 "not-bool" ) ; }
+588: if (@expr1073743867 arg@var311 .@expr1073743868 strz@var322 ) {
+589: xmlWriter@var296 .@expr1897 writeEmptyElement (@expr1073743870 "strz" ) ; }
+590:
+591: if (@expr1073743871 !@expr1073743872 arg@var311 .@expr2049 valid@var323 .@expr1073743874 isEmpty (@expr1073743875 ) ) {
+592: xmlWriter@var296 .@expr1951 writeTextElement (@expr1073743877 "valid" , arg@var311 .@expr2049 valid@var323 ) ; }
+593:
+594: for (@expr1073743879 const CppcheckLibraryData ::@expr1965 Function ::@expr1965 Arg ::@expr1965 MinSize &@expr1880 minsize@var324 :@expr1073743884 arg@var311 .@expr1073743885 minsizes@var325 ) {
+595: xmlWriter@var296 .@expr1890 writeStartElement (@expr1073743887 "minsize" ) ;
+596: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743889 "type" , minsize@var324 .@expr1073743890 type@var326 ) ;
+597: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743892 "arg" , minsize@var324 .@expr1073743893 arg@var327 ) ;
+598: if (@expr1073743894 !@expr1073743895 minsize@var324 .@expr2072 arg2@var328 .@expr1073743897 isEmpty (@expr1073743898 ) ) {
+599: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743900 "arg2" , minsize@var324 .@expr2072 arg2@var328 ) ; }
+600: xmlWriter@var296 .@expr1944 writeEndElement (@expr1945 ) ;
+601: }
+602:
+603: if (@expr1073743904 arg@var311 .@expr2081 iterator@var329 .@expr2082 container@var330 >=@expr2083 0 ||@expr1073743908 !@expr2085 arg@var311 .@expr2081 iterator@var329 .@expr2087 type@var331 .@expr2088 isNull (@expr2089 ) ) {
+604: xmlWriter@var296 .@expr1890 writeStartElement (@expr1073743915 "iterator" ) ;
+605: if (@expr1073743916 arg@var311 .@expr2081 iterator@var329 .@expr2082 container@var330 >=@expr2083 0 ) {
+606: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743921 "container" , QString ::@expr1930 number (@expr1073743923 arg@var311 .@expr2081 iterator@var329 .@expr2082 container@var330 ) ) ; }
+607: if (@expr1073743926 !@expr2085 arg@var311 .@expr2081 iterator@var329 .@expr2087 type@var331 .@expr2088 isNull (@expr2089 ) ) {
+608: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743933 "type" , arg@var311 .@expr2081 iterator@var329 .@expr2087 type@var331 ) ; }
+609: xmlWriter@var296 .@expr1944 writeEndElement (@expr1945 ) ;
+610: }
+611:
+612: xmlWriter@var296 .@expr1944 writeEndElement (@expr1945 ) ;
+613: }
+614:
+615: if (@expr1073743940 !@expr1073743941 function@var297 .@expr2118 warn@var332 .@expr1073743943 isEmpty (@expr1073743944 ) ) {
+616: xmlWriter@var296 .@expr1890 writeStartElement (@expr1073743946 "warn" ) ;
+617:
+618: if (@expr1073743947 !@expr1073743948 function@var297 .@expr2118 warn@var332 .@expr2126 severity@var333 .@expr1073743951 isEmpty (@expr1073743952 ) ) {
+619: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743954 "severity" , function@var297 .@expr2118 warn@var332 .@expr2126 severity@var333 ) ; }
+620:
+621: if (@expr1073743957 !@expr1073743958 function@var297 .@expr2118 warn@var332 .@expr2136 cstd@var334 .@expr1073743961 isEmpty (@expr1073743962 ) ) {
+622: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743964 "cstd" , function@var297 .@expr2118 warn@var332 .@expr2136 cstd@var334 ) ; }
+623:
+624: if (@expr1073743967 !@expr1073743968 function@var297 .@expr2118 warn@var332 .@expr2146 alternatives@var335 .@expr1073743971 isEmpty (@expr1073743972 ) ) {
+625: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743974 "alternatives" , function@var297 .@expr2118 warn@var332 .@expr2146 alternatives@var335 ) ; }
+626:
+627: if (@expr1073743977 !@expr1073743978 function@var297 .@expr2118 warn@var332 .@expr2156 reason@var336 .@expr1073743981 isEmpty (@expr1073743982 ) ) {
+628: xmlWriter@var296 .@expr1892 writeAttribute (@expr1073743984 "reason" , function@var297 .@expr2118 warn@var332 .@expr2156 reason@var336 ) ; }
+629:
+630: if (@expr1073743987 !@expr1073743988 function@var297 .@expr2118 warn@var332 .@expr2166 msg@var337 .@expr1073743991 isEmpty (@expr1073743992 ) ) {
+631: xmlWriter@var296 .@expr1940 writeCharacters (@expr1073743994 function@var297 .@expr2118 warn@var332 .@expr2166 msg@var337 ) ; }
+632:
+633: xmlWriter@var296 .@expr1944 writeEndElement (@expr1945 ) ;
+634: }
+635:
+636: xmlWriter@var296 .@expr1944 writeEndElement (@expr1945 ) ;
+637: }
+638:
+639: static void writeMemoryResource ( QXmlStreamWriter & xmlWriter@var338 , const CppcheckLibraryData :: MemoryResource & mr@var339 )
+640: {
+641: xmlWriter@var338 .@expr2177 writeStartElement (@expr1073744002 mr@var339 .@expr2179 type@var340 ) ;
+642: for (@expr1073744004 const CppcheckLibraryData ::@expr2181 MemoryResource ::@expr2181 Alloc &@expr2183 alloc@var341 :@expr1073744008 mr@var339 .@expr1073744009 alloc@var342 ) {
+643: if (@expr1073744010 alloc@var341 .@expr2187 isRealloc@var343 ) {
+644: xmlWriter@var338 .@expr2177 writeStartElement (@expr1073744013 "realloc" ) ;
+645: } else {
+646: xmlWriter@var338 .@expr2177 writeStartElement (@expr1073744015 "alloc" ) ;
+647: }
+648: xmlWriter@var338 .@expr2192 writeAttribute (@expr1073744017 "init" , alloc@var341 .@expr1073744018 init@var344 ?@expr1073744019 "true" :@expr1073744020 "false" ) ;
+649: if (@expr1073744021 alloc@var341 .@expr2198 arg@var345 !=@expr1073744023 -1 ) {
+650: xmlWriter@var338 .@expr2192 writeAttribute (@expr1073744025 "arg" , QString (@expr2202 "%1" ) .@expr2203 arg (@expr1073744028 alloc@var341 .@expr2198 arg@var345 ) ) ;
+651: }
+652: if (@expr1073744030 alloc@var341 .@expr2187 isRealloc@var343 &&@expr1073744032 alloc@var341 .@expr2209 reallocArg@var346 !=@expr1073744034 -1 ) {
+653: xmlWriter@var338 .@expr2192 writeAttribute (@expr1073744036 "realloc-arg" , QString (@expr2202 "%1" ) .@expr2203 arg (@expr1073744039 alloc@var341 .@expr2209 reallocArg@var346 ) ) ;
+654: }
+655: if (@expr1073744041 mr@var339 .@expr2179 type@var340 ==@expr1073744043 "memory" &&@expr1073744044 !@expr1073744045 alloc@var341 .@expr2222 bufferSize@var347 .@expr1073744047 isEmpty (@expr1073744048 ) ) {
+656: xmlWriter@var338 .@expr2192 writeAttribute (@expr1073744050 "buffer-size" , alloc@var341 .@expr2222 bufferSize@var347 ) ;
+657: }
+658: xmlWriter@var338 .@expr2228 writeCharacters (@expr1073744053 alloc@var341 .@expr1073744054 name@var348 ) ;
+659: xmlWriter@var338 .@expr2231 writeEndElement (@expr2232 ) ;
+660: }
+661:
+662: for (@expr1073744057 const CppcheckLibraryData ::@expr2181 MemoryResource ::@expr2181 Dealloc &@expr2183 dealloc@var349 :@expr1073744061 mr@var339 .@expr1073744062 dealloc@var350 ) {
+663: xmlWriter@var338 .@expr2177 writeStartElement (@expr1073744064 "dealloc" ) ;
+664: if (@expr1073744065 dealloc@var349 .@expr2242 arg@var351 !=@expr1073744067 -1 ) {
+665: xmlWriter@var338 .@expr2192 writeAttribute (@expr1073744069 "arg" , QString (@expr2202 "%1" ) .@expr2203 arg (@expr1073744072 dealloc@var349 .@expr2242 arg@var351 ) ) ;
+666: }
+667: xmlWriter@var338 .@expr2228 writeCharacters (@expr1073744075 dealloc@var349 .@expr1073744076 name@var352 ) ;
+668: xmlWriter@var338 .@expr2231 writeEndElement (@expr2232 ) ;
+669: }
+670:
+671: for (@expr1073744079 const QString &@expr2183 use@var353 :@expr1073744081 mr@var339 .@expr1073744082 use@var354 ) {
+672: xmlWriter@var338 .@expr1073744083 writeTextElement (@expr1073744084 "use" , use@var353 ) ;
+673: }
+674: xmlWriter@var338 .@expr2231 writeEndElement (@expr2232 ) ;
+675: }
+676:
+677: static void writeTypeChecks ( QXmlStreamWriter & xmlWriter@var355 , const QList < QPair < QString , QString > > & typeChecks@var356 )
+678: {
+679: xmlWriter@var355 .@expr2263 writeStartElement (@expr1073744088 "type-checks" ) ;
+680: if (@expr2265 !@expr2266 typeChecks@var356 .@expr2267 isEmpty (@expr2268 ) ) {
+681: xmlWriter@var355 .@expr2263 writeStartElement (@expr1073744094 "unusedvar" ) ;
+682: }
+683: for (@expr1073744095 const QPair < QString , QString > &@expr1073744096 check@var357 :@expr1073744097 typeChecks@var356 ) {
+684: xmlWriter@var355 .@expr2263 writeStartElement (@expr1073744099 check@var357 .@expr1073744100 first@var358 ) ;
+685: xmlWriter@var355 .@expr1073744101 writeCharacters (@expr1073744102 check@var357 .@expr1073744103 second@var359 ) ;
+686: xmlWriter@var355 .@expr2280 writeEndElement (@expr2281 ) ;
+687: }
+688: if (@expr2265 !@expr2266 typeChecks@var356 .@expr2267 isEmpty (@expr2268 ) ) {
+689: xmlWriter@var355 .@expr2280 writeEndElement (@expr2281 ) ;
+690: }
+691: xmlWriter@var355 .@expr2280 writeEndElement (@expr2281 ) ;
+692: }
+693:
+694: static void writePlatformType ( QXmlStreamWriter & xmlWriter@var360 , const CppcheckLibraryData :: PlatformType & pt@var361 )
+695: {
+696: xmlWriter@var360 .@expr2290 writeStartElement (@expr1073744115 "platformtype" ) ;
+697: xmlWriter@var360 .@expr2292 writeAttribute (@expr1073744117 "name" , pt@var361 .@expr1073744118 name@var362 ) ;
+698: xmlWriter@var360 .@expr2292 writeAttribute (@expr1073744120 "value" , pt@var361 .@expr1073744121 value@var363 ) ;
+699: for (@expr1073744122 const QString &@expr2299 type@var364 :@expr1073744124 pt@var361 .@expr1073744125 types@var365 ) {
+700: xmlWriter@var360 .@expr2290 writeStartElement (@expr1073744127 type@var364 ) ;
+701: xmlWriter@var360 .@expr2304 writeEndElement (@expr2305 ) ;
+702: }
+703: for (@expr1073744130 const QString &@expr2299 platform@var366 :@expr1073744132 pt@var361 .@expr1073744133 platforms@var367 ) {
+704: xmlWriter@var360 .@expr2290 writeStartElement (@expr1073744135 "platform" ) ;
+705: if (@expr1073744136 !@expr1073744137 platform@var366 .@expr1073744138 isEmpty (@expr1073744139 ) ) {
+706: xmlWriter@var360 .@expr2292 writeAttribute (@expr1073744141 "type" , platform@var366 ) ;
+707: }
+708: xmlWriter@var360 .@expr2304 writeEndElement (@expr2305 ) ;
+709: }
+710: xmlWriter@var360 .@expr2304 writeEndElement (@expr2305 ) ;
+711: }
+712:
+713: static void writeReflection ( QXmlStreamWriter & xmlWriter@var368 , const CppcheckLibraryData :: Reflection & refl@var369 )
+714: {
+715: xmlWriter@var368 .@expr2322 writeStartElement (@expr1073744147 "reflection" ) ;
+716: for (@expr1073744148 const CppcheckLibraryData ::@expr2325 Reflection ::@expr2325 Call &@expr1073744151 call@var370 :@expr1073744152 refl@var369 .@expr1073744153 calls@var371 ) {
+717: xmlWriter@var368 .@expr2322 writeStartElement (@expr1073744155 "call" ) ;
+718: xmlWriter@var368 .@expr1073744156 writeAttribute (@expr1073744157 "arg" , QString (@expr1073744158 "%1" ) .@expr1073744159 arg (@expr1073744160 call@var370 .@expr1073744161 arg@var372 ) ) ;
+719: xmlWriter@var368 .@expr1073744162 writeCharacters (@expr1073744163 call@var370 .@expr1073744164 name@var373 ) ;
+720: xmlWriter@var368 .@expr2341 writeEndElement (@expr2342 ) ;
+721: }
+722: xmlWriter@var368 .@expr2341 writeEndElement (@expr2342 ) ;
+723: }
+724:
+725: static void writeMarkup ( QXmlStreamWriter & xmlWriter@var374 , const CppcheckLibraryData :: Markup & mup@var375 )
+726: {
+727: xmlWriter@var374 .@expr2345 writeStartElement (@expr1073744170 "markup" ) ;
+728: xmlWriter@var374 .@expr2347 writeAttribute (@expr1073744172 "ext" , mup@var375 .@expr1073744173 ext@var376 ) ;
+729: xmlWriter@var374 .@expr2347 writeAttribute (@expr1073744175 "aftercode" , QVariant (@expr1073744176 mup@var375 .@expr1073744177 afterCode@var377 ) .@expr1073744178 toString (@expr1073744179 ) ) ;
+730: xmlWriter@var374 .@expr2347 writeAttribute (@expr1073744181 "reporterrors" , QVariant (@expr1073744182 mup@var375 .@expr1073744183 reportErrors@var378 ) .@expr1073744184 toString (@expr1073744185 ) ) ;
+731: if (@expr1073744186 !@expr1073744187 mup@var375 .@expr2364 keywords@var379 .@expr1073744189 isEmpty (@expr1073744190 ) ) {
+732: xmlWriter@var374 .@expr2345 writeStartElement (@expr1073744192 "keywords" ) ;
+733: for (@expr1073744193 const QString &@expr2370 keyword@var380 :@expr1073744195 mup@var375 .@expr2364 keywords@var379 ) {
+734: xmlWriter@var374 .@expr2345 writeStartElement (@expr1073744198 "keyword" ) ;
+735: xmlWriter@var374 .@expr2347 writeAttribute (@expr1073744200 "name" , keyword@var380 ) ;
+736: xmlWriter@var374 .@expr2377 writeEndElement (@expr2378 ) ;
+737: }
+738: xmlWriter@var374 .@expr2377 writeEndElement (@expr2378 ) ;
+739: }
+740: if (@expr1073744205 !@expr1073744206 mup@var375 .@expr2383 importer@var381 .@expr1073744208 isEmpty (@expr1073744209 ) ) {
+741: xmlWriter@var374 .@expr2345 writeStartElement (@expr1073744211 "imported" ) ;
+742: for (@expr1073744212 const QString &@expr2370 import@var382 :@expr1073744214 mup@var375 .@expr2383 importer@var381 ) {
+743: xmlWriter@var374 .@expr2345 writeStartElement (@expr1073744217 "importer" ) ;
+744: xmlWriter@var374 .@expr2394 writeCharacters (@expr1073744219 import@var382 ) ;
+745: xmlWriter@var374 .@expr2377 writeEndElement (@expr2378 ) ;
+746: }
+747: xmlWriter@var374 .@expr2377 writeEndElement (@expr2378 ) ;
+748: }
+749: if (@expr1073744224 !@expr1073744225 mup@var375 .@expr2402 exporter@var383 .@expr1073744227 isEmpty (@expr1073744228 ) ) {
+750: xmlWriter@var374 .@expr2345 writeStartElement (@expr1073744230 "exported" ) ;
+751: for (@expr1073744231 const CppcheckLibraryData ::@expr2408 Markup ::@expr2408 Exporter &@expr2370 exporter@var384 :@expr1073744235 mup@var375 .@expr2402 exporter@var383 ) {
+752: xmlWriter@var374 .@expr2345 writeStartElement (@expr1073744238 "exporter" ) ;
+753: xmlWriter@var374 .@expr2347 writeAttribute (@expr1073744240 "prefix" , exporter@var384 .@expr1073744241 prefix@var385 ) ;
+754: for (@expr1073744242 const QString &@expr2370 prefix@var386 :@expr1073744244 exporter@var384 .@expr1073744245 prefixList@var387 ) {
+755: xmlWriter@var374 .@expr2345 writeStartElement (@expr1073744247 "prefix" ) ;
+756: xmlWriter@var374 .@expr2394 writeCharacters (@expr1073744249 prefix@var386 ) ;
+757: xmlWriter@var374 .@expr2377 writeEndElement (@expr2378 ) ;
+758: }
+759: for (@expr1073744252 const QString &@expr2370 suffix@var388 :@expr1073744254 exporter@var384 .@expr1073744255 suffixList@var389 ) {
+760: xmlWriter@var374 .@expr2345 writeStartElement (@expr1073744257 "suffix" ) ;
+761: xmlWriter@var374 .@expr2394 writeCharacters (@expr1073744259 suffix@var388 ) ;
+762: xmlWriter@var374 .@expr2377 writeEndElement (@expr2378 ) ;
+763: }
+764: xmlWriter@var374 .@expr2377 writeEndElement (@expr2378 ) ;
+765: }
+766: xmlWriter@var374 .@expr2377 writeEndElement (@expr2378 ) ;
+767: }
+768: if (@expr1073744266 !@expr1073744267 mup@var375 .@expr2444 codeBlocks@var390 .@expr1073744269 isEmpty (@expr1073744270 ) ) {
+769: for (@expr1073744271 const CppcheckLibraryData ::@expr2408 Markup ::@expr2408 CodeBlocks &@expr2370 codeblock@var391 :@expr1073744275 mup@var375 .@expr2444 codeBlocks@var390 ) {
+770: xmlWriter@var374 .@expr2345 writeStartElement (@expr1073744278 "codeblocks" ) ;
+771: for (@expr1073744279 const QString &@expr2370 block@var392 :@expr1073744281 codeblock@var391 .@expr1073744282 blocks@var393 ) {
+772: xmlWriter@var374 .@expr2345 writeStartElement (@expr1073744284 "block" ) ;
+773: xmlWriter@var374 .@expr2347 writeAttribute (@expr1073744286 "name" , block@var392 ) ;
+774: xmlWriter@var374 .@expr2377 writeEndElement (@expr2378 ) ;
+775: }
+776: xmlWriter@var374 .@expr2345 writeStartElement (@expr1073744290 "structure" ) ;
+777: xmlWriter@var374 .@expr2347 writeAttribute (@expr1073744292 "offset" , QString (@expr1073744293 "%1" ) .@expr1073744294 arg (@expr1073744295 codeblock@var391 .@expr1073744296 offset@var394 ) ) ;
+778: xmlWriter@var374 .@expr2347 writeAttribute (@expr1073744298 "start" , codeblock@var391 .@expr1073744299 start@var395 ) ;
+779: xmlWriter@var374 .@expr2347 writeAttribute (@expr1073744301 "end" , codeblock@var391 .@expr1073744302 end@var396 ) ;
+780: xmlWriter@var374 .@expr2377 writeEndElement (@expr2378 ) ;
+781: xmlWriter@var374 .@expr2377 writeEndElement (@expr2378 ) ;
+782: }
+783: }
+784: xmlWriter@var374 .@expr2377 writeEndElement (@expr2378 ) ;
+785: }
+786:
+787: QString CppcheckLibraryData :: toString ( ) const
+788: {
+789: QString outputString@var397 ;
+790: QXmlStreamWriter xmlWriter@var398 (@expr1073744309 &@expr1073744310 outputString@var397 ) ;
+791: xmlWriter@var398 .@expr1073744311 setAutoFormatting (@expr1073744312 true ) ;
+792: xmlWriter@var398 .@expr1073744313 setAutoFormattingIndent (@expr1073744314 2 ) ;
+793: xmlWriter@var398 .@expr1073744315 writeStartDocument (@expr1073744316 "1.0" ) ;
+794: xmlWriter@var398 .@expr2493 writeStartElement (@expr1073744318 "def" ) ;
+795: xmlWriter@var398 .@expr2495 writeAttribute (@expr1073744320 "format" , "2" ) ;
+796:
+797: for (@expr1073744321 const Define &@expr2498 define@var399 :@expr1073744323 defines@var110 ) {
+798: xmlWriter@var398 .@expr2493 writeStartElement (@expr1073744325 "define" ) ;
+799: xmlWriter@var398 .@expr2495 writeAttribute (@expr1073744327 "name" , define@var399 .@expr1073744328 name@var400 ) ;
+800: xmlWriter@var398 .@expr2495 writeAttribute (@expr1073744330 "value" , define@var399 .@expr1073744331 value@var401 ) ;
+801: xmlWriter@var398 .@expr2508 writeEndElement (@expr2509 ) ;
+802: }
+803:
+804: for (@expr1073744334 const QString &@expr2498 undef@var402 :@expr1073744336 undefines@var116 ) {
+805: xmlWriter@var398 .@expr2493 writeStartElement (@expr1073744338 "undefine" ) ;
+806: xmlWriter@var398 .@expr2495 writeAttribute (@expr1073744340 "name" , undef@var402 ) ;
+807: xmlWriter@var398 .@expr2508 writeEndElement (@expr2509 ) ;
+808: }
+809:
+810: for (@expr1073744343 const Function &@expr2498 function@var403 :@expr1073744345 functions@var111 ) {
+811: writeFunction (@expr1073744346 xmlWriter@var398 , function@var403 ) ;
+812: }
+813:
+814: for (@expr1073744347 const MemoryResource &@expr2498 mr@var404 :@expr1073744349 memoryresource@var112 ) {
+815: writeMemoryResource (@expr1073744350 xmlWriter@var398 , mr@var404 ) ;
+816: }
+817:
+818: for (@expr1073744351 const Container &@expr2498 container@var405 :@expr1073744353 containers@var109 ) {
+819: writeContainer (@expr1073744354 xmlWriter@var398 , container@var405 ) ;
+820: }
+821:
+822: for (@expr1073744355 const PodType &@expr2498 podtype@var406 :@expr1073744357 podtypes@var113 ) {
+823: xmlWriter@var398 .@expr2493 writeStartElement (@expr1073744359 "podtype" ) ;
+824: xmlWriter@var398 .@expr2495 writeAttribute (@expr1073744361 "name" , podtype@var406 .@expr1073744362 name@var407 ) ;
+825: if (@expr1073744363 !@expr1073744364 podtype@var406 .@expr2541 stdtype@var408 .@expr1073744366 isEmpty (@expr1073744367 ) ) {
+826: xmlWriter@var398 .@expr2495 writeAttribute (@expr1073744369 "stdtype" , podtype@var406 .@expr2541 stdtype@var408 ) ; }
+827: if (@expr1073744371 !@expr1073744372 podtype@var406 .@expr2549 sign@var409 .@expr1073744374 isEmpty (@expr1073744375 ) ) {
+828: xmlWriter@var398 .@expr2495 writeAttribute (@expr1073744377 "sign" , podtype@var406 .@expr2549 sign@var409 ) ; }
+829: if (@expr1073744379 !@expr1073744380 podtype@var406 .@expr2557 size@var410 .@expr1073744382 isEmpty (@expr1073744383 ) ) {
+830: xmlWriter@var398 .@expr2495 writeAttribute (@expr1073744385 "size" , podtype@var406 .@expr2557 size@var410 ) ; }
+831: xmlWriter@var398 .@expr2508 writeEndElement (@expr2509 ) ;
+832: }
+833:
+834: for (@expr1073744389 const QList < QPair < QString , QString > > &@expr2498 check@var411 :@expr1073744391 typeChecks@var114 ) {
+835: writeTypeChecks (@expr1073744392 xmlWriter@var398 , check@var411 ) ;
+836: }
+837:
+838: for (@expr1073744393 const QString &@expr2498 smartPtr@var412 :@expr1073744395 smartPointers@var117 ) {
+839: xmlWriter@var398 .@expr2493 writeStartElement (@expr1073744397 "smart-pointer" ) ;
+840: xmlWriter@var398 .@expr2495 writeAttribute (@expr1073744399 "class-name" , smartPtr@var412 ) ;
+841: xmlWriter@var398 .@expr2508 writeEndElement (@expr2509 ) ;
+842: }
+843:
+844: for (@expr1073744402 const PlatformType &@expr2498 pt@var413 :@expr1073744404 platformTypes@var115 ) {
+845: writePlatformType (@expr1073744405 xmlWriter@var398 , pt@var413 ) ;
+846: }
+847:
+848: for (@expr1073744406 const Reflection &@expr2498 refl@var414 :@expr1073744408 reflections@var118 ) {
+849: writeReflection (@expr1073744409 xmlWriter@var398 , refl@var414 ) ;
+850: }
+851:
+852: for (@expr1073744410 const Markup &@expr2498 mup@var415 :@expr1073744412 markups@var119 ) {
+853: writeMarkup (@expr1073744413 xmlWriter@var398 , mup@var415 ) ;
+854: }
+855:
+856: xmlWriter@var398 .@expr2508 writeEndElement (@expr2509 ) ;
+857:
+858: return outputString@var397 ;
+859: }
+
+
+
+##Value flow
+Line 33
+  access_arrayLike always {!<=-1,!>=2}
+  false always 0
+  -1 always -1
+Line 42
+  access_arrayLike always {!<=-1,!>=2}
+Line 66
+  Unknown always 2
+  gccPure always {!<=-1,!>=2}
+  false always 0
+  gccConst always {!<=-1,!>=2}
+  false always 0
+Line 67
+  leakignore always {!<=-1,!>=2}
+  false always 0
+  useretval always {!<=-1,!>=2}
+  false always 0
+Line 71
+  False always 0
+  True always 1
+  Unknown always 2
+Line 72
+  gccPure always {!<=-1,!>=2}
+Line 73
+  gccConst always {!<=-1,!>=2}
+Line 74
+  leakignore always {!<=-1,!>=2}
+Line 75
+  useretval always {!<=-1,!>=2}
+Line 77
+  -1 always -1
+Line 81
+  ( always {!<=-1,!>=2}
+Line 82
+  return always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  < always {!<=-1,!>=2}
+  0 always 0
+Line 90
+  nr always !<=-1
+  0 always 0
+  notbool always {!<=-1,!>=2}
+  false always 0
+  notnull always {!<=-1,!>=2}
+  false always 0
+  notuninit always {!<=-1,!>=2}
+  false always 0
+Line 91
+  formatstr always {!<=-1,!>=2}
+  false always 0
+  strz always {!<=-1,!>=2}
+  false always 0
+Line 94
+  nr always !<=-1
+Line 95
+  ANY always !<=-1
+Line 96
+  VARIADIC always !<=-1
+Line 98
+  notbool always {!<=-1,!>=2}
+Line 99
+  notnull always {!<=-1,!>=2}
+Line 100
+  notuninit always {!<=-1,!>=2}
+Line 101
+  formatstr always {!<=-1,!>=2}
+Line 102
+  strz always {!<=-1,!>=2}
+Line 111
+  -1 always -1
+Line 125
+  ( always {!<=-1,!>=2}
+Line 126
+  return always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 127
+  && always {!<=-1,!>=2}
+Line 128
+  && always {!<=-1,!>=2}
+Line 129
+  && always {!<=-1,!>=2}
+Line 139
+  isRealloc always {!<=-1,!>=2}
+  false always 0
+Line 140
+  init always {!<=-1,!>=2}
+  false always 0
+Line 141
+  -1 always -1
+Line 142
+  -1 always -1
+Line 145
+  isRealloc always {!<=-1,!>=2}
+Line 146
+  init always {!<=-1,!>=2}
+Line 154
+  -1 always -1
+Line 185
+  -1 always -1
+Line 198
+  -1 always -1
+Line 214
+  afterCode always {!<=-1,!>=2}
+Line 215
+  reportErrors always {!<=-1,!>=2}
+Line 26
+  ANY always !<=-1
+  = always 4294967295
+  ~ always 4294967295
+  0U always 0
+Line 27
+  VARIADIC always !<=-1
+  = always 4294967294
+  ~ always 4294967294
+  1U always 1
+Line 34
+  "line %1: Unhandled element %2" always "line %1: Unhandled element %2"
+Line 39
+  "line %1: Mandatory attribute '%2' missing in '%3'" always "line %1: Mandatory attribute '%2' missing in '%3'"
+Line 48
+  "id" always "id"
+Line 49
+  "inherits" always "inherits"
+Line 50
+  "startPattern" always "startPattern"
+Line 51
+  "endPattern" always "endPattern"
+Line 52
+  "opLessAllowed" always "opLessAllowed"
+Line 53
+  "itEndPattern" always "itEndPattern"
+Line 56
+  != always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 57
+  != always {!<=-1,!>=2}
+  "container" always "container"
+Line 58
+  != always {!<=-1,!>=2}
+Line 61
+  == always {!<=-1,!>=2}
+  "type" always "type"
+Line 62
+  "templateParameter" always "templateParameter"
+Line 63
+  "string" always "string"
+Line 64
+  == always {!<=-1,!>=2}
+  "size" always "size"
+  || always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "access" always "access"
+  || always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "other" always "other"
+Line 65
+  "indexOperator" always "indexOperator"
+Line 66
+  == always {!<=-1,!>=2}
+  "access" always "access"
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "array-like" always "array-like"
+Line 67
+  . always {!<=-1,!>=2}
+  access_arrayLike always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 68
+  "templateParameter" always "templateParameter"
+Line 69
+  == always {!<=-1,!>=2}
+  "size" always "size"
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+Line 73
+  == always {!<=-1,!>=2}
+Line 75
+  != always {!<=-1,!>=2}
+Line 78
+  "name" always "name"
+Line 79
+  "action" always "action"
+Line 80
+  "yields" always "yields"
+Line 81
+  == always {!<=-1,!>=2}
+  "size" always "size"
+Line 83
+  == always {!<=-1,!>=2}
+  "access" always "access"
+Line 98
+  "name" always "name"
+Line 99
+  "value" always "value"
+Line 105
+  "name" always "name"
+Line 110
+  "class-name" always "class-name"
+Line 117
+  != always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 118
+  != always {!<=-1,!>=2}
+  "type-checks" always "type-checks"
+Line 119
+  != always {!<=-1,!>=2}
+Line 122
+  == always {!<=-1,!>=2}
+  "suppress" always "suppress"
+  || always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "check" always "check"
+Line 133
+  "nr" always "nr"
+Line 134
+  == always {!<=-1,!>=2}
+  "any" always "any"
+Line 135
+  . always !<=-1
+  nr always !<=-1
+  = always !<=-1
+  :: always !<=-1
+  ANY always !<=-1
+Line 136
+  == always {!<=-1,!>=2}
+  "variadic" always "variadic"
+Line 137
+  . always !<=-1
+  nr always !<=-1
+  = always !<=-1
+  :: always !<=-1
+  VARIADIC always !<=-1
+Line 139
+  . always !<=-1
+  nr always !<=-1
+  = always !<=-1
+Line 140
+  "default" always "default"
+Line 143
+  != always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 144
+  != always {!<=-1,!>=2}
+  "arg" always "arg"
+Line 145
+  != always {!<=-1,!>=2}
+Line 148
+  == always {!<=-1,!>=2}
+  "not-bool" always "not-bool"
+Line 149
+  . always {!<=-1,!>=2}
+  notbool always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 150
+  == always {!<=-1,!>=2}
+  "not-null" always "not-null"
+Line 151
+  . always {!<=-1,!>=2}
+  notnull always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 152
+  == always {!<=-1,!>=2}
+  "not-uninit" always "not-uninit"
+Line 153
+  . always {!<=-1,!>=2}
+  notuninit always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 154
+  == always {!<=-1,!>=2}
+  "strz" always "strz"
+Line 155
+  . always {!<=-1,!>=2}
+  strz always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 156
+  == always {!<=-1,!>=2}
+  "formatstr" always "formatstr"
+Line 157
+  . always {!<=-1,!>=2}
+  formatstr always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 158
+  == always {!<=-1,!>=2}
+  "valid" always "valid"
+Line 160
+  == always {!<=-1,!>=2}
+  "minsize" always "minsize"
+Line 162
+  "type" always "type"
+Line 163
+  "arg" always "arg"
+Line 164
+  "arg2" always "arg2"
+Line 166
+  == always {!<=-1,!>=2}
+  "iterator" always "iterator"
+Line 167
+  "container" always "container"
+Line 168
+  "type" always "type"
+Line 180
+  "name" always "name"
+Line 182
+  != always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 183
+  != always {!<=-1,!>=2}
+  "function" always "function"
+Line 184
+  != always {!<=-1,!>=2}
+Line 187
+  == always {!<=-1,!>=2}
+  "noreturn" always "noreturn"
+Line 188
+  == always {!<=-1,!>=2}
+  "true" always "true"
+  :: always 1
+  True always 1
+  : always 0
+  :: always 0
+  False always 0
+Line 189
+  == always {!<=-1,!>=2}
+  "pure" always "pure"
+Line 190
+  . always {!<=-1,!>=2}
+  gccPure always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 191
+  == always {!<=-1,!>=2}
+  "const" always "const"
+Line 192
+  . always {!<=-1,!>=2}
+  gccConst always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 193
+  == always {!<=-1,!>=2}
+  "leak-ignore" always "leak-ignore"
+Line 194
+  . always {!<=-1,!>=2}
+  leakignore always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 195
+  == always {!<=-1,!>=2}
+  "use-retval" always "use-retval"
+Line 196
+  . always {!<=-1,!>=2}
+  useretval always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 197
+  == always {!<=-1,!>=2}
+  "returnValue" always "returnValue"
+Line 198
+  "container" always "container"
+Line 199
+  -1 always -1
+  : always -1
+Line 200
+  "type" always "type"
+Line 202
+  == always {!<=-1,!>=2}
+  "formatstr" always "formatstr"
+Line 203
+  "scan" always "scan"
+Line 204
+  "secure" always "secure"
+Line 205
+  == always {!<=-1,!>=2}
+  "arg" always "arg"
+Line 207
+  == always {!<=-1,!>=2}
+  "warn" always "warn"
+Line 208
+  "severity" always "severity"
+Line 209
+  "cstd" always "cstd"
+Line 210
+  "reason" always "reason"
+Line 211
+  "alternatives" always "alternatives"
+Line 225
+  != always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 226
+  != always {!<=-1,!>=2}
+Line 227
+  != always {!<=-1,!>=2}
+Line 230
+  == always {!<=-1,!>=2}
+  "alloc" always "alloc"
+  || always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "realloc" always "realloc"
+Line 232
+  . always {!<=-1,!>=2}
+  isRealloc always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "realloc" always "realloc"
+Line 233
+  . always {!<=-1,!>=2}
+  init always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  "init" always "init"
+  == always {!<=-1,!>=2}
+  "true" always "true"
+Line 234
+  "arg" always "arg"
+Line 235
+  "arg" always "arg"
+Line 237
+  . always {!<=-1,!>=2}
+  isRealloc always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  "realloc-arg" always "realloc-arg"
+Line 238
+  "realloc-arg" always "realloc-arg"
+Line 240
+  == always {!<=-1,!>=2}
+  "memory" always "memory"
+Line 241
+  "buffer-size" always "buffer-size"
+Line 245
+  == always {!<=-1,!>=2}
+  "dealloc" always "dealloc"
+Line 247
+  "arg" always "arg"
+Line 248
+  "arg" always "arg"
+Line 252
+  == always {!<=-1,!>=2}
+  "use" always "use"
+Line 263
+  "name" always "name"
+Line 265
+  "name" always "name"
+Line 267
+  "stdtype" always "stdtype"
+Line 268
+  "size" always "size"
+Line 269
+  "sign" always "sign"
+Line 276
+  "name" always "name"
+Line 277
+  "value" always "value"
+Line 280
+  != always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 281
+  != always {!<=-1,!>=2}
+  "platformtype" always "platformtype"
+Line 282
+  != always {!<=-1,!>=2}
+Line 285
+  "unsigned" always "unsigned"
+  "long" always "long"
+  "pointer" always "pointer"
+  "const_ptr" always "const_ptr"
+  "ptr_ptr" always "ptr_ptr"
+Line 287
+  == always {!<=-1,!>=2}
+  "platform" always "platform"
+Line 288
+  "type" always "type"
+Line 301
+  != always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 302
+  != always {!<=-1,!>=2}
+  "reflection" always "reflection"
+Line 303
+  != always {!<=-1,!>=2}
+Line 306
+  == always {!<=-1,!>=2}
+  "call" always "call"
+Line 308
+  "arg" always "arg"
+Line 309
+  "arg" always "arg"
+Line 311
+  "arg" always "arg"
+Line 328
+  "ext" always "ext"
+Line 329
+  "ext" always "ext"
+Line 331
+  "ext" always "ext"
+Line 333
+  "aftercode" always "aftercode"
+Line 334
+  . always {!<=-1,!>=2}
+  afterCode always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  "aftercode" always "aftercode"
+  == always {!<=-1,!>=2}
+  "true" always "true"
+  ? always {!<=-1,!>=2}
+  true always 1
+  : always 0
+  false always 0
+Line 336
+  "aftercode" always "aftercode"
+Line 338
+  "reporterrors" always "reporterrors"
+Line 339
+  . always {!<=-1,!>=2}
+  reportErrors always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  "reporterrors" always "reporterrors"
+  == always {!<=-1,!>=2}
+  "true" always "true"
+  ? always {!<=-1,!>=2}
+  true always 1
+  : always 0
+  false always 0
+Line 341
+  "reporterrors" always "reporterrors"
+Line 344
+  != always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 345
+  != always {!<=-1,!>=2}
+  "markup" always "markup"
+Line 346
+  != always {!<=-1,!>=2}
+Line 349
+  == always {!<=-1,!>=2}
+  "keywords" always "keywords"
+Line 350
+  != always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 351
+  != always {!<=-1,!>=2}
+  "keywords" always "keywords"
+Line 352
+  != always {!<=-1,!>=2}
+Line 354
+  == always {!<=-1,!>=2}
+  "keyword" always "keyword"
+Line 355
+  "name" always "name"
+Line 360
+  == always {!<=-1,!>=2}
+  "codeblocks" always "codeblocks"
+Line 363
+  != always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 364
+  != always {!<=-1,!>=2}
+  "codeblocks" always "codeblocks"
+Line 365
+  != always {!<=-1,!>=2}
+Line 367
+  == always {!<=-1,!>=2}
+  "block" always "block"
+Line 368
+  "name" always "name"
+Line 369
+  == always {!<=-1,!>=2}
+  "structure" always "structure"
+Line 370
+  "offset" always "offset"
+Line 371
+  "start" always "start"
+Line 372
+  "end" always "end"
+Line 378
+  == always {!<=-1,!>=2}
+  "exported" always "exported"
+Line 381
+  != always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 382
+  != always {!<=-1,!>=2}
+  "exported" always "exported"
+Line 383
+  != always {!<=-1,!>=2}
+Line 385
+  == always {!<=-1,!>=2}
+  "exporter" always "exporter"
+Line 386
+  "prefix" always "prefix"
+Line 387
+  == always {!<=-1,!>=2}
+  "prefix" always "prefix"
+Line 389
+  == always {!<=-1,!>=2}
+  "suffix" always "suffix"
+Line 396
+  == always {!<=-1,!>=2}
+  "imported" always "imported"
+Line 397
+  != always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 398
+  != always {!<=-1,!>=2}
+  "imported" always "imported"
+Line 399
+  != always {!<=-1,!>=2}
+Line 401
+  == always {!<=-1,!>=2}
+  "importer" always "importer"
+Line 419
+  & {lifetime[Address]=(file),!0}
+Line 420
+  ! always {!<=-1,!>=2}
+Line 424
+  ! always {!<=-1,!>=2}
+Line 425
+  "\n" always "\n"
+Line 431
+  == always {!<=-1,!>=2}
+  "def" always "def"
+Line 433
+  == always {!<=-1,!>=2}
+  "container" always "container"
+Line 435
+  == always {!<=-1,!>=2}
+  "define" always "define"
+Line 437
+  == always {!<=-1,!>=2}
+  "undefine" always "undefine"
+Line 439
+  == always {!<=-1,!>=2}
+  "function" always "function"
+Line 441
+  == always {!<=-1,!>=2}
+  "memory" always "memory"
+  || always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "resource" always "resource"
+Line 443
+  == always {!<=-1,!>=2}
+  "podtype" always "podtype"
+Line 445
+  == always {!<=-1,!>=2}
+  "smart-pointer" always "smart-pointer"
+Line 447
+  == always {!<=-1,!>=2}
+  "type-checks" always "type-checks"
+Line 449
+  == always {!<=-1,!>=2}
+  "platformtype" always "platformtype"
+Line 451
+  == always {!<=-1,!>=2}
+  "reflection" always "reflection"
+Line 453
+  == always {!<=-1,!>=2}
+  "markup" always "markup"
+Line 460
+  comments always NonMovedVariable
+Line 475
+  && always {!<=-1,!>=2}
+  < always {!<=-1,!>=2}
+  0 always 0
+Line 478
+  extra possible >=0
+  >= {!<=-1,!>=2,>=1}
+  0 always 0
+Line 479
+  == always {!<=-1,!>=2}
+  "access" always "access"
+Line 480
+  "indexOperator" always "indexOperator"
+  "array-like" always "array-like"
+Line 481
+  == always {!<=-1,!>=2}
+  "size" always "size"
+Line 482
+  "templateParameter" always "templateParameter"
+  extra always !<=-1
+Line 485
+  "function" always "function"
+Line 486
+  "name" always "name"
+Line 487
+  ! always {!<=-1,!>=2}
+Line 488
+  "action" always "action"
+Line 489
+  ! always {!<=-1,!>=2}
+Line 490
+  "yields" always "yields"
+Line 498
+  "container" always "container"
+Line 499
+  "id" always "id"
+Line 500
+  ! always {!<=-1,!>=2}
+Line 501
+  "startPattern" always "startPattern"
+Line 502
+  ! always {!<=-1,!>=2}
+Line 503
+  "endPattern" always "endPattern"
+Line 504
+  ! always {!<=-1,!>=2}
+Line 505
+  "inherits" always "inherits"
+Line 506
+  ! always {!<=-1,!>=2}
+Line 507
+  "opLessAllowed" always "opLessAllowed"
+Line 508
+  ! always {!<=-1,!>=2}
+Line 509
+  "itEndPattern" always "itEndPattern"
+Line 511
+  ! always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+Line 512
+  "type" always "type"
+Line 513
+  ! always {!<=-1,!>=2}
+Line 514
+  "templateParameter" always "templateParameter"
+Line 515
+  ! always {!<=-1,!>=2}
+Line 516
+  "string" always "string"
+Line 519
+  "size" always "size"
+Line 520
+  "access" always "access"
+  . always {!<=-1,!>=2}
+  access_arrayLike always {!<=-1,!>=2}
+  1 always 1
+  : always -1
+  -1 always -1
+Line 521
+  "other" always "other"
+  -1 always -1
+Line 528
+  comments possible symbolic=(function.comments)
+  "\n" always "\n"
+Line 529
+  1 always 1
+Line 530
+  "\n" always "\n"
+Line 531
+  1 always 1
+Line 532
+  '\n' always 10
+Line 533
+  >= always {!<=-1,!>=2}
+  1 always 1
+Line 537
+  "function" always "function"
+Line 538
+  "name" always "name"
+Line 540
+  . always {!<=-1,!>=2}
+  useretval always {!<=-1,!>=2}
+Line 541
+  "use-retval" always "use-retval"
+Line 542
+  . always {!<=-1,!>=2}
+  gccConst always {!<=-1,!>=2}
+Line 543
+  "const" always "const"
+Line 544
+  . always {!<=-1,!>=2}
+  gccPure always {!<=-1,!>=2}
+Line 545
+  "pure" always "pure"
+Line 546
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 547
+  "returnValue" always "returnValue"
+Line 548
+  ! always {!<=-1,!>=2}
+Line 549
+  "type" always "type"
+Line 550
+  >= always {!<=-1,!>=2}
+  0 always 0
+Line 551
+  "container" always "container"
+Line 552
+  ! always {!<=-1,!>=2}
+Line 556
+  != always {!<=-1,!>=2}
+  :: always 2
+  Unknown always 2
+Line 557
+  "noreturn" always "noreturn"
+  == always {!<=-1,!>=2}
+  :: always 1
+  True always 1
+  "true" always "true"
+  : always "false"
+  "false" always "false"
+Line 558
+  . always {!<=-1,!>=2}
+  leakignore always {!<=-1,!>=2}
+Line 559
+  "leak-ignore" always "leak-ignore"
+Line 562
+  . always {!<=-1,!>=2}
+  formatstr always {!<=-1,!>=2}
+Line 563
+  "formatstr" always "formatstr"
+Line 564
+  ! always {!<=-1,!>=2}
+Line 565
+  "scan" always "scan"
+Line 566
+  ! always {!<=-1,!>=2}
+Line 567
+  "secure" always "secure"
+Line 571
+  "arg" always "arg"
+Line 572
+  . {!<=-1,symbolic=(CppcheckLibraryData::Function::Arg::VARIADIC)}
+  nr always !<=-1
+  == always {!<=-1,!>=2}
+  :: always !<=-1
+  ANY always !<=-1
+Line 573
+  "nr" always "nr"
+  "any" always "any"
+Line 574
+  . always {!<=-1,!symbolic=(CppcheckLibraryData::Function::Arg::ANY)}
+  nr always !<=-1
+  == always {!<=-1,!>=2}
+  :: always !<=-1
+  VARIADIC always !<=-1
+Line 575
+  "nr" always "nr"
+  "variadic" always "variadic"
+Line 577
+  "nr" always "nr"
+  . always !<=-1
+  nr always !<=-1
+Line 578
+  ! always {!<=-1,!>=2}
+Line 579
+  "default" always "default"
+Line 580
+  . always {!<=-1,!>=2}
+  formatstr always {!<=-1,!>=2}
+Line 581
+  "formatstr" always "formatstr"
+Line 582
+  . always {!<=-1,!>=2}
+  notnull always {!<=-1,!>=2}
+Line 583
+  "not-null" always "not-null"
+Line 584
+  . always {!<=-1,!>=2}
+  notuninit always {!<=-1,!>=2}
+Line 585
+  "not-uninit" always "not-uninit"
+Line 586
+  . always {!<=-1,!>=2}
+  notbool always {!<=-1,!>=2}
+Line 587
+  "not-bool" always "not-bool"
+Line 588
+  . always {!<=-1,!>=2}
+  strz always {!<=-1,!>=2}
+Line 589
+  "strz" always "strz"
+Line 591
+  ! always {!<=-1,!>=2}
+Line 592
+  "valid" always "valid"
+Line 595
+  "minsize" always "minsize"
+Line 596
+  "type" always "type"
+Line 597
+  "arg" always "arg"
+Line 598
+  ! always {!<=-1,!>=2}
+Line 599
+  "arg2" always "arg2"
+Line 603
+  >= always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+Line 604
+  "iterator" always "iterator"
+Line 605
+  >= always {!<=-1,!>=2}
+  0 always 0
+Line 606
+  "container" always "container"
+Line 607
+  ! always {!<=-1,!>=2}
+Line 608
+  "type" always "type"
+Line 615
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 616
+  "warn" always "warn"
+Line 618
+  ! always {!<=-1,!>=2}
+Line 619
+  "severity" always "severity"
+Line 621
+  ! always {!<=-1,!>=2}
+Line 622
+  "cstd" always "cstd"
+Line 624
+  ! always {!<=-1,!>=2}
+Line 625
+  "alternatives" always "alternatives"
+Line 627
+  ! always {!<=-1,!>=2}
+Line 628
+  "reason" always "reason"
+Line 630
+  ! always {!<=-1,!>=2}
+Line 643
+  . always {!<=-1,!>=2}
+  isRealloc always {!<=-1,!>=2}
+Line 644
+  "realloc" always "realloc"
+Line 646
+  "alloc" always "alloc"
+Line 648
+  "init" always "init"
+  . always {!<=-1,!>=2}
+  init always {!<=-1,!>=2}
+  "true" always "true"
+  : always "false"
+  "false" always "false"
+Line 649
+  != always {!<=-1,!>=2}
+  -1 always -1
+Line 650
+  "arg" always "arg"
+  "%1" always "%1"
+Line 652
+  . always {!<=-1,!>=2}
+  isRealloc always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+  -1 always -1
+Line 653
+  "realloc-arg" always "realloc-arg"
+  "%1" always "%1"
+Line 655
+  == always {!<=-1,!>=2}
+  "memory" always "memory"
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+Line 656
+  "buffer-size" always "buffer-size"
+Line 663
+  "dealloc" always "dealloc"
+Line 664
+  != always {!<=-1,!>=2}
+  -1 always -1
+Line 665
+  "arg" always "arg"
+  "%1" always "%1"
+Line 672
+  "use" always "use"
+Line 679
+  "type-checks" always "type-checks"
+Line 680
+  ! always {!<=-1,!>=2}
+Line 681
+  "unusedvar" always "unusedvar"
+Line 688
+  ! always {!<=-1,!>=2}
+Line 696
+  "platformtype" always "platformtype"
+Line 697
+  "name" always "name"
+Line 698
+  "value" always "value"
+Line 704
+  "platform" always "platform"
+Line 705
+  ! always {!<=-1,!>=2}
+Line 706
+  "type" always "type"
+Line 715
+  "reflection" always "reflection"
+Line 717
+  "call" always "call"
+Line 718
+  "arg" always "arg"
+  "%1" always "%1"
+Line 727
+  "markup" always "markup"
+Line 728
+  "ext" always "ext"
+Line 729
+  "aftercode" always "aftercode"
+  . always {!<=-1,!>=2}
+  afterCode always {!<=-1,!>=2}
+Line 730
+  "reporterrors" always "reporterrors"
+  . always {!<=-1,!>=2}
+  reportErrors always {!<=-1,!>=2}
+Line 731
+  ! always {!<=-1,!>=2}
+Line 732
+  "keywords" always "keywords"
+Line 734
+  "keyword" always "keyword"
+Line 735
+  "name" always "name"
+Line 740
+  ! always {!<=-1,!>=2}
+Line 741
+  "imported" always "imported"
+Line 743
+  "importer" always "importer"
+Line 749
+  ! always {!<=-1,!>=2}
+Line 750
+  "exported" always "exported"
+Line 752
+  "exporter" always "exporter"
+Line 753
+  "prefix" always "prefix"
+Line 755
+  "prefix" always "prefix"
+Line 760
+  "suffix" always "suffix"
+Line 768
+  ! always {!<=-1,!>=2}
+Line 770
+  "codeblocks" always "codeblocks"
+Line 772
+  "block" always "block"
+Line 773
+  "name" always "name"
+Line 776
+  "structure" always "structure"
+Line 777
+  "offset" always "offset"
+  "%1" always "%1"
+Line 778
+  "start" always "start"
+Line 779
+  "end" always "end"
+Line 790
+  & {lifetime[Address]=(outputString),!0}
+Line 791
+  true always 1
+Line 792
+  2 always 2
+Line 793
+  "1.0" always "1.0"
+Line 794
+  "def" always "def"
+Line 795
+  "format" always "format"
+  "2" always "2"
+Line 798
+  "define" always "define"
+Line 799
+  "name" always "name"
+Line 800
+  "value" always "value"
+Line 805
+  "undefine" always "undefine"
+Line 806
+  "name" always "name"
+Line 823
+  "podtype" always "podtype"
+Line 824
+  "name" always "name"
+Line 825
+  ! always {!<=-1,!>=2}
+Line 826
+  "stdtype" always "stdtype"
+Line 827
+  ! always {!<=-1,!>=2}
+Line 828
+  "sign" always "sign"
+Line 829
+  ! always {!<=-1,!>=2}
+Line 830
+  "size" always "size"
+Line 839
+  "smart-pointer" always "smart-pointer"
+Line 840
+  "class-name" always "class-name"

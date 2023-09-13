@@ -1,0 +1,669 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741936 expected@var22 !=@expr1073741937 actual@var23 ) {
+62: std ::@expr1073741938 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741939 expected@var22 ;
+64: std ::@expr1073741940 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741941 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741942 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741943 str (@expr1073741944 ) , actualStr@var26 .@expr1073741945 str (@expr1073741946 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741947 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741948 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741949 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741950 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testassert.cpp
+
+1:
+|
+28:
+29: class TestAssert : public TestFixture {
+30: public:
+31: TestAssert ( ) : TestFixture ( "TestAssert" ) { }
+32:
+33: private:
+34: Settings settings@var102 ;
+35:
+36:
+37: void check_ ( const char * file@var103 , int line@var104 , const char code@var105 [ ] , const char * filename@var106 = "test.cpp" ) {
+38:
+39: errout@var100 .@expr1073741951 str (@expr1073741952 "" ) ;
+40:
+41:
+42: Tokenizer tokenizer@var107 (@expr1073741953 &@expr130 settings@var102 , this@expr131 ) ;
+43: std ::@expr1073741956 istringstream istr@var108 (@expr1073741957 code@var105 ) ;
+44: $assert_ $(@expr1073741958 file@var103 $, line@var104 $, $(@expr1073741959 tokenizer@var107 .@expr1073741960 tokenize (@expr1073741961 istr@var108 , filename@var106 ) $) $) ;
+45:
+46:
+47: CheckAssert checkAssert@var109 ;
+48: checkAssert@var109 .@expr1073741962 runChecks (@expr1073741963 &@expr1073741964 tokenizer@var107 , &@expr130 settings@var102 , this@expr131 ) ;
+49: }
+50:
+51: void run ( ) override {
+52: settings@var102 .@expr1073741967 severity@var110 .@expr1073741968 enable (@expr1073741969 Severity ::@expr1073741970 warning@expr1073741966 ) ;
+53:
+54: $do ${ $if $(@expr1073741971 $prepareTest $(@expr1073741972 "assignmentInAssert" $) $) ${ $setVerbose $(@expr1073741973 $false $) $; assignmentInAssert $(@expr1073741974 $) $; $} $} $while $(@expr1073741975 $false $) ;
+55: $do ${ $if $(@expr1073741976 $prepareTest $(@expr1073741977 "functionCallInAssert" $) $) ${ $setVerbose $(@expr1073741978 $false $) $; functionCallInAssert $(@expr1073741979 $) $; $} $} $while $(@expr1073741980 $false $) ;
+56: $do ${ $if $(@expr1073741981 $prepareTest $(@expr1073741982 "memberFunctionCallInAssert" $) $) ${ $setVerbose $(@expr1073741983 $false $) $; memberFunctionCallInAssert $(@expr1073741984 $) $; $} $} $while $(@expr1073741985 $false $) ;
+57: $do ${ $if $(@expr1073741986 $prepareTest $(@expr1073741987 "safeFunctionCallInAssert" $) $) ${ $setVerbose $(@expr1073741988 $false $) $; safeFunctionCallInAssert $(@expr1073741989 $) $; $} $} $while $(@expr1073741990 $false $) ;
+58: $do ${ $if $(@expr1073741991 $prepareTest $(@expr1073741992 "crash" $) $) ${ $setVerbose $(@expr1073741993 $false $) $; crash $(@expr1073741994 $) $; $} $} $while $(@expr1073741995 $false $) ;
+59: }
+60:
+61:
+62: void safeFunctionCallInAssert ( ) {
+63: $check_ $(@expr1073741996 "cppcheck-2.8/test/testassert.cpp" $, 63 $, "int a;\nbool b = false;\nint foo() {\n   if (b) { a = 1+2 };\n   return a;\n}\nassert(foo() == 3);" $)
+64:
+|
+69:
+70: ;
+71: $if $(@expr1073741997 $!@expr1073741998 $assertEquals $(@expr1073741999 "cppcheck-2.8/test/testassert.cpp" $, 71 $, "" $, errout@var100 .@expr176 str (@expr177 ) $) $) { $return ; }
+72:
+73: $check_ $(@expr1073742002 "cppcheck-2.8/test/testassert.cpp" $, 73 $, "int foo(int a) {\n    int b=a+1;\n    return b;\n}\nassert(foo(1) == 2);" $)
+74:
+|
+77:
+78: ;
+79: $if $(@expr1073742003 $!@expr1073742004 $assertEquals $(@expr1073742005 "cppcheck-2.8/test/testassert.cpp" $, 79 $, "" $, errout@var100 .@expr176 str (@expr177 ) $) $) { $return ; }
+80: }
+81:
+82: void functionCallInAssert ( ) {
+83: $check_ $(@expr1073742008 "cppcheck-2.8/test/testassert.cpp" $, 83 $, "int a;\nint foo() {\n    a = 1+2;\n    return a;\n}\nassert(foo() == 3);" $)
+84:
+|
+88:
+89: ;
+90: $if $(@expr1073742009 $!@expr1073742010 $assertEquals $(@expr1073742011 "cppcheck-2.8/test/testassert.cpp" $, 90 $, "[test.cpp:6]: (warning) Assert statement calls a function which may have desired side effects: 'foo'.\n" $, errout@var100 .@expr188 str (@expr189 ) $) $) { $return ; }
+91:
+92:
+93: $check_ $(@expr1073742014 "cppcheck-2.8/test/testassert.cpp" $, 93 $, "struct SquarePack {\n   static bool isRank1Or8( Square sq ) {\n      sq &= 0x38;\n      return sq == 0 || sq == 0x38;\n    }\n};\nvoid foo() {\n   assert( !SquarePack::isRank1Or8(push2) );\n}" $)
+94:
+|
+100:
+101: ;
+102: $if $(@expr1073742015 $!@expr1073742016 $assertEquals $(@expr1073742017 "cppcheck-2.8/test/testassert.cpp" $, 102 $, "" $, errout@var100 .@expr188 str (@expr189 ) $) $) { $return ; }
+103:
+104: $check_ $(@expr1073742020 "cppcheck-2.8/test/testassert.cpp" $, 104 $, "struct SquarePack {\n   static bool isRank1Or8( Square &sq ) {\n      sq &= 0x38;\n      return sq == 0 || sq == 0x38;\n    }\n};\nvoid foo() {\n   assert( !SquarePack::isRank1Or8(push2) );\n}" $)
+105:
+|
+111:
+112: ;
+113: $if $(@expr1073742021 $!@expr1073742022 $assertEquals $(@expr1073742023 "cppcheck-2.8/test/testassert.cpp" $, 113 $, "[test.cpp:8]: (warning) Assert statement calls a function which may have desired side effects: 'isRank1Or8'.\n" $, errout@var100 .@expr188 str (@expr189 ) $) $) { $return ; }
+114:
+115: $check_ $(@expr1073742026 "cppcheck-2.8/test/testassert.cpp" $, 115 $, "struct SquarePack {\n   static bool isRank1Or8( Square *sq ) {\n      *sq &= 0x38;\n      return *sq == 0 || *sq == 0x38;\n    }\n};\nvoid foo() {\n   assert( !SquarePack::isRank1Or8(push2) );\n}" $)
+116:
+|
+122:
+123: ;
+124: $if $(@expr1073742027 $!@expr1073742028 $assertEquals $(@expr1073742029 "cppcheck-2.8/test/testassert.cpp" $, 124 $, "[test.cpp:8]: (warning) Assert statement calls a function which may have desired side effects: 'isRank1Or8'.\n" $, errout@var100 .@expr188 str (@expr189 ) $) $) { $return ; }
+125:
+126: $check_ $(@expr1073742032 "cppcheck-2.8/test/testassert.cpp" $, 126 $, "struct SquarePack {\n   static bool isRank1Or8( Square *sq ) {\n      sq &= 0x38;\n      return sq == 0 || sq == 0x38;\n    }\n};\nvoid foo() {\n   assert( !SquarePack::isRank1Or8(push2) );\n}" $)
+127:
+|
+133:
+134: ;
+135: $if $(@expr1073742033 $!@expr1073742034 $assertEquals $(@expr1073742035 "cppcheck-2.8/test/testassert.cpp" $, 135 $, "" $, errout@var100 .@expr188 str (@expr189 ) $) $) { $return ; }
+136: }
+137:
+138: void memberFunctionCallInAssert ( ) {
+139: $check_ $(@expr1073742038 "cppcheck-2.8/test/testassert.cpp" $, 139 $, "struct SquarePack {\n   void Foo();\n};\nvoid foo(SquarePack s) {\n   assert( s.Foo() );\n}" $)
+140:
+|
+143:
+144: ;
+145: $if $(@expr1073742039 $!@expr1073742040 $assertEquals $(@expr1073742041 "cppcheck-2.8/test/testassert.cpp" $, 145 $, "[test.cpp:5]: (warning) Assert statement calls a function which may have desired side effects: 'Foo'.\n" $, errout@var100 .@expr218 str (@expr219 ) $) $) { $return ; }
+146:
+147: $check_ $(@expr1073742044 "cppcheck-2.8/test/testassert.cpp" $, 147 $, "struct SquarePack {\n   void Foo() const;\n};\nvoid foo(SquarePack* s) {\n   assert( s->Foo() );\n}" $)
+148:
+|
+151:
+152: ;
+153: $if $(@expr1073742045 $!@expr1073742046 $assertEquals $(@expr1073742047 "cppcheck-2.8/test/testassert.cpp" $, 153 $, "" $, errout@var100 .@expr218 str (@expr219 ) $) $) { $return ; }
+154:
+155: $check_ $(@expr1073742050 "cppcheck-2.8/test/testassert.cpp" $, 155 $, "struct SquarePack {\n   static void Foo();\n};\nvoid foo(SquarePack* s) {\n   assert( s->Foo() );\n}" $)
+156:
+|
+159:
+160: ;
+161: $if $(@expr1073742051 $!@expr1073742052 $assertEquals $(@expr1073742053 "cppcheck-2.8/test/testassert.cpp" $, 161 $, "" $, errout@var100 .@expr218 str (@expr219 ) $) $) { $return ; }
+162:
+163: $check_ $(@expr1073742056 "cppcheck-2.8/test/testassert.cpp" $, 163 $, "struct SquarePack {\n};\nvoid foo(SquarePack* s) {\n   assert( s->Foo() );\n}" $)
+164:
+165:
+166:
+167: ;
+168: $if $(@expr1073742057 $!@expr1073742058 $assertEquals $(@expr1073742059 "cppcheck-2.8/test/testassert.cpp" $, 168 $, "" $, errout@var100 .@expr218 str (@expr219 ) $) $) { $return ; }
+169: }
+170:
+171: void assignmentInAssert ( ) {
+172: $check_ $(@expr1073742062 "cppcheck-2.8/test/testassert.cpp" $, 172 $, "void f() {\n    int a; a = 0;\n    assert(a = 2);\n    return a;\n}" $)
+173:
+174:
+175:
+176: ;
+177: $if $(@expr1073742063 $!@expr1073742064 $assertEquals $(@expr1073742065 "cppcheck-2.8/test/testassert.cpp" $, 177 $, "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n" $, errout@var100 .@expr242 str (@expr243 ) $) $) { $return ; }
+178:
+179: $check_ $(@expr1073742068 "cppcheck-2.8/test/testassert.cpp" $, 179 $, "void f(int a) {\n    assert(a == 2);\n    return a;\n}" $)
+180:
+181:
+182: ;
+183: $if $(@expr1073742069 $!@expr1073742070 $assertEquals $(@expr1073742071 "cppcheck-2.8/test/testassert.cpp" $, 183 $, "" $, errout@var100 .@expr242 str (@expr243 ) $) $) { $return ; }
+184:
+185: $check_ $(@expr1073742074 "cppcheck-2.8/test/testassert.cpp" $, 185 $, "void f(int a, int b) {\n    assert(a == 2 && (b = 1));\n    return a;\n}" $)
+186:
+187:
+188: ;
+189: $if $(@expr1073742075 $!@expr1073742076 $assertEquals $(@expr1073742077 "cppcheck-2.8/test/testassert.cpp" $, 189 $, "[test.cpp:2]: (warning) Assert statement modifies 'b'.\n" $, errout@var100 .@expr242 str (@expr243 ) $) $) { $return ; }
+190:
+191: $check_ $(@expr1073742080 "cppcheck-2.8/test/testassert.cpp" $, 191 $, "void f() {\n    int a; a = 0;\n    assert(a += 2);\n    return a;\n}" $)
+192:
+193:
+194:
+195: ;
+196: $if $(@expr1073742081 $!@expr1073742082 $assertEquals $(@expr1073742083 "cppcheck-2.8/test/testassert.cpp" $, 196 $, "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n" $, errout@var100 .@expr242 str (@expr243 ) $) $) { $return ; }
+197:
+198: $check_ $(@expr1073742086 "cppcheck-2.8/test/testassert.cpp" $, 198 $, "void f() {\n    int a; a = 0;\n    assert(a *= 2);\n    return a;\n}" $)
+199:
+200:
+201:
+202: ;
+203: $if $(@expr1073742087 $!@expr1073742088 $assertEquals $(@expr1073742089 "cppcheck-2.8/test/testassert.cpp" $, 203 $, "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n" $, errout@var100 .@expr242 str (@expr243 ) $) $) { $return ; }
+204:
+205: $check_ $(@expr1073742092 "cppcheck-2.8/test/testassert.cpp" $, 205 $, "void f() {\n    int a; a = 0;\n    assert(a -= 2);\n    return a;\n}" $)
+206:
+207:
+208:
+209: ;
+210: $if $(@expr1073742093 $!@expr1073742094 $assertEquals $(@expr1073742095 "cppcheck-2.8/test/testassert.cpp" $, 210 $, "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n" $, errout@var100 .@expr242 str (@expr243 ) $) $) { $return ; }
+211:
+212: $check_ $(@expr1073742098 "cppcheck-2.8/test/testassert.cpp" $, 212 $, "void f() {\n    int a = 0;\n    assert(a--);\n    return a;\n}" $)
+213:
+214:
+215:
+216: ;
+217: $if $(@expr1073742099 $!@expr1073742100 $assertEquals $(@expr1073742101 "cppcheck-2.8/test/testassert.cpp" $, 217 $, "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n" $, errout@var100 .@expr242 str (@expr243 ) $) $) { $return ; }
+218:
+219: $check_ $(@expr1073742104 "cppcheck-2.8/test/testassert.cpp" $, 219 $, "void f() {\n    int a = 0;\n    assert(--a);\n    return a;\n}" $)
+220:
+221:
+222:
+223: ;
+224: $if $(@expr1073742105 $!@expr1073742106 $assertEquals $(@expr1073742107 "cppcheck-2.8/test/testassert.cpp" $, 224 $, "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n" $, errout@var100 .@expr242 str (@expr243 ) $) $) { $return ; }
+225:
+226: $check_ $(@expr1073742110 "cppcheck-2.8/test/testassert.cpp" $, 226 $, "void f() {\n  assert(std::all_of(first, last, []() {\n                  auto tmp = x.someValue();\n                  auto const expected = someOtherValue;\n                  return tmp == expected;\n                }));\n}" $)
+227:
+|
+231:
+232: ;
+233: $if $(@expr1073742111 $!@expr1073742112 $assertEquals $(@expr1073742113 "cppcheck-2.8/test/testassert.cpp" $, 233 $, "" $, errout@var100 .@expr242 str (@expr243 ) $) $) { $return ; }
+234: }
+235:
+236: void crash ( ) {
+237: $check_ $(@expr1073742116 "cppcheck-2.8/test/testassert.cpp" $, 237 $, "void foo() {\n  assert(sizeof(struct { int a[x++]; })==sizeof(int));\n}" $)
+238:
+239: ;
+240: $if $(@expr1073742117 $!@expr1073742118 $assertEquals $(@expr1073742119 "cppcheck-2.8/test/testassert.cpp" $, 240 $, "" $, errout@var100 .@expr296 str (@expr297 ) $) $) { $return ; }
+241:
+242: $check_ $(@expr1073742122 "cppcheck-2.8/test/testassert.cpp" $, 242 $, "void foo() {\n  assert(kad_bucket_hash(&(kad_guid) { .bytes = { 0 } }, & (kad_guid){.bytes = { 0 }}) == -1);\n}" $)
+243:
+244: ;
+245: $if $(@expr1073742123 $!@expr1073742124 $assertEquals $(@expr1073742125 "cppcheck-2.8/test/testassert.cpp" $, 245 $, "" $, errout@var100 .@expr296 str (@expr297 ) $) $) { $return ; }
+246: }
+247: } ;
+248:
+249: $namespace ${ TestAssert instance_TestAssert@var111 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@23}
+  v {!<=-1,!>=2,0@23}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 31
+  "TestAssert" always "TestAssert"
+Line 37
+  , always "test.cpp"
+  = always "test.cpp"
+  "test.cpp" always "test.cpp"
+Line 39
+  "" always ""
+Line 42
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 43
+  code possible {"void foo() {\n  assert(sizeof(struct { int a[x++]; })==sizeof(int));\n}"@1,"void foo() {\n  assert(kad_bucket_hash(&(kad_guid) { .bytes = { 0 } }, & (kad_guid){.bytes = { 0 }}) == -1);\n}"@2,"void f() {\n    int a; a = 0;\n    assert(a = 2);\n    return a;\n}"@3,"void f(int a) {\n    assert(a == 2);\n    return a;\n}"@4,"void f(int a, int b) {\n    assert(a == 2 && (b = 1));\n    return a;\n}"@5,"void f() {\n    int a; a = 0;\n    assert(a += 2);\n    return a;\n}"@6,"void f() {\n    int a; a = 0;\n    assert(a *= 2);\n    return a;\n}"@7,"void f() {\n    int a; a = 0;\n    assert(a -= 2);\n    return a;\n}"@8,"void f() {\n    int a = 0;\n    assert(a--);\n    return a;\n}"@9,"void f() {\n    int a = 0;\n    assert(--a);\n    return a;\n}"@10}
+Line 44
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testassert.cpp"@1,"cppcheck-2.8/test/testassert.cpp"@2,"cppcheck-2.8/test/testassert.cpp"@3,"cppcheck-2.8/test/testassert.cpp"@4,"cppcheck-2.8/test/testassert.cpp"@5,"cppcheck-2.8/test/testassert.cpp"@6,"cppcheck-2.8/test/testassert.cpp"@7,"cppcheck-2.8/test/testassert.cpp"@8,"cppcheck-2.8/test/testassert.cpp"@9,"cppcheck-2.8/test/testassert.cpp"@10}
+  line inconclusive {237@1,242@2,172@3,179@4,185@5,191@6,198@7,205@8,212@9,219@10}
+  filename possible "test.cpp"
+Line 48
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 54
+  ( always {!<=-1,!>=2}
+  "assignmentInAssert" always "assignmentInAssert"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "functionCallInAssert" always "functionCallInAssert"
+  false always 0
+  false always 0
+Line 56
+  ( always {!<=-1,!>=2}
+  "memberFunctionCallInAssert" always "memberFunctionCallInAssert"
+  false always 0
+  false always 0
+Line 57
+  ( always {!<=-1,!>=2}
+  "safeFunctionCallInAssert" always "safeFunctionCallInAssert"
+  false always 0
+  false always 0
+Line 58
+  ( always {!<=-1,!>=2}
+  "crash" always "crash"
+  false always 0
+  false always 0
+Line 63
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  63 always 63
+  "int a;\nbool b = false;\nint foo() {\n   if (b) { a = 1+2 };\n   return a;\n}\nassert(foo() == 3);" always "int a;\nbool b = false;\nint foo() {\n   if (b) { a = 1+2 };\n   return a;\n}\nassert(foo() == 3);"
+Line 71
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  71 always 71
+  "" always ""
+Line 73
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  73 always 73
+  "int foo(int a) {\n    int b=a+1;\n    return b;\n}\nassert(foo(1) == 2);" always "int foo(int a) {\n    int b=a+1;\n    return b;\n}\nassert(foo(1) == 2);"
+Line 79
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  79 always 79
+  "" always ""
+Line 83
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  83 always 83
+  "int a;\nint foo() {\n    a = 1+2;\n    return a;\n}\nassert(foo() == 3);" always "int a;\nint foo() {\n    a = 1+2;\n    return a;\n}\nassert(foo() == 3);"
+Line 90
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  90 always 90
+  "[test.cpp:6]: (warning) Assert statement calls a function which may have desired side effects: 'foo'.\n" always "[test.cpp:6]: (warning) Assert statement calls a function which may have desired side effects: 'foo'.\n"
+Line 93
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  93 always 93
+  "struct SquarePack {\n   static bool isRank1Or8( Square sq ) {\n      sq &= 0x38;\n      return sq == 0 || sq == 0x38;\n    }\n};\nvoid foo() {\n   assert( !SquarePack::isRank1Or8(push2) );\n}" always "struct SquarePack {\n   static bool isRank1Or8( Square sq ) {\n      sq &= 0x38;\n      return sq == 0 || sq == 0x38;\n    }\n};\nvoid foo() {\n   assert( !SquarePack::isRank1Or8(push2) );\n}"
+Line 102
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  102 always 102
+  "" always ""
+Line 104
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  104 always 104
+  "struct SquarePack {\n   static bool isRank1Or8( Square &sq ) {\n      sq &= 0x38;\n      return sq == 0 || sq == 0x38;\n    }\n};\nvoid foo() {\n   assert( !SquarePack::isRank1Or8(push2) );\n}" always "struct SquarePack {\n   static bool isRank1Or8( Square &sq ) {\n      sq &= 0x38;\n      return sq == 0 || sq == 0x38;\n    }\n};\nvoid foo() {\n   assert( !SquarePack::isRank1Or8(push2) );\n}"
+Line 113
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  113 always 113
+  "[test.cpp:8]: (warning) Assert statement calls a function which may have desired side effects: 'isRank1Or8'.\n" always "[test.cpp:8]: (warning) Assert statement calls a function which may have desired side effects: 'isRank1Or8'.\n"
+Line 115
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  115 always 115
+  "struct SquarePack {\n   static bool isRank1Or8( Square *sq ) {\n      *sq &= 0x38;\n      return *sq == 0 || *sq == 0x38;\n    }\n};\nvoid foo() {\n   assert( !SquarePack::isRank1Or8(push2) );\n}" always "struct SquarePack {\n   static bool isRank1Or8( Square *sq ) {\n      *sq &= 0x38;\n      return *sq == 0 || *sq == 0x38;\n    }\n};\nvoid foo() {\n   assert( !SquarePack::isRank1Or8(push2) );\n}"
+Line 124
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  124 always 124
+  "[test.cpp:8]: (warning) Assert statement calls a function which may have desired side effects: 'isRank1Or8'.\n" always "[test.cpp:8]: (warning) Assert statement calls a function which may have desired side effects: 'isRank1Or8'.\n"
+Line 126
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  126 always 126
+  "struct SquarePack {\n   static bool isRank1Or8( Square *sq ) {\n      sq &= 0x38;\n      return sq == 0 || sq == 0x38;\n    }\n};\nvoid foo() {\n   assert( !SquarePack::isRank1Or8(push2) );\n}" always "struct SquarePack {\n   static bool isRank1Or8( Square *sq ) {\n      sq &= 0x38;\n      return sq == 0 || sq == 0x38;\n    }\n};\nvoid foo() {\n   assert( !SquarePack::isRank1Or8(push2) );\n}"
+Line 135
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  135 always 135
+  "" always ""
+Line 139
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  139 always 139
+  "struct SquarePack {\n   void Foo();\n};\nvoid foo(SquarePack s) {\n   assert( s.Foo() );\n}" always "struct SquarePack {\n   void Foo();\n};\nvoid foo(SquarePack s) {\n   assert( s.Foo() );\n}"
+Line 145
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  145 always 145
+  "[test.cpp:5]: (warning) Assert statement calls a function which may have desired side effects: 'Foo'.\n" always "[test.cpp:5]: (warning) Assert statement calls a function which may have desired side effects: 'Foo'.\n"
+Line 147
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  147 always 147
+  "struct SquarePack {\n   void Foo() const;\n};\nvoid foo(SquarePack* s) {\n   assert( s->Foo() );\n}" always "struct SquarePack {\n   void Foo() const;\n};\nvoid foo(SquarePack* s) {\n   assert( s->Foo() );\n}"
+Line 153
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  153 always 153
+  "" always ""
+Line 155
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  155 always 155
+  "struct SquarePack {\n   static void Foo();\n};\nvoid foo(SquarePack* s) {\n   assert( s->Foo() );\n}" always "struct SquarePack {\n   static void Foo();\n};\nvoid foo(SquarePack* s) {\n   assert( s->Foo() );\n}"
+Line 161
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  161 always 161
+  "" always ""
+Line 163
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  163 always 163
+  "struct SquarePack {\n};\nvoid foo(SquarePack* s) {\n   assert( s->Foo() );\n}" always "struct SquarePack {\n};\nvoid foo(SquarePack* s) {\n   assert( s->Foo() );\n}"
+Line 168
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  168 always 168
+  "" always ""
+Line 172
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  172 always 172
+  "void f() {\n    int a; a = 0;\n    assert(a = 2);\n    return a;\n}" always "void f() {\n    int a; a = 0;\n    assert(a = 2);\n    return a;\n}"
+Line 177
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  177 always 177
+  "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n" always "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n"
+Line 179
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  179 always 179
+  "void f(int a) {\n    assert(a == 2);\n    return a;\n}" always "void f(int a) {\n    assert(a == 2);\n    return a;\n}"
+Line 183
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  183 always 183
+  "" always ""
+Line 185
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  185 always 185
+  "void f(int a, int b) {\n    assert(a == 2 && (b = 1));\n    return a;\n}" always "void f(int a, int b) {\n    assert(a == 2 && (b = 1));\n    return a;\n}"
+Line 189
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  189 always 189
+  "[test.cpp:2]: (warning) Assert statement modifies 'b'.\n" always "[test.cpp:2]: (warning) Assert statement modifies 'b'.\n"
+Line 191
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  191 always 191
+  "void f() {\n    int a; a = 0;\n    assert(a += 2);\n    return a;\n}" always "void f() {\n    int a; a = 0;\n    assert(a += 2);\n    return a;\n}"
+Line 196
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  196 always 196
+  "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n" always "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n"
+Line 198
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  198 always 198
+  "void f() {\n    int a; a = 0;\n    assert(a *= 2);\n    return a;\n}" always "void f() {\n    int a; a = 0;\n    assert(a *= 2);\n    return a;\n}"
+Line 203
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  203 always 203
+  "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n" always "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n"
+Line 205
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  205 always 205
+  "void f() {\n    int a; a = 0;\n    assert(a -= 2);\n    return a;\n}" always "void f() {\n    int a; a = 0;\n    assert(a -= 2);\n    return a;\n}"
+Line 210
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  210 always 210
+  "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n" always "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n"
+Line 212
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  212 always 212
+  "void f() {\n    int a = 0;\n    assert(a--);\n    return a;\n}" always "void f() {\n    int a = 0;\n    assert(a--);\n    return a;\n}"
+Line 217
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  217 always 217
+  "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n" always "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n"
+Line 219
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  219 always 219
+  "void f() {\n    int a = 0;\n    assert(--a);\n    return a;\n}" always "void f() {\n    int a = 0;\n    assert(--a);\n    return a;\n}"
+Line 224
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  224 always 224
+  "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n" always "[test.cpp:3]: (warning) Assert statement modifies 'a'.\n"
+Line 226
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  226 always 226
+  "void f() {\n  assert(std::all_of(first, last, []() {\n                  auto tmp = x.someValue();\n                  auto const expected = someOtherValue;\n                  return tmp == expected;\n                }));\n}" always "void f() {\n  assert(std::all_of(first, last, []() {\n                  auto tmp = x.someValue();\n                  auto const expected = someOtherValue;\n                  return tmp == expected;\n                }));\n}"
+Line 233
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  233 always 233
+  "" always ""
+Line 237
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  237 always 237
+  "void foo() {\n  assert(sizeof(struct { int a[x++]; })==sizeof(int));\n}" always "void foo() {\n  assert(sizeof(struct { int a[x++]; })==sizeof(int));\n}"
+Line 240
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  240 always 240
+  "" always ""
+Line 242
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  242 always 242
+  "void foo() {\n  assert(kad_bucket_hash(&(kad_guid) { .bytes = { 0 } }, & (kad_guid){.bytes = { 0 }}) == -1);\n}" always "void foo() {\n  assert(kad_bucket_hash(&(kad_guid) { .bytes = { 0 } }, & (kad_guid){.bytes = { 0 }}) == -1);\n}"
+Line 245
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testassert.cpp" always "cppcheck-2.8/test/testassert.cpp"
+  245 always 245
+  "" always ""

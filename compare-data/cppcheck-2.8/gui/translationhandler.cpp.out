@@ -1,0 +1,263 @@
+
+
+##file cppcheck-2.8/gui/translationhandler.h
+
+1:
+|
+24:
+25: class QTranslator ;
+26:
+|
+33:
+34: struct TranslationInfo {
+35:
+|
+38:
+39: QString mName ;
+40:
+|
+44:
+45: QString mFilename ;
+46:
+|
+50:
+51: QString mCode ;
+52: } ;
+53:
+|
+60:
+61: class TranslationHandler : QObject {
+62: Q_OBJECT
+63: public:
+64: explicit TranslationHandler ( QObject * parent = nullptr ) ;
+65: ~ TranslationHandler ( ) override ;
+66:
+|
+71:
+72: QList < TranslationInfo > getTranslations ( ) const {
+73: return mTranslations ;
+74: }
+75:
+|
+81:
+82: bool setLanguage ( const QString & code ) ;
+83:
+|
+88:
+89: QString getCurrentLanguage ( ) const ;
+90:
+|
+98:
+99: QString suggestLanguage ( ) const ;
+100:
+101: protected:
+102:
+|
+108:
+109: void addTranslation ( const char * name , const char * filename ) ;
+110:
+|
+116:
+117: int getLanguageIndexByCode ( const QString & code ) const ;
+118:
+119: private:
+120:
+|
+124:
+125: QString mCurrentLanguage ;
+126:
+|
+130:
+131: QList < TranslationInfo > mTranslations ;
+132:
+|
+136:
+137: QTranslator * mTranslator ;
+138: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type , const QString & value ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters , bool addAllSupported = true , bool addAll = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/translationhandler.cpp
+
+1:
+|
+32:
+33: static UNUSED void unused ( )
+34: {
+35: Q_UNUSED ( QT_TRANSLATE_NOOP ( "QPlatformTheme" , "OK" ) )
+36: Q_UNUSED ( QT_TRANSLATE_NOOP ( "QPlatformTheme" , "Cancel" ) )
+37: Q_UNUSED ( QT_TRANSLATE_NOOP ( "QPlatformTheme" , "Close" ) )
+38: Q_UNUSED ( QT_TRANSLATE_NOOP ( "QPlatformTheme" , "Save" ) )
+39: }
+40:
+41: TranslationHandler :: TranslationHandler ( QObject * parent ) :
+42: QObject ( parent ) ,
+43: mCurrentLanguage ( "en" ) ,
+44: mTranslator ( nullptr )
+45: {
+46:
+47:
+48: addTranslation ( "Chinese (Simplified)" , "cppcheck_zh_CN" ) ;
+49: addTranslation ( "Dutch" , "cppcheck_nl" ) ;
+50: addTranslation ( "English" , "cppcheck_en" ) ;
+51: addTranslation ( "Finnish" , "cppcheck_fi" ) ;
+52: addTranslation ( "French" , "cppcheck_fr" ) ;
+53: addTranslation ( "German" , "cppcheck_de" ) ;
+54: addTranslation ( "Italian" , "cppcheck_it" ) ;
+55: addTranslation ( "Japanese" , "cppcheck_ja" ) ;
+56: addTranslation ( "Korean" , "cppcheck_ko" ) ;
+57: addTranslation ( "Russian" , "cppcheck_ru" ) ;
+58: addTranslation ( "Serbian" , "cppcheck_sr" ) ;
+59: addTranslation ( "Spanish" , "cppcheck_es" ) ;
+60: addTranslation ( "Swedish" , "cppcheck_sv" ) ;
+61: }
+62:
+63: TranslationHandler :: ~ TranslationHandler ( )
+64: { }
+65:
+66: bool TranslationHandler :: setLanguage ( const QString & code )
+67: {
+68: bool failure ; failure = false ;
+69: QString error ;
+70:
+71:
+72: if ( code . indexOf ( "en" ) == 0 ) {
+73:
+74: if ( mTranslator ) {
+75: qApp . removeTranslator ( mTranslator ) ;
+76: delete mTranslator ;
+77: mTranslator = nullptr ;
+78: }
+79:
+80: mCurrentLanguage = code ;
+81: return true ;
+82: }
+83:
+84:
+85: int index ; index = getLanguageIndexByCode ( code ) ;
+86: if ( index == -1 ) {
+87: error = QObject :: tr ( "Unknown language specified!" ) ;
+88: failure = true ;
+89: } else {
+90:
+91: if ( ! mTranslator && ! failure ) {
+92: mTranslator = new QTranslator ( this ) ; }
+93:
+94:
+95: const QString appPath = QFileInfo ( QCoreApplication :: applicationFilePath ( ) ) . canonicalPath ( ) ;
+96:
+97: QString datadir ; datadir = getDataDir ( ) ;
+98:
+99: QString translationFile ;
+100: if ( QFile :: exists ( datadir + "/lang/" + mTranslations [ index ] . mFilename + ".qm" ) ) {
+101: translationFile = datadir + "/lang/" + mTranslations [ index ] . mFilename + ".qm" ; }
+102:
+103: else if ( QFile :: exists ( datadir + "/" + mTranslations [ index ] . mFilename + ".qm" ) ) {
+104: translationFile = datadir + "/" + mTranslations [ index ] . mFilename + ".qm" ; }
+105:
+106: else {
+107: translationFile = appPath + "/" + mTranslations [ index ] . mFilename + ".qm" ; }
+108:
+109: if ( ! mTranslator . load ( translationFile ) && ! failure ) {
+110:
+111: if ( ! QFile :: exists ( translationFile ) ) {
+112: error = QObject :: tr ( "Language file %1 not found!" ) ;
+113: error = error . arg ( translationFile ) ;
+114: failure = true ;
+115: }
+116:
+117:
+118: error = QObject :: tr ( "Failed to load translation for language %1 from file %2" ) ;
+119: error = error . arg ( mTranslations [ index ] . mName ) ;
+120: error = error . arg ( translationFile ) ;
+121: }
+122: }
+123:
+124: if ( failure ) {
+125: const QString msg ( tr ( "Failed to change the user interface language:\n\n%1\n\nThe user interface language has been reset to English. Open the Preferences-dialog to select any of the available languages."
+126:
+127:
+128:
+129: ) . arg ( error ) ) ;
+130: QMessageBox msgBox ( QMessageBox :: Warning ,
+131: tr ( "Cppcheck" ) ,
+132: msg ,
+133: QMessageBox :: Ok ) ;
+134: msgBox . exec ( ) ;
+135: return false ;
+136: }
+137:
+138: qApp . installTranslator ( mTranslator ) ;
+139:
+140: mCurrentLanguage = code ;
+141:
+142: return true ;
+143: }
+144:
+145: QString TranslationHandler :: getCurrentLanguage ( ) const
+146: {
+147: return mCurrentLanguage ;
+148: }
+149:
+150: QString TranslationHandler :: suggestLanguage ( ) const
+151: {
+152:
+153: QString language ; language = QLocale :: system ( ) . name ( ) ;
+154:
+155:
+156:
+157: int index ; index = getLanguageIndexByCode ( language ) ;
+158:
+159:
+160: if ( index < 0 ) {
+161: return "en" ;
+162: }
+163:
+164: return language ;
+165: }
+166:
+167: void TranslationHandler :: addTranslation ( const char * name , const char * filename )
+168: {
+169: TranslationInfo info ;
+170: info . mName = name ;
+171: info . mFilename = filename ;
+172: int codeLength ; codeLength = QString ( filename ) . length ( ) - QString ( filename ) . indexOf ( '_' ) - 1 ;
+173: info . mCode = QString ( filename ) . right ( codeLength ) ;
+174: mTranslations . append ( info ) ;
+175: }
+176:
+177: int TranslationHandler :: getLanguageIndexByCode ( const QString & code ) const
+178: {
+179: int index ; index = -1 ;
+180: for ( int i = 0 ; i < mTranslations . size ( ) ; i ++ ) {
+181: if ( mTranslations [ i ] . mCode == code ) {
+182: index = i ;
+183: break ;
+184: } else if ( mTranslations [ i ] . mCode == code . left ( 2 ) ) {
+185: index = i ;
+186: break ;
+187: }
+188: }
+189: return index ;
+190: }
+
+
+
+##Value flow

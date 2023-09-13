@@ -1,0 +1,104 @@
+
+
+##file cppcheck-2.8/gui/platforms.h
+
+1:
+|
+27:
+28: class QAction ;
+29:
+|
+35:
+36: struct Platform {
+37: QString mTitle@var1 ;
+38: Settings :: PlatformType mType@var2 ;
+39: QAction * mActMainWindow@var3 ;
+40: } ;
+41:
+|
+44:
+45: class Platforms : public QObject {
+46: Q_OBJECT
+47:
+48: public:
+49: explicit Platforms ( QObject * parent@var4 = nullptr ) ;
+50: void add ( const QString & title@var5 , Settings :: PlatformType platform@var6 ) ;
+51: int getCount ( ) const ;
+52: void init ( ) ;
+53: Platform & get ( Settings :: PlatformType platform@var7 ) ;
+54:
+55: QList < Platform > mPlatforms@var8 ;
+56: } ;
+
+##file cppcheck-2.8/gui/platforms.cpp
+
+1:
+|
+20:
+21: Platforms :: Platforms ( QObject * parent@var9 )
+22: : QObject ( parent@var9 )
+23: {
+24: init (@expr1073741842 ) ;
+25: }
+26:
+27: void Platforms :: add ( const QString & title@var10 , Settings :: PlatformType platform@var11 )
+28: {
+29: Platform plat@var12 ;
+30: plat@var12 .@expr1073741843 mTitle@var13 =@expr1073741844 title@var10 ;
+31: plat@var12 .@expr1073741845 mType@var14 =@expr1073741846 platform@var11 ;
+32: plat@var12 .@expr1073741847 mActMainWindow@var15 =@expr1073741848 nullptr ;
+33: mPlatforms@var8 <<@expr1073741849 plat@var12 ;
+34: }
+35:
+36: void Platforms :: init ( )
+37: {
+38: add (@expr1073741856 tr (@expr1073741857 "Native" ) , Settings ::@expr1073741858 Native@expr1073741850 ) ;
+39: add (@expr1073741859 tr (@expr1073741860 "Unix 32-bit" ) , Settings ::@expr1073741861 Unix32@expr1073741851 ) ;
+40: add (@expr1073741862 tr (@expr1073741863 "Unix 64-bit" ) , Settings ::@expr1073741864 Unix64@expr1073741852 ) ;
+41: add (@expr1073741865 tr (@expr1073741866 "Windows 32-bit ANSI" ) , Settings ::@expr1073741867 Win32A@expr1073741853 ) ;
+42: add (@expr1073741868 tr (@expr1073741869 "Windows 32-bit Unicode" ) , Settings ::@expr1073741870 Win32W@expr1073741854 ) ;
+43: add (@expr1073741871 tr (@expr1073741872 "Windows 64-bit" ) , Settings ::@expr1073741873 Win64@expr1073741855 ) ;
+44: }
+45:
+46: int Platforms :: getCount ( ) const
+47: {
+48: return mPlatforms@var8 .@expr1073741874 count (@expr1073741875 ) ;
+49: }
+50:
+51: Platform & Platforms :: get ( Settings :: PlatformType platform@var16 )
+52: {
+53: QList < Platform > ::@expr1073741876 iterator iter@var17 ; iter@var17 =@expr1073741877 mPlatforms@var8 .@expr1073741878 begin (@expr1073741879 ) ;
+54: while (@expr1073741880 iter@var17 !=@expr1073741881 mPlatforms@var8 .@expr1073741882 end (@expr1073741883 ) ) {
+55: if (@expr1073741884 (@expr1073741885 *@expr62 iter@var17 ) .@expr1073741887 mType@var18 ==@expr1073741888 platform@var16 ) {
+56: return *@expr62 iter@var17 ;
+57: }
+58: ++@expr1073741890 iter@var17 ;
+59: }
+60: return mPlatforms@var8 .@expr1073741891 first (@expr1073741892 ) ;
+61: }
+
+
+
+##Value flow
+Line 49
+  = always 0
+  nullptr always 0
+Line 32
+  = always 0
+  nullptr always 0
+Line 38
+  "Native" always "Native"
+Line 39
+  "Unix 32-bit" always "Unix 32-bit"
+Line 40
+  "Unix 64-bit" always "Unix 64-bit"
+Line 41
+  "Windows 32-bit ANSI" always "Windows 32-bit ANSI"
+Line 42
+  "Windows 32-bit Unicode" always "Windows 32-bit Unicode"
+Line 43
+  "Windows 64-bit" always "Windows 64-bit"
+Line 54
+  != always {!<=-1,!>=2}
+Line 55
+  == always {!<=-1,!>=2}

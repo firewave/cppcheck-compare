@@ -1,0 +1,671 @@
+
+
+##file cppcheck-2.8/gui/codeeditorstyle.h
+
+1:
+|
+25:
+26: const QString SETTINGS_STYLE_GROUP ( "EditorStyle" ) ;
+27: const QString SETTINGS_STYLE_TYPE ( "StyleType" ) ;
+28: const QString SETTINGS_STYLE_TYPE_LIGHT ( "DefaultLight" ) ;
+29: const QString SETTINGS_STYLE_TYPE_DARK ( "DefaultDark" ) ;
+30: const QString SETTINGS_STYLE_TYPE_CUSTOM ( "Custom" ) ;
+31: const QString SETTINGS_STYLE_WIDGETFG ( "StyleWidgetFG" ) ;
+32: const QString SETTINGS_STYLE_WIDGETBG ( "StyleWidgetBG" ) ;
+33: const QString SETTINGS_STYLE_HILIFG ( "StyleHighlightFG" ) ;
+34: const QString SETTINGS_STYLE_LINENUMFG ( "StyleLineNumFG" ) ;
+35: const QString SETTINGS_STYLE_LINENUMBG ( "StyleLineNumBG" ) ;
+36: const QString SETTINGS_STYLE_KEYWORDFG ( "StyleKeywordFG" ) ;
+37: const QString SETTINGS_STYLE_KEYWORDWT ( "StyleKeywordWeight" ) ;
+38: const QString SETTINGS_STYLE_CLASSFG ( "StyleClassFG" ) ;
+39: const QString SETTINGS_STYLE_CLASSWT ( "StyleClassWeight" ) ;
+40: const QString SETTINGS_STYLE_QUOTEFG ( "StyleQuoteFG" ) ;
+41: const QString SETTINGS_STYLE_QUOTEWT ( "StyleQuoteWeight" ) ;
+42: const QString SETTINGS_STYLE_COMMENTFG ( "StyleCommentFG" ) ;
+43: const QString SETTINGS_STYLE_COMMENTWT ( "StyleCommentWeight" ) ;
+44: const QString SETTINGS_STYLE_SYMBOLFG ( "StyleSymbolFG" ) ;
+45: const QString SETTINGS_STYLE_SYMBOLBG ( "StyleSymbolBG" ) ;
+46: const QString SETTINGS_STYLE_SYMBOLWT ( "StyleSymbolWeight" ) ;
+47:
+48: class QSettings ;
+49:
+50: class CodeEditorStyle {
+51: public:
+52: explicit CodeEditorStyle (
+53: const QColor & CtrlFGColor , const QColor & CtrlBGColor ,
+54: const QColor & HiLiBGColor ,
+55: const QColor & LnNumFGColor , const QColor & LnNumBGColor ,
+56: const QColor & KeyWdFGColor , const QFont :: Weight & KeyWdWeight ,
+57: const QColor & ClsFGColor , const QFont :: Weight & ClsWeight ,
+58: const QColor & QteFGColor , const QFont :: Weight & QteWeight ,
+59: const QColor & CmtFGColor , const QFont :: Weight & CmtWeight ,
+60: const QColor & SymbFGColor , const QColor & SymbBGColor ,
+61: const QFont :: Weight & SymbWeight ) ;
+62: ~ CodeEditorStyle ( ) { }
+63:
+64: bool operator == ( const CodeEditorStyle & rhs ) const ;
+65: bool operator != ( const CodeEditorStyle & rhs ) const ;
+66:
+67: bool isSystemTheme ( ) const {
+68: return mSystemTheme ;
+69: }
+70:
+71: static CodeEditorStyle getSystemTheme ( ) ;
+72: static CodeEditorStyle loadSettings ( QSettings * settings ) ;
+73: static void saveSettings ( QSettings * settings , const CodeEditorStyle & theStyle ) ;
+74:
+75: public:
+76: bool mSystemTheme ;
+77: QColor widgetFGColor ;
+78: QColor widgetBGColor ;
+79: QColor highlightBGColor ;
+80: QColor lineNumFGColor ;
+81: QColor lineNumBGColor ;
+82: QColor keywordColor ;
+83: QFont :: Weight keywordWeight ;
+84: QColor classColor ;
+85: QFont :: Weight classWeight ;
+86: QColor quoteColor ;
+87: QFont :: Weight quoteWeight ;
+88: QColor commentColor ;
+89: QFont :: Weight commentWeight ;
+90: QColor symbolFGColor ;
+91: QColor symbolBGColor ;
+92: QFont :: Weight symbolWeight ;
+93: } ;
+94:
+95: static const CodeEditorStyle defaultStyleLight (
+96: Qt :: black , QColor ( 240 , 240 , 240 ) ,
+97: QColor ( 255 , 220 , 220 ) ,
+98: Qt :: black , QColor ( 240 , 240 , 240 ) ,
+99: Qt :: darkBlue , QFont :: Bold ,
+100: Qt :: darkMagenta , QFont :: Bold ,
+101: Qt :: darkGreen , QFont :: Normal ,
+102: Qt :: gray , QFont :: Normal ,
+103: Qt :: red , QColor ( 220 , 220 , 255 ) , QFont :: Normal
+104: ) ;
+105:
+106:
+107:
+108: static const CodeEditorStyle defaultStyleDark (
+109: QColor ( 218 , 218 , 218 ) , QColor ( 16 , 16 , 32 ) ,
+110: QColor ( 64 , 64 , 64 ) ,
+111: QColor ( 43 , 145 , 175 ) , QColor ( 16 , 16 , 32 ) ,
+112: QColor ( 0 , 204 , 204 ) , QFont :: Bold ,
+113: QColor ( 218 , 0 , 218 ) , QFont :: Bold ,
+114: QColor ( 0 , 204 , 0 ) , QFont :: Normal ,
+115: QColor ( 180 , 180 , 180 ) , QFont :: Normal ,
+116: QColor ( 218 , 32 , 32 ) , QColor ( 32 , 32 , 108 ) , QFont :: Normal
+117: ) ;
+
+##file cppcheck-2.8/gui/codeeditstyledialog.h
+
+1:
+|
+25:
+26: class CodeEditor ;
+27: class SelectColorButton ;
+28: class SelectFontWeightCombo ;
+29: class QObject ;
+30: class QPushButton ;
+31: class QWidget ;
+32:
+33: class StyleEditDialog : public QDialog {
+34: Q_OBJECT
+35: public:
+36: explicit StyleEditDialog ( const CodeEditorStyle & newStyle ,
+37: QWidget * parent = nullptr ) ;
+38: ~ StyleEditDialog ( ) override { }
+39:
+40: CodeEditorStyle getStyle ( ) ;
+41:
+42: private:
+43: void updateControls ( ) ;
+44: void updateStyle ( ) ;
+45:
+46: public slots :
+47: void resetStyle ( ) ;
+48: void setStyleDefaultLight ( ) ;
+49: void setStyleDefaultDark ( ) ;
+50: void colorChangedWidgetFG ( const QColor & newColor ) ;
+51: void colorChangedWidgetBG ( const QColor & newColor ) ;
+52: void colorChangedHighlightBG ( const QColor & newColor ) ;
+53: void colorChangedLineNumFG ( const QColor & newColor ) ;
+54: void colorChangedLineNumBG ( const QColor & newColor ) ;
+55: void colorChangedKeywordFG ( const QColor & newColor ) ;
+56: void weightChangedKeyword ( const QFont :: Weight & newWeight ) ;
+57: void colorChangedClassFG ( const QColor & newColor ) ;
+58: void weightChangedClass ( const QFont :: Weight & newWeight ) ;
+59: void colorChangedQuoteFG ( const QColor & newColor ) ;
+60: void weightChangedQuote ( const QFont :: Weight & newWeight ) ;
+61: void colorChangedCommentFG ( const QColor & newColor ) ;
+62: void weightChangedComment ( const QFont :: Weight & newWeight ) ;
+63: void colorChangedSymbolFG ( const QColor & newColor ) ;
+64: void colorChangedSymbolBG ( const QColor & newColor ) ;
+65: void weightChangedSymbol ( const QFont :: Weight & newWeight ) ;
+66:
+67: private:
+68: CodeEditorStyle mStyleIncoming ;
+69: CodeEditorStyle mStyleOutgoing ;
+70:
+71: CodeEditor * mSampleEditor ;
+72:
+73: SelectColorButton * mBtnWidgetColorFG ;
+74: SelectColorButton * mBtnWidgetColorBG ;
+75: SelectColorButton * mBtnHighlightBG ;
+76: SelectColorButton * mBtnLineNumFG ;
+77: SelectColorButton * mBtnLineNumBG ;
+78: SelectColorButton * mBtnKeywordFG ;
+79: SelectFontWeightCombo * mCBKeywordWeight ;
+80: SelectColorButton * mBtnClassFG ;
+81: SelectFontWeightCombo * mCBClassWeight ;
+82: SelectColorButton * mBtnQuoteFG ;
+83: SelectFontWeightCombo * mCBQuoteWeight ;
+84: SelectColorButton * mBtnCommentFG ;
+85: SelectFontWeightCombo * mCBCommentWeight ;
+86: SelectColorButton * mBtnSymbolFG ;
+87: SelectColorButton * mBtnSymbolBG ;
+88: SelectFontWeightCombo * mCBSymbolWeight ;
+89:
+90: QPushButton * mBtnDefaultLight ;
+91: QPushButton * mBtnDefaultDark ;
+92:
+93: static const QString mSampleDocument ;
+94: static const QStringList mErrSymbolsList ;
+95: static const int mErrLineNum ;
+96: } ;
+
+##file cppcheck-2.8/gui/codeeditor.h
+
+1:
+|
+25:
+26: class CodeEditorStyle ;
+27: class QObject ;
+28: class QPaintEvent ;
+29: class QRect ;
+30: class QResizeEvent ;
+31: class QTextDocument ;
+32:
+33: class Highlighter : public QSyntaxHighlighter {
+34: Q_OBJECT
+35:
+36: public:
+37: explicit Highlighter ( QTextDocument * parent ,
+38: CodeEditorStyle * widgetStyle ) ;
+39:
+40: void setSymbols ( const QStringList & symbols ) ;
+41:
+42: void setStyle ( const CodeEditorStyle & newStyle ) ;
+43:
+44: protected:
+45: void highlightBlock ( const QString & text ) override ;
+46:
+47: private:
+48: enum RuleRole {
+49: Keyword = 1 ,
+50: Class = 2 ,
+51: Comment = 3 ,
+52: Quote = 4 ,
+53: Symbol = 5
+54: } ;
+55: struct HighlightingRule {
+56: QRegularExpression pattern ;
+57: QTextCharFormat format ;
+58: RuleRole ruleRole ;
+59: } ;
+60:
+61: void applyFormat ( HighlightingRule & rule ) ;
+62:
+63: QVector < HighlightingRule > mHighlightingRules ;
+64: QVector < HighlightingRule > mHighlightingRulesWithSymbols ;
+65:
+66: QRegularExpression mCommentStartExpression ;
+67: QRegularExpression mCommentEndExpression ;
+68:
+69: QTextCharFormat mKeywordFormat ;
+70: QTextCharFormat mClassFormat ;
+71: QTextCharFormat mSingleLineCommentFormat ;
+72: QTextCharFormat mMultiLineCommentFormat ;
+73: QTextCharFormat mQuotationFormat ;
+74: QTextCharFormat mSymbolFormat ;
+75:
+76: CodeEditorStyle * mWidgetStyle ;
+77: } ;
+78:
+79: class CodeEditor : public QPlainTextEdit {
+80: Q_OBJECT
+81:
+82: public:
+83: explicit CodeEditor ( QWidget * parent ) ;
+84: CodeEditor ( const CodeEditor & ) = delete ;
+85: CodeEditor & operator = ( const CodeEditor & ) = delete ;
+86: ~ CodeEditor ( ) override ;
+87:
+88: void lineNumberAreaPaintEvent ( QPaintEvent * event ) ;
+89: int lineNumberAreaWidth ( ) ;
+90: void setStyle ( const CodeEditorStyle & newStyle ) ;
+91:
+|
+97:
+98: void setError ( const QString & code , int errorLine , const QStringList & symbols ) ;
+99:
+|
+104:
+105: void setError ( int errorLine , const QStringList & symbols ) ;
+106:
+107: void setFileName ( const QString & fileName ) {
+108: mFileName = fileName ;
+109: }
+110:
+111: QString getFileName ( ) const {
+112: return mFileName ;
+113: }
+114:
+115: void clear ( ) {
+116: mFileName . clear ( ) ;
+117: setPlainText ( QString ( ) ) ;
+118: }
+119:
+120: protected:
+121: void resizeEvent ( QResizeEvent * event ) override ;
+122:
+123: private slots :
+124: void updateLineNumberAreaWidth ( int newBlockCount ) ;
+125: void highlightErrorLine ( ) ;
+126: void updateLineNumberArea ( const QRect & , int ) ;
+127:
+128: private:
+129: QString generateStyleString ( ) ;
+130:
+131: private:
+132: QWidget * mLineNumberArea ;
+133: Highlighter * mHighlighter ;
+134: CodeEditorStyle * mWidgetStyle ;
+135: int mErrorPosition ;
+136: QString mFileName ;
+137: } ;
+138:
+139:
+140: class LineNumberArea : public QWidget {
+141: public:
+142: explicit LineNumberArea ( CodeEditor * editor ) : QWidget ( editor ) {
+143: mCodeEditor = editor ;
+144: }
+145:
+146: QSize sizeHint ( ) const override {
+147: return QSize ( mCodeEditor . lineNumberAreaWidth ( ) , 0 ) ;
+148: }
+149:
+150: protected:
+151: void paintEvent ( QPaintEvent * event ) override {
+152: mCodeEditor . lineNumberAreaPaintEvent ( event ) ;
+153: }
+154:
+155: private:
+156: CodeEditor * mCodeEditor ;
+157: } ;
+
+##file cppcheck-2.8/gui/codeeditstylecontrols.h
+
+1:
+|
+29:
+30: class QObject ;
+31: class QWidget ;
+32:
+33: class SelectColorButton : public QPushButton {
+34: Q_OBJECT
+35: public:
+36: explicit SelectColorButton ( QWidget * parent ) ;
+37: ~ SelectColorButton ( ) override { }
+38:
+39: void setColor ( const QColor & color ) ;
+40: const QColor & getColor ( ) ;
+41:
+42: signals :
+43: void colorChanged ( const QColor & newColor ) ;
+44:
+45: public slots :
+46: void updateColor ( ) ;
+47: void changeColor ( ) ;
+48:
+49: private:
+50: QColor mColor ;
+51: } ;
+52:
+53:
+54: class SelectFontWeightCombo : public QComboBox {
+55: Q_OBJECT
+56: public:
+57: explicit SelectFontWeightCombo ( QWidget * parent ) ;
+58: ~ SelectFontWeightCombo ( ) override { }
+59:
+60: void setWeight ( const QFont :: Weight & weight ) ;
+61: const QFont :: Weight & getWeight ( ) ;
+62:
+63: signals :
+64: void weightChanged ( const QFont :: Weight & newWeight ) ;
+65:
+66: public slots :
+67: void updateWeight ( ) ;
+68: void changeWeight ( int index ) ;
+69:
+70: private:
+71: QFont :: Weight mWeight ;
+72: } ;
+
+##file cppcheck-2.8/gui/codeeditstyledialog.cpp
+
+1:
+|
+26:
+27: class QWidget ;
+28:
+29: const QString StyleEditDialog :: mSampleDocument (
+30: "/*****\n* Multiline Comment\n*****/\n#include <QApplication>\n#include <iostream>\n\nclass fwdClass;\n\nint main(int argc, char *argv[])\n{\n    QApplication a(argc, argv);\n    int nLife = 42;\n    w.show();\n    // single line comment\n    // line below is highlighted\n    fwdClass( nLife );\n    return a.exec();\n}\n\nvoid class fwdClass( double dValue ) {\n    std::cout << \"Ipsum Lorem: \"\n              << nValue\n              << std::endl;\n}\n"
+31:
+|
+52:
+53: ) ;
+54:
+55: const QStringList StyleEditDialog :: mErrSymbolsList = (
+56: QStringList ( QStringList ( )
+57: << "nLife"
+58: << "dValue"
+59: << "nValue" ) ) ;
+60: const int StyleEditDialog :: mErrLineNum = 16 ;
+61:
+62: StyleEditDialog :: StyleEditDialog ( const CodeEditorStyle & newStyle ,
+63: QWidget * parent ) :
+64: QDialog ( parent ) ,
+65: mStyleIncoming ( newStyle ) ,
+66: mStyleOutgoing ( newStyle )
+67: {
+68: QVBoxLayout * vboxMain ; vboxMain = new QVBoxLayout ( this ) ;
+69: QHBoxLayout * hboxEdit ; hboxEdit = new QHBoxLayout ( ) ;
+70:
+71: QFormLayout * flEditControls ; flEditControls = new QFormLayout ( ) ;
+72: mBtnWidgetColorFG = new SelectColorButton ( this ) ;
+73: flEditControls . addRow ( QObject :: tr ( "Editor Foreground Color" ) ,
+74: mBtnWidgetColorFG ) ;
+75: mBtnWidgetColorBG = new SelectColorButton ( this ) ;
+76: flEditControls . addRow ( QObject :: tr ( "Editor Background Color" ) ,
+77: mBtnWidgetColorBG ) ;
+78: mBtnHighlightBG = new SelectColorButton ( this ) ;
+79: flEditControls . addRow ( QObject :: tr ( "Highlight Background Color" ) ,
+80: mBtnHighlightBG ) ;
+81: mBtnLineNumFG = new SelectColorButton ( this ) ;
+82: flEditControls . addRow ( QObject :: tr ( "Line Number Foreground Color" ) ,
+83: mBtnLineNumFG ) ;
+84: mBtnLineNumBG = new SelectColorButton ( this ) ;
+85: flEditControls . addRow ( QObject :: tr ( "Line Number Background Color" ) ,
+86: mBtnLineNumBG ) ;
+87: mBtnKeywordFG = new SelectColorButton ( this ) ;
+88: flEditControls . addRow ( QObject :: tr ( "Keyword Foreground Color" ) ,
+89: mBtnKeywordFG ) ;
+90: mCBKeywordWeight = new SelectFontWeightCombo ( this ) ;
+91: flEditControls . addRow ( QObject :: tr ( "Keyword Font Weight" ) ,
+92: mCBKeywordWeight ) ;
+93: mBtnClassFG = new SelectColorButton ( this ) ;
+94: flEditControls . addRow ( QObject :: tr ( "Class Foreground Color" ) ,
+95: mBtnClassFG ) ;
+96: mCBClassWeight = new SelectFontWeightCombo ( this ) ;
+97: flEditControls . addRow ( QObject :: tr ( "Class Font Weight" ) ,
+98: mCBClassWeight ) ;
+99: mBtnQuoteFG = new SelectColorButton ( this ) ;
+100: flEditControls . addRow ( QObject :: tr ( "Quote Foreground Color" ) ,
+101: mBtnQuoteFG ) ;
+102: mCBQuoteWeight = new SelectFontWeightCombo ( this ) ;
+103: flEditControls . addRow ( QObject :: tr ( "Quote Font Weight" ) ,
+104: mCBQuoteWeight ) ;
+105: mBtnCommentFG = new SelectColorButton ( this ) ;
+106: flEditControls . addRow ( QObject :: tr ( "Comment Foreground Color" ) ,
+107: mBtnCommentFG ) ;
+108: mCBCommentWeight = new SelectFontWeightCombo ( this ) ;
+109: flEditControls . addRow ( QObject :: tr ( "Comment Font Weight" ) ,
+110: mCBCommentWeight ) ;
+111: mBtnSymbolFG = new SelectColorButton ( this ) ;
+112: flEditControls . addRow ( QObject :: tr ( "Symbol Foreground Color" ) ,
+113: mBtnSymbolFG ) ;
+114: mBtnSymbolBG = new SelectColorButton ( this ) ;
+115: flEditControls . addRow ( QObject :: tr ( "Symbol Background Color" ) ,
+116: mBtnSymbolBG ) ;
+117: mCBSymbolWeight = new SelectFontWeightCombo ( this ) ;
+118: flEditControls . addRow ( QObject :: tr ( "Symbol Font Weight" ) ,
+119: mCBSymbolWeight ) ;
+120: hboxEdit . addLayout ( flEditControls ) ;
+121:
+122: mSampleEditor = new CodeEditor ( this ) ;
+123: QFont sampleFont ( "Monospace" ) ;
+124: QFontMetrics fm ( sampleFont ) ;
+125:
+126:
+127:
+128: mSampleEditor . setMinimumWidth ( fm . width ( QString ( 40 , 'W' ) ) ) ;
+129:
+130:
+131: mSampleEditor . setError ( mSampleDocument , mErrLineNum , mErrSymbolsList ) ;
+132:
+133: hboxEdit . addWidget ( mSampleEditor ) ;
+134: vboxMain . addLayout ( hboxEdit ) ;
+135:
+136:
+137: QHBoxLayout * hboxDefaultControls ; hboxDefaultControls = new QHBoxLayout ( ) ;
+138: mBtnDefaultLight = new QPushButton ( QObject :: tr ( "Set to Default Light" ) ,
+139: this ) ;
+140: mBtnDefaultDark = new QPushButton ( QObject :: tr ( "Set to Default Dark" ) ,
+141: this ) ;
+142: hboxDefaultControls . addStretch ( 1 ) ;
+143: hboxDefaultControls . addWidget ( mBtnDefaultLight ) ;
+144: hboxDefaultControls . addWidget ( mBtnDefaultDark ) ;
+145: hboxDefaultControls . addStretch ( 1 ) ;
+146: vboxMain . addLayout ( hboxDefaultControls ) ;
+147: vboxMain . addStretch ( 2 ) ;
+148:
+149: QDialogButtonBox * dBtnBox ; dBtnBox = new QDialogButtonBox (
+150: QDialogButtonBox :: Cancel |
+151: QDialogButtonBox :: Ok |
+152: QDialogButtonBox :: Reset ) ;
+153: vboxMain . addStretch ( 1 ) ;
+154: vboxMain . addWidget ( dBtnBox ) ;
+155:
+156:
+157: updateControls ( ) ;
+158: updateStyle ( ) ;
+159:
+160: connect ( dBtnBox , SIGNAL ( accepted ( ) ) , this , SLOT ( accept ( ) ) ) ;
+161: connect ( dBtnBox , SIGNAL ( rejected ( ) ) , this , SLOT ( reject ( ) ) ) ;
+162: connect ( dBtnBox . button ( QDialogButtonBox :: Reset ) , SIGNAL ( clicked ( ) ) ,
+163: this , SLOT ( resetStyle ( ) ) ) ;
+164: connect ( mBtnDefaultLight , SIGNAL ( clicked ( ) ) ,
+165: this , SLOT ( setStyleDefaultLight ( ) ) ) ;
+166: connect ( mBtnDefaultDark , SIGNAL ( clicked ( ) ) ,
+167: this , SLOT ( setStyleDefaultDark ( ) ) ) ;
+168: connect ( mBtnWidgetColorFG , SIGNAL ( colorChanged ( const QColor & ) ) ,
+169: this , SLOT ( colorChangedWidgetFG ( const QColor & ) ) ) ;
+170: connect ( mBtnWidgetColorBG , SIGNAL ( colorChanged ( const QColor & ) ) ,
+171: this , SLOT ( colorChangedWidgetBG ( const QColor & ) ) ) ;
+172: connect ( mBtnHighlightBG , SIGNAL ( colorChanged ( const QColor & ) ) ,
+173: this , SLOT ( colorChangedHighlightBG ( const QColor & ) ) ) ;
+174: connect ( mBtnLineNumFG , SIGNAL ( colorChanged ( const QColor & ) ) ,
+175: this , SLOT ( colorChangedLineNumFG ( const QColor & ) ) ) ;
+176: connect ( mBtnLineNumBG , SIGNAL ( colorChanged ( const QColor & ) ) ,
+177: this , SLOT ( colorChangedLineNumBG ( const QColor & ) ) ) ;
+178: connect ( mBtnKeywordFG , SIGNAL ( colorChanged ( const QColor & ) ) ,
+179: this , SLOT ( colorChangedKeywordFG ( const QColor & ) ) ) ;
+180: connect ( mCBKeywordWeight , SIGNAL ( weightChanged ( const QFont :: Weight & ) ) ,
+181: this , SLOT ( weightChangedKeyword ( const QFont :: Weight & ) ) ) ;
+182: connect ( mBtnClassFG , SIGNAL ( colorChanged ( const QColor & ) ) ,
+183: this , SLOT ( colorChangedClassFG ( const QColor & ) ) ) ;
+184: connect ( mCBClassWeight , SIGNAL ( weightChanged ( const QFont :: Weight & ) ) ,
+185: this , SLOT ( weightChangedClass ( const QFont :: Weight & ) ) ) ;
+186: connect ( mBtnQuoteFG , SIGNAL ( colorChanged ( const QColor & ) ) ,
+187: this , SLOT ( colorChangedQuoteFG ( const QColor & ) ) ) ;
+188: connect ( mCBQuoteWeight , SIGNAL ( weightChanged ( const QFont :: Weight & ) ) ,
+189: this , SLOT ( weightChangedQuote ( const QFont :: Weight & ) ) ) ;
+190: connect ( mBtnCommentFG , SIGNAL ( colorChanged ( const QColor & ) ) ,
+191: this , SLOT ( colorChangedCommentFG ( const QColor & ) ) ) ;
+192: connect ( mCBCommentWeight , SIGNAL ( weightChanged ( const QFont :: Weight & ) ) ,
+193: this , SLOT ( weightChangedComment ( const QFont :: Weight & ) ) ) ;
+194: connect ( mBtnSymbolFG , SIGNAL ( colorChanged ( const QColor & ) ) ,
+195: this , SLOT ( colorChangedSymbolFG ( const QColor & ) ) ) ;
+196: connect ( mBtnSymbolBG , SIGNAL ( colorChanged ( const QColor & ) ) ,
+197: this , SLOT ( colorChangedSymbolBG ( const QColor & ) ) ) ;
+198: connect ( mCBSymbolWeight , SIGNAL ( weightChanged ( const QFont :: Weight & ) ) ,
+199: this , SLOT ( weightChangedSymbol ( const QFont :: Weight & ) ) ) ;
+200: }
+201:
+202: void StyleEditDialog :: updateControls ( )
+203: {
+204: mBtnWidgetColorFG . setColor ( mStyleOutgoing . widgetFGColor ) ;
+205: mBtnWidgetColorBG . setColor ( mStyleOutgoing . widgetBGColor ) ;
+206: mBtnHighlightBG . setColor ( mStyleOutgoing . highlightBGColor ) ;
+207: mBtnLineNumFG . setColor ( mStyleOutgoing . lineNumFGColor ) ;
+208: mBtnLineNumBG . setColor ( mStyleOutgoing . lineNumBGColor ) ;
+209: mBtnKeywordFG . setColor ( mStyleOutgoing . keywordColor ) ;
+210: mCBKeywordWeight . setWeight ( mStyleOutgoing . keywordWeight ) ;
+211: mBtnClassFG . setColor ( mStyleOutgoing . classColor ) ;
+212: mCBClassWeight . setWeight ( mStyleOutgoing . classWeight ) ;
+213: mBtnQuoteFG . setColor ( mStyleOutgoing . quoteColor ) ;
+214: mCBQuoteWeight . setWeight ( mStyleOutgoing . quoteWeight ) ;
+215: mBtnCommentFG . setColor ( mStyleOutgoing . commentColor ) ;
+216: mCBCommentWeight . setWeight ( mStyleOutgoing . commentWeight ) ;
+217: mBtnSymbolFG . setColor ( mStyleOutgoing . symbolFGColor ) ;
+218: mBtnSymbolBG . setColor ( mStyleOutgoing . symbolBGColor ) ;
+219: mCBSymbolWeight . setWeight ( mStyleOutgoing . symbolWeight ) ;
+220: }
+221:
+222: void StyleEditDialog :: updateStyle ( )
+223: {
+224: mBtnDefaultLight . setEnabled ( mStyleOutgoing != defaultStyleLight ) ;
+225: mBtnDefaultDark . setEnabled ( mStyleOutgoing != defaultStyleDark ) ;
+226:
+227: mSampleEditor . setStyle ( mStyleOutgoing ) ;
+228: }
+229:
+230: CodeEditorStyle StyleEditDialog :: getStyle ( )
+231: {
+232: return mStyleOutgoing ;
+233: }
+234:
+235: void StyleEditDialog :: resetStyle ( )
+236: {
+237: mStyleOutgoing = mStyleIncoming ;
+238: updateControls ( ) ;
+239: updateStyle ( ) ;
+240: }
+241:
+242: void StyleEditDialog :: setStyleDefaultLight ( )
+243: {
+244: mStyleOutgoing = defaultStyleLight ;
+245: updateControls ( ) ;
+246: updateStyle ( ) ;
+247: }
+248:
+249: void StyleEditDialog :: setStyleDefaultDark ( )
+250: {
+251: mStyleOutgoing = defaultStyleDark ;
+252: updateControls ( ) ;
+253: updateStyle ( ) ;
+254: }
+255:
+256: void StyleEditDialog :: colorChangedWidgetFG ( const QColor & newColor )
+257: {
+258: mStyleOutgoing . widgetFGColor = newColor ;
+259: updateStyle ( ) ;
+260: }
+261:
+262: void StyleEditDialog :: colorChangedWidgetBG ( const QColor & newColor )
+263: {
+264: mStyleOutgoing . widgetBGColor = newColor ;
+265: updateStyle ( ) ;
+266: }
+267:
+268: void StyleEditDialog :: colorChangedHighlightBG ( const QColor & newColor )
+269: {
+270: mStyleOutgoing . highlightBGColor = newColor ;
+271: updateStyle ( ) ;
+272: }
+273:
+274: void StyleEditDialog :: colorChangedLineNumFG ( const QColor & newColor )
+275: {
+276: mStyleOutgoing . lineNumFGColor = newColor ;
+277: updateStyle ( ) ;
+278: }
+279:
+280: void StyleEditDialog :: colorChangedLineNumBG ( const QColor & newColor )
+281: {
+282: mStyleOutgoing . lineNumBGColor = newColor ;
+283: updateStyle ( ) ;
+284: }
+285:
+286: void StyleEditDialog :: colorChangedKeywordFG ( const QColor & newColor )
+287: {
+288: mStyleOutgoing . keywordColor = newColor ;
+289: updateStyle ( ) ;
+290: }
+291:
+292: void StyleEditDialog :: weightChangedKeyword ( const QFont :: Weight & newWeight )
+293: {
+294: mStyleOutgoing . keywordWeight = newWeight ;
+295: updateStyle ( ) ;
+296: }
+297:
+298: void StyleEditDialog :: colorChangedClassFG ( const QColor & newColor )
+299: {
+300: mStyleOutgoing . classColor = newColor ;
+301: updateStyle ( ) ;
+302: }
+303:
+304: void StyleEditDialog :: weightChangedClass ( const QFont :: Weight & newWeight )
+305: {
+306: mStyleOutgoing . classWeight = newWeight ;
+307: updateStyle ( ) ;
+308: }
+309:
+310: void StyleEditDialog :: colorChangedQuoteFG ( const QColor & newColor )
+311: {
+312: mStyleOutgoing . quoteColor = newColor ;
+313: updateStyle ( ) ;
+314: }
+315:
+316: void StyleEditDialog :: weightChangedQuote ( const QFont :: Weight & newWeight )
+317: {
+318: mStyleOutgoing . quoteWeight = newWeight ;
+319: updateStyle ( ) ;
+320: }
+321:
+322: void StyleEditDialog :: colorChangedCommentFG ( const QColor & newColor )
+323: {
+324: mStyleOutgoing . commentColor = newColor ;
+325: updateStyle ( ) ;
+326: }
+327:
+328: void StyleEditDialog :: weightChangedComment ( const QFont :: Weight & newWeight )
+329: {
+330: mStyleOutgoing . commentWeight = newWeight ;
+331: updateStyle ( ) ;
+332: }
+333:
+334: void StyleEditDialog :: colorChangedSymbolFG ( const QColor & newColor )
+335: {
+336: mStyleOutgoing . symbolFGColor = newColor ;
+337: updateStyle ( ) ;
+338: }
+339:
+340: void StyleEditDialog :: colorChangedSymbolBG ( const QColor & newColor )
+341: {
+342: mStyleOutgoing . symbolBGColor = newColor ;
+343: updateStyle ( ) ;
+344: }
+345:
+346: void StyleEditDialog :: weightChangedSymbol ( const QFont :: Weight & newWeight )
+347: {
+348: mStyleOutgoing . symbolWeight = newWeight ;
+349: updateStyle ( ) ;
+350: }
+
+
+
+##Value flow

@@ -1,0 +1,121 @@
+
+
+##file cppcheck-2.8/gui/fileviewdialog.h
+
+1:
+|
+24:
+25: class QObject ;
+26: class QWidget ;
+27: class QTextEdit ;
+28: namespace Ui {
+29: class Fileview ;
+30: }
+31:
+|
+41:
+42: class FileViewDialog : public QDialog {
+43: Q_OBJECT
+44: public:
+45: FileViewDialog ( const QString & file@var1 ,
+46: const QString & title@var2 ,
+47: QWidget * parent@var3 = nullptr ) ;
+48:
+49: ~ FileViewDialog ( ) override ;
+50:
+51: protected:
+52:
+|
+58:
+59: void loadTextFile ( const QString & filename@var4 , QTextEdit * edit@var5 ) ;
+60:
+61: Ui :: Fileview * mUI@var6 ;
+62: } ;
+
+##file cppcheck-2.8/gui/fileviewdialog.cpp
+
+1:
+|
+27:
+28: FileViewDialog :: FileViewDialog ( const QString & file@var7 ,
+29: const QString & title@var8 ,
+30: QWidget * parent@var9 )
+31: : QDialog ( parent@var9 )
+32: , mUI@var6 ( new Ui :: Fileview )
+33: {
+34: mUI@var6 .@expr18 setupUi (@expr19 this@expr20 ) ;
+35:
+36:
+37: setWindowTitle (@expr1073741845 title@var8 ) ;
+38: connect (@expr1073741846 mUI@var6 .@expr1073741847 mButtons@var18 , SIGNAL (@expr1073741848 accepted (@expr1073741849 ) ) , this@expr20 , SLOT (@expr1073741850 accept (@expr1073741851 ) ) ) ;
+39: loadTextFile (@expr1073741852 file@var7 , mUI@var6 .@expr1073741853 mText@var19 ) ;
+40: }
+41:
+42: FileViewDialog :: ~ FileViewDialog ( )
+43: {
+44: delete mUI@var6 ;
+45: }
+46:
+47: void FileViewDialog :: loadTextFile ( const QString & filename@var10 , QTextEdit * edit@var11 )
+48: {
+49: QFile file@var12 (@expr1073741856 filename@var10 ) ;
+50: if (@expr1073741857 !@expr1073741858 file@var12 .@expr1073741859 exists (@expr1073741860 ) ) {
+51: QString msg@var13 (@expr1073741861 tr (@expr1073741862 "Could not find the file: %1" ) ) ;
+52: msg@var13 =@expr1073741863 msg@var13 .@expr1073741864 arg (@expr1073741865 filename@var10 ) ;
+53:
+54: QMessageBox msgbox@var14 (@expr1073741866 QMessageBox ::@expr43 Critical ,
+55: tr (@expr44 "Cppcheck" ) ,
+56: msg@var13 ,
+57: QMessageBox ::@expr45 Ok ,
+58: this@expr46 ) ;
+59: msgbox@var14 .@expr1073741871 exec (@expr1073741872 ) ;
+60: return ;
+61: }
+62:
+63: file@var12 .@expr1073741873 open (@expr1073741874 QIODevice ::@expr1073741875 ReadOnly@expr1073741854 |@expr1073741876 QIODevice ::@expr1073741877 Text@expr1073741855 ) ;
+64: if (@expr1073741878 !@expr1073741879 file@var12 .@expr1073741880 isReadable (@expr1073741881 ) ) {
+65: QString msg@var15 (@expr1073741882 tr (@expr1073741883 "Could not read the file: %1" ) ) ;
+66: msg@var15 =@expr1073741884 msg@var15 .@expr1073741885 arg (@expr1073741886 filename@var10 ) ;
+67:
+68: QMessageBox msgbox@var16 (@expr1073741887 QMessageBox ::@expr43 Critical ,
+69: tr (@expr44 "Cppcheck" ) ,
+70: msg@var15 ,
+71: QMessageBox ::@expr45 Ok ,
+72: this@expr46 ) ;
+73: msgbox@var16 .@expr1073741891 exec (@expr1073741892 ) ;
+74: return ;
+75: }
+76: QByteArray filedata@var17 ; filedata@var17 =@expr1073741893 file@var12 .@expr1073741894 readAll (@expr1073741895 ) ;
+77: file@var12 .@expr1073741896 close (@expr1073741897 ) ;
+78:
+79: edit@var11 .@expr1073741898 setPlainText (@expr1073741899 filedata@var17 ) ;
+80: }
+
+
+
+##Value flow
+Line 46
+  , always 0
+Line 47
+  = always 0
+  nullptr always 0
+Line 34
+  this always !0
+Line 38
+  this always !0
+Line 50
+  ! always {!<=-1,!>=2}
+Line 51
+  "Could not find the file: %1" always "Could not find the file: %1"
+Line 55
+  "Cppcheck" always "Cppcheck"
+Line 58
+  this always !0
+Line 64
+  ! always {!<=-1,!>=2}
+Line 65
+  "Could not read the file: %1" always "Could not read the file: %1"
+Line 69
+  "Cppcheck" always "Cppcheck"
+Line 72
+  this always !0

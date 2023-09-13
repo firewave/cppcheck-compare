@@ -1,0 +1,2021 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741936 expected@var22 !=@expr1073741937 actual@var23 ) {
+62: std ::@expr1073741938 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741939 expected@var22 ;
+64: std ::@expr1073741940 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741941 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741942 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741943 str (@expr1073741944 ) , actualStr@var26 .@expr1073741945 str (@expr1073741946 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741947 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741948 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741949 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741950 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/teststring.cpp
+
+1:
+|
+28:
+29: class TestString : public TestFixture {
+30: public:
+31: TestString ( ) : TestFixture ( "TestString" ) { }
+32:
+33: private:
+34: Settings settings@var102 ;
+35:
+36: void run ( ) override {
+37: settings@var102 .@expr129 severity@var103 .@expr130 enable (@expr1073741955 Severity ::@expr1073741956 warning@expr1073741951 ) ;
+38: settings@var102 .@expr129 severity@var103 .@expr130 enable (@expr1073741959 Severity ::@expr1073741960 style@expr1073741952 ) ;
+39:
+40: $do ${ $if $(@expr1073741961 $prepareTest $(@expr1073741962 "stringLiteralWrite" $) $) ${ $setVerbose $(@expr1073741963 $false $) $; stringLiteralWrite $(@expr1073741964 $) $; $} $} $while $(@expr1073741965 $false $) ;
+41:
+42: $do ${ $if $(@expr1073741966 $prepareTest $(@expr1073741967 "alwaysTrueFalseStringCompare" $) $) ${ $setVerbose $(@expr1073741968 $false $) $; alwaysTrueFalseStringCompare $(@expr1073741969 $) $; $} $} $while $(@expr1073741970 $false $) ;
+43: $do ${ $if $(@expr1073741971 $prepareTest $(@expr1073741972 "suspiciousStringCompare" $) $) ${ $setVerbose $(@expr1073741973 $false $) $; suspiciousStringCompare $(@expr1073741974 $) $; $} $} $while $(@expr1073741975 $false $) ;
+44: $do ${ $if $(@expr1073741976 $prepareTest $(@expr1073741977 "suspiciousStringCompare_char" $) $) ${ $setVerbose $(@expr1073741978 $false $) $; suspiciousStringCompare_char $(@expr1073741979 $) $; $} $} $while $(@expr1073741980 $false $) ;
+45:
+46: $do ${ $if $(@expr1073741981 $prepareTest $(@expr1073741982 "strPlusChar1" $) $) ${ $setVerbose $(@expr1073741983 $false $) $; strPlusChar1 $(@expr1073741984 $) $; $} $} $while $(@expr1073741985 $false $) ;
+47: $do ${ $if $(@expr1073741986 $prepareTest $(@expr1073741987 "strPlusChar2" $) $) ${ $setVerbose $(@expr1073741988 $false $) $; strPlusChar2 $(@expr1073741989 $) $; $} $} $while $(@expr1073741990 $false $) ;
+48: $do ${ $if $(@expr1073741991 $prepareTest $(@expr1073741992 "strPlusChar3" $) $) ${ $setVerbose $(@expr1073741993 $false $) $; strPlusChar3 $(@expr1073741994 $) $; $} $} $while $(@expr1073741995 $false $) ;
+49: $do ${ $if $(@expr1073741996 $prepareTest $(@expr1073741997 "strPlusChar4" $) $) ${ $setVerbose $(@expr1073741998 $false $) $; strPlusChar4 $(@expr1073741999 $) $; $} $} $while $(@expr1073742000 $false $) ;
+50:
+51: $do ${ $if $(@expr1073742001 $prepareTest $(@expr1073742002 "snprintf1" $) $) ${ $setVerbose $(@expr1073742003 $false $) $; snprintf1 $(@expr1073742004 $) $; $} $} $while $(@expr1073742005 $false $) ;
+52: $do ${ $if $(@expr1073742006 $prepareTest $(@expr1073742007 "sprintf1" $) $) ${ $setVerbose $(@expr1073742008 $false $) $; sprintf1 $(@expr1073742009 $) $; $} $} $while $(@expr1073742010 $false $) ;
+53: $do ${ $if $(@expr1073742011 $prepareTest $(@expr1073742012 "sprintf2" $) $) ${ $setVerbose $(@expr1073742013 $false $) $; sprintf2 $(@expr1073742014 $) $; $} $} $while $(@expr1073742015 $false $) ;
+54: $do ${ $if $(@expr1073742016 $prepareTest $(@expr1073742017 "sprintf3" $) $) ${ $setVerbose $(@expr1073742018 $false $) $; sprintf3 $(@expr1073742019 $) $; $} $} $while $(@expr1073742020 $false $) ;
+55: $do ${ $if $(@expr1073742021 $prepareTest $(@expr1073742022 "sprintf4" $) $) ${ $setVerbose $(@expr1073742023 $false $) $; sprintf4 $(@expr1073742024 $) $; $} $} $while $(@expr1073742025 $false $) ;
+56: $do ${ $if $(@expr1073742026 $prepareTest $(@expr1073742027 "sprintf5" $) $) ${ $setVerbose $(@expr1073742028 $false $) $; sprintf5 $(@expr1073742029 $) $; $} $} $while $(@expr1073742030 $false $) ;
+57: $do ${ $if $(@expr1073742031 $prepareTest $(@expr1073742032 "sprintf6" $) $) ${ $setVerbose $(@expr1073742033 $false $) $; sprintf6 $(@expr1073742034 $) $; $} $} $while $(@expr1073742035 $false $) ;
+58: $do ${ $if $(@expr1073742036 $prepareTest $(@expr1073742037 "sprintf7" $) $) ${ $setVerbose $(@expr1073742038 $false $) $; sprintf7 $(@expr1073742039 $) $; $} $} $while $(@expr1073742040 $false $) ;
+59: $do ${ $if $(@expr1073742041 $prepareTest $(@expr1073742042 "wsprintf1" $) $) ${ $setVerbose $(@expr1073742043 $false $) $; wsprintf1 $(@expr1073742044 $) $; $} $} $while $(@expr1073742045 $false $) ;
+60:
+61: $do ${ $if $(@expr1073742046 $prepareTest $(@expr1073742047 "incorrectStringCompare" $) $) ${ $setVerbose $(@expr1073742048 $false $) $; incorrectStringCompare $(@expr1073742049 $) $; $} $} $while $(@expr1073742050 $false $) ;
+62:
+63: $do ${ $if $(@expr1073742051 $prepareTest $(@expr1073742052 "deadStrcmp" $) $) ${ $setVerbose $(@expr1073742053 $false $) $; deadStrcmp $(@expr1073742054 $) $; $} $} $while $(@expr1073742055 $false $) ;
+64: }
+65:
+66:
+67: void check_ ( const char * file@var104 , int line@var105 , const char code@var106 [ ] , const char filename@var107 [ 9 ] = "test.cpp" ) {
+68:
+69: errout@var100 .@expr1073742056 str (@expr1073742057 "" ) ;
+70:
+71:
+72: Tokenizer tokenizer@var108 (@expr1073742058 &@expr235 settings@var102 , this@expr236 ) ;
+73: std ::@expr1073742061 istringstream istr@var109 (@expr1073742062 code@var106 ) ;
+74: $assert_ $(@expr1073742063 file@var104 $, line@var105 $, $(@expr1073742064 tokenizer@var108 .@expr1073742065 tokenize (@expr1073742066 istr@var109 , filename@var107 ) $) $) ;
+75:
+76:
+77: CheckString checkString@var110 (@expr1073742067 &@expr244 tokenizer@var108 , &@expr235 settings@var102 , this@expr236 ) ;
+78: checkString@var110 .@expr1073742070 runChecks (@expr1073742071 &@expr244 tokenizer@var108 , &@expr235 settings@var102 , this@expr236 ) ;
+79: }
+80:
+81: void stringLiteralWrite ( ) {
+82: $check_ $(@expr1073742074 "cppcheck-2.8/test/teststring.cpp" $, 82 $, "void f() {\n  char *abc = \"abc\";\n  abc[0] = 'a';\n}" $)
+83:
+84:
+85: ;
+86: $if $(@expr1073742075 $!@expr1073742076 $assertEquals $(@expr1073742077 "cppcheck-2.8/test/teststring.cpp" $, 86 $, "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal \"abc\" directly or indirectly is undefined behaviour.\n" $, errout@var100 .@expr254 str (@expr255 ) $) $) { $return ; }
+87:
+88: $check_ $(@expr1073742080 "cppcheck-2.8/test/teststring.cpp" $, 88 $, "void f() {\n  char *abc = \"abc\";\n  *abc = 'a';\n}" $)
+89:
+90:
+91: ;
+92: $if $(@expr1073742081 $!@expr1073742082 $assertEquals $(@expr1073742083 "cppcheck-2.8/test/teststring.cpp" $, 92 $, "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal \"abc\" directly or indirectly is undefined behaviour.\n" $, errout@var100 .@expr254 str (@expr255 ) $) $) { $return ; }
+93:
+94: $check_ $(@expr1073742086 "cppcheck-2.8/test/teststring.cpp" $, 94 $, "void f() {\n  char *abc = \"A very long string literal\";\n  abc[0] = 'a';\n}" $)
+95:
+96:
+97: ;
+98: $if $(@expr1073742087 $!@expr1073742088 $assertEquals $(@expr1073742089 "cppcheck-2.8/test/teststring.cpp" $, 98 $, "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal \"A very long stri..\" directly or indirectly is undefined behaviour.\n" $, errout@var100 .@expr254 str (@expr255 ) $) $) { $return ; }
+99:
+100: $check_ $(@expr1073742092 "cppcheck-2.8/test/teststring.cpp" $, 100 $, "void f() {\n  QString abc = \"abc\";\n  abc[0] = 'a';\n}" $)
+101:
+102:
+103: ;
+104: $if $(@expr1073742093 $!@expr1073742094 $assertEquals $(@expr1073742095 "cppcheck-2.8/test/teststring.cpp" $, 104 $, "" $, errout@var100 .@expr254 str (@expr255 ) $) $) { $return ; }
+105:
+106: $check_ $(@expr1073742098 "cppcheck-2.8/test/teststring.cpp" $, 106 $, "void foo_FP1(char *p) {\n  p[1] = 'B';\n}\nvoid foo_FP2(void) {\n  char* s = \"Y\";\n  foo_FP1(s);\n}" $)
+107:
+|
+111:
+112: ;
+113: $if $(@expr1073742099 $!@expr1073742100 $assertEquals $(@expr1073742101 "cppcheck-2.8/test/teststring.cpp" $, 113 $, "[test.cpp:2] -> [test.cpp:5]: (error) Modifying string literal \"Y\" directly or indirectly is undefined behaviour.\n" $, errout@var100 .@expr254 str (@expr255 ) $) $) { $return
+114:
+115: ; }
+116:
+117: $check_ $(@expr1073742104 "cppcheck-2.8/test/teststring.cpp" $, 117 $, "void foo_FP1(char *p) {\n  p[1] = 'B';\n}\nvoid foo_FP2(void) {\n  char s[10] = \"Y\";\n  foo_FP1(s);\n}" $)
+118:
+|
+122:
+123: ;
+124: $if $(@expr1073742105 $!@expr1073742106 $assertEquals $(@expr1073742107 "cppcheck-2.8/test/teststring.cpp" $, 124 $, "" $, errout@var100 .@expr254 str (@expr255 ) $) $) { $return ; }
+125:
+126: $check_ $(@expr1073742110 "cppcheck-2.8/test/teststring.cpp" $, 126 $, "void f() {\n  wchar_t *abc = L\"abc\";\n  abc[0] = u'a';\n}" $)
+127:
+128:
+129: ;
+130: $if $(@expr1073742111 $!@expr1073742112 $assertEquals $(@expr1073742113 "cppcheck-2.8/test/teststring.cpp" $, 130 $, "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal L\"abc\" directly or indirectly is undefined behaviour.\n" $, errout@var100 .@expr254 str (@expr255 ) $) $) { $return ; }
+131:
+132: $check_ $(@expr1073742116 "cppcheck-2.8/test/teststring.cpp" $, 132 $, "void f() {\n  char16_t *abc = u\"abc\";\n  abc[0] = 'a';\n}" $)
+133:
+134:
+135: ;
+136: $if $(@expr1073742117 $!@expr1073742118 $assertEquals $(@expr1073742119 "cppcheck-2.8/test/teststring.cpp" $, 136 $, "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal u\"abc\" directly or indirectly is undefined behaviour.\n" $, errout@var100 .@expr254 str (@expr255 ) $) $) { $return ; }
+137:
+138: $check_ $(@expr1073742122 "cppcheck-2.8/test/teststring.cpp" $, 138 $, "void foo() {\n    int i;\n    char *p  = \"string literal\";\n    for( i = 0; i < strlen(p); i++) {\n        p[i] = \'X\';\n    }\n    printf(\"%s\\n\", p);\n}" $)
+139:
+|
+144:
+145: ;
+146: $if $(@expr1073742123 $!@expr1073742124 $assertEquals $(@expr1073742125 "cppcheck-2.8/test/teststring.cpp" $, 146 $, "[test.cpp:5] -> [test.cpp:3]: (error) Modifying string literal \"string literal\" directly or indirectly is undefined behaviour.\n" $, errout@var100 .@expr254 str (@expr255 ) $) $) { $return ; }
+147: }
+148:
+149: void alwaysTrueFalseStringCompare ( ) {
+150: $check_ $(@expr1073742128 "cppcheck-2.8/test/teststring.cpp" $, 150 $, "void f() {\n  if (strcmp(\"A\",\"A\")){}\n  if (strncmp(\"A\",\"A\",1)){}\n  if (strcasecmp(\"A\",\"A\")){}\n  if (strncasecmp(\"A\",\"A\",1)){}\n  if (memcmp(\"A\",\"A\",1)){}\n  if (strverscmp(\"A\",\"A\")){}\n  if (bcmp(\"A\",\"A\",1)){}\n  if (wcsncasecmp(L\"A\",L\"A\",1)){}\n  if (wcsncmp(L\"A\",L\"A\",1)){}\n  if (wmemcmp(L\"A\",L\"A\",1)){}\n  if (wcscmp(L\"A\",L\"A\")){}\n  if (wcscasecmp(L\"A\",L\"A\")){}\n}" $)
+151:
+|
+162:
+163: ;
+164: $if $(@expr1073742129 $!@expr1073742130 $assertEquals $(@expr1073742131 "cppcheck-2.8/test/teststring.cpp" $, 164 $, "[test.cpp:2]: (warning) Unnecessary comparison of static strings.\n[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n[test.cpp:4]: (warning) Unnecessary comparison of static strings.\n[test.cpp:5]: (warning) Unnecessary comparison of static strings.\n[test.cpp:6]: (warning) Unnecessary comparison of static strings.\n[test.cpp:7]: (warning) Unnecessary comparison of static strings.\n[test.cpp:8]: (warning) Unnecessary comparison of static strings.\n[test.cpp:9]: (warning) Unnecessary comparison of static strings.\n[test.cpp:10]: (warning) Unnecessary comparison of static strings.\n[test.cpp:11]: (warning) Unnecessary comparison of static strings.\n[test.cpp:12]: (warning) Unnecessary comparison of static strings.\n[test.cpp:13]: (warning) Unnecessary comparison of static strings.\n" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return
+165:
+|
+174:
+175: ; }
+176:
+177:
+178: $check_ $(@expr1073742134 "cppcheck-2.8/test/teststring.cpp" $, 178 $, "void f(void *p, int offset)  {\n     if (!memcmp(p, p + offset, 42)){}\n     if (!memcmp(p + offset, p, 42)){}\n     if (!memcmp(offset + p, p, 42)){}\n     if (!memcmp(p, offset + p, 42)){}\n}" $)
+179:
+|
+182:
+183: ;
+184: $if $(@expr1073742135 $!@expr1073742136 $assertEquals $(@expr1073742137 "cppcheck-2.8/test/teststring.cpp" $, 184 $, "" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+185:
+186:
+187: $check_ $(@expr1073742140 "cppcheck-2.8/test/teststring.cpp" $, 187 $, "void f(char *c, int offset)  {\n     if (!memcmp(c, c + offset, 42)){}\n     if (!memcmp(c + offset, c, 42)){}\n     if (!memcmp(offset + c, c, 42)){}\n     if (!memcmp(c, offset + c, 42)){}\n}" $)
+188:
+|
+191:
+192: ;
+193: $if $(@expr1073742141 $!@expr1073742142 $assertEquals $(@expr1073742143 "cppcheck-2.8/test/teststring.cpp" $, 193 $, "" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+194:
+195:
+196: $check_ $(@expr1073742146 "cppcheck-2.8/test/teststring.cpp" $, 196 $, "void f(std::string s, int offset)  {\n     if (!memcmp(s.c_str(), s.c_str() + offset, 42)){}\n     if (!memcmp(s.c_str() + offset, s.c_str(), 42)){}\n     if (!memcmp(offset + s.c_str(), s.c_str(), 42)){}\n     if (!memcmp(s.c_str(), offset + s.c_str(), 42)){}\n}" $)
+197:
+|
+200:
+201: ;
+202: $if $(@expr1073742147 $!@expr1073742148 $assertEquals $(@expr1073742149 "cppcheck-2.8/test/teststring.cpp" $, 202 $, "" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+203:
+204: $check_ $(@expr1073742152 "cppcheck-2.8/test/teststring.cpp" $, 204 $, "int main()\n{\n  if (strcmp(\"00FF00\", \"00FF00\") == 0)  {    std::cout << \"Equal\";  }}" $)
+205:
+|
+209:
+210: ;
+211: $if $(@expr1073742153 $!@expr1073742154 $assertEquals $(@expr1073742155 "cppcheck-2.8/test/teststring.cpp" $, 211 $, "[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+212:
+213: $check_ $(@expr1073742158 "cppcheck-2.8/test/teststring.cpp" $, 213 $, "void f() {\n  if (strcmp($\"00FF00\", \"00FF00\") == 0) {}}" $)
+214:
+215: ;
+216: $if $(@expr1073742159 $!@expr1073742160 $assertEquals $(@expr1073742161 "cppcheck-2.8/test/teststring.cpp" $, 216 $, "" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+217:
+218: $check_ $(@expr1073742164 "cppcheck-2.8/test/teststring.cpp" $, 218 $, "void f() {\n  if ($strcmp(\"00FF00\", \"00FF00\") == 0) {}}" $)
+219:
+220: ;
+221: $if $(@expr1073742165 $!@expr1073742166 $assertEquals $(@expr1073742167 "cppcheck-2.8/test/teststring.cpp" $, 221 $, "" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+222:
+223: $check_ $(@expr1073742170 "cppcheck-2.8/test/teststring.cpp" $, 223 $, "int main()\n{\n  if (stricmp(\"hotdog\",\"HOTdog\") == 0)  {    std::cout << \"Equal\";  }}" $)
+224:
+|
+228:
+229: ;
+230: $if $(@expr1073742171 $!@expr1073742172 $assertEquals $(@expr1073742173 "cppcheck-2.8/test/teststring.cpp" $, 230 $, "[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+231:
+232: $check_ $(@expr1073742176 "cppcheck-2.8/test/teststring.cpp" $, 232 $, "int main()\n{\n  if (QString::compare(\"Hamburger\", \"Hotdog\") == 0)  {    std::cout << \"Equal\";  }}" $)
+233:
+|
+237:
+238: ;
+239: $if $(@expr1073742177 $!@expr1073742178 $assertEquals $(@expr1073742179 "cppcheck-2.8/test/teststring.cpp" $, 239 $, "[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+240:
+241: $check_ $(@expr1073742182 "cppcheck-2.8/test/teststring.cpp" $, 241 $, "int main()\n{\n  if (QString::compare(argv[2], \"hotdog\") == 0)  {    std::cout << \"Equal\";  }}" $)
+242:
+|
+246:
+247: ;
+248: $if $(@expr1073742183 $!@expr1073742184 $assertEquals $(@expr1073742185 "cppcheck-2.8/test/teststring.cpp" $, 248 $, "" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+249:
+250: $check_ $(@expr1073742188 "cppcheck-2.8/test/teststring.cpp" $, 250 $, "int main()\n{\n  if (strncmp(\"hotdog\",\"hotdog\", 6) == 0)  {    std::cout << \"Equal\";  }}" $)
+251:
+|
+255:
+256: ;
+257: $if $(@expr1073742189 $!@expr1073742190 $assertEquals $(@expr1073742191 "cppcheck-2.8/test/teststring.cpp" $, 257 $, "[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+258:
+259: $check_ $(@expr1073742194 "cppcheck-2.8/test/teststring.cpp" $, 259 $, "int foo(const char *buf)\n{\n  if (strcmp(buf, buf) == 0)  {    std::cout << \"Equal\";  }}" $)
+260:
+|
+264:
+265: ;
+266: $if $(@expr1073742195 $!@expr1073742196 $assertEquals $(@expr1073742197 "cppcheck-2.8/test/teststring.cpp" $, 266 $, "[test.cpp:3]: (warning) Comparison of identical string variables.\n" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+267:
+268: $check_ $(@expr1073742200 "cppcheck-2.8/test/teststring.cpp" $, 268 $, "int foo(const std::string& buf)\n{\n  if (stricmp(buf.c_str(), buf.c_str()) == 0)  {    std::cout << \"Equal\";  }}" $)
+269:
+|
+273:
+274: ;
+275: $if $(@expr1073742201 $!@expr1073742202 $assertEquals $(@expr1073742203 "cppcheck-2.8/test/teststring.cpp" $, 275 $, "[test.cpp:3]: (warning) Comparison of identical string variables.\n" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+276:
+277: $check_ $(@expr1073742206 "cppcheck-2.8/test/teststring.cpp" $, 277 $, "int main() {\n  if (\"str\" == \"str\") {\n    std::cout << \"Equal\";\n  }\n}" $)
+278:
+279:
+280:
+281: ;
+282: $if $(@expr1073742207 $!@expr1073742208 $assertEquals $(@expr1073742209 "cppcheck-2.8/test/teststring.cpp" $, 282 $, "[test.cpp:2]: (warning) Unnecessary comparison of static strings.\n" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+283:
+284: $check_ $(@expr1073742212 "cppcheck-2.8/test/teststring.cpp" $, 284 $, "int main() {\n  if (\"str\" != \"str\") {\n    std::cout << \"Equal\";\n  }\n}" $)
+285:
+286:
+287:
+288: ;
+289: $if $(@expr1073742213 $!@expr1073742214 $assertEquals $(@expr1073742215 "cppcheck-2.8/test/teststring.cpp" $, 289 $, "[test.cpp:2]: (warning) Unnecessary comparison of static strings.\n" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+290:
+291: $check_ $(@expr1073742218 "cppcheck-2.8/test/teststring.cpp" $, 291 $, "int main() {\n  if (a+\"str\" != \"str\"+b) {\n    std::cout << \"Equal\";\n  }\n}" $)
+292:
+293:
+294:
+295: ;
+296: $if $(@expr1073742219 $!@expr1073742220 $assertEquals $(@expr1073742221 "cppcheck-2.8/test/teststring.cpp" $, 296 $, "" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+297: }
+298:
+299: void suspiciousStringCompare ( ) {
+300: $check_ $(@expr1073742224 "cppcheck-2.8/test/teststring.cpp" $, 300 $, "bool foo(char* c) {\n    return c == \"x\";\n}" $)
+301:
+302: ;
+303: $if $(@expr1073742225 $!@expr1073742226 $assertEquals $(@expr1073742227 "cppcheck-2.8/test/teststring.cpp" $, 303 $, "[test.cpp:2]: (warning) String literal compared with variable 'c'. Did you intend to use strcmp() instead?\n" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+304:
+305: $check_ $(@expr1073742230 "cppcheck-2.8/test/teststring.cpp" $, 305 $, "bool foo(char** c) {\n    return c[3] == \"x\";\n}" $)
+306:
+307: ;
+308: $if $(@expr1073742231 $!@expr1073742232 $assertEquals $(@expr1073742233 "cppcheck-2.8/test/teststring.cpp" $, 308 $, "[test.cpp:2]: (warning) String literal compared with variable 'c[3]'. Did you intend to use strcmp() instead?\n" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+309:
+310: $check_ $(@expr1073742236 "cppcheck-2.8/test/teststring.cpp" $, 310 $, "bool foo(wchar_t* c) {\n    return c == L\"x\";\n}" $)
+311:
+312: ;
+313: $if $(@expr1073742237 $!@expr1073742238 $assertEquals $(@expr1073742239 "cppcheck-2.8/test/teststring.cpp" $, 313 $, "[test.cpp:2]: (warning) String literal compared with variable 'c'. Did you intend to use wcscmp() instead?\n" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+314:
+315: $check_ $(@expr1073742242 "cppcheck-2.8/test/teststring.cpp" $, 315 $, "bool foo(const char* c) {\n    return \"x\" == c;\n}" $)
+316:
+317: ;
+318: $if $(@expr1073742243 $!@expr1073742244 $assertEquals $(@expr1073742245 "cppcheck-2.8/test/teststring.cpp" $, 318 $, "[test.cpp:2]: (warning) String literal compared with variable 'c'. Did you intend to use strcmp() instead?\n" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+319:
+320: $check_ $(@expr1073742248 "cppcheck-2.8/test/teststring.cpp" $, 320 $, "bool foo(char* c) {\n    return foo+\"x\" == c;\n}" $)
+321:
+322: ;
+323: $if $(@expr1073742249 $!@expr1073742250 $assertEquals $(@expr1073742251 "cppcheck-2.8/test/teststring.cpp" $, 323 $, "" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+324:
+325: $check_ $(@expr1073742254 "cppcheck-2.8/test/teststring.cpp" $, 325 $, "bool foo(char* c) {\n    return \"x\" == c+foo;\n}" , "test.cpp" $)
+326:
+327: ;
+328: $if $(@expr1073742255 $!@expr1073742256 $assertEquals $(@expr1073742257 "cppcheck-2.8/test/teststring.cpp" $, 328 $, "" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+329:
+330: $check_ $(@expr1073742260 "cppcheck-2.8/test/teststring.cpp" $, 330 $, "bool foo(char* c) {\n    return \"x\" == c+foo;\n}" , "test.c" $)
+331:
+332: ;
+333: $if $(@expr1073742261 $!@expr1073742262 $assertEquals $(@expr1073742263 "cppcheck-2.8/test/teststring.cpp" $, 333 $, "[test.c:2]: (warning) String literal compared with variable 'c+foo'. Did you intend to use strcmp() instead?\n" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+334:
+335: $check_ $(@expr1073742266 "cppcheck-2.8/test/teststring.cpp" $, 335 $, "bool foo(Foo c) {\n    return \"x\" == c.foo;\n}" , "test.cpp" $)
+336:
+337: ;
+338: $if $(@expr1073742267 $!@expr1073742268 $assertEquals $(@expr1073742269 "cppcheck-2.8/test/teststring.cpp" $, 338 $, "" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+339:
+340: $check_ $(@expr1073742272 "cppcheck-2.8/test/teststring.cpp" $, 340 $, "bool foo(Foo c) {\n    return \"x\" == c.foo;\n}" , "test.c" $)
+341:
+342: ;
+343: $if $(@expr1073742273 $!@expr1073742274 $assertEquals $(@expr1073742275 "cppcheck-2.8/test/teststring.cpp" $, 343 $, "[test.c:2]: (warning) String literal compared with variable 'c.foo'. Did you intend to use strcmp() instead?\n" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+344:
+345: $check_ $(@expr1073742278 "cppcheck-2.8/test/teststring.cpp" $, 345 $, "bool foo(const std::string& c) {\n    return \"x\" == c;\n}" $)
+346:
+347: ;
+348: $if $(@expr1073742279 $!@expr1073742280 $assertEquals $(@expr1073742281 "cppcheck-2.8/test/teststring.cpp" $, 348 $, "" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+349:
+350: $check_ $(@expr1073742284 "cppcheck-2.8/test/teststring.cpp" $, 350 $, "bool foo(const Foo* c) {\n    return \"x\" == c->bar();\n}" $)
+351:
+352: ;
+353: $if $(@expr1073742285 $!@expr1073742286 $assertEquals $(@expr1073742287 "cppcheck-2.8/test/teststring.cpp" $, 353 $, "" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+354:
+355:
+356: $check_ $(@expr1073742290 "cppcheck-2.8/test/teststring.cpp" $, 356 $, "bool foo() {\nMyString *str=Getter();\nreturn *str==\"bug\"; }\n" , "test.c" $)
+357:
+358: ;
+359: $if $(@expr1073742291 $!@expr1073742292 $assertEquals $(@expr1073742293 "cppcheck-2.8/test/teststring.cpp" $, 359 $, "[test.c:3]: (warning) String literal compared with variable '*str'. Did you intend to use strcmp() instead?\n" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+360:
+361:
+362: $check_ $(@expr1073742296 "cppcheck-2.8/test/teststring.cpp" $, 362 $, "bool foo() {\nMyString *str=Getter();\nreturn *str==\"bug\"; }" $)
+363:
+364: ;
+365: $if $(@expr1073742297 $!@expr1073742298 $assertEquals $(@expr1073742299 "cppcheck-2.8/test/teststring.cpp" $, 365 $, "" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+366:
+367:
+368: $check_ $(@expr1073742302 "cppcheck-2.8/test/teststring.cpp" $, 368 $, "bool foo() {\nMyString **str=OtherGetter();\nreturn *str==\"bug\"; }" , "test.c" $)
+369:
+370: ;
+371: $if $(@expr1073742303 $!@expr1073742304 $assertEquals $(@expr1073742305 "cppcheck-2.8/test/teststring.cpp" $, 371 $, "[test.c:3]: (warning) String literal compared with variable '*str'. Did you intend to use strcmp() instead?\n" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+372:
+373:
+374: $check_ $(@expr1073742308 "cppcheck-2.8/test/teststring.cpp" $, 374 $, "bool foo() {\nMyString str=OtherGetter2();\nreturn &str==\"bug\"; }" , "test.c" $)
+375:
+376: ;
+377: $if $(@expr1073742309 $!@expr1073742310 $assertEquals $(@expr1073742311 "cppcheck-2.8/test/teststring.cpp" $, 377 $, "[test.c:3]: (warning) String literal compared with variable '&str'. Did you intend to use strcmp() instead?\n" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+378:
+379:
+380: $check_ $(@expr1073742314 "cppcheck-2.8/test/teststring.cpp" $, 380 $, "int foo(char c) {\nreturn c == '4';}" , "test.cpp" $)
+381: ;
+382: $if $(@expr1073742315 $!@expr1073742316 $assertEquals $(@expr1073742317 "cppcheck-2.8/test/teststring.cpp" $, 382 $, "" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+383: $check_ $(@expr1073742320 "cppcheck-2.8/test/teststring.cpp" $, 383 $, "int foo(char c) {\nreturn c == '4';}" , "test.c" $)
+384: ;
+385: $if $(@expr1073742321 $!@expr1073742322 $assertEquals $(@expr1073742323 "cppcheck-2.8/test/teststring.cpp" $, 385 $, "" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+386: $check_ $(@expr1073742326 "cppcheck-2.8/test/teststring.cpp" $, 386 $, "int foo(char c) {\nreturn c == \"42\"[0];}" , "test.cpp" $)
+387: ;
+388: $if $(@expr1073742327 $!@expr1073742328 $assertEquals $(@expr1073742329 "cppcheck-2.8/test/teststring.cpp" $, 388 $, "" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+389: $check_ $(@expr1073742332 "cppcheck-2.8/test/teststring.cpp" $, 389 $, "int foo(char c) {\nreturn c == \"42\"[0];}" , "test.c" $)
+390: ;
+391: $if $(@expr1073742333 $!@expr1073742334 $assertEquals $(@expr1073742335 "cppcheck-2.8/test/teststring.cpp" $, 391 $, "" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+392:
+393:
+394: $check_ $(@expr1073742338 "cppcheck-2.8/test/teststring.cpp" $, 394 $, "struct Example {\n   char buffer[200];\n};\nvoid foo() {\n   struct Example example;\n   if (example.buffer == \"test\") ;\n}\n" , "test.cpp" $)
+395:
+|
+399:
+400: ;
+401: $if $(@expr1073742339 $!@expr1073742340 $assertEquals $(@expr1073742341 "cppcheck-2.8/test/teststring.cpp" $, 401 $, "[test.cpp:6]: (warning) String literal compared with variable 'example.buffer'. Did you intend to use strcmp() instead?\n" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+402: $check_ $(@expr1073742344 "cppcheck-2.8/test/teststring.cpp" $, 402 $, "struct Example {\n   char buffer[200];\n};\nvoid foo() {\n   struct Example example;\n   if (example.buffer == \"test\") ;\n}\n" , "test.c" $)
+403:
+|
+407:
+408: ;
+409: $if $(@expr1073742345 $!@expr1073742346 $assertEquals $(@expr1073742347 "cppcheck-2.8/test/teststring.cpp" $, 409 $, "[test.c:6]: (warning) String literal compared with variable 'example.buffer'. Did you intend to use strcmp() instead?\n" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+410:
+411:
+412: $check_ $(@expr1073742350 "cppcheck-2.8/test/teststring.cpp" $, 412 $, "void f(std::vector<std::string> theArgs) {\n   std::string arg1(*theArgs.begin());\n   if(arg1 == \"aaa\") {}\n}" $)
+413:
+414:
+415: ;
+416: $if $(@expr1073742351 $!@expr1073742352 $assertEquals $(@expr1073742353 "cppcheck-2.8/test/teststring.cpp" $, 416 $, "" $, errout@var100 .@expr404 str (@expr405 ) $) $) { $return ; }
+417: }
+418:
+419: void suspiciousStringCompare_char ( ) {
+420: $check_ $(@expr1073742356 "cppcheck-2.8/test/teststring.cpp" $, 420 $, "bool foo(char* c) {\n    return c == 'x';\n}" $)
+421:
+422: ;
+423: $if $(@expr1073742357 $!@expr1073742358 $assertEquals $(@expr1073742359 "cppcheck-2.8/test/teststring.cpp" $, 423 $, "[test.cpp:2]: (warning) Char literal compared with pointer 'c'. Did you intend to dereference it?\n" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+424:
+425: $check_ $(@expr1073742362 "cppcheck-2.8/test/teststring.cpp" $, 425 $, "bool foo(wchar_t* c) {\n    return c == L'x';\n}" $)
+426:
+427: ;
+428: $if $(@expr1073742363 $!@expr1073742364 $assertEquals $(@expr1073742365 "cppcheck-2.8/test/teststring.cpp" $, 428 $, "[test.cpp:2]: (warning) Char literal compared with pointer 'c'. Did you intend to dereference it?\n" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+429:
+430: $check_ $(@expr1073742368 "cppcheck-2.8/test/teststring.cpp" $, 430 $, "bool foo(char* c) {\n    return '\\0' != c;\n}" $)
+431:
+432: ;
+433: $if $(@expr1073742369 $!@expr1073742370 $assertEquals $(@expr1073742371 "cppcheck-2.8/test/teststring.cpp" $, 433 $, "[test.cpp:2]: (warning) Char literal compared with pointer 'c'. Did you intend to dereference it?\n" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+434:
+435: $check_ $(@expr1073742374 "cppcheck-2.8/test/teststring.cpp" $, 435 $, "bool foo(char c) {\n    return c == '\\0';\n}" $)
+436:
+437: ;
+438: $if $(@expr1073742375 $!@expr1073742376 $assertEquals $(@expr1073742377 "cppcheck-2.8/test/teststring.cpp" $, 438 $, "" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+439:
+440: $check_ $(@expr1073742380 "cppcheck-2.8/test/teststring.cpp" $, 440 $, "bool foo(char* c) {\n    return c[0] == '\\0';\n}" $)
+441:
+442: ;
+443: $if $(@expr1073742381 $!@expr1073742382 $assertEquals $(@expr1073742383 "cppcheck-2.8/test/teststring.cpp" $, 443 $, "" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+444:
+445: $check_ $(@expr1073742386 "cppcheck-2.8/test/teststring.cpp" $, 445 $, "bool foo(char** c) {\n    return c[0] == '\\0';\n}" $)
+446:
+447: ;
+448: $if $(@expr1073742387 $!@expr1073742388 $assertEquals $(@expr1073742389 "cppcheck-2.8/test/teststring.cpp" $, 448 $, "[test.cpp:2]: (warning) Char literal compared with pointer 'c[0]'. Did you intend to dereference it?\n" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+449:
+450: $check_ $(@expr1073742392 "cppcheck-2.8/test/teststring.cpp" $, 450 $, "bool foo(char** c) {\n    return *c == '\\0';\n}" $)
+451:
+452: ;
+453: $if $(@expr1073742393 $!@expr1073742394 $assertEquals $(@expr1073742395 "cppcheck-2.8/test/teststring.cpp" $, 453 $, "[test.cpp:2]: (warning) Char literal compared with pointer '*c'. Did you intend to dereference it?\n" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+454:
+455: $check_ $(@expr1073742398 "cppcheck-2.8/test/teststring.cpp" $, 455 $, "bool foo(char c) {\n    return c == 0;\n}" $)
+456:
+457: ;
+458: $if $(@expr1073742399 $!@expr1073742400 $assertEquals $(@expr1073742401 "cppcheck-2.8/test/teststring.cpp" $, 458 $, "" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+459:
+460: $check_ $(@expr1073742404 "cppcheck-2.8/test/teststring.cpp" $, 460 $, "bool foo(char* c) {\n    return *c == 0;\n}" , "test.c" $)
+461:
+462: ;
+463: $if $(@expr1073742405 $!@expr1073742406 $assertEquals $(@expr1073742407 "cppcheck-2.8/test/teststring.cpp" $, 463 $, "" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+464:
+465: $check_ $(@expr1073742410 "cppcheck-2.8/test/teststring.cpp" $, 465 $, "bool foo(char* c) {\n    return *c == 0;\n}" $)
+466:
+467: ;
+468: $if $(@expr1073742411 $!@expr1073742412 $assertEquals $(@expr1073742413 "cppcheck-2.8/test/teststring.cpp" $, 468 $, "" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+469:
+470: $check_ $(@expr1073742416 "cppcheck-2.8/test/teststring.cpp" $, 470 $, "bool foo(Foo* c) {\n    return 0 == c->x;\n}" $)
+471:
+472: ;
+473: $if $(@expr1073742417 $!@expr1073742418 $assertEquals $(@expr1073742419 "cppcheck-2.8/test/teststring.cpp" $, 473 $, "" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+474:
+475: $check_ $(@expr1073742422 "cppcheck-2.8/test/teststring.cpp" $, 475 $, "void foo(char* c) {\n    if(c == '\\0') bar();\n}" $)
+476:
+477: ;
+478: $if $(@expr1073742423 $!@expr1073742424 $assertEquals $(@expr1073742425 "cppcheck-2.8/test/teststring.cpp" $, 478 $, "[test.cpp:2]: (warning) Char literal compared with pointer 'c'. Did you intend to dereference it?\n" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+479:
+480: $check_ $(@expr1073742428 "cppcheck-2.8/test/teststring.cpp" $, 480 $, "void f() {\n  struct { struct { char *str; } x; } a;\n  return a.x.str == '\\0';}" $)
+481:
+482:
+483: ;
+484: $if $(@expr1073742429 $!@expr1073742430 $assertEquals $(@expr1073742431 "cppcheck-2.8/test/teststring.cpp" $, 484 $, "[test.cpp:3]: (warning) Char literal compared with pointer 'a.x.str'. Did you intend to dereference it?\n" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+485:
+486: $check_ $(@expr1073742434 "cppcheck-2.8/test/teststring.cpp" $, 486 $, "void f() {\n  struct { struct { char *str; } x; } a;\n  return *a.x.str == '\\0';}" $)
+487:
+488:
+489: ;
+490: $if $(@expr1073742435 $!@expr1073742436 $assertEquals $(@expr1073742437 "cppcheck-2.8/test/teststring.cpp" $, 490 $, "" $, errout@var100 .@expr536 str (@expr537 ) $) $) { $return ; }
+491: }
+492:
+493:
+494: void snprintf1 ( ) {
+495: $check_ $(@expr1073742440 "cppcheck-2.8/test/teststring.cpp" $, 495 $, "void foo()\n{\n    char buf[100];\n    snprintf(buf,100,\"%s\",buf);\n}" $)
+496:
+497:
+498:
+499: ;
+500: $if $(@expr1073742441 $!@expr1073742442 $assertEquals $(@expr1073742443 "cppcheck-2.8/test/teststring.cpp" $, 500 $, "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in snprintf().\n" $, errout@var100 .@expr1073742444 str (@expr1073742445 ) $) $) { $return ; }
+501: }
+502:
+503: void sprintf1 ( ) {
+504: $check_ $(@expr1073742446 "cppcheck-2.8/test/teststring.cpp" $, 504 $, "void foo()\n{\n    char buf[100];\n    sprintf(buf,\"%s\",buf);\n}" $)
+505:
+506:
+507:
+508: ;
+509: $if $(@expr1073742447 $!@expr1073742448 $assertEquals $(@expr1073742449 "cppcheck-2.8/test/teststring.cpp" $, 509 $, "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in sprintf().\n" $, errout@var100 .@expr1073742450 str (@expr1073742451 ) $) $) { $return ; }
+510: }
+511:
+512: void sprintf2 ( ) {
+513: $check_ $(@expr1073742452 "cppcheck-2.8/test/teststring.cpp" $, 513 $, "void foo()\n{\n    char buf[100];\n    sprintf(buf,\"%i\",sizeof(buf));\n}" $)
+514:
+515:
+516:
+517: ;
+518: $if $(@expr1073742453 $!@expr1073742454 $assertEquals $(@expr1073742455 "cppcheck-2.8/test/teststring.cpp" $, 518 $, "" $, errout@var100 .@expr1073742456 str (@expr1073742457 ) $) $) { $return ; }
+519: }
+520:
+521: void sprintf3 ( ) {
+522: $check_ $(@expr1073742458 "cppcheck-2.8/test/teststring.cpp" $, 522 $, "void foo()\n{\n    char buf[100];\n    sprintf(buf,\"%i\",sizeof(buf));\n    if (buf[0]);\n}" $)
+523:
+|
+526:
+527: ;
+528: $if $(@expr1073742459 $!@expr1073742460 $assertEquals $(@expr1073742461 "cppcheck-2.8/test/teststring.cpp" $, 528 $, "" $, errout@var100 .@expr1073742462 str (@expr1073742463 ) $) $) { $return ; }
+529: }
+530:
+531: void sprintf4 ( ) {
+532: $check_ $(@expr1073742464 "cppcheck-2.8/test/teststring.cpp" $, 532 $, "struct A\n{\n    char filename[128];\n};\n\nvoid foo()\n{\n    const char* filename = \"hello\";\n    struct A a;\n    snprintf(a.filename, 128, \"%s\", filename);\n}" $)
+533:
+|
+541:
+542: ;
+543: $if $(@expr1073742465 $!@expr1073742466 $assertEquals $(@expr1073742467 "cppcheck-2.8/test/teststring.cpp" $, 543 $, "" $, errout@var100 .@expr1073742468 str (@expr1073742469 ) $) $) { $return ; }
+544: }
+545:
+546: void sprintf5 ( ) {
+547: $check_ $(@expr1073742470 "cppcheck-2.8/test/teststring.cpp" $, 547 $, "struct A\n{\n    char filename[128];\n};\n\nvoid foo(struct A *a)\n{\n    snprintf(a->filename, 128, \"%s\", a->filename);\n}" $)
+548:
+|
+554:
+555: ;
+556: $if $(@expr1073742471 $!@expr1073742472 $assertEquals $(@expr1073742473 "cppcheck-2.8/test/teststring.cpp" $, 556 $, "[test.cpp:8]: (error) Undefined behavior: Variable 'a->filename' is used as parameter and destination in snprintf().\n" $, errout@var100 .@expr1073742474 str (@expr1073742475 ) $) $) { $return ; }
+557: }
+558:
+559: void sprintf6 ( ) {
+560: $check_ $(@expr1073742476 "cppcheck-2.8/test/teststring.cpp" $, 560 $, "void foo()\n{\n    char buf[100];\n    sprintf((char*)buf,\"%s\",(char*)buf);\n}" $)
+561:
+562:
+563:
+564: ;
+565: $if $(@expr1073742477 $!@expr1073742478 $assertEquals $(@expr1073742479 "cppcheck-2.8/test/teststring.cpp" $, 565 $, "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in sprintf().\n" $, errout@var100 .@expr1073742480 str (@expr1073742481 ) $) $) { $return ; }
+566: }
+567:
+568: void sprintf7 ( ) {
+569: $check_ $(@expr1073742482 "cppcheck-2.8/test/teststring.cpp" $, 569 $, "void foo()\n{\n    char buf[100];\n    sprintf((char*)(void*)buf,\"%s\",(void*)(char*)buf);\n}" $)
+570:
+571:
+572:
+573: ;
+574: $if $(@expr1073742483 $!@expr1073742484 $assertEquals $(@expr1073742485 "cppcheck-2.8/test/teststring.cpp" $, 574 $, "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in sprintf().\n" $, errout@var100 .@expr1073742486 str (@expr1073742487 ) $) $) { $return ; }
+575: }
+576:
+577: void wsprintf1 ( ) {
+578: $check_ $(@expr1073742488 "cppcheck-2.8/test/teststring.cpp" $, 578 $, "void foo()\n{\n    wchar_t buf[100];\n    swprintf(buf,10, \"%s\",buf);\n}" $)
+579:
+580:
+581:
+582: ;
+583: $if $(@expr1073742489 $!@expr1073742490 $assertEquals $(@expr1073742491 "cppcheck-2.8/test/teststring.cpp" $, 583 $, "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in swprintf().\n" $, errout@var100 .@expr1073742492 str (@expr1073742493 ) $) $) { $return ; }
+584: }
+585:
+586: void strPlusChar1 ( ) {
+587:
+588: $check_ $(@expr1073742494 "cppcheck-2.8/test/teststring.cpp" $, 588 $, "void foo()\n{\n    const char *p = \"/usr\" + '/';\n}" $)
+589:
+590:
+591: ;
+592: $if $(@expr1073742495 $!@expr1073742496 $assertEquals $(@expr1073742497 "cppcheck-2.8/test/teststring.cpp" $, 592 $, "[test.cpp:3]: (error) Unusual pointer arithmetic. A value of type 'char' is added to a string literal.\n" $, errout@var100 .@expr1073742498 str (@expr1073742499 ) $) $) { $return ; }
+593: }
+594:
+595: void strPlusChar2 ( ) {
+596:
+597: $check_ $(@expr1073742500 "cppcheck-2.8/test/teststring.cpp" $, 597 $, "void foo()\n{\n    char ch = 1;\n    const char *p = ch + \"/usr\";\n}" $)
+598:
+599:
+600:
+601: ;
+602: $if $(@expr1073742501 $!@expr1073742502 $assertEquals $(@expr1073742503 "cppcheck-2.8/test/teststring.cpp" $, 602 $, "" $, errout@var100 .@expr680 str (@expr681 ) $) $) { $return ; }
+603:
+604:
+605: $check_ $(@expr1073742506 "cppcheck-2.8/test/teststring.cpp" $, 605 $, "void foo()\n{\n    int i = 1;\n    const char* psz = \"Bla\";\n    const std::string str = i + psz;\n}" $)
+606:
+|
+609:
+610: ;
+611: $if $(@expr1073742507 $!@expr1073742508 $assertEquals $(@expr1073742509 "cppcheck-2.8/test/teststring.cpp" $, 611 $, "" $, errout@var100 .@expr680 str (@expr681 ) $) $) { $return ; }
+612: }
+613:
+614: void strPlusChar3 ( ) {
+615:
+616: $check_ $(@expr1073742512 "cppcheck-2.8/test/teststring.cpp" $, 616 $, "void foo()\n{\n    std::string temp = \"/tmp\";\n    std::string path = temp + '/' + \"sub\" + '/';\n}" $)
+617:
+618:
+619:
+620: ;
+621: $if $(@expr1073742513 $!@expr1073742514 $assertEquals $(@expr1073742515 "cppcheck-2.8/test/teststring.cpp" $, 621 $, "" $, errout@var100 .@expr1073742516 str (@expr1073742517 ) $) $) { $return ; }
+622: }
+623:
+624: void strPlusChar4 ( ) {
+625:
+626: $check_ $(@expr1073742518 "cppcheck-2.8/test/teststring.cpp" $, 626 $, "void foo()\n{\n    const wchar_t *p = L\"/usr\" + L'/';\n}" $)
+627:
+628:
+629: ;
+630: $if $(@expr1073742519 $!@expr1073742520 $assertEquals $(@expr1073742521 "cppcheck-2.8/test/teststring.cpp" $, 630 $, "[test.cpp:3]: (error) Unusual pointer arithmetic. A value of type 'wchar_t' is added to a string literal.\n" $, errout@var100 .@expr698 str (@expr699 ) $) $) { $return ; }
+631:
+632: $check_ $(@expr1073742524 "cppcheck-2.8/test/teststring.cpp" $, 632 $, "void foo(wchar_t c)\n{\n    const wchar_t *p = L\"/usr\" + c;\n}" $)
+633:
+634:
+635: ;
+636: $if $(@expr1073742525 $!@expr1073742526 $assertEquals $(@expr1073742527 "cppcheck-2.8/test/teststring.cpp" $, 636 $, "[test.cpp:3]: (error) Unusual pointer arithmetic. A value of type 'wchar_t' is added to a string literal.\n" $, errout@var100 .@expr698 str (@expr699 ) $) $) { $return ; }
+637: }
+638:
+639: void incorrectStringCompare ( ) {
+640: $check_ $(@expr1073742530 "cppcheck-2.8/test/teststring.cpp" $, 640 $, "int f() {\n    return test.substr( 0 , 4 ) == \"Hello\" ? 0 : 1 ;\n}" $)
+641:
+642: ;
+643: $if $(@expr1073742531 $!@expr1073742532 $assertEquals $(@expr1073742533 "cppcheck-2.8/test/teststring.cpp" $, 643 $, "[test.cpp:2]: (warning) String literal \"Hello\" doesn't match length argument for substr().\n" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+644:
+645: $check_ $(@expr1073742536 "cppcheck-2.8/test/teststring.cpp" $, 645 $, "int f() {\n    return test.substr( 0 , 4 ) == L\"Hello\" ? 0 : 1 ;\n}" $)
+646:
+647: ;
+648: $if $(@expr1073742537 $!@expr1073742538 $assertEquals $(@expr1073742539 "cppcheck-2.8/test/teststring.cpp" $, 648 $, "[test.cpp:2]: (warning) String literal L\"Hello\" doesn't match length argument for substr().\n" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+649:
+650: $check_ $(@expr1073742542 "cppcheck-2.8/test/teststring.cpp" $, 650 $, "int f() {\n    return test.substr( 0 , 5 ) == \"Hello\" ? 0 : 1 ;\n}" $)
+651:
+652: ;
+653: $if $(@expr1073742543 $!@expr1073742544 $assertEquals $(@expr1073742545 "cppcheck-2.8/test/teststring.cpp" $, 653 $, "" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+654:
+655: $check_ $(@expr1073742548 "cppcheck-2.8/test/teststring.cpp" $, 655 $, "int f() {\n    return \"Hello\" == test.substr( 0 , 4 ) ? 0 : 1 ;\n}" $)
+656:
+657: ;
+658: $if $(@expr1073742549 $!@expr1073742550 $assertEquals $(@expr1073742551 "cppcheck-2.8/test/teststring.cpp" $, 658 $, "[test.cpp:2]: (warning) String literal \"Hello\" doesn't match length argument for substr().\n" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+659:
+660: $check_ $(@expr1073742554 "cppcheck-2.8/test/teststring.cpp" $, 660 $, "int f() {\n    return \"Hello\" == foo.bar<int>().z[1].substr(i+j*4, 4) ? 0 : 1 ;\n}" $)
+661:
+662: ;
+663: $if $(@expr1073742555 $!@expr1073742556 $assertEquals $(@expr1073742557 "cppcheck-2.8/test/teststring.cpp" $, 663 $, "[test.cpp:2]: (warning) String literal \"Hello\" doesn't match length argument for substr().\n" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+664:
+665: $check_ $(@expr1073742560 "cppcheck-2.8/test/teststring.cpp" $, 665 $, "int f() {\n    return \"Hello\" == test.substr( 0 , 5 ) ? 0 : 1 ;\n}" $)
+666:
+667: ;
+668: $if $(@expr1073742561 $!@expr1073742562 $assertEquals $(@expr1073742563 "cppcheck-2.8/test/teststring.cpp" $, 668 $, "" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+669:
+670: $check_ $(@expr1073742566 "cppcheck-2.8/test/teststring.cpp" $, 670 $, "int f() {\n    if (\"Hello\") { }\n}" $)
+671:
+672: ;
+673: $if $(@expr1073742567 $!@expr1073742568 $assertEquals $(@expr1073742569 "cppcheck-2.8/test/teststring.cpp" $, 673 $, "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+674:
+675: $check_ $(@expr1073742572 "cppcheck-2.8/test/teststring.cpp" $, 675 $, "int f() {\n    if (\"Hello\" && test) { }\n}" $)
+676:
+677: ;
+678: $if $(@expr1073742573 $!@expr1073742574 $assertEquals $(@expr1073742575 "cppcheck-2.8/test/teststring.cpp" $, 678 $, "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+679:
+680: $check_ $(@expr1073742578 "cppcheck-2.8/test/teststring.cpp" $, 680 $, "int f() {\n    if (test && \"Hello\") { }\n}" $)
+681:
+682: ;
+683: $if $(@expr1073742579 $!@expr1073742580 $assertEquals $(@expr1073742581 "cppcheck-2.8/test/teststring.cpp" $, 683 $, "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+684:
+685: $check_ $(@expr1073742584 "cppcheck-2.8/test/teststring.cpp" $, 685 $, "int f() {\n    while (\"Hello\") { }\n}" $)
+686:
+687: ;
+688: $if $(@expr1073742585 $!@expr1073742586 $assertEquals $(@expr1073742587 "cppcheck-2.8/test/teststring.cpp" $, 688 $, "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+689:
+690: $check_ $(@expr1073742590 "cppcheck-2.8/test/teststring.cpp" $, 690 $, "int f() {\n    return \"Hello\" ? 1 : 2;\n}" $)
+691:
+692: ;
+693: $if $(@expr1073742591 $!@expr1073742592 $assertEquals $(@expr1073742593 "cppcheck-2.8/test/teststring.cpp" $, 693 $, "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+694:
+695: $check_ $(@expr1073742596 "cppcheck-2.8/test/teststring.cpp" $, 695 $, "int f() {\n    assert (test || \"Hello\");\n}" $)
+696:
+697: ;
+698: $if $(@expr1073742597 $!@expr1073742598 $assertEquals $(@expr1073742599 "cppcheck-2.8/test/teststring.cpp" $, 698 $, "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+699:
+700: $check_ $(@expr1073742602 "cppcheck-2.8/test/teststring.cpp" $, 700 $, "int f() {\n    assert (test && \"Hello\");\n}" $)
+701:
+702: ;
+703: $if $(@expr1073742603 $!@expr1073742604 $assertEquals $(@expr1073742605 "cppcheck-2.8/test/teststring.cpp" $, 703 $, "" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+704:
+705: $check_ $(@expr1073742608 "cppcheck-2.8/test/teststring.cpp" $, 705 $, "int f() {\n    assert (\"Hello\" || test);\n}" $)
+706:
+707: ;
+708: $if $(@expr1073742609 $!@expr1073742610 $assertEquals $(@expr1073742611 "cppcheck-2.8/test/teststring.cpp" $, 708 $, "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+709:
+710: $check_ $(@expr1073742614 "cppcheck-2.8/test/teststring.cpp" $, 710 $, "int f() {\n    assert (\"Hello\" && test);\n}" $)
+711:
+712: ;
+713: $if $(@expr1073742615 $!@expr1073742616 $assertEquals $(@expr1073742617 "cppcheck-2.8/test/teststring.cpp" $, 713 $, "" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+714:
+715: $check_ $(@expr1073742620 "cppcheck-2.8/test/teststring.cpp" $, 715 $, "int f() {\n    BOOST_ASSERT (\"Hello\" && test);\n}" $)
+716:
+717: ;
+718: $if $(@expr1073742621 $!@expr1073742622 $assertEquals $(@expr1073742623 "cppcheck-2.8/test/teststring.cpp" $, 718 $, "" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+719:
+720: $check_ $(@expr1073742626 "cppcheck-2.8/test/teststring.cpp" $, 720 $, "int f() {\n    return f2(\"Hello\");\n}" $)
+721:
+722: ;
+723: $if $(@expr1073742627 $!@expr1073742628 $assertEquals $(@expr1073742629 "cppcheck-2.8/test/teststring.cpp" $, 723 $, "" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+724:
+725:
+726: $check_ $(@expr1073742632 "cppcheck-2.8/test/teststring.cpp" $, 726 $, "void f() {\n  if('a'){}\n  if(L'b'){}\n  if(1 && 'c'){}\n  int x = 'd' ? 1 : 2;\n}" $)
+727:
+|
+730:
+731: ;
+732: $if $(@expr1073742633 $!@expr1073742634 $assertEquals $(@expr1073742635 "cppcheck-2.8/test/teststring.cpp" $, 732 $, "[test.cpp:2]: (warning) Conversion of char literal 'a' to bool always evaluates to true.\n[test.cpp:3]: (warning) Conversion of char literal L'b' to bool always evaluates to true.\n[test.cpp:4]: (warning) Conversion of char literal 'c' to bool always evaluates to true.\n[test.cpp:5]: (warning) Conversion of char literal 'd' to bool always evaluates to true.\n" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return
+733:
+734:
+735:
+736: ; }
+737:
+738: $check_ $(@expr1073742638 "cppcheck-2.8/test/teststring.cpp" $, 738 $, "void f() {\n  if('\\0'){}\n  if(L'\\0'){}\n}" $)
+739:
+740:
+741: ;
+742: $if $(@expr1073742639 $!@expr1073742640 $assertEquals $(@expr1073742641 "cppcheck-2.8/test/teststring.cpp" $, 742 $, "" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return ; }
+743:
+744: $check_ $(@expr1073742644 "cppcheck-2.8/test/teststring.cpp" $, 744 $, "void f() {\n  if('\\0' || cond){}\n  if(L'\\0' || cond){}\n}" $)
+745:
+746:
+747: ;
+748: $if $(@expr1073742645 $!@expr1073742646 $assertEquals $(@expr1073742647 "cppcheck-2.8/test/teststring.cpp" $, 748 $, "[test.cpp:2]: (warning) Conversion of char literal '\\0' to bool always evaluates to false.\n[test.cpp:3]: (warning) Conversion of char literal L'\\0' to bool always evaluates to false.\n" $, errout@var100 .@expr710 str (@expr711 ) $) $) { $return
+749: ; }
+750: }
+751:
+752: void deadStrcmp ( ) {
+753: $check_ $(@expr1073742650 "cppcheck-2.8/test/teststring.cpp" $, 753 $, "void f(const char *str) {\n  if (strcmp(str, \"abc\") == 0 || strcmp(str, \"def\")) {}\n}" $)
+754:
+755: ;
+756: $if $(@expr1073742651 $!@expr1073742652 $assertEquals $(@expr1073742653 "cppcheck-2.8/test/teststring.cpp" $, 756 $, "[test.cpp:2]: (warning) The expression 'strcmp(str,\"def\") != 0' is suspicious. It overlaps 'strcmp(str,\"abc\") == 0'.\n" $, errout@var100 .@expr830 str (@expr831 ) $) $) { $return ; }
+757:
+758: $check_ $(@expr1073742656 "cppcheck-2.8/test/teststring.cpp" $, 758 $, "void f(const wchar_t *str) {\n  if (wcscmp(str, L\"abc\") == 0 || wcscmp(str, L\"def\")) {}\n}" $)
+759:
+760: ;
+761: $if $(@expr1073742657 $!@expr1073742658 $assertEquals $(@expr1073742659 "cppcheck-2.8/test/teststring.cpp" $, 761 $, "[test.cpp:2]: (warning) The expression 'wcscmp(str,L\"def\") != 0' is suspicious. It overlaps 'wcscmp(str,L\"abc\") == 0'.\n" $, errout@var100 .@expr830 str (@expr831 ) $) $) { $return ; }
+762:
+763: $check_ $(@expr1073742662 "cppcheck-2.8/test/teststring.cpp" $, 763 $, "struct X {\n  char *str;\n};\n\nvoid f(const struct X *x) {\n  if (strcmp(x->str, \"abc\") == 0 || strcmp(x->str, \"def\")) {}\n}" $)
+764:
+|
+768:
+769: ;
+770: $if $(@expr1073742663 $!@expr1073742664 $assertEquals $(@expr1073742665 "cppcheck-2.8/test/teststring.cpp" $, 770 $, "[test.cpp:6]: (warning) The expression 'strcmp(x->str,\"def\") != 0' is suspicious. It overlaps 'strcmp(x->str,\"abc\") == 0'.\n" $, errout@var100 .@expr830 str (@expr831 ) $) $) { $return ; }
+771: }
+772: } ;
+773:
+774: $namespace ${ TestString instance_TestString@var111 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@100}
+  v {!<=-1,!>=2,0@100}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 31
+  "TestString" always "TestString"
+Line 40
+  ( always {!<=-1,!>=2}
+  "stringLiteralWrite" always "stringLiteralWrite"
+  false always 0
+  false always 0
+Line 42
+  ( always {!<=-1,!>=2}
+  "alwaysTrueFalseStringCompare" always "alwaysTrueFalseStringCompare"
+  false always 0
+  false always 0
+Line 43
+  ( always {!<=-1,!>=2}
+  "suspiciousStringCompare" always "suspiciousStringCompare"
+  false always 0
+  false always 0
+Line 44
+  ( always {!<=-1,!>=2}
+  "suspiciousStringCompare_char" always "suspiciousStringCompare_char"
+  false always 0
+  false always 0
+Line 46
+  ( always {!<=-1,!>=2}
+  "strPlusChar1" always "strPlusChar1"
+  false always 0
+  false always 0
+Line 47
+  ( always {!<=-1,!>=2}
+  "strPlusChar2" always "strPlusChar2"
+  false always 0
+  false always 0
+Line 48
+  ( always {!<=-1,!>=2}
+  "strPlusChar3" always "strPlusChar3"
+  false always 0
+  false always 0
+Line 49
+  ( always {!<=-1,!>=2}
+  "strPlusChar4" always "strPlusChar4"
+  false always 0
+  false always 0
+Line 51
+  ( always {!<=-1,!>=2}
+  "snprintf1" always "snprintf1"
+  false always 0
+  false always 0
+Line 52
+  ( always {!<=-1,!>=2}
+  "sprintf1" always "sprintf1"
+  false always 0
+  false always 0
+Line 53
+  ( always {!<=-1,!>=2}
+  "sprintf2" always "sprintf2"
+  false always 0
+  false always 0
+Line 54
+  ( always {!<=-1,!>=2}
+  "sprintf3" always "sprintf3"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "sprintf4" always "sprintf4"
+  false always 0
+  false always 0
+Line 56
+  ( always {!<=-1,!>=2}
+  "sprintf5" always "sprintf5"
+  false always 0
+  false always 0
+Line 57
+  ( always {!<=-1,!>=2}
+  "sprintf6" always "sprintf6"
+  false always 0
+  false always 0
+Line 58
+  ( always {!<=-1,!>=2}
+  "sprintf7" always "sprintf7"
+  false always 0
+  false always 0
+Line 59
+  ( always {!<=-1,!>=2}
+  "wsprintf1" always "wsprintf1"
+  false always 0
+  false always 0
+Line 61
+  ( always {!<=-1,!>=2}
+  "incorrectStringCompare" always "incorrectStringCompare"
+  false always 0
+  false always 0
+Line 63
+  ( always {!<=-1,!>=2}
+  "deadStrcmp" always "deadStrcmp"
+  false always 0
+  false always 0
+Line 67
+  , always "test.cpp"
+  9 always 9
+  = always "test.cpp"
+  "test.cpp" always "test.cpp"
+Line 69
+  "" always ""
+Line 72
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 73
+  code possible {"void f(const char *str) {\n  if (strcmp(str, \"abc\") == 0 || strcmp(str, \"def\")) {}\n}"@1,"void f(const wchar_t *str) {\n  if (wcscmp(str, L\"abc\") == 0 || wcscmp(str, L\"def\")) {}\n}"@2,"struct X {\n  char *str;\n};\n\nvoid f(const struct X *x) {\n  if (strcmp(x->str, \"abc\") == 0 || strcmp(x->str, \"def\")) {}\n}"@3,"int f() {\n    return test.substr( 0 , 4 ) == \"Hello\" ? 0 : 1 ;\n}"@4,"int f() {\n    return test.substr( 0 , 4 ) == L\"Hello\" ? 0 : 1 ;\n}"@5,"int f() {\n    return test.substr( 0 , 5 ) == \"Hello\" ? 0 : 1 ;\n}"@6,"int f() {\n    return \"Hello\" == test.substr( 0 , 4 ) ? 0 : 1 ;\n}"@7,"int f() {\n    return \"Hello\" == foo.bar<int>().z[1].substr(i+j*4, 4) ? 0 : 1 ;\n}"@8,"int f() {\n    return \"Hello\" == test.substr( 0 , 5 ) ? 0 : 1 ;\n}"@9,"int f() {\n    if (\"Hello\") { }\n}"@10}
+Line 74
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/teststring.cpp"@1,"cppcheck-2.8/test/teststring.cpp"@2,"cppcheck-2.8/test/teststring.cpp"@3,"cppcheck-2.8/test/teststring.cpp"@4,"cppcheck-2.8/test/teststring.cpp"@5,"cppcheck-2.8/test/teststring.cpp"@6,"cppcheck-2.8/test/teststring.cpp"@7,"cppcheck-2.8/test/teststring.cpp"@8,"cppcheck-2.8/test/teststring.cpp"@9,"cppcheck-2.8/test/teststring.cpp"@10}
+  line inconclusive {753@1,758@2,763@3,640@4,645@5,650@6,655@7,660@8,665@9,670@10}
+  filename inconclusive {"test.c"@47,"test.cpp"@58,"test.c"@59,"test.cpp"@60,"test.c"@61,"test.c"@64,"test.c"@66,"test.c"@67,"test.cpp"@68,"test.c"@69}
+Line 77
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 78
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 82
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  82 always 82
+  "void f() {\n  char *abc = \"abc\";\n  abc[0] = 'a';\n}" always "void f() {\n  char *abc = \"abc\";\n  abc[0] = 'a';\n}"
+Line 86
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  86 always 86
+  "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal \"abc\" directly or indirectly is undefined behaviour.\n" always "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal \"abc\" directly or indirectly is undefined behaviour.\n"
+Line 88
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  88 always 88
+  "void f() {\n  char *abc = \"abc\";\n  *abc = 'a';\n}" always "void f() {\n  char *abc = \"abc\";\n  *abc = 'a';\n}"
+Line 92
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  92 always 92
+  "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal \"abc\" directly or indirectly is undefined behaviour.\n" always "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal \"abc\" directly or indirectly is undefined behaviour.\n"
+Line 94
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  94 always 94
+  "void f() {\n  char *abc = \"A very long string literal\";\n  abc[0] = 'a';\n}" always "void f() {\n  char *abc = \"A very long string literal\";\n  abc[0] = 'a';\n}"
+Line 98
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  98 always 98
+  "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal \"A very long stri..\" directly or indirectly is undefined behaviour.\n" always "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal \"A very long stri..\" directly or indirectly is undefined behaviour.\n"
+Line 100
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  100 always 100
+  "void f() {\n  QString abc = \"abc\";\n  abc[0] = 'a';\n}" always "void f() {\n  QString abc = \"abc\";\n  abc[0] = 'a';\n}"
+Line 104
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  104 always 104
+  "" always ""
+Line 106
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  106 always 106
+  "void foo_FP1(char *p) {\n  p[1] = 'B';\n}\nvoid foo_FP2(void) {\n  char* s = \"Y\";\n  foo_FP1(s);\n}" always "void foo_FP1(char *p) {\n  p[1] = 'B';\n}\nvoid foo_FP2(void) {\n  char* s = \"Y\";\n  foo_FP1(s);\n}"
+Line 113
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  113 always 113
+  "[test.cpp:2] -> [test.cpp:5]: (error) Modifying string literal \"Y\" directly or indirectly is undefined behaviour.\n" always "[test.cpp:2] -> [test.cpp:5]: (error) Modifying string literal \"Y\" directly or indirectly is undefined behaviour.\n"
+Line 117
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  117 always 117
+  "void foo_FP1(char *p) {\n  p[1] = 'B';\n}\nvoid foo_FP2(void) {\n  char s[10] = \"Y\";\n  foo_FP1(s);\n}" always "void foo_FP1(char *p) {\n  p[1] = 'B';\n}\nvoid foo_FP2(void) {\n  char s[10] = \"Y\";\n  foo_FP1(s);\n}"
+Line 124
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  124 always 124
+  "" always ""
+Line 126
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  126 always 126
+  "void f() {\n  wchar_t *abc = L\"abc\";\n  abc[0] = u'a';\n}" always "void f() {\n  wchar_t *abc = L\"abc\";\n  abc[0] = u'a';\n}"
+Line 130
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  130 always 130
+  "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal L\"abc\" directly or indirectly is undefined behaviour.\n" always "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal L\"abc\" directly or indirectly is undefined behaviour.\n"
+Line 132
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  132 always 132
+  "void f() {\n  char16_t *abc = u\"abc\";\n  abc[0] = 'a';\n}" always "void f() {\n  char16_t *abc = u\"abc\";\n  abc[0] = 'a';\n}"
+Line 136
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  136 always 136
+  "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal u\"abc\" directly or indirectly is undefined behaviour.\n" always "[test.cpp:3] -> [test.cpp:2]: (error) Modifying string literal u\"abc\" directly or indirectly is undefined behaviour.\n"
+Line 138
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  138 always 138
+  "void foo() {\n    int i;\n    char *p  = \"string literal\";\n    for( i = 0; i < strlen(p); i++) {\n        p[i] = \'X\';\n    }\n    printf(\"%s\\n\", p);\n}" always "void foo() {\n    int i;\n    char *p  = \"string literal\";\n    for( i = 0; i < strlen(p); i++) {\n        p[i] = \'X\';\n    }\n    printf(\"%s\\n\", p);\n}"
+Line 146
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  146 always 146
+  "[test.cpp:5] -> [test.cpp:3]: (error) Modifying string literal \"string literal\" directly or indirectly is undefined behaviour.\n" always "[test.cpp:5] -> [test.cpp:3]: (error) Modifying string literal \"string literal\" directly or indirectly is undefined behaviour.\n"
+Line 150
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  150 always 150
+  "void f() {\n  if (strcmp(\"A\",\"A\")){}\n  if (strncmp(\"A\",\"A\",1)){}\n  if (strcasecmp(\"A\",\"A\")){}\n  if (strncasecmp(\"A\",\"A\",1)){}\n  if (memcmp(\"A\",\"A\",1)){}\n  if (strverscmp(\"A\",\"A\")){}\n  if (bcmp(\"A\",\"A\",1)){}\n  if (wcsncasecmp(L\"A\",L\"A\",1)){}\n  if (wcsncmp(L\"A\",L\"A\",1)){}\n  if (wmemcmp(L\"A\",L\"A\",1)){}\n  if (wcscmp(L\"A\",L\"A\")){}\n  if (wcscasecmp(L\"A\",L\"A\")){}\n}" always "void f() {\n  if (strcmp(\"A\",\"A\")){}\n  if (strncmp(\"A\",\"A\",1)){}\n  if (strcasecmp(\"A\",\"A\")){}\n  if (strncasecmp(\"A\",\"A\",1)){}\n  if (memcmp(\"A\",\"A\",1)){}\n  if (strverscmp(\"A\",\"A\")){}\n  if (bcmp(\"A\",\"A\",1)){}\n  if (wcsncasecmp(L\"A\",L\"A\",1)){}\n  if (wcsncmp(L\"A\",L\"A\",1)){}\n  if (wmemcmp(L\"A\",L\"A\",1)){}\n  if (wcscmp(L\"A\",L\"A\")){}\n  if (wcscasecmp(L\"A\",L\"A\")){}\n}"
+Line 164
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  164 always 164
+  "[test.cpp:2]: (warning) Unnecessary comparison of static strings.\n[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n[test.cpp:4]: (warning) Unnecessary comparison of static strings.\n[test.cpp:5]: (warning) Unnecessary comparison of static strings.\n[test.cpp:6]: (warning) Unnecessary comparison of static strings.\n[test.cpp:7]: (warning) Unnecessary comparison of static strings.\n[test.cpp:8]: (warning) Unnecessary comparison of static strings.\n[test.cpp:9]: (warning) Unnecessary comparison of static strings.\n[test.cpp:10]: (warning) Unnecessary comparison of static strings.\n[test.cpp:11]: (warning) Unnecessary comparison of static strings.\n[test.cpp:12]: (warning) Unnecessary comparison of static strings.\n[test.cpp:13]: (warning) Unnecessary comparison of static strings.\n" always "[test.cpp:2]: (warning) Unnecessary comparison of static strings.\n[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n[test.cpp:4]: (warning) Unnecessary comparison of static strings.\n[test.cpp:5]: (warning) Unnecessary comparison of static strings.\n[test.cpp:6]: (warning) Unnecessary comparison of static strings.\n[test.cpp:7]: (warning) Unnecessary comparison of static strings.\n[test.cpp:8]: (warning) Unnecessary comparison of static strings.\n[test.cpp:9]: (warning) Unnecessary comparison of static strings.\n[test.cpp:10]: (warning) Unnecessary comparison of static strings.\n[test.cpp:11]: (warning) Unnecessary comparison of static strings.\n[test.cpp:12]: (warning) Unnecessary comparison of static strings.\n[test.cpp:13]: (warning) Unnecessary comparison of static strings.\n"
+Line 178
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  178 always 178
+  "void f(void *p, int offset)  {\n     if (!memcmp(p, p + offset, 42)){}\n     if (!memcmp(p + offset, p, 42)){}\n     if (!memcmp(offset + p, p, 42)){}\n     if (!memcmp(p, offset + p, 42)){}\n}" always "void f(void *p, int offset)  {\n     if (!memcmp(p, p + offset, 42)){}\n     if (!memcmp(p + offset, p, 42)){}\n     if (!memcmp(offset + p, p, 42)){}\n     if (!memcmp(p, offset + p, 42)){}\n}"
+Line 184
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  184 always 184
+  "" always ""
+Line 187
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  187 always 187
+  "void f(char *c, int offset)  {\n     if (!memcmp(c, c + offset, 42)){}\n     if (!memcmp(c + offset, c, 42)){}\n     if (!memcmp(offset + c, c, 42)){}\n     if (!memcmp(c, offset + c, 42)){}\n}" always "void f(char *c, int offset)  {\n     if (!memcmp(c, c + offset, 42)){}\n     if (!memcmp(c + offset, c, 42)){}\n     if (!memcmp(offset + c, c, 42)){}\n     if (!memcmp(c, offset + c, 42)){}\n}"
+Line 193
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  193 always 193
+  "" always ""
+Line 196
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  196 always 196
+  "void f(std::string s, int offset)  {\n     if (!memcmp(s.c_str(), s.c_str() + offset, 42)){}\n     if (!memcmp(s.c_str() + offset, s.c_str(), 42)){}\n     if (!memcmp(offset + s.c_str(), s.c_str(), 42)){}\n     if (!memcmp(s.c_str(), offset + s.c_str(), 42)){}\n}" always "void f(std::string s, int offset)  {\n     if (!memcmp(s.c_str(), s.c_str() + offset, 42)){}\n     if (!memcmp(s.c_str() + offset, s.c_str(), 42)){}\n     if (!memcmp(offset + s.c_str(), s.c_str(), 42)){}\n     if (!memcmp(s.c_str(), offset + s.c_str(), 42)){}\n}"
+Line 202
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  202 always 202
+  "" always ""
+Line 204
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  204 always 204
+  "int main()\n{\n  if (strcmp(\"00FF00\", \"00FF00\") == 0)  {    std::cout << \"Equal\";  }}" always "int main()\n{\n  if (strcmp(\"00FF00\", \"00FF00\") == 0)  {    std::cout << \"Equal\";  }}"
+Line 211
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  211 always 211
+  "[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n" always "[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n"
+Line 213
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  213 always 213
+  "void f() {\n  if (strcmp($\"00FF00\", \"00FF00\") == 0) {}}" always "void f() {\n  if (strcmp($\"00FF00\", \"00FF00\") == 0) {}}"
+Line 216
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  216 always 216
+  "" always ""
+Line 218
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  218 always 218
+  "void f() {\n  if ($strcmp(\"00FF00\", \"00FF00\") == 0) {}}" always "void f() {\n  if ($strcmp(\"00FF00\", \"00FF00\") == 0) {}}"
+Line 221
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  221 always 221
+  "" always ""
+Line 223
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  223 always 223
+  "int main()\n{\n  if (stricmp(\"hotdog\",\"HOTdog\") == 0)  {    std::cout << \"Equal\";  }}" always "int main()\n{\n  if (stricmp(\"hotdog\",\"HOTdog\") == 0)  {    std::cout << \"Equal\";  }}"
+Line 230
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  230 always 230
+  "[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n" always "[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n"
+Line 232
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  232 always 232
+  "int main()\n{\n  if (QString::compare(\"Hamburger\", \"Hotdog\") == 0)  {    std::cout << \"Equal\";  }}" always "int main()\n{\n  if (QString::compare(\"Hamburger\", \"Hotdog\") == 0)  {    std::cout << \"Equal\";  }}"
+Line 239
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  239 always 239
+  "[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n" always "[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n"
+Line 241
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  241 always 241
+  "int main()\n{\n  if (QString::compare(argv[2], \"hotdog\") == 0)  {    std::cout << \"Equal\";  }}" always "int main()\n{\n  if (QString::compare(argv[2], \"hotdog\") == 0)  {    std::cout << \"Equal\";  }}"
+Line 248
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  248 always 248
+  "" always ""
+Line 250
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  250 always 250
+  "int main()\n{\n  if (strncmp(\"hotdog\",\"hotdog\", 6) == 0)  {    std::cout << \"Equal\";  }}" always "int main()\n{\n  if (strncmp(\"hotdog\",\"hotdog\", 6) == 0)  {    std::cout << \"Equal\";  }}"
+Line 257
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  257 always 257
+  "[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n" always "[test.cpp:3]: (warning) Unnecessary comparison of static strings.\n"
+Line 259
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  259 always 259
+  "int foo(const char *buf)\n{\n  if (strcmp(buf, buf) == 0)  {    std::cout << \"Equal\";  }}" always "int foo(const char *buf)\n{\n  if (strcmp(buf, buf) == 0)  {    std::cout << \"Equal\";  }}"
+Line 266
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  266 always 266
+  "[test.cpp:3]: (warning) Comparison of identical string variables.\n" always "[test.cpp:3]: (warning) Comparison of identical string variables.\n"
+Line 268
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  268 always 268
+  "int foo(const std::string& buf)\n{\n  if (stricmp(buf.c_str(), buf.c_str()) == 0)  {    std::cout << \"Equal\";  }}" always "int foo(const std::string& buf)\n{\n  if (stricmp(buf.c_str(), buf.c_str()) == 0)  {    std::cout << \"Equal\";  }}"
+Line 275
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  275 always 275
+  "[test.cpp:3]: (warning) Comparison of identical string variables.\n" always "[test.cpp:3]: (warning) Comparison of identical string variables.\n"
+Line 277
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  277 always 277
+  "int main() {\n  if (\"str\" == \"str\") {\n    std::cout << \"Equal\";\n  }\n}" always "int main() {\n  if (\"str\" == \"str\") {\n    std::cout << \"Equal\";\n  }\n}"
+Line 282
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  282 always 282
+  "[test.cpp:2]: (warning) Unnecessary comparison of static strings.\n" always "[test.cpp:2]: (warning) Unnecessary comparison of static strings.\n"
+Line 284
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  284 always 284
+  "int main() {\n  if (\"str\" != \"str\") {\n    std::cout << \"Equal\";\n  }\n}" always "int main() {\n  if (\"str\" != \"str\") {\n    std::cout << \"Equal\";\n  }\n}"
+Line 289
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  289 always 289
+  "[test.cpp:2]: (warning) Unnecessary comparison of static strings.\n" always "[test.cpp:2]: (warning) Unnecessary comparison of static strings.\n"
+Line 291
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  291 always 291
+  "int main() {\n  if (a+\"str\" != \"str\"+b) {\n    std::cout << \"Equal\";\n  }\n}" always "int main() {\n  if (a+\"str\" != \"str\"+b) {\n    std::cout << \"Equal\";\n  }\n}"
+Line 296
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  296 always 296
+  "" always ""
+Line 300
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  300 always 300
+  "bool foo(char* c) {\n    return c == \"x\";\n}" always "bool foo(char* c) {\n    return c == \"x\";\n}"
+Line 303
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  303 always 303
+  "[test.cpp:2]: (warning) String literal compared with variable 'c'. Did you intend to use strcmp() instead?\n" always "[test.cpp:2]: (warning) String literal compared with variable 'c'. Did you intend to use strcmp() instead?\n"
+Line 305
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  305 always 305
+  "bool foo(char** c) {\n    return c[3] == \"x\";\n}" always "bool foo(char** c) {\n    return c[3] == \"x\";\n}"
+Line 308
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  308 always 308
+  "[test.cpp:2]: (warning) String literal compared with variable 'c[3]'. Did you intend to use strcmp() instead?\n" always "[test.cpp:2]: (warning) String literal compared with variable 'c[3]'. Did you intend to use strcmp() instead?\n"
+Line 310
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  310 always 310
+  "bool foo(wchar_t* c) {\n    return c == L\"x\";\n}" always "bool foo(wchar_t* c) {\n    return c == L\"x\";\n}"
+Line 313
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  313 always 313
+  "[test.cpp:2]: (warning) String literal compared with variable 'c'. Did you intend to use wcscmp() instead?\n" always "[test.cpp:2]: (warning) String literal compared with variable 'c'. Did you intend to use wcscmp() instead?\n"
+Line 315
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  315 always 315
+  "bool foo(const char* c) {\n    return \"x\" == c;\n}" always "bool foo(const char* c) {\n    return \"x\" == c;\n}"
+Line 318
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  318 always 318
+  "[test.cpp:2]: (warning) String literal compared with variable 'c'. Did you intend to use strcmp() instead?\n" always "[test.cpp:2]: (warning) String literal compared with variable 'c'. Did you intend to use strcmp() instead?\n"
+Line 320
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  320 always 320
+  "bool foo(char* c) {\n    return foo+\"x\" == c;\n}" always "bool foo(char* c) {\n    return foo+\"x\" == c;\n}"
+Line 323
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  323 always 323
+  "" always ""
+Line 325
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  325 always 325
+  "bool foo(char* c) {\n    return \"x\" == c+foo;\n}" always "bool foo(char* c) {\n    return \"x\" == c+foo;\n}"
+  "test.cpp" always "test.cpp"
+Line 328
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  328 always 328
+  "" always ""
+Line 330
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  330 always 330
+  "bool foo(char* c) {\n    return \"x\" == c+foo;\n}" always "bool foo(char* c) {\n    return \"x\" == c+foo;\n}"
+  "test.c" always "test.c"
+Line 333
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  333 always 333
+  "[test.c:2]: (warning) String literal compared with variable 'c+foo'. Did you intend to use strcmp() instead?\n" always "[test.c:2]: (warning) String literal compared with variable 'c+foo'. Did you intend to use strcmp() instead?\n"
+Line 335
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  335 always 335
+  "bool foo(Foo c) {\n    return \"x\" == c.foo;\n}" always "bool foo(Foo c) {\n    return \"x\" == c.foo;\n}"
+  "test.cpp" always "test.cpp"
+Line 338
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  338 always 338
+  "" always ""
+Line 340
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  340 always 340
+  "bool foo(Foo c) {\n    return \"x\" == c.foo;\n}" always "bool foo(Foo c) {\n    return \"x\" == c.foo;\n}"
+  "test.c" always "test.c"
+Line 343
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  343 always 343
+  "[test.c:2]: (warning) String literal compared with variable 'c.foo'. Did you intend to use strcmp() instead?\n" always "[test.c:2]: (warning) String literal compared with variable 'c.foo'. Did you intend to use strcmp() instead?\n"
+Line 345
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  345 always 345
+  "bool foo(const std::string& c) {\n    return \"x\" == c;\n}" always "bool foo(const std::string& c) {\n    return \"x\" == c;\n}"
+Line 348
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  348 always 348
+  "" always ""
+Line 350
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  350 always 350
+  "bool foo(const Foo* c) {\n    return \"x\" == c->bar();\n}" always "bool foo(const Foo* c) {\n    return \"x\" == c->bar();\n}"
+Line 353
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  353 always 353
+  "" always ""
+Line 356
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  356 always 356
+  "bool foo() {\nMyString *str=Getter();\nreturn *str==\"bug\"; }\n" always "bool foo() {\nMyString *str=Getter();\nreturn *str==\"bug\"; }\n"
+  "test.c" always "test.c"
+Line 359
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  359 always 359
+  "[test.c:3]: (warning) String literal compared with variable '*str'. Did you intend to use strcmp() instead?\n" always "[test.c:3]: (warning) String literal compared with variable '*str'. Did you intend to use strcmp() instead?\n"
+Line 362
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  362 always 362
+  "bool foo() {\nMyString *str=Getter();\nreturn *str==\"bug\"; }" always "bool foo() {\nMyString *str=Getter();\nreturn *str==\"bug\"; }"
+Line 365
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  365 always 365
+  "" always ""
+Line 368
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  368 always 368
+  "bool foo() {\nMyString **str=OtherGetter();\nreturn *str==\"bug\"; }" always "bool foo() {\nMyString **str=OtherGetter();\nreturn *str==\"bug\"; }"
+  "test.c" always "test.c"
+Line 371
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  371 always 371
+  "[test.c:3]: (warning) String literal compared with variable '*str'. Did you intend to use strcmp() instead?\n" always "[test.c:3]: (warning) String literal compared with variable '*str'. Did you intend to use strcmp() instead?\n"
+Line 374
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  374 always 374
+  "bool foo() {\nMyString str=OtherGetter2();\nreturn &str==\"bug\"; }" always "bool foo() {\nMyString str=OtherGetter2();\nreturn &str==\"bug\"; }"
+  "test.c" always "test.c"
+Line 377
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  377 always 377
+  "[test.c:3]: (warning) String literal compared with variable '&str'. Did you intend to use strcmp() instead?\n" always "[test.c:3]: (warning) String literal compared with variable '&str'. Did you intend to use strcmp() instead?\n"
+Line 380
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  380 always 380
+  "int foo(char c) {\nreturn c == '4';}" always "int foo(char c) {\nreturn c == '4';}"
+  "test.cpp" always "test.cpp"
+Line 382
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  382 always 382
+  "" always ""
+Line 383
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  383 always 383
+  "int foo(char c) {\nreturn c == '4';}" always "int foo(char c) {\nreturn c == '4';}"
+  "test.c" always "test.c"
+Line 385
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  385 always 385
+  "" always ""
+Line 386
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  386 always 386
+  "int foo(char c) {\nreturn c == \"42\"[0];}" always "int foo(char c) {\nreturn c == \"42\"[0];}"
+  "test.cpp" always "test.cpp"
+Line 388
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  388 always 388
+  "" always ""
+Line 389
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  389 always 389
+  "int foo(char c) {\nreturn c == \"42\"[0];}" always "int foo(char c) {\nreturn c == \"42\"[0];}"
+  "test.c" always "test.c"
+Line 391
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  391 always 391
+  "" always ""
+Line 394
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  394 always 394
+  "struct Example {\n   char buffer[200];\n};\nvoid foo() {\n   struct Example example;\n   if (example.buffer == \"test\") ;\n}\n" always "struct Example {\n   char buffer[200];\n};\nvoid foo() {\n   struct Example example;\n   if (example.buffer == \"test\") ;\n}\n"
+  "test.cpp" always "test.cpp"
+Line 401
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  401 always 401
+  "[test.cpp:6]: (warning) String literal compared with variable 'example.buffer'. Did you intend to use strcmp() instead?\n" always "[test.cpp:6]: (warning) String literal compared with variable 'example.buffer'. Did you intend to use strcmp() instead?\n"
+Line 402
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  402 always 402
+  "struct Example {\n   char buffer[200];\n};\nvoid foo() {\n   struct Example example;\n   if (example.buffer == \"test\") ;\n}\n" always "struct Example {\n   char buffer[200];\n};\nvoid foo() {\n   struct Example example;\n   if (example.buffer == \"test\") ;\n}\n"
+  "test.c" always "test.c"
+Line 409
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  409 always 409
+  "[test.c:6]: (warning) String literal compared with variable 'example.buffer'. Did you intend to use strcmp() instead?\n" always "[test.c:6]: (warning) String literal compared with variable 'example.buffer'. Did you intend to use strcmp() instead?\n"
+Line 412
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  412 always 412
+  "void f(std::vector<std::string> theArgs) {\n   std::string arg1(*theArgs.begin());\n   if(arg1 == \"aaa\") {}\n}" always "void f(std::vector<std::string> theArgs) {\n   std::string arg1(*theArgs.begin());\n   if(arg1 == \"aaa\") {}\n}"
+Line 416
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  416 always 416
+  "" always ""
+Line 420
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  420 always 420
+  "bool foo(char* c) {\n    return c == 'x';\n}" always "bool foo(char* c) {\n    return c == 'x';\n}"
+Line 423
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  423 always 423
+  "[test.cpp:2]: (warning) Char literal compared with pointer 'c'. Did you intend to dereference it?\n" always "[test.cpp:2]: (warning) Char literal compared with pointer 'c'. Did you intend to dereference it?\n"
+Line 425
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  425 always 425
+  "bool foo(wchar_t* c) {\n    return c == L'x';\n}" always "bool foo(wchar_t* c) {\n    return c == L'x';\n}"
+Line 428
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  428 always 428
+  "[test.cpp:2]: (warning) Char literal compared with pointer 'c'. Did you intend to dereference it?\n" always "[test.cpp:2]: (warning) Char literal compared with pointer 'c'. Did you intend to dereference it?\n"
+Line 430
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  430 always 430
+  "bool foo(char* c) {\n    return '\\0' != c;\n}" always "bool foo(char* c) {\n    return '\\0' != c;\n}"
+Line 433
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  433 always 433
+  "[test.cpp:2]: (warning) Char literal compared with pointer 'c'. Did you intend to dereference it?\n" always "[test.cpp:2]: (warning) Char literal compared with pointer 'c'. Did you intend to dereference it?\n"
+Line 435
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  435 always 435
+  "bool foo(char c) {\n    return c == '\\0';\n}" always "bool foo(char c) {\n    return c == '\\0';\n}"
+Line 438
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  438 always 438
+  "" always ""
+Line 440
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  440 always 440
+  "bool foo(char* c) {\n    return c[0] == '\\0';\n}" always "bool foo(char* c) {\n    return c[0] == '\\0';\n}"
+Line 443
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  443 always 443
+  "" always ""
+Line 445
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  445 always 445
+  "bool foo(char** c) {\n    return c[0] == '\\0';\n}" always "bool foo(char** c) {\n    return c[0] == '\\0';\n}"
+Line 448
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  448 always 448
+  "[test.cpp:2]: (warning) Char literal compared with pointer 'c[0]'. Did you intend to dereference it?\n" always "[test.cpp:2]: (warning) Char literal compared with pointer 'c[0]'. Did you intend to dereference it?\n"
+Line 450
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  450 always 450
+  "bool foo(char** c) {\n    return *c == '\\0';\n}" always "bool foo(char** c) {\n    return *c == '\\0';\n}"
+Line 453
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  453 always 453
+  "[test.cpp:2]: (warning) Char literal compared with pointer '*c'. Did you intend to dereference it?\n" always "[test.cpp:2]: (warning) Char literal compared with pointer '*c'. Did you intend to dereference it?\n"
+Line 455
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  455 always 455
+  "bool foo(char c) {\n    return c == 0;\n}" always "bool foo(char c) {\n    return c == 0;\n}"
+Line 458
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  458 always 458
+  "" always ""
+Line 460
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  460 always 460
+  "bool foo(char* c) {\n    return *c == 0;\n}" always "bool foo(char* c) {\n    return *c == 0;\n}"
+  "test.c" always "test.c"
+Line 463
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  463 always 463
+  "" always ""
+Line 465
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  465 always 465
+  "bool foo(char* c) {\n    return *c == 0;\n}" always "bool foo(char* c) {\n    return *c == 0;\n}"
+Line 468
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  468 always 468
+  "" always ""
+Line 470
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  470 always 470
+  "bool foo(Foo* c) {\n    return 0 == c->x;\n}" always "bool foo(Foo* c) {\n    return 0 == c->x;\n}"
+Line 473
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  473 always 473
+  "" always ""
+Line 475
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  475 always 475
+  "void foo(char* c) {\n    if(c == '\\0') bar();\n}" always "void foo(char* c) {\n    if(c == '\\0') bar();\n}"
+Line 478
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  478 always 478
+  "[test.cpp:2]: (warning) Char literal compared with pointer 'c'. Did you intend to dereference it?\n" always "[test.cpp:2]: (warning) Char literal compared with pointer 'c'. Did you intend to dereference it?\n"
+Line 480
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  480 always 480
+  "void f() {\n  struct { struct { char *str; } x; } a;\n  return a.x.str == '\\0';}" always "void f() {\n  struct { struct { char *str; } x; } a;\n  return a.x.str == '\\0';}"
+Line 484
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  484 always 484
+  "[test.cpp:3]: (warning) Char literal compared with pointer 'a.x.str'. Did you intend to dereference it?\n" always "[test.cpp:3]: (warning) Char literal compared with pointer 'a.x.str'. Did you intend to dereference it?\n"
+Line 486
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  486 always 486
+  "void f() {\n  struct { struct { char *str; } x; } a;\n  return *a.x.str == '\\0';}" always "void f() {\n  struct { struct { char *str; } x; } a;\n  return *a.x.str == '\\0';}"
+Line 490
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  490 always 490
+  "" always ""
+Line 495
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  495 always 495
+  "void foo()\n{\n    char buf[100];\n    snprintf(buf,100,\"%s\",buf);\n}" always "void foo()\n{\n    char buf[100];\n    snprintf(buf,100,\"%s\",buf);\n}"
+Line 500
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  500 always 500
+  "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in snprintf().\n" always "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in snprintf().\n"
+Line 504
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  504 always 504
+  "void foo()\n{\n    char buf[100];\n    sprintf(buf,\"%s\",buf);\n}" always "void foo()\n{\n    char buf[100];\n    sprintf(buf,\"%s\",buf);\n}"
+Line 509
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  509 always 509
+  "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in sprintf().\n" always "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in sprintf().\n"
+Line 513
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  513 always 513
+  "void foo()\n{\n    char buf[100];\n    sprintf(buf,\"%i\",sizeof(buf));\n}" always "void foo()\n{\n    char buf[100];\n    sprintf(buf,\"%i\",sizeof(buf));\n}"
+Line 518
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  518 always 518
+  "" always ""
+Line 522
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  522 always 522
+  "void foo()\n{\n    char buf[100];\n    sprintf(buf,\"%i\",sizeof(buf));\n    if (buf[0]);\n}" always "void foo()\n{\n    char buf[100];\n    sprintf(buf,\"%i\",sizeof(buf));\n    if (buf[0]);\n}"
+Line 528
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  528 always 528
+  "" always ""
+Line 532
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  532 always 532
+  "struct A\n{\n    char filename[128];\n};\n\nvoid foo()\n{\n    const char* filename = \"hello\";\n    struct A a;\n    snprintf(a.filename, 128, \"%s\", filename);\n}" always "struct A\n{\n    char filename[128];\n};\n\nvoid foo()\n{\n    const char* filename = \"hello\";\n    struct A a;\n    snprintf(a.filename, 128, \"%s\", filename);\n}"
+Line 543
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  543 always 543
+  "" always ""
+Line 547
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  547 always 547
+  "struct A\n{\n    char filename[128];\n};\n\nvoid foo(struct A *a)\n{\n    snprintf(a->filename, 128, \"%s\", a->filename);\n}" always "struct A\n{\n    char filename[128];\n};\n\nvoid foo(struct A *a)\n{\n    snprintf(a->filename, 128, \"%s\", a->filename);\n}"
+Line 556
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  556 always 556
+  "[test.cpp:8]: (error) Undefined behavior: Variable 'a->filename' is used as parameter and destination in snprintf().\n" always "[test.cpp:8]: (error) Undefined behavior: Variable 'a->filename' is used as parameter and destination in snprintf().\n"
+Line 560
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  560 always 560
+  "void foo()\n{\n    char buf[100];\n    sprintf((char*)buf,\"%s\",(char*)buf);\n}" always "void foo()\n{\n    char buf[100];\n    sprintf((char*)buf,\"%s\",(char*)buf);\n}"
+Line 565
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  565 always 565
+  "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in sprintf().\n" always "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in sprintf().\n"
+Line 569
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  569 always 569
+  "void foo()\n{\n    char buf[100];\n    sprintf((char*)(void*)buf,\"%s\",(void*)(char*)buf);\n}" always "void foo()\n{\n    char buf[100];\n    sprintf((char*)(void*)buf,\"%s\",(void*)(char*)buf);\n}"
+Line 574
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  574 always 574
+  "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in sprintf().\n" always "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in sprintf().\n"
+Line 578
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  578 always 578
+  "void foo()\n{\n    wchar_t buf[100];\n    swprintf(buf,10, \"%s\",buf);\n}" always "void foo()\n{\n    wchar_t buf[100];\n    swprintf(buf,10, \"%s\",buf);\n}"
+Line 583
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  583 always 583
+  "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in swprintf().\n" always "[test.cpp:4]: (error) Undefined behavior: Variable 'buf' is used as parameter and destination in swprintf().\n"
+Line 588
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  588 always 588
+  "void foo()\n{\n    const char *p = \"/usr\" + '/';\n}" always "void foo()\n{\n    const char *p = \"/usr\" + '/';\n}"
+Line 592
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  592 always 592
+  "[test.cpp:3]: (error) Unusual pointer arithmetic. A value of type 'char' is added to a string literal.\n" always "[test.cpp:3]: (error) Unusual pointer arithmetic. A value of type 'char' is added to a string literal.\n"
+Line 597
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  597 always 597
+  "void foo()\n{\n    char ch = 1;\n    const char *p = ch + \"/usr\";\n}" always "void foo()\n{\n    char ch = 1;\n    const char *p = ch + \"/usr\";\n}"
+Line 602
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  602 always 602
+  "" always ""
+Line 605
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  605 always 605
+  "void foo()\n{\n    int i = 1;\n    const char* psz = \"Bla\";\n    const std::string str = i + psz;\n}" always "void foo()\n{\n    int i = 1;\n    const char* psz = \"Bla\";\n    const std::string str = i + psz;\n}"
+Line 611
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  611 always 611
+  "" always ""
+Line 616
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  616 always 616
+  "void foo()\n{\n    std::string temp = \"/tmp\";\n    std::string path = temp + '/' + \"sub\" + '/';\n}" always "void foo()\n{\n    std::string temp = \"/tmp\";\n    std::string path = temp + '/' + \"sub\" + '/';\n}"
+Line 621
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  621 always 621
+  "" always ""
+Line 626
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  626 always 626
+  "void foo()\n{\n    const wchar_t *p = L\"/usr\" + L'/';\n}" always "void foo()\n{\n    const wchar_t *p = L\"/usr\" + L'/';\n}"
+Line 630
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  630 always 630
+  "[test.cpp:3]: (error) Unusual pointer arithmetic. A value of type 'wchar_t' is added to a string literal.\n" always "[test.cpp:3]: (error) Unusual pointer arithmetic. A value of type 'wchar_t' is added to a string literal.\n"
+Line 632
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  632 always 632
+  "void foo(wchar_t c)\n{\n    const wchar_t *p = L\"/usr\" + c;\n}" always "void foo(wchar_t c)\n{\n    const wchar_t *p = L\"/usr\" + c;\n}"
+Line 636
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  636 always 636
+  "[test.cpp:3]: (error) Unusual pointer arithmetic. A value of type 'wchar_t' is added to a string literal.\n" always "[test.cpp:3]: (error) Unusual pointer arithmetic. A value of type 'wchar_t' is added to a string literal.\n"
+Line 640
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  640 always 640
+  "int f() {\n    return test.substr( 0 , 4 ) == \"Hello\" ? 0 : 1 ;\n}" always "int f() {\n    return test.substr( 0 , 4 ) == \"Hello\" ? 0 : 1 ;\n}"
+Line 643
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  643 always 643
+  "[test.cpp:2]: (warning) String literal \"Hello\" doesn't match length argument for substr().\n" always "[test.cpp:2]: (warning) String literal \"Hello\" doesn't match length argument for substr().\n"
+Line 645
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  645 always 645
+  "int f() {\n    return test.substr( 0 , 4 ) == L\"Hello\" ? 0 : 1 ;\n}" always "int f() {\n    return test.substr( 0 , 4 ) == L\"Hello\" ? 0 : 1 ;\n}"
+Line 648
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  648 always 648
+  "[test.cpp:2]: (warning) String literal L\"Hello\" doesn't match length argument for substr().\n" always "[test.cpp:2]: (warning) String literal L\"Hello\" doesn't match length argument for substr().\n"
+Line 650
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  650 always 650
+  "int f() {\n    return test.substr( 0 , 5 ) == \"Hello\" ? 0 : 1 ;\n}" always "int f() {\n    return test.substr( 0 , 5 ) == \"Hello\" ? 0 : 1 ;\n}"
+Line 653
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  653 always 653
+  "" always ""
+Line 655
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  655 always 655
+  "int f() {\n    return \"Hello\" == test.substr( 0 , 4 ) ? 0 : 1 ;\n}" always "int f() {\n    return \"Hello\" == test.substr( 0 , 4 ) ? 0 : 1 ;\n}"
+Line 658
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  658 always 658
+  "[test.cpp:2]: (warning) String literal \"Hello\" doesn't match length argument for substr().\n" always "[test.cpp:2]: (warning) String literal \"Hello\" doesn't match length argument for substr().\n"
+Line 660
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  660 always 660
+  "int f() {\n    return \"Hello\" == foo.bar<int>().z[1].substr(i+j*4, 4) ? 0 : 1 ;\n}" always "int f() {\n    return \"Hello\" == foo.bar<int>().z[1].substr(i+j*4, 4) ? 0 : 1 ;\n}"
+Line 663
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  663 always 663
+  "[test.cpp:2]: (warning) String literal \"Hello\" doesn't match length argument for substr().\n" always "[test.cpp:2]: (warning) String literal \"Hello\" doesn't match length argument for substr().\n"
+Line 665
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  665 always 665
+  "int f() {\n    return \"Hello\" == test.substr( 0 , 5 ) ? 0 : 1 ;\n}" always "int f() {\n    return \"Hello\" == test.substr( 0 , 5 ) ? 0 : 1 ;\n}"
+Line 668
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  668 always 668
+  "" always ""
+Line 670
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  670 always 670
+  "int f() {\n    if (\"Hello\") { }\n}" always "int f() {\n    if (\"Hello\") { }\n}"
+Line 673
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  673 always 673
+  "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" always "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n"
+Line 675
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  675 always 675
+  "int f() {\n    if (\"Hello\" && test) { }\n}" always "int f() {\n    if (\"Hello\" && test) { }\n}"
+Line 678
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  678 always 678
+  "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" always "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n"
+Line 680
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  680 always 680
+  "int f() {\n    if (test && \"Hello\") { }\n}" always "int f() {\n    if (test && \"Hello\") { }\n}"
+Line 683
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  683 always 683
+  "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" always "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n"
+Line 685
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  685 always 685
+  "int f() {\n    while (\"Hello\") { }\n}" always "int f() {\n    while (\"Hello\") { }\n}"
+Line 688
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  688 always 688
+  "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" always "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n"
+Line 690
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  690 always 690
+  "int f() {\n    return \"Hello\" ? 1 : 2;\n}" always "int f() {\n    return \"Hello\" ? 1 : 2;\n}"
+Line 693
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  693 always 693
+  "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" always "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n"
+Line 695
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  695 always 695
+  "int f() {\n    assert (test || \"Hello\");\n}" always "int f() {\n    assert (test || \"Hello\");\n}"
+Line 698
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  698 always 698
+  "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" always "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n"
+Line 700
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  700 always 700
+  "int f() {\n    assert (test && \"Hello\");\n}" always "int f() {\n    assert (test && \"Hello\");\n}"
+Line 703
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  703 always 703
+  "" always ""
+Line 705
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  705 always 705
+  "int f() {\n    assert (\"Hello\" || test);\n}" always "int f() {\n    assert (\"Hello\" || test);\n}"
+Line 708
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  708 always 708
+  "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n" always "[test.cpp:2]: (warning) Conversion of string literal \"Hello\" to bool always evaluates to true.\n"
+Line 710
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  710 always 710
+  "int f() {\n    assert (\"Hello\" && test);\n}" always "int f() {\n    assert (\"Hello\" && test);\n}"
+Line 713
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  713 always 713
+  "" always ""
+Line 715
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  715 always 715
+  "int f() {\n    BOOST_ASSERT (\"Hello\" && test);\n}" always "int f() {\n    BOOST_ASSERT (\"Hello\" && test);\n}"
+Line 718
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  718 always 718
+  "" always ""
+Line 720
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  720 always 720
+  "int f() {\n    return f2(\"Hello\");\n}" always "int f() {\n    return f2(\"Hello\");\n}"
+Line 723
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  723 always 723
+  "" always ""
+Line 726
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  726 always 726
+  "void f() {\n  if('a'){}\n  if(L'b'){}\n  if(1 && 'c'){}\n  int x = 'd' ? 1 : 2;\n}" always "void f() {\n  if('a'){}\n  if(L'b'){}\n  if(1 && 'c'){}\n  int x = 'd' ? 1 : 2;\n}"
+Line 732
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  732 always 732
+  "[test.cpp:2]: (warning) Conversion of char literal 'a' to bool always evaluates to true.\n[test.cpp:3]: (warning) Conversion of char literal L'b' to bool always evaluates to true.\n[test.cpp:4]: (warning) Conversion of char literal 'c' to bool always evaluates to true.\n[test.cpp:5]: (warning) Conversion of char literal 'd' to bool always evaluates to true.\n" always "[test.cpp:2]: (warning) Conversion of char literal 'a' to bool always evaluates to true.\n[test.cpp:3]: (warning) Conversion of char literal L'b' to bool always evaluates to true.\n[test.cpp:4]: (warning) Conversion of char literal 'c' to bool always evaluates to true.\n[test.cpp:5]: (warning) Conversion of char literal 'd' to bool always evaluates to true.\n"
+Line 738
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  738 always 738
+  "void f() {\n  if('\\0'){}\n  if(L'\\0'){}\n}" always "void f() {\n  if('\\0'){}\n  if(L'\\0'){}\n}"
+Line 742
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  742 always 742
+  "" always ""
+Line 744
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  744 always 744
+  "void f() {\n  if('\\0' || cond){}\n  if(L'\\0' || cond){}\n}" always "void f() {\n  if('\\0' || cond){}\n  if(L'\\0' || cond){}\n}"
+Line 748
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  748 always 748
+  "[test.cpp:2]: (warning) Conversion of char literal '\\0' to bool always evaluates to false.\n[test.cpp:3]: (warning) Conversion of char literal L'\\0' to bool always evaluates to false.\n" always "[test.cpp:2]: (warning) Conversion of char literal '\\0' to bool always evaluates to false.\n[test.cpp:3]: (warning) Conversion of char literal L'\\0' to bool always evaluates to false.\n"
+Line 753
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  753 always 753
+  "void f(const char *str) {\n  if (strcmp(str, \"abc\") == 0 || strcmp(str, \"def\")) {}\n}" always "void f(const char *str) {\n  if (strcmp(str, \"abc\") == 0 || strcmp(str, \"def\")) {}\n}"
+Line 756
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  756 always 756
+  "[test.cpp:2]: (warning) The expression 'strcmp(str,\"def\") != 0' is suspicious. It overlaps 'strcmp(str,\"abc\") == 0'.\n" always "[test.cpp:2]: (warning) The expression 'strcmp(str,\"def\") != 0' is suspicious. It overlaps 'strcmp(str,\"abc\") == 0'.\n"
+Line 758
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  758 always 758
+  "void f(const wchar_t *str) {\n  if (wcscmp(str, L\"abc\") == 0 || wcscmp(str, L\"def\")) {}\n}" always "void f(const wchar_t *str) {\n  if (wcscmp(str, L\"abc\") == 0 || wcscmp(str, L\"def\")) {}\n}"
+Line 761
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  761 always 761
+  "[test.cpp:2]: (warning) The expression 'wcscmp(str,L\"def\") != 0' is suspicious. It overlaps 'wcscmp(str,L\"abc\") == 0'.\n" always "[test.cpp:2]: (warning) The expression 'wcscmp(str,L\"def\") != 0' is suspicious. It overlaps 'wcscmp(str,L\"abc\") == 0'.\n"
+Line 763
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  763 always 763
+  "struct X {\n  char *str;\n};\n\nvoid f(const struct X *x) {\n  if (strcmp(x->str, \"abc\") == 0 || strcmp(x->str, \"def\")) {}\n}" always "struct X {\n  char *str;\n};\n\nvoid f(const struct X *x) {\n  if (strcmp(x->str, \"abc\") == 0 || strcmp(x->str, \"def\")) {}\n}"
+Line 770
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/teststring.cpp" always "cppcheck-2.8/test/teststring.cpp"
+  770 always 770
+  "[test.cpp:6]: (warning) The expression 'strcmp(x->str,\"def\") != 0' is suspicious. It overlaps 'strcmp(x->str,\"abc\") == 0'.\n" always "[test.cpp:6]: (warning) The expression 'strcmp(x->str,\"def\") != 0' is suspicious. It overlaps 'strcmp(x->str,\"abc\") == 0'.\n"

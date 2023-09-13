@@ -1,0 +1,78 @@
+
+
+##file cppcheck-2.8/gui/application.h
+
+1:
+|
+42:
+43: class Application {
+44: public:
+45: Application ( ) { }
+46: Application ( const QString & name@var1 , const QString & path@var2 , const QString & params@var3 ) ;
+47:
+|
+51:
+52: QString getName ( ) const {
+53: return mName@var7 ;
+54: }
+55:
+|
+59:
+60: QString getPath ( ) const {
+61: return mPath@var8 ;
+62: }
+63:
+|
+67:
+68: QString getParameters ( ) const {
+69: return mParameters@var9 ;
+70: }
+71:
+|
+75:
+76: void setName ( const QString & name@var4 ) {
+77: mName@var7 =@expr1073741837 name@var4 ;
+78: }
+79:
+|
+83:
+84: void setPath ( const QString & path@var5 ) {
+85: mPath@var8 =@expr1073741838 path@var5 ;
+86: }
+87:
+|
+91:
+92: void setParameters ( const QString & parameters@var6 ) {
+93: mParameters@var9 =@expr1073741839 parameters@var6 ;
+94: }
+95:
+96: private:
+97:
+|
+100:
+101: QString mName@var7 ;
+102:
+|
+105:
+106: QString mPath@var8 ;
+107:
+|
+110:
+111: QString mParameters@var9 ;
+112: } ;
+
+##file cppcheck-2.8/gui/application.cpp
+
+1:
+|
+20:
+21: Application :: Application ( const QString & name@var10 , const QString & path@var11 ,
+22: const QString & params@var12 )
+23: : mName@var7 ( name@var10 )
+24: , mPath@var8 ( path@var11 )
+25: , mParameters@var9 ( params@var12 )
+26: { }
+
+
+
+##Value flow

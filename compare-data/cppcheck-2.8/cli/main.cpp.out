@@ -1,0 +1,154 @@
+
+
+##file cppcheck-2.8/cli/cppcheckexecutor.h
+
+1:
+|
+32:
+33: class CppCheck ;
+34: class Library ;
+35: class Settings ;
+36:
+|
+43:
+44: class CppCheckExecutor : public ErrorLogger {
+45: public:
+46:
+47:
+48:
+49: CppCheckExecutor ( ) ;
+50: CppCheckExecutor ( const CppCheckExecutor & ) = delete ;
+51: void operator= ( const CppCheckExecutor & ) = delete ;
+52:
+|
+55:
+56: ~ CppCheckExecutor ( ) override ;
+57:
+|
+68:
+69: int check ( int argc@var1 , const char * const argv@var2 [ ] ) ;
+70:
+|
+76:
+77: void reportOut ( const std :: string & outmsg@var3 , Color c@var4 = Color :: Reset ) override ;
+78:
+79:
+80: void reportErr ( const ErrorMessage & msg@var5 ) override ;
+81:
+82: void reportProgress ( const std :: string & filename@var6 , const char stage@var7 [ ] , const unsigned long value@var8 ) override ;
+83:
+|
+86:
+87: void reportInfo ( const ErrorMessage & msg@var9 ) override ;
+88:
+|
+96:
+97: static void reportStatus ( unsigned long fileindex@var10 , unsigned long filecount@var11 , unsigned long sizedone@var12 , unsigned long sizetotal@var13 ) ;
+98:
+|
+101:
+102: static void setExceptionOutput ( FILE * exceptionOutput@var14 ) ;
+103:
+104:
+105:
+106: static FILE * getExceptionOutput ( ) ;
+107:
+|
+111:
+112: static bool tryLoadLibrary ( Library & destination@var15 , const std :: string & basepath@var16 , const char * filename@var17 ) ;
+113:
+|
+116:
+117: static bool executeCommand ( std :: string exe@var18 , std :: vector < std :: string > args@var19 , const std :: string & redirect@var20 , std :: string * output_@var21 ) ;
+118:
+119: protected:
+120:
+|
+124:
+125: void reportErr ( const std :: string & errmsg@var22 ) ;
+126:
+|
+135:
+136: bool parseFromArgs ( CppCheck * cppcheck@var23 , int argc@var24 , const char * const argv@var25 [ ] ) ;
+137:
+|
+141:
+142: void setSettings ( const Settings & settings@var26 ) ;
+143:
+144: private:
+145:
+|
+151:
+152: int check_wrapper ( CppCheck & cppcheck@var27 ) ;
+153:
+|
+163:
+164: int check_internal ( CppCheck & cppcheck@var28 ) ;
+165:
+|
+168:
+169: const Settings * mSettings@var29 ;
+170:
+|
+173:
+174: std :: set < std :: string > mShownErrors@var30 ;
+175:
+|
+178:
+179: std :: map < std :: string , unsigned long > mFiles@var31 ;
+180:
+|
+183:
+184: std :: time_t mLatestProgressOutputTime@var32 ;
+185:
+|
+188:
+189: static FILE * mExceptionOutput@var33 ;
+190:
+|
+193:
+194: std :: ofstream * mErrorOutput@var34 ;
+195:
+|
+198:
+199: bool mShowAllErrors@var35 ;
+200: } ;
+
+##file cppcheck-2.8/cli/main.cpp
+
+1:
+|
+91:
+92: int main ( int argc@var36 , char * argv@var37 [ ] )
+93: {
+94:
+|
+98:
+99: CppCheckExecutor exec@var38 ;
+100:
+|
+112:
+113: return exec@var38 .@expr1073741863 check (@expr1073741864 argc@var36 , argv@var37 ) ;
+114:
+|
+124:
+125: }
+
+
+
+##Value flow
+Line 82
+  value always !<=-1
+Line 97
+  fileindex always !<=-1
+  filecount always !<=-1
+  sizedone always !<=-1
+  sizetotal always !<=-1
+Line 112
+  ( always {!<=-1,!>=2}
+Line 117
+  ( always {!<=-1,!>=2}
+Line 136
+  ( always {!<=-1,!>=2}
+Line 199
+  mShowAllErrors always {!<=-1,!>=2}

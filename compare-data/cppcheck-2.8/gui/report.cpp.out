@@ -1,0 +1,163 @@
+
+
+##file cppcheck-2.8/gui/report.h
+
+1:
+|
+25:
+26: class ErrorItem ;
+27:
+|
+33:
+34: class Report : public QObject {
+35: public:
+36: enum Type {
+37: TXT ,
+38: XMLV2 ,
+39: CSV ,
+40: } ;
+41:
+42: explicit Report ( const QString & filename@var1 ) ;
+43: ~ Report ( ) override ;
+44:
+|
+48:
+49: virtual bool create ( ) ;
+50:
+|
+54:
+55: virtual bool open ( ) ;
+56:
+|
+59:
+60: void close ( ) ;
+61:
+|
+64:
+65: virtual void writeHeader ( ) = 0 ;
+66:
+|
+69:
+70: virtual void writeFooter ( ) = 0 ;
+71:
+|
+75:
+76: virtual void writeError ( const ErrorItem & error@var2 ) = 0 ;
+77:
+78: protected:
+79:
+|
+82:
+83: QFile * getFile ( ) ;
+84:
+85: private:
+86:
+|
+89:
+90: QString mFilename@var3 ;
+91:
+|
+94:
+95: QFile mFile@var4 ;
+96: } ;
+
+##file cppcheck-2.8/gui/report.cpp
+
+1:
+|
+20:
+21: Report :: Report ( const QString & filename@var5 ) :
+22: QObject ( ) ,
+23: mFilename@var3 ( filename@var5 )
+24: { }
+25:
+26: Report :: ~ Report ( )
+27: {
+28: close (@expr1073741832 ) ;
+29: }
+30:
+31: bool Report :: create ( )
+32: {
+33: bool succeed@var6 ; succeed@var6 =@expr1073741835 false ;
+34: if (@expr1073741836 !@expr1073741837 mFile@var4 .@expr1073741838 isOpen (@expr1073741839 ) ) {
+35: mFile@var4 .@expr1073741840 setFileName (@expr1073741841 mFilename@var3 ) ;
+36: succeed@var6 =@expr1073741842 mFile@var4 .@expr1073741843 open (@expr1073741844 QIODevice ::@expr1073741845 WriteOnly@expr1073741833 |@expr1073741846 QIODevice ::@expr1073741847 Text@expr1073741834 ) ;
+37: }
+38: return succeed@var6 ;
+39: }
+40:
+41: bool Report :: open ( )
+42: {
+43: bool succeed@var7 ; succeed@var7 =@expr1073741850 false ;
+44: if (@expr1073741851 !@expr1073741852 mFile@var4 .@expr1073741853 isOpen (@expr1073741854 ) ) {
+45: mFile@var4 .@expr1073741855 setFileName (@expr1073741856 mFilename@var3 ) ;
+46: succeed@var7 =@expr1073741857 mFile@var4 .@expr1073741858 open (@expr1073741859 QIODevice ::@expr1073741860 ReadOnly@expr1073741848 |@expr1073741861 QIODevice ::@expr1073741862 Text@expr1073741849 ) ;
+47: }
+48: return succeed@var7 ;
+49: }
+50:
+51: void Report :: close ( )
+52: {
+53: if (@expr1073741863 mFile@var4 .@expr1073741864 isOpen (@expr1073741865 ) ) {
+54: mFile@var4 .@expr1073741866 close (@expr1073741867 ) ; }
+55: }
+56:
+57: QFile * Report :: getFile ( )
+58: {
+59: return &@expr1073741868 mFile@var4 ;
+60: }
+
+
+
+##Value flow
+Line 37
+  TXT always 0
+Line 38
+  XMLV2 always 1
+Line 39
+  CSV always 2
+Line 49
+  ( always {!<=-1,!>=2}
+Line 55
+  ( always {!<=-1,!>=2}
+Line 65
+  = always 0
+  0 always 0
+Line 70
+  = always 0
+  0 always 0
+Line 76
+  = always 0
+  0 always 0
+Line 31
+  ( always {!<=-1,!>=2}
+Line 33
+  succeed always {!<=-1,!>=2}
+  succeed always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 34
+  ! always {!<=-1,!>=2}
+Line 36
+  succeed always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+Line 38
+  return always {!<=-1,!>=2}
+  succeed always {!<=-1,!>=2}
+Line 41
+  ( always {!<=-1,!>=2}
+Line 43
+  succeed always {!<=-1,!>=2}
+  succeed always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 44
+  ! always {!<=-1,!>=2}
+Line 46
+  succeed always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+Line 48
+  return always {!<=-1,!>=2}
+  succeed always {!<=-1,!>=2}
+Line 59
+  & {lifetime[Address]=(mFile),!0}

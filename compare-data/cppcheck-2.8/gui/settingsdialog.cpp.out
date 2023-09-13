@@ -1,0 +1,972 @@
+
+
+##file cppcheck-2.8/gui/settingsdialog.h
+
+1:
+|
+24:
+25: class QSettings ;
+26: class QWidget ;
+27: class ApplicationList ;
+28: class TranslationHandler ;
+29: class CodeEditorStyle ;
+30: class QCheckBox ;
+31: class QObject ;
+32: namespace Ui {
+33: class Settings ;
+34: }
+35:
+|
+42:
+43: class SettingsDialog : public QDialog {
+44: Q_OBJECT
+45: public:
+46: SettingsDialog ( ApplicationList * list ,
+47: TranslationHandler * translator ,
+48: QWidget * parent = nullptr ) ;
+49: SettingsDialog ( const SettingsDialog & ) = delete ;
+50: ~ SettingsDialog ( ) override ;
+51: SettingsDialog & operator = ( const SettingsDialog & ) = delete ;
+52:
+|
+56:
+57: void saveSettingValues ( ) const ;
+58:
+|
+63:
+64: bool showFullPath ( ) const ;
+65:
+|
+70:
+71: bool saveFullPath ( ) const ;
+72:
+|
+78:
+79: bool showNoErrorsMessage ( ) const ;
+80:
+|
+85:
+86: bool showErrorId ( ) const ;
+87:
+|
+93:
+94: bool showInconclusive ( ) const ;
+95:
+|
+100:
+101: bool saveAllErrors ( ) const ;
+102:
+103: protected slots :
+104:
+|
+107:
+108: void ok ( ) ;
+109:
+110:
+111: void validateEditPythonPath ( ) ;
+112:
+|
+116:
+117: void addApplication ( ) ;
+118:
+|
+122:
+123: void removeApplication ( ) ;
+124:
+|
+128:
+129: void editApplication ( ) ;
+130:
+|
+134:
+135: void defaultApplication ( ) ;
+136:
+137:
+138: void browsePythonPath ( ) ;
+139:
+140:
+141: void browseClangPath ( ) ;
+142:
+|
+145:
+146: void browseMisraFile ( ) ;
+147:
+|
+150:
+151: void setCodeEditorStyleDefault ( ) ;
+152:
+|
+155:
+156: void editCodeEditorStyle ( ) ;
+157:
+158: protected:
+159:
+|
+162:
+163: void populateApplicationList ( ) ;
+164:
+|
+169:
+170: void loadSettings ( ) ;
+171:
+|
+175:
+176: void saveSettings ( ) const ;
+177:
+|
+184:
+185: static void saveCheckboxValue ( QSettings * settings , QCheckBox * box , const QString & name ) ;
+186:
+|
+192:
+193: static Qt :: CheckState boolToCheckState ( bool yes ) ;
+194:
+|
+200:
+201: static bool checkStateToBool ( Qt :: CheckState state ) ;
+202:
+|
+205:
+206: void initTranslationsList ( ) ;
+207:
+|
+210:
+211: CodeEditorStyle * mCurrentStyle ;
+212:
+|
+216:
+217: ApplicationList * mApplications ;
+218:
+|
+223:
+224: ApplicationList * mTempApplications ;
+225:
+|
+229:
+230: TranslationHandler * mTranslator ;
+231:
+|
+235:
+236: Ui :: Settings * mUI ;
+237: private:
+238: void manageStyleControls ( ) ;
+239:
+240: static const int mLangCodeRole = Qt :: UserRole ;
+241: } ;
+
+##file cppcheck-2.8/gui/application.h
+
+1:
+|
+42:
+43: class Application {
+44: public:
+45: Application ( ) { }
+46: Application ( const QString & name , const QString & path , const QString & params ) ;
+47:
+|
+51:
+52: QString getName ( ) const {
+53: return mName ;
+54: }
+55:
+|
+59:
+60: QString getPath ( ) const {
+61: return mPath ;
+62: }
+63:
+|
+67:
+68: QString getParameters ( ) const {
+69: return mParameters ;
+70: }
+71:
+|
+75:
+76: void setName ( const QString & name ) {
+77: mName = name ;
+78: }
+79:
+|
+83:
+84: void setPath ( const QString & path ) {
+85: mPath = path ;
+86: }
+87:
+|
+91:
+92: void setParameters ( const QString & parameters ) {
+93: mParameters = parameters ;
+94: }
+95:
+96: private:
+97:
+|
+100:
+101: QString mName ;
+102:
+|
+105:
+106: QString mPath ;
+107:
+|
+110:
+111: QString mParameters ;
+112: } ;
+
+##file cppcheck-2.8/gui/applicationdialog.h
+
+1:
+|
+24:
+25: class QObject ;
+26: class QWidget ;
+27: class Application ;
+28: namespace Ui {
+29: class ApplicationDialog ;
+30: }
+31:
+|
+40:
+41: class ApplicationDialog : public QDialog {
+42: Q_OBJECT
+43:
+44: public:
+45:
+|
+50:
+51: ApplicationDialog ( const QString & title ,
+52: Application & app ,
+53: QWidget * parent = nullptr ) ;
+54: ~ ApplicationDialog ( ) override ;
+55:
+56: protected slots :
+57:
+58: void ok ( ) ;
+59:
+|
+63:
+64: void browse ( ) ;
+65:
+66: protected:
+67:
+|
+71:
+72: Ui :: ApplicationDialog * mUI ;
+73:
+74: private:
+75:
+|
+78:
+79: Application & mApplication ;
+80: } ;
+
+##file cppcheck-2.8/gui/applicationlist.h
+
+1:
+|
+32:
+33: class ApplicationList : public QObject {
+34: Q_OBJECT
+35: public:
+36:
+37: explicit ApplicationList ( QObject * parent = nullptr ) ;
+38: ~ ApplicationList ( ) override ;
+39:
+|
+46:
+47: bool loadSettings ( ) ;
+48:
+|
+51:
+52: void saveSettings ( ) const ;
+53:
+|
+57:
+58: int getApplicationCount ( ) const ;
+59:
+|
+65:
+66: const Application & getApplication ( const int index ) const ;
+67: Application & getApplication ( const int index ) ;
+68:
+|
+72:
+73: int getDefaultApplication ( ) const {
+74: return mDefaultApplicationIndex ;
+75: }
+76:
+|
+81:
+82: void addApplication ( const Application & app ) ;
+83:
+|
+88:
+89: void removeApplication ( const int index ) ;
+90:
+|
+94:
+95: void setDefault ( const int index ) ;
+96:
+|
+101:
+102: void copy ( const ApplicationList * list ) ;
+103:
+104: protected:
+105:
+|
+109:
+110: void clear ( ) ;
+111:
+|
+119:
+120: private:
+121:
+122: bool checkAndAddApplication ( const QString & appPath , const QString & name , const QString & parameters ) ;
+123:
+|
+127:
+128: QList < Application > mApplications ;
+129:
+|
+133:
+134: int mDefaultApplicationIndex ;
+135: } ;
+
+##file cppcheck-2.8/gui/codeeditorstyle.h
+
+1:
+|
+25:
+26: const QString SETTINGS_STYLE_GROUP ( "EditorStyle" ) ;
+27: const QString SETTINGS_STYLE_TYPE ( "StyleType" ) ;
+28: const QString SETTINGS_STYLE_TYPE_LIGHT ( "DefaultLight" ) ;
+29: const QString SETTINGS_STYLE_TYPE_DARK ( "DefaultDark" ) ;
+30: const QString SETTINGS_STYLE_TYPE_CUSTOM ( "Custom" ) ;
+31: const QString SETTINGS_STYLE_WIDGETFG ( "StyleWidgetFG" ) ;
+32: const QString SETTINGS_STYLE_WIDGETBG ( "StyleWidgetBG" ) ;
+33: const QString SETTINGS_STYLE_HILIFG ( "StyleHighlightFG" ) ;
+34: const QString SETTINGS_STYLE_LINENUMFG ( "StyleLineNumFG" ) ;
+35: const QString SETTINGS_STYLE_LINENUMBG ( "StyleLineNumBG" ) ;
+36: const QString SETTINGS_STYLE_KEYWORDFG ( "StyleKeywordFG" ) ;
+37: const QString SETTINGS_STYLE_KEYWORDWT ( "StyleKeywordWeight" ) ;
+38: const QString SETTINGS_STYLE_CLASSFG ( "StyleClassFG" ) ;
+39: const QString SETTINGS_STYLE_CLASSWT ( "StyleClassWeight" ) ;
+40: const QString SETTINGS_STYLE_QUOTEFG ( "StyleQuoteFG" ) ;
+41: const QString SETTINGS_STYLE_QUOTEWT ( "StyleQuoteWeight" ) ;
+42: const QString SETTINGS_STYLE_COMMENTFG ( "StyleCommentFG" ) ;
+43: const QString SETTINGS_STYLE_COMMENTWT ( "StyleCommentWeight" ) ;
+44: const QString SETTINGS_STYLE_SYMBOLFG ( "StyleSymbolFG" ) ;
+45: const QString SETTINGS_STYLE_SYMBOLBG ( "StyleSymbolBG" ) ;
+46: const QString SETTINGS_STYLE_SYMBOLWT ( "StyleSymbolWeight" ) ;
+47:
+48: class QSettings ;
+49:
+50: class CodeEditorStyle {
+51: public:
+52: explicit CodeEditorStyle (
+53: const QColor & CtrlFGColor , const QColor & CtrlBGColor ,
+54: const QColor & HiLiBGColor ,
+55: const QColor & LnNumFGColor , const QColor & LnNumBGColor ,
+56: const QColor & KeyWdFGColor , const QFont :: Weight & KeyWdWeight ,
+57: const QColor & ClsFGColor , const QFont :: Weight & ClsWeight ,
+58: const QColor & QteFGColor , const QFont :: Weight & QteWeight ,
+59: const QColor & CmtFGColor , const QFont :: Weight & CmtWeight ,
+60: const QColor & SymbFGColor , const QColor & SymbBGColor ,
+61: const QFont :: Weight & SymbWeight ) ;
+62: ~ CodeEditorStyle ( ) { }
+63:
+64: bool operator == ( const CodeEditorStyle & rhs ) const ;
+65: bool operator != ( const CodeEditorStyle & rhs ) const ;
+66:
+67: bool isSystemTheme ( ) const {
+68: return mSystemTheme ;
+69: }
+70:
+71: static CodeEditorStyle getSystemTheme ( ) ;
+72: static CodeEditorStyle loadSettings ( QSettings * settings ) ;
+73: static void saveSettings ( QSettings * settings , const CodeEditorStyle & theStyle ) ;
+74:
+75: public:
+76: bool mSystemTheme ;
+77: QColor widgetFGColor ;
+78: QColor widgetBGColor ;
+79: QColor highlightBGColor ;
+80: QColor lineNumFGColor ;
+81: QColor lineNumBGColor ;
+82: QColor keywordColor ;
+83: QFont :: Weight keywordWeight ;
+84: QColor classColor ;
+85: QFont :: Weight classWeight ;
+86: QColor quoteColor ;
+87: QFont :: Weight quoteWeight ;
+88: QColor commentColor ;
+89: QFont :: Weight commentWeight ;
+90: QColor symbolFGColor ;
+91: QColor symbolBGColor ;
+92: QFont :: Weight symbolWeight ;
+93: } ;
+94:
+95: static const CodeEditorStyle defaultStyleLight (
+96: Qt :: black , QColor ( 240 , 240 , 240 ) ,
+97: QColor ( 255 , 220 , 220 ) ,
+98: Qt :: black , QColor ( 240 , 240 , 240 ) ,
+99: Qt :: darkBlue , QFont :: Bold ,
+100: Qt :: darkMagenta , QFont :: Bold ,
+101: Qt :: darkGreen , QFont :: Normal ,
+102: Qt :: gray , QFont :: Normal ,
+103: Qt :: red , QColor ( 220 , 220 , 255 ) , QFont :: Normal
+104: ) ;
+105:
+106:
+107:
+108: static const CodeEditorStyle defaultStyleDark (
+109: QColor ( 218 , 218 , 218 ) , QColor ( 16 , 16 , 32 ) ,
+110: QColor ( 64 , 64 , 64 ) ,
+111: QColor ( 43 , 145 , 175 ) , QColor ( 16 , 16 , 32 ) ,
+112: QColor ( 0 , 204 , 204 ) , QFont :: Bold ,
+113: QColor ( 218 , 0 , 218 ) , QFont :: Bold ,
+114: QColor ( 0 , 204 , 0 ) , QFont :: Normal ,
+115: QColor ( 180 , 180 , 180 ) , QFont :: Normal ,
+116: QColor ( 218 , 32 , 32 ) , QColor ( 32 , 32 , 108 ) , QFont :: Normal
+117: ) ;
+
+##file cppcheck-2.8/gui/codeeditstyledialog.h
+
+1:
+|
+25:
+26: class CodeEditor ;
+27: class SelectColorButton ;
+28: class SelectFontWeightCombo ;
+29: class QObject ;
+30: class QPushButton ;
+31: class QWidget ;
+32:
+33: class StyleEditDialog : public QDialog {
+34: Q_OBJECT
+35: public:
+36: explicit StyleEditDialog ( const CodeEditorStyle & newStyle ,
+37: QWidget * parent = nullptr ) ;
+38: ~ StyleEditDialog ( ) override { }
+39:
+40: CodeEditorStyle getStyle ( ) ;
+41:
+42: private:
+43: void updateControls ( ) ;
+44: void updateStyle ( ) ;
+45:
+46: public slots :
+47: void resetStyle ( ) ;
+48: void setStyleDefaultLight ( ) ;
+49: void setStyleDefaultDark ( ) ;
+50: void colorChangedWidgetFG ( const QColor & newColor ) ;
+51: void colorChangedWidgetBG ( const QColor & newColor ) ;
+52: void colorChangedHighlightBG ( const QColor & newColor ) ;
+53: void colorChangedLineNumFG ( const QColor & newColor ) ;
+54: void colorChangedLineNumBG ( const QColor & newColor ) ;
+55: void colorChangedKeywordFG ( const QColor & newColor ) ;
+56: void weightChangedKeyword ( const QFont :: Weight & newWeight ) ;
+57: void colorChangedClassFG ( const QColor & newColor ) ;
+58: void weightChangedClass ( const QFont :: Weight & newWeight ) ;
+59: void colorChangedQuoteFG ( const QColor & newColor ) ;
+60: void weightChangedQuote ( const QFont :: Weight & newWeight ) ;
+61: void colorChangedCommentFG ( const QColor & newColor ) ;
+62: void weightChangedComment ( const QFont :: Weight & newWeight ) ;
+63: void colorChangedSymbolFG ( const QColor & newColor ) ;
+64: void colorChangedSymbolBG ( const QColor & newColor ) ;
+65: void weightChangedSymbol ( const QFont :: Weight & newWeight ) ;
+66:
+67: private:
+68: CodeEditorStyle mStyleIncoming ;
+69: CodeEditorStyle mStyleOutgoing ;
+70:
+71: CodeEditor * mSampleEditor ;
+72:
+73: SelectColorButton * mBtnWidgetColorFG ;
+74: SelectColorButton * mBtnWidgetColorBG ;
+75: SelectColorButton * mBtnHighlightBG ;
+76: SelectColorButton * mBtnLineNumFG ;
+77: SelectColorButton * mBtnLineNumBG ;
+78: SelectColorButton * mBtnKeywordFG ;
+79: SelectFontWeightCombo * mCBKeywordWeight ;
+80: SelectColorButton * mBtnClassFG ;
+81: SelectFontWeightCombo * mCBClassWeight ;
+82: SelectColorButton * mBtnQuoteFG ;
+83: SelectFontWeightCombo * mCBQuoteWeight ;
+84: SelectColorButton * mBtnCommentFG ;
+85: SelectFontWeightCombo * mCBCommentWeight ;
+86: SelectColorButton * mBtnSymbolFG ;
+87: SelectColorButton * mBtnSymbolBG ;
+88: SelectFontWeightCombo * mCBSymbolWeight ;
+89:
+90: QPushButton * mBtnDefaultLight ;
+91: QPushButton * mBtnDefaultDark ;
+92:
+93: static const QString mSampleDocument ;
+94: static const QStringList mErrSymbolsList ;
+95: static const int mErrLineNum ;
+96: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type , const QString & value ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters , bool addAllSupported = true , bool addAll = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/translationhandler.h
+
+1:
+|
+24:
+25: class QTranslator ;
+26:
+|
+33:
+34: struct TranslationInfo {
+35:
+|
+38:
+39: QString mName ;
+40:
+|
+44:
+45: QString mFilename ;
+46:
+|
+50:
+51: QString mCode ;
+52: } ;
+53:
+|
+60:
+61: class TranslationHandler : QObject {
+62: Q_OBJECT
+63: public:
+64: explicit TranslationHandler ( QObject * parent = nullptr ) ;
+65: ~ TranslationHandler ( ) override ;
+66:
+|
+71:
+72: QList < TranslationInfo > getTranslations ( ) const {
+73: return mTranslations ;
+74: }
+75:
+|
+81:
+82: bool setLanguage ( const QString & code ) ;
+83:
+|
+88:
+89: QString getCurrentLanguage ( ) const ;
+90:
+|
+98:
+99: QString suggestLanguage ( ) const ;
+100:
+101: protected:
+102:
+|
+108:
+109: void addTranslation ( const char * name , const char * filename ) ;
+110:
+|
+116:
+117: int getLanguageIndexByCode ( const QString & code ) const ;
+118:
+119: private:
+120:
+|
+124:
+125: QString mCurrentLanguage ;
+126:
+|
+130:
+131: QList < TranslationInfo > mTranslations ;
+132:
+|
+136:
+137: QTranslator * mTranslator ;
+138: } ;
+
+##file cppcheck-2.8/gui/settingsdialog.cpp
+
+1:
+|
+37:
+38: SettingsDialog :: SettingsDialog ( ApplicationList * list ,
+39: TranslationHandler * translator ,
+40: QWidget * parent ) :
+41: QDialog ( parent ) ,
+42: mApplications ( list ) ,
+43: mTempApplications ( new ApplicationList ( this ) ) ,
+44: mTranslator ( translator ) ,
+45: mUI ( new Ui :: Settings )
+46: {
+47: mUI . setupUi ( this ) ;
+48: mUI . mPythonPathWarning . setStyleSheet ( "color: red" ) ;
+49: QSettings settings ;
+50: mTempApplications . copy ( list ) ;
+51:
+52: mUI . mJobs . setText ( settings . value ( $"Check threads" , 1 ) . toString ( ) ) ;
+53: mUI . mForce . setCheckState ( boolToCheckState ( settings . value ( $"Check force" , false ) . toBool ( ) ) ) ;
+54: mUI . mShowFullPath . setCheckState ( boolToCheckState ( settings . value ( $"Show full path" , false ) . toBool ( ) ) ) ;
+55: mUI . mShowNoErrorsMessage . setCheckState ( boolToCheckState ( settings . value ( $"Show no errors message" , false ) . toBool ( ) ) ) ;
+56: mUI . mShowDebugWarnings . setCheckState ( boolToCheckState ( settings . value ( $"Show debug warnings" , false ) . toBool ( ) ) ) ;
+57: mUI . mSaveAllErrors . setCheckState ( boolToCheckState ( settings . value ( $"Save all errors" , false ) . toBool ( ) ) ) ;
+58: mUI . mSaveFullPath . setCheckState ( boolToCheckState ( settings . value ( $"Save full path" , false ) . toBool ( ) ) ) ;
+59: mUI . mInlineSuppressions . setCheckState ( boolToCheckState ( settings . value ( $"Inline suppressions" , false ) . toBool ( ) ) ) ;
+60: mUI . mEnableInconclusive . setCheckState ( boolToCheckState ( settings . value ( $"Inconclusive errors" , false ) . toBool ( ) ) ) ;
+61: mUI . mShowStatistics . setCheckState ( boolToCheckState ( settings . value ( $"Show statistics" , false ) . toBool ( ) ) ) ;
+62: mUI . mShowErrorId . setCheckState ( boolToCheckState ( settings . value ( $"Show error Id" , false ) . toBool ( ) ) ) ;
+63: mUI . mEditPythonPath . setText ( settings . value ( $"Python path" , QString ( ) ) . toString ( ) ) ;
+64: validateEditPythonPath ( ) ;
+65: mUI . mEditMisraFile . setText ( settings . value ( $"MISRA C 2012 file" , QString ( ) ) . toString ( ) ) ;
+66:
+|
+72:
+73: mUI . mTabClang . setVisible ( false ) ;
+74:
+75: mCurrentStyle = new CodeEditorStyle ( CodeEditorStyle :: loadSettings ( & settings ) ) ;
+76: manageStyleControls ( ) ;
+77:
+78: connect ( mUI . mEditPythonPath , SIGNAL ( textEdited ( const QString & ) ) ,
+79: this , SLOT ( validateEditPythonPath ( ) ) ) ;
+80:
+81: connect ( mUI . mButtons , & QDialogButtonBox :: accepted , this , & SettingsDialog :: ok ) ;
+82: connect ( mUI . mButtons , & QDialogButtonBox :: rejected , this , & SettingsDialog :: reject ) ;
+83: connect ( mUI . mBtnAddApplication , SIGNAL ( clicked ( ) ) ,
+84: this , SLOT ( addApplication ( ) ) ) ;
+85: connect ( mUI . mBtnRemoveApplication , SIGNAL ( clicked ( ) ) ,
+86: this , SLOT ( removeApplication ( ) ) ) ;
+87: connect ( mUI . mBtnEditApplication , SIGNAL ( clicked ( ) ) ,
+88: this , SLOT ( editApplication ( ) ) ) ;
+89: connect ( mUI . mBtnDefaultApplication , SIGNAL ( clicked ( ) ) ,
+90: this , SLOT ( defaultApplication ( ) ) ) ;
+91: connect ( mUI . mListWidget , SIGNAL ( itemDoubleClicked ( QListWidgetItem * ) ) ,
+92: this , SLOT ( editApplication ( ) ) ) ;
+93:
+94: connect ( mUI . mBtnBrowsePythonPath , & QPushButton :: clicked , this , & SettingsDialog :: browsePythonPath ) ;
+95: connect ( mUI . mBtnBrowseMisraFile , & QPushButton :: clicked , this , & SettingsDialog :: browseMisraFile ) ;
+96: connect ( mUI . mBtnEditTheme , SIGNAL ( clicked ( ) ) , this , SLOT ( editCodeEditorStyle ( ) ) ) ;
+97: connect ( mUI . mThemeSystem , SIGNAL ( released ( ) ) , this , SLOT ( setCodeEditorStyleDefault ( ) ) ) ;
+98: connect ( mUI . mThemeDark , SIGNAL ( released ( ) ) , this , SLOT ( setCodeEditorStyleDefault ( ) ) ) ;
+99: connect ( mUI . mThemeLight , SIGNAL ( released ( ) ) , this , SLOT ( setCodeEditorStyleDefault ( ) ) ) ;
+100: connect ( mUI . mThemeCustom , SIGNAL ( toggled ( bool ) ) , mUI . mBtnEditTheme , SLOT ( setEnabled ( bool ) ) ) ;
+101:
+102: mUI . mListWidget . setSortingEnabled ( false ) ;
+103: populateApplicationList ( ) ;
+104:
+105: const int count = QThread :: idealThreadCount ( ) ;
+106: if ( count != -1 ) {
+107: mUI . mLblIdealThreads . setText ( QString :: number ( count ) ) ; }
+108: else {
+109: mUI . mLblIdealThreads . setText ( tr ( "N/A" ) ) ; }
+110:
+111: loadSettings ( ) ;
+112: initTranslationsList ( ) ;
+113: }
+114:
+115: SettingsDialog :: ~ SettingsDialog ( )
+116: {
+117: saveSettings ( ) ;
+118: delete mUI ;
+119: }
+120:
+121: void SettingsDialog :: initTranslationsList ( )
+122: {
+123: const QString current = mTranslator . getCurrentLanguage ( ) ;
+124: for ( const TranslationInfo & translation : mTranslator . getTranslations ( ) ) {
+125: QListWidgetItem * item ; item = new QListWidgetItem ;
+126: item . setText ( translation . mName ) ;
+127: item . setData ( mLangCodeRole , QVariant ( translation . mCode ) ) ;
+128: mUI . mListLanguages . addItem ( item ) ;
+129: if ( translation . mCode == current || translation . mCode == current . mid ( 0 , 2 ) ) {
+130: mUI . mListLanguages . setCurrentItem ( item ) ; }
+131: }
+132: }
+133:
+134: Qt :: CheckState SettingsDialog :: boolToCheckState ( bool yes )
+135: {
+136: if ( yes ) {
+137: return Qt :: Checked ;
+138: }
+139: return Qt :: Unchecked ;
+140: }
+141:
+142: bool SettingsDialog :: checkStateToBool ( Qt :: CheckState state )
+143: {
+144: if ( state == Qt :: Checked ) {
+145: return true ;
+146: }
+147: return false ;
+148: }
+149:
+150:
+151: void SettingsDialog :: loadSettings ( )
+152: {
+153: QSettings settings ;
+154: resize ( settings . value ( $"Check dialog width" , 800 ) . toInt ( ) ,
+155: settings . value ( $"Check dialog height" , 600 ) . toInt ( ) ) ;
+156: }
+157:
+158: void SettingsDialog :: saveSettings ( ) const
+159: {
+160: QSettings settings ;
+161: settings . setValue ( $"Check dialog width" , size ( ) . width ( ) ) ;
+162: settings . setValue ( $"Check dialog height" , size ( ) . height ( ) ) ;
+163: }
+164:
+165: void SettingsDialog :: saveSettingValues ( ) const
+166: {
+167: int jobs ; jobs = mUI . mJobs . text ( ) . toInt ( ) ;
+168: if ( jobs <= 0 ) {
+169: jobs = 1 ;
+170: }
+171:
+172: QSettings settings ;
+173: settings . setValue ( $"Check threads" , jobs ) ;
+174: saveCheckboxValue ( & settings , mUI . mForce , $"Check force" ) ;
+175: saveCheckboxValue ( & settings , mUI . mSaveAllErrors , $"Save all errors" ) ;
+176: saveCheckboxValue ( & settings , mUI . mSaveFullPath , $"Save full path" ) ;
+177: saveCheckboxValue ( & settings , mUI . mShowFullPath , $"Show full path" ) ;
+178: saveCheckboxValue ( & settings , mUI . mShowNoErrorsMessage , $"Show no errors message" ) ;
+179: saveCheckboxValue ( & settings , mUI . mShowDebugWarnings , $"Show debug warnings" ) ;
+180: saveCheckboxValue ( & settings , mUI . mInlineSuppressions , $"Inline suppressions" ) ;
+181: saveCheckboxValue ( & settings , mUI . mEnableInconclusive , $"Inconclusive errors" ) ;
+182: saveCheckboxValue ( & settings , mUI . mShowStatistics , $"Show statistics" ) ;
+183: saveCheckboxValue ( & settings , mUI . mShowErrorId , $"Show error Id" ) ;
+184: settings . setValue ( $"Python path" , mUI . mEditPythonPath . text ( ) ) ;
+185: settings . setValue ( $"MISRA C 2012 file" , mUI . mEditMisraFile . text ( ) ) ;
+186:
+|
+191:
+192: const QListWidgetItem * currentLang ; currentLang = mUI . mListLanguages . currentItem ( ) ;
+193: if ( currentLang ) {
+194: const QString langcode = currentLang . data ( mLangCodeRole ) . toString ( ) ;
+195: settings . setValue ( $"Application language" , langcode ) ;
+196: }
+197: CodeEditorStyle :: saveSettings ( & settings , * mCurrentStyle ) ;
+198: }
+199:
+200: void SettingsDialog :: saveCheckboxValue ( QSettings * settings , QCheckBox * box ,
+201: const QString & name )
+202: {
+203: settings . setValue ( name , checkStateToBool ( box . checkState ( ) ) ) ;
+204: }
+205:
+206: void SettingsDialog :: validateEditPythonPath ( )
+207: {
+208: const auto pythonPath = mUI . mEditPythonPath . text ( ) ;
+209: if ( pythonPath . isEmpty ( ) ) {
+210: mUI . mEditPythonPath . setStyleSheet ( "" ) ;
+211: mUI . mPythonPathWarning . hide ( ) ;
+212: return ;
+213: }
+214:
+215: QFileInfo pythonPathInfo ( pythonPath ) ;
+216: if ( ! pythonPathInfo . exists ( ) ||
+217: ! pythonPathInfo . isFile ( ) ||
+218: ! pythonPathInfo . isExecutable ( ) ) {
+219: mUI . mEditPythonPath . setStyleSheet ( "QLineEdit {border: 1px solid red}" ) ;
+220: mUI . mPythonPathWarning . setText ( tr ( "The executable file \"%1\" is not available" ) . arg ( pythonPath ) ) ;
+221: mUI . mPythonPathWarning . show ( ) ;
+222: } else {
+223: mUI . mEditPythonPath . setStyleSheet ( "" ) ;
+224: mUI . mPythonPathWarning . hide ( ) ;
+225: }
+226: }
+227:
+228: void SettingsDialog :: addApplication ( )
+229: {
+230: Application app ;
+231: ApplicationDialog dialog ( tr ( "Add a new application" ) , app , this ) ;
+232:
+233: if ( dialog . exec ( ) == QDialog :: Accepted ) {
+234: mTempApplications . addApplication ( app ) ;
+235: mUI . mListWidget . addItem ( app . getName ( ) ) ;
+236: }
+237: }
+238:
+239: void SettingsDialog :: removeApplication ( )
+240: {
+241: for ( QListWidgetItem * item : mUI . mListWidget . selectedItems ( ) ) {
+242: const int removeIndex = mUI . mListWidget . row ( item ) ;
+243: const int currentDefault = mTempApplications . getDefaultApplication ( ) ;
+244: mTempApplications . removeApplication ( removeIndex ) ;
+245: if ( removeIndex == currentDefault ) {
+246:
+247: mTempApplications . setDefault ( -1 ) ; }
+248: else if ( removeIndex < currentDefault ) {
+249:
+250: mTempApplications . setDefault ( currentDefault - 1 ) ; }
+251: }
+252: mUI . mListWidget . clear ( ) ;
+253: populateApplicationList ( ) ;
+254: }
+255:
+256: void SettingsDialog :: editApplication ( )
+257: {
+258: for ( QListWidgetItem * item : mUI . mListWidget . selectedItems ( ) ) {
+259: int row ; row = mUI . mListWidget . row ( item ) ;
+260: Application & app = mTempApplications . getApplication ( row ) ;
+261: ApplicationDialog dialog ( tr ( "Modify an application" ) , app , this ) ;
+262:
+263: if ( dialog . exec ( ) == QDialog :: Accepted ) {
+264: QString name ; name = app . getName ( ) ;
+265: if ( mTempApplications . getDefaultApplication ( ) == row ) {
+266: name += tr ( " [Default]" ) ; }
+267: item . setText ( name ) ;
+268: }
+269: }
+270: }
+271:
+272: void SettingsDialog :: defaultApplication ( )
+273: {
+274: QList < QListWidgetItem * > selected ; selected = mUI . mListWidget . selectedItems ( ) ;
+275: if ( ! selected . isEmpty ( ) ) {
+276: int index ; index = mUI . mListWidget . row ( selected [ 0 ] ) ;
+277: mTempApplications . setDefault ( index ) ;
+278: mUI . mListWidget . clear ( ) ;
+279: populateApplicationList ( ) ;
+280: }
+281: }
+282:
+283: void SettingsDialog :: populateApplicationList ( )
+284: {
+285: const int defapp = mTempApplications . getDefaultApplication ( ) ;
+286: for ( int i = 0 ; i < mTempApplications . getApplicationCount ( ) ; i ++ ) {
+287: const Application & app = mTempApplications . getApplication ( i ) ;
+288: QString name ; name = app . getName ( ) ;
+289: if ( i == defapp ) {
+290: name += " " ;
+291: name += tr ( "[Default]" ) ;
+292: }
+293: mUI . mListWidget . addItem ( name ) ;
+294: }
+295:
+296:
+297:
+298: if ( defapp == -1 ) {
+299: mUI . mListWidget . setCurrentRow ( 0 ) ; }
+300: else {
+301: if ( mTempApplications . getApplicationCount ( ) > defapp ) {
+302: mUI . mListWidget . setCurrentRow ( defapp ) ; }
+303: else {
+304: mUI . mListWidget . setCurrentRow ( 0 ) ; }
+305: }
+306: }
+307:
+308: void SettingsDialog :: ok ( )
+309: {
+310: mApplications . copy ( mTempApplications ) ;
+311: accept ( ) ;
+312: }
+313:
+314: bool SettingsDialog :: showFullPath ( ) const
+315: {
+316: return checkStateToBool ( mUI . mShowFullPath . checkState ( ) ) ;
+317: }
+318:
+319: bool SettingsDialog :: saveFullPath ( ) const
+320: {
+321: return checkStateToBool ( mUI . mSaveFullPath . checkState ( ) ) ;
+322: }
+323:
+324: bool SettingsDialog :: saveAllErrors ( ) const
+325: {
+326: return checkStateToBool ( mUI . mSaveAllErrors . checkState ( ) ) ;
+327: }
+328:
+329: bool SettingsDialog :: showNoErrorsMessage ( ) const
+330: {
+331: return checkStateToBool ( mUI . mShowNoErrorsMessage . checkState ( ) ) ;
+332: }
+333:
+334: bool SettingsDialog :: showErrorId ( ) const
+335: {
+336: return checkStateToBool ( mUI . mShowErrorId . checkState ( ) ) ;
+337: }
+338:
+339: bool SettingsDialog :: showInconclusive ( ) const
+340: {
+341: return checkStateToBool ( mUI . mEnableInconclusive . checkState ( ) ) ;
+342: }
+343:
+344: void SettingsDialog :: browsePythonPath ( )
+345: {
+346: QString fileName ; fileName = QFileDialog :: getOpenFileName ( this , tr ( "Select python binary" ) , QDir :: rootPath ( ) ) ;
+347: if ( fileName . contains ( "python" , Qt :: CaseInsensitive ) ) {
+348: mUI . mEditPythonPath . setText ( fileName ) ; }
+349: }
+350:
+351: void SettingsDialog :: browseMisraFile ( )
+352: {
+353: const QString fileName = QFileDialog :: getOpenFileName ( this , tr ( "Select MISRA File" ) , QDir :: homePath ( ) , "Misra File (*.pdf *.txt)" ) ;
+354: if ( ! fileName . isEmpty ( ) ) {
+355: mUI . mEditMisraFile . setText ( fileName ) ; }
+356: }
+357:
+358:
+359: void SettingsDialog :: setCodeEditorStyleDefault ( )
+360: {
+361: if ( mUI . mThemeSystem . isChecked ( ) ) {
+362: * mCurrentStyle = CodeEditorStyle :: getSystemTheme ( ) ; }
+363: if ( mUI . mThemeLight . isChecked ( ) ) {
+364: * mCurrentStyle = defaultStyleLight ; }
+365: if ( mUI . mThemeDark . isChecked ( ) ) {
+366: * mCurrentStyle = defaultStyleDark ; }
+367: manageStyleControls ( ) ;
+368: }
+369:
+370:
+371: void SettingsDialog :: editCodeEditorStyle ( )
+372: {
+373: StyleEditDialog dlg ( * mCurrentStyle , this ) ;
+374: int nResult ; nResult = dlg . exec ( ) ;
+375: if ( nResult == QDialog :: Accepted ) {
+376: * mCurrentStyle = dlg . getStyle ( ) ;
+377: manageStyleControls ( ) ;
+378: }
+379: }
+380:
+381: void SettingsDialog :: browseClangPath ( )
+382: {
+383: QString selectedDir ; selectedDir = QFileDialog :: getExistingDirectory ( this ,
+384: tr ( "Select clang path" ) ,
+385: QDir :: rootPath ( ) ) ;
+386:
+387: if ( ! selectedDir . isEmpty ( ) ) {
+388: mUI . mEditClangPath . setText ( selectedDir ) ;
+389: }
+390: }
+391:
+392: void SettingsDialog :: manageStyleControls ( )
+393: {
+394: bool isSystemTheme ; isSystemTheme = mCurrentStyle . isSystemTheme ( ) ;
+395: bool isDefaultLight ; isDefaultLight = ! isSystemTheme && * mCurrentStyle == defaultStyleLight ;
+396: bool isDefaultDark ; isDefaultDark = ! isSystemTheme && * mCurrentStyle == defaultStyleDark ;
+397: mUI . mThemeSystem . setChecked ( isSystemTheme ) ;
+398: mUI . mThemeLight . setChecked ( isDefaultLight && ! isDefaultDark ) ;
+399: mUI . mThemeDark . setChecked ( ! isDefaultLight && isDefaultDark ) ;
+400: mUI . mThemeCustom . setChecked ( ! isSystemTheme && ! isDefaultLight && ! isDefaultDark ) ;
+401: mUI . mBtnEditTheme . setEnabled ( ! isSystemTheme && ! isDefaultLight && ! isDefaultDark ) ;
+402: }
+
+
+
+##Value flow

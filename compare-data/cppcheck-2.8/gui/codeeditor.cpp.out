@@ -1,0 +1,655 @@
+
+
+##file cppcheck-2.8/gui/codeeditor.h
+
+1:
+|
+25:
+26: class CodeEditorStyle ;
+27: class QObject ;
+28: class QPaintEvent ;
+29: class QRect ;
+30: class QResizeEvent ;
+31: class QTextDocument ;
+32:
+33: class Highlighter : public QSyntaxHighlighter {
+34: Q_OBJECT
+35:
+36: public:
+37: explicit Highlighter ( QTextDocument * parent ,
+38: CodeEditorStyle * widgetStyle ) ;
+39:
+40: void setSymbols ( const QStringList & symbols ) ;
+41:
+42: void setStyle ( const CodeEditorStyle & newStyle ) ;
+43:
+44: protected:
+45: void highlightBlock ( const QString & text ) override ;
+46:
+47: private:
+48: enum RuleRole {
+49: Keyword = 1 ,
+50: Class = 2 ,
+51: Comment = 3 ,
+52: Quote = 4 ,
+53: Symbol = 5
+54: } ;
+55: struct HighlightingRule {
+56: QRegularExpression pattern ;
+57: QTextCharFormat format ;
+58: RuleRole ruleRole ;
+59: } ;
+60:
+61: void applyFormat ( HighlightingRule & rule ) ;
+62:
+63: QVector < HighlightingRule > mHighlightingRules ;
+64: QVector < HighlightingRule > mHighlightingRulesWithSymbols ;
+65:
+66: QRegularExpression mCommentStartExpression ;
+67: QRegularExpression mCommentEndExpression ;
+68:
+69: QTextCharFormat mKeywordFormat ;
+70: QTextCharFormat mClassFormat ;
+71: QTextCharFormat mSingleLineCommentFormat ;
+72: QTextCharFormat mMultiLineCommentFormat ;
+73: QTextCharFormat mQuotationFormat ;
+74: QTextCharFormat mSymbolFormat ;
+75:
+76: CodeEditorStyle * mWidgetStyle ;
+77: } ;
+78:
+79: class CodeEditor : public QPlainTextEdit {
+80: Q_OBJECT
+81:
+82: public:
+83: explicit CodeEditor ( QWidget * parent ) ;
+84: CodeEditor ( const CodeEditor & ) = delete ;
+85: CodeEditor & operator = ( const CodeEditor & ) = delete ;
+86: ~ CodeEditor ( ) override ;
+87:
+88: void lineNumberAreaPaintEvent ( QPaintEvent * event ) ;
+89: int lineNumberAreaWidth ( ) ;
+90: void setStyle ( const CodeEditorStyle & newStyle ) ;
+91:
+|
+97:
+98: void setError ( const QString & code , int errorLine , const QStringList & symbols ) ;
+99:
+|
+104:
+105: void setError ( int errorLine , const QStringList & symbols ) ;
+106:
+107: void setFileName ( const QString & fileName ) {
+108: mFileName = fileName ;
+109: }
+110:
+111: QString getFileName ( ) const {
+112: return mFileName ;
+113: }
+114:
+115: void clear ( ) {
+116: mFileName . clear ( ) ;
+117: setPlainText ( QString ( ) ) ;
+118: }
+119:
+120: protected:
+121: void resizeEvent ( QResizeEvent * event ) override ;
+122:
+123: private slots :
+124: void updateLineNumberAreaWidth ( int newBlockCount ) ;
+125: void highlightErrorLine ( ) ;
+126: void updateLineNumberArea ( const QRect & , int ) ;
+127:
+128: private:
+129: QString generateStyleString ( ) ;
+130:
+131: private:
+132: QWidget * mLineNumberArea ;
+133: Highlighter * mHighlighter ;
+134: CodeEditorStyle * mWidgetStyle ;
+135: int mErrorPosition ;
+136: QString mFileName ;
+137: } ;
+138:
+139:
+140: class LineNumberArea : public QWidget {
+141: public:
+142: explicit LineNumberArea ( CodeEditor * editor ) : QWidget ( editor ) {
+143: mCodeEditor = editor ;
+144: }
+145:
+146: QSize sizeHint ( ) const override {
+147: return QSize ( mCodeEditor . lineNumberAreaWidth ( ) , 0 ) ;
+148: }
+149:
+150: protected:
+151: void paintEvent ( QPaintEvent * event ) override {
+152: mCodeEditor . lineNumberAreaPaintEvent ( event ) ;
+153: }
+154:
+155: private:
+156: CodeEditor * mCodeEditor ;
+157: } ;
+
+##file cppcheck-2.8/gui/codeeditorstyle.h
+
+1:
+|
+25:
+26: const QString SETTINGS_STYLE_GROUP ( "EditorStyle" ) ;
+27: const QString SETTINGS_STYLE_TYPE ( "StyleType" ) ;
+28: const QString SETTINGS_STYLE_TYPE_LIGHT ( "DefaultLight" ) ;
+29: const QString SETTINGS_STYLE_TYPE_DARK ( "DefaultDark" ) ;
+30: const QString SETTINGS_STYLE_TYPE_CUSTOM ( "Custom" ) ;
+31: const QString SETTINGS_STYLE_WIDGETFG ( "StyleWidgetFG" ) ;
+32: const QString SETTINGS_STYLE_WIDGETBG ( "StyleWidgetBG" ) ;
+33: const QString SETTINGS_STYLE_HILIFG ( "StyleHighlightFG" ) ;
+34: const QString SETTINGS_STYLE_LINENUMFG ( "StyleLineNumFG" ) ;
+35: const QString SETTINGS_STYLE_LINENUMBG ( "StyleLineNumBG" ) ;
+36: const QString SETTINGS_STYLE_KEYWORDFG ( "StyleKeywordFG" ) ;
+37: const QString SETTINGS_STYLE_KEYWORDWT ( "StyleKeywordWeight" ) ;
+38: const QString SETTINGS_STYLE_CLASSFG ( "StyleClassFG" ) ;
+39: const QString SETTINGS_STYLE_CLASSWT ( "StyleClassWeight" ) ;
+40: const QString SETTINGS_STYLE_QUOTEFG ( "StyleQuoteFG" ) ;
+41: const QString SETTINGS_STYLE_QUOTEWT ( "StyleQuoteWeight" ) ;
+42: const QString SETTINGS_STYLE_COMMENTFG ( "StyleCommentFG" ) ;
+43: const QString SETTINGS_STYLE_COMMENTWT ( "StyleCommentWeight" ) ;
+44: const QString SETTINGS_STYLE_SYMBOLFG ( "StyleSymbolFG" ) ;
+45: const QString SETTINGS_STYLE_SYMBOLBG ( "StyleSymbolBG" ) ;
+46: const QString SETTINGS_STYLE_SYMBOLWT ( "StyleSymbolWeight" ) ;
+47:
+48: class QSettings ;
+49:
+50: class CodeEditorStyle {
+51: public:
+52: explicit CodeEditorStyle (
+53: const QColor & CtrlFGColor , const QColor & CtrlBGColor ,
+54: const QColor & HiLiBGColor ,
+55: const QColor & LnNumFGColor , const QColor & LnNumBGColor ,
+56: const QColor & KeyWdFGColor , const QFont :: Weight & KeyWdWeight ,
+57: const QColor & ClsFGColor , const QFont :: Weight & ClsWeight ,
+58: const QColor & QteFGColor , const QFont :: Weight & QteWeight ,
+59: const QColor & CmtFGColor , const QFont :: Weight & CmtWeight ,
+60: const QColor & SymbFGColor , const QColor & SymbBGColor ,
+61: const QFont :: Weight & SymbWeight ) ;
+62: ~ CodeEditorStyle ( ) { }
+63:
+64: bool operator == ( const CodeEditorStyle & rhs ) const ;
+65: bool operator != ( const CodeEditorStyle & rhs ) const ;
+66:
+67: bool isSystemTheme ( ) const {
+68: return mSystemTheme ;
+69: }
+70:
+71: static CodeEditorStyle getSystemTheme ( ) ;
+72: static CodeEditorStyle loadSettings ( QSettings * settings ) ;
+73: static void saveSettings ( QSettings * settings , const CodeEditorStyle & theStyle ) ;
+74:
+75: public:
+76: bool mSystemTheme ;
+77: QColor widgetFGColor ;
+78: QColor widgetBGColor ;
+79: QColor highlightBGColor ;
+80: QColor lineNumFGColor ;
+81: QColor lineNumBGColor ;
+82: QColor keywordColor ;
+83: QFont :: Weight keywordWeight ;
+84: QColor classColor ;
+85: QFont :: Weight classWeight ;
+86: QColor quoteColor ;
+87: QFont :: Weight quoteWeight ;
+88: QColor commentColor ;
+89: QFont :: Weight commentWeight ;
+90: QColor symbolFGColor ;
+91: QColor symbolBGColor ;
+92: QFont :: Weight symbolWeight ;
+93: } ;
+94:
+95: static const CodeEditorStyle defaultStyleLight (
+96: Qt :: black , QColor ( 240 , 240 , 240 ) ,
+97: QColor ( 255 , 220 , 220 ) ,
+98: Qt :: black , QColor ( 240 , 240 , 240 ) ,
+99: Qt :: darkBlue , QFont :: Bold ,
+100: Qt :: darkMagenta , QFont :: Bold ,
+101: Qt :: darkGreen , QFont :: Normal ,
+102: Qt :: gray , QFont :: Normal ,
+103: Qt :: red , QColor ( 220 , 220 , 255 ) , QFont :: Normal
+104: ) ;
+105:
+106:
+107:
+108: static const CodeEditorStyle defaultStyleDark (
+109: QColor ( 218 , 218 , 218 ) , QColor ( 16 , 16 , 32 ) ,
+110: QColor ( 64 , 64 , 64 ) ,
+111: QColor ( 43 , 145 , 175 ) , QColor ( 16 , 16 , 32 ) ,
+112: QColor ( 0 , 204 , 204 ) , QFont :: Bold ,
+113: QColor ( 218 , 0 , 218 ) , QFont :: Bold ,
+114: QColor ( 0 , 204 , 0 ) , QFont :: Normal ,
+115: QColor ( 180 , 180 , 180 ) , QFont :: Normal ,
+116: QColor ( 218 , 32 , 32 ) , QColor ( 32 , 32 , 108 ) , QFont :: Normal
+117: ) ;
+
+##file cppcheck-2.8/gui/codeeditor.cpp
+
+1:
+|
+25:
+26: class QTextDocument ;
+27:
+28:
+29: Highlighter :: Highlighter ( QTextDocument * parent ,
+30: CodeEditorStyle * widgetStyle ) :
+31: QSyntaxHighlighter ( parent ) ,
+32: mWidgetStyle ( widgetStyle )
+33: {
+34: HighlightingRule rule ;
+35:
+36: mKeywordFormat . setForeground ( mWidgetStyle . keywordColor ) ;
+37: mKeywordFormat . setFontWeight ( mWidgetStyle . keywordWeight ) ;
+38: QStringList keywordPatterns ;
+39: keywordPatterns << "alignas"
+40: << "alignof"
+41: << "asm"
+42: << "auto"
+43: << "bool"
+44: << "break"
+45: << "case"
+46: << "catch"
+47: << "char"
+48: << "char8_­t"
+49: << "char16_­t"
+50: << "char32_­t"
+51: << "class"
+52: << "concept"
+53: << "const"
+54: << "consteval"
+55: << "constexpr"
+56: << "constinit"
+57: << "const_­cast"
+58: << "continue"
+59: << "co_­await"
+60: << "co_­return"
+61: << "co_­yield"
+62: << "decltype"
+63: << "default"
+64: << "delete"
+65: << "do"
+66: << "double"
+67: << "dynamic_­cast"
+68: << "else"
+69: << "enum"
+70: << "explicit"
+71: << "export"
+72: << "extern"
+73: << "false"
+74: << "final"
+75: << "float"
+76: << "for"
+77: << "friend"
+78: << "goto"
+79: << "if"
+80: << "import"
+81: << "inline"
+82: << "int"
+83: << "long"
+84: << "module"
+85: << "mutable"
+86: << "namespace"
+87: << "new"
+88: << "noexcept"
+89: << "nullptr"
+90: << "operator"
+91: << "override"
+92: << "private"
+93: << "protected"
+94: << "public"
+95: << "reinterpret_­cast"
+96: << "requires"
+97: << "return"
+98: << "short"
+99: << "signed"
+100: << "static"
+101: << "static_­assert"
+102: << "static_­cast"
+103: << "struct"
+104: << "switch"
+105: << "template"
+106: << "this"
+107: << "thread_­local"
+108: << "throw"
+109: << "true"
+110: << "try"
+111: << "typedef"
+112: << "typeid"
+113: << "typename"
+114: << "union"
+115: << "unsigned"
+116: << "virtual"
+117: << "void"
+118: << "volatile"
+119: << "wchar_­t"
+120: << "while" ;
+121: for ( const QString & pattern : keywordPatterns ) {
+122: rule . pattern = QRegularExpression ( "\\b" + pattern + "\\b" ) ;
+123: rule . format = mKeywordFormat ;
+124: rule . ruleRole = RuleRole :: Keyword ;
+125: mHighlightingRules . append ( rule ) ;
+126: }
+127:
+128: mClassFormat . setForeground ( mWidgetStyle . classColor ) ;
+129: mClassFormat . setFontWeight ( mWidgetStyle . classWeight ) ;
+130: rule . pattern = QRegularExpression ( "\\bQ[A-Za-z]+\\b" ) ;
+131: rule . format = mClassFormat ;
+132: rule . ruleRole = RuleRole :: Class ;
+133: mHighlightingRules . append ( rule ) ;
+134:
+135: mQuotationFormat . setForeground ( mWidgetStyle . quoteColor ) ;
+136: mQuotationFormat . setFontWeight ( mWidgetStyle . quoteWeight ) ;
+137:
+138:
+139: rule . pattern = QRegularExpression ( "\".*?(?<!\\\\)\"" ) ;
+140: rule . format = mQuotationFormat ;
+141: rule . ruleRole = RuleRole :: Quote ;
+142: mHighlightingRules . append ( rule ) ;
+143:
+144: mSingleLineCommentFormat . setForeground ( mWidgetStyle . commentColor ) ;
+145: mSingleLineCommentFormat . setFontWeight ( mWidgetStyle . commentWeight ) ;
+146: rule . pattern = QRegularExpression ( "//[^\n]*" ) ;
+147: rule . format = mSingleLineCommentFormat ;
+148: rule . ruleRole = RuleRole :: Comment ;
+149: mHighlightingRules . append ( rule ) ;
+150:
+151: mHighlightingRulesWithSymbols = mHighlightingRules ;
+152:
+153: mMultiLineCommentFormat . setForeground ( mWidgetStyle . commentColor ) ;
+154: mMultiLineCommentFormat . setFontWeight ( mWidgetStyle . commentWeight ) ;
+155:
+156: mSymbolFormat . setForeground ( mWidgetStyle . symbolFGColor ) ;
+157: mSymbolFormat . setBackground ( mWidgetStyle . symbolBGColor ) ;
+158: mSymbolFormat . setFontWeight ( mWidgetStyle . symbolWeight ) ;
+159:
+160: mCommentStartExpression = QRegularExpression ( "/\\*" ) ;
+161: mCommentEndExpression = QRegularExpression ( "\\*/" ) ;
+162: }
+163:
+164: void Highlighter :: setSymbols ( const QStringList & symbols )
+165: {
+166: mHighlightingRulesWithSymbols = mHighlightingRules ;
+167: for ( const QString & sym : symbols ) {
+168: HighlightingRule rule ;
+169: rule . pattern = QRegularExpression ( "\\b" + sym + "\\b" ) ;
+170: rule . format = mSymbolFormat ;
+171: rule . ruleRole = RuleRole :: Symbol ;
+172: mHighlightingRulesWithSymbols . append ( rule ) ;
+173: }
+174: }
+175:
+176: void Highlighter :: setStyle ( const CodeEditorStyle & newStyle )
+177: {
+178: mKeywordFormat . setForeground ( newStyle . keywordColor ) ;
+179: mKeywordFormat . setFontWeight ( newStyle . keywordWeight ) ;
+180: mClassFormat . setForeground ( newStyle . classColor ) ;
+181: mClassFormat . setFontWeight ( newStyle . classWeight ) ;
+182: mSingleLineCommentFormat . setForeground ( newStyle . commentColor ) ;
+183: mSingleLineCommentFormat . setFontWeight ( newStyle . commentWeight ) ;
+184: mMultiLineCommentFormat . setForeground ( newStyle . commentColor ) ;
+185: mMultiLineCommentFormat . setFontWeight ( newStyle . commentWeight ) ;
+186: mQuotationFormat . setForeground ( newStyle . quoteColor ) ;
+187: mQuotationFormat . setFontWeight ( newStyle . quoteWeight ) ;
+188: mSymbolFormat . setForeground ( newStyle . symbolFGColor ) ;
+189: mSymbolFormat . setBackground ( newStyle . symbolBGColor ) ;
+190: mSymbolFormat . setFontWeight ( newStyle . symbolWeight ) ;
+191: for ( HighlightingRule & rule : mHighlightingRules ) {
+192: applyFormat ( rule ) ;
+193: }
+194:
+195: for ( HighlightingRule & rule : mHighlightingRulesWithSymbols ) {
+196: applyFormat ( rule ) ;
+197: }
+198: }
+199:
+200: void Highlighter :: highlightBlock ( const QString & text )
+201: {
+202: for ( const HighlightingRule & rule : mHighlightingRulesWithSymbols ) {
+203: QRegularExpressionMatchIterator matchIterator ; matchIterator = rule . pattern . globalMatch ( text ) ;
+204: while ( matchIterator . hasNext ( ) ) {
+205: QRegularExpressionMatch match ; match = matchIterator . next ( ) ;
+206: setFormat ( match . capturedStart ( ) , match . capturedLength ( ) , rule . format ) ;
+207: }
+208: }
+209:
+210: setCurrentBlockState ( 0 ) ;
+211:
+212: int startIndex ; startIndex = 0 ;
+213: if ( previousBlockState ( ) != 1 ) {
+214: startIndex = text . indexOf ( mCommentStartExpression ) ; }
+215:
+216: while ( startIndex >= 0 ) {
+217: QRegularExpressionMatch match ; match = mCommentEndExpression . match ( text , startIndex ) ;
+218: int endIndex ; endIndex = match . capturedStart ( ) ;
+219: int commentLength ; commentLength = 0 ;
+220: if ( endIndex == -1 ) {
+221: setCurrentBlockState ( 1 ) ;
+222: commentLength = text . length ( ) - startIndex ;
+223: } else {
+224: commentLength = endIndex - startIndex
+225: + match . capturedLength ( ) ;
+226: }
+227: setFormat ( startIndex , commentLength , mMultiLineCommentFormat ) ;
+228: startIndex = text . indexOf ( mCommentStartExpression , startIndex + commentLength ) ;
+229: }
+230: }
+231:
+232: void Highlighter :: applyFormat ( HighlightingRule & rule )
+233: {
+234: switch ( rule . ruleRole ) {
+235: case RuleRole :: Keyword : ;
+236: rule . format = mKeywordFormat ;
+237: break ;
+238: case RuleRole :: Class : ;
+239: rule . format = mClassFormat ;
+240: break ;
+241: case RuleRole :: Comment : ;
+242: rule . format = mSingleLineCommentFormat ;
+243: break ;
+244: case RuleRole :: Quote : ;
+245: rule . format = mQuotationFormat ;
+246: break ;
+247: case RuleRole :: Symbol : ;
+248: rule . format = mSymbolFormat ;
+249: break ;
+250: }
+251: }
+252:
+253: CodeEditor :: CodeEditor ( QWidget * parent ) :
+254: QPlainTextEdit ( parent ) ,
+255: mWidgetStyle ( new CodeEditorStyle ( defaultStyleLight ) )
+256: {
+257: mLineNumberArea = new LineNumberArea ( this ) ;
+258: mHighlighter = new Highlighter ( document ( ) , mWidgetStyle ) ;
+259: mErrorPosition = -1 ;
+260:
+261: QFont font ( "Monospace" ) ;
+262: font . setStyleHint ( QFont :: TypeWriter ) ;
+263: setFont ( font ) ;
+264: mLineNumberArea . setFont ( font ) ;
+265:
+266:
+267: setObjectName ( "CodeEditor" ) ;
+268: setStyleSheet ( generateStyleString ( ) ) ;
+269:
+|
+273:
+274: QShortcut * copyText ; copyText = new QShortcut ( QKeySequence ( Qt :: CTRL + Qt :: Key_C ) , this ) ;
+275: QShortcut * allText ; allText = new QShortcut ( QKeySequence ( Qt :: CTRL + Qt :: Key_A ) , this ) ;
+276:
+277:
+278: connect ( this , SIGNAL ( blockCountChanged ( int ) ) , this , SLOT ( updateLineNumberAreaWidth ( int ) ) ) ;
+279: connect ( this , SIGNAL ( updateRequest ( QRect , int ) ) , this , SLOT ( updateLineNumberArea ( QRect , int ) ) ) ;
+280: connect ( copyText , SIGNAL ( activated ( ) ) , this , SLOT ( copy ( ) ) ) ;
+281: connect ( allText , SIGNAL ( activated ( ) ) , this , SLOT ( selectAll ( ) ) ) ;
+282:
+283: updateLineNumberAreaWidth ( 0 ) ;
+284: }
+285:
+286: CodeEditor :: ~ CodeEditor ( )
+287: {
+288:
+289: delete mWidgetStyle ;
+290: }
+291:
+292: static int getPos ( const QString & fileData , int lineNumber )
+293: {
+294: if ( lineNumber <= 1 ) {
+295: return 0 ; }
+296: for ( int pos = 0 , line = 1 ; pos < fileData . size ( ) ; ++ pos ) {
+297: if ( fileData [ pos ] != '\n' ) {
+298: continue ; }
+299: ++ line ;
+300: if ( line >= lineNumber ) {
+301: return pos + 1 ; }
+302: }
+303: return fileData . size ( ) ;
+304: }
+305:
+306: void CodeEditor :: setStyle ( const CodeEditorStyle & newStyle )
+307: {
+308: * mWidgetStyle = newStyle ;
+309:
+310: setStyleSheet ( generateStyleString ( ) ) ;
+311: mHighlighter . setStyle ( newStyle ) ;
+312: mHighlighter . rehighlight ( ) ;
+313: highlightErrorLine ( ) ;
+314: }
+315:
+316: void CodeEditor :: setError ( const QString & code , int errorLine , const QStringList & symbols )
+317: {
+318: mHighlighter . setSymbols ( symbols ) ;
+319:
+320: setPlainText ( code ) ;
+321:
+322: mErrorPosition = getPos ( code , errorLine ) ;
+323: QTextCursor tc ; tc = textCursor ( ) ;
+324: tc . setPosition ( mErrorPosition ) ;
+325: setTextCursor ( tc ) ;
+326: centerCursor ( ) ;
+327:
+328: highlightErrorLine ( ) ;
+329: }
+330:
+331: void CodeEditor :: setError ( int errorLine , const QStringList & symbols )
+332: {
+333: mHighlighter . setSymbols ( symbols ) ;
+334:
+335: mErrorPosition = getPos ( toPlainText ( ) , errorLine ) ;
+336: QTextCursor tc ; tc = textCursor ( ) ;
+337: tc . setPosition ( mErrorPosition ) ;
+338: setTextCursor ( tc ) ;
+339: centerCursor ( ) ;
+340:
+341: highlightErrorLine ( ) ;
+342: }
+343:
+344: int CodeEditor :: lineNumberAreaWidth ( )
+345: {
+346: int digits ; digits = 1 ;
+347: int max ; max = qMax ( 1 , blockCount ( ) ) ;
+348: while ( max >= 10 ) {
+349: max /= 10 ;
+350: ++ digits ;
+351: }
+352:
+|
+355:
+356: int space ; space = 3 + fontMetrics ( ) . width ( QLatin1Char ( '9' ) ) * digits ;
+357:
+358: return space ;
+359: }
+360:
+361: void CodeEditor :: updateLineNumberAreaWidth ( int )
+362: {
+363: setViewportMargins ( lineNumberAreaWidth ( ) , 0 , 0 , 0 ) ;
+364: }
+365:
+366: void CodeEditor :: updateLineNumberArea ( const QRect & rect , int dy )
+367: {
+368: if ( dy ) {
+369: mLineNumberArea . scroll ( 0 , dy ) ; }
+370: else {
+371: mLineNumberArea . update ( 0 , rect . y ( ) , mLineNumberArea . width ( ) , rect . height ( ) ) ; }
+372:
+373: if ( rect . contains ( viewport ( ) . rect ( ) ) ) {
+374: updateLineNumberAreaWidth ( 0 ) ; }
+375: }
+376:
+377: void CodeEditor :: resizeEvent ( QResizeEvent * event )
+378: {
+379: QPlainTextEdit :: resizeEvent ( event ) ;
+380: QRect cr ; cr = contentsRect ( ) ;
+381: mLineNumberArea . setGeometry ( QRect ( cr . left ( ) , cr . top ( ) , lineNumberAreaWidth ( ) , cr . height ( ) ) ) ;
+382: }
+383:
+384: void CodeEditor :: highlightErrorLine ( )
+385: {
+386: QList < QTextEdit :: ExtraSelection > extraSelections ;
+387:
+388: QTextEdit :: ExtraSelection selection ;
+389:
+390: selection . format . setBackground ( mWidgetStyle . highlightBGColor ) ;
+391: selection . format . setProperty ( QTextFormat :: FullWidthSelection , true ) ;
+392: selection . cursor = QTextCursor ( document ( ) ) ;
+393: if ( mErrorPosition >= 0 ) {
+394: selection . cursor . setPosition ( mErrorPosition ) ;
+395: } else {
+396: selection . cursor . setPosition ( 0 ) ;
+397: }
+398: selection . cursor . clearSelection ( ) ;
+399: extraSelections . append ( selection ) ;
+400:
+401: setExtraSelections ( extraSelections ) ;
+402: }
+403:
+404: void CodeEditor :: lineNumberAreaPaintEvent ( QPaintEvent * event )
+405: {
+406: QPainter painter ( mLineNumberArea ) ;
+407: painter . fillRect ( event . rect ( ) , mWidgetStyle . lineNumBGColor ) ;
+408:
+409: QTextBlock block ; block = firstVisibleBlock ( ) ;
+410: int blockNumber ; blockNumber = block . blockNumber ( ) ;
+411: int top ; top = ( int ) blockBoundingGeometry ( block ) . translated ( contentOffset ( ) ) . top ( ) ;
+412: int bottom ; bottom = top + ( int ) blockBoundingRect ( block ) . height ( ) ;
+413:
+414: while ( block . isValid ( ) && top <= event . rect ( ) . bottom ( ) ) {
+415: if ( block . isVisible ( ) && bottom >= event . rect ( ) . top ( ) ) {
+416: QString number ; number = QString :: number ( blockNumber + 1 ) ;
+417: painter . setPen ( mWidgetStyle . lineNumFGColor ) ;
+418: painter . drawText ( 0 , top , mLineNumberArea . width ( ) , fontMetrics ( ) . height ( ) ,
+419: Qt :: AlignRight , number ) ;
+420: }
+421:
+422: block = block . next ( ) ;
+423: top = bottom ;
+424: bottom = top + ( int ) blockBoundingRect ( block ) . height ( ) ;
+425: ++ blockNumber ;
+426: }
+427: }
+428:
+429: QString CodeEditor :: generateStyleString ( )
+430: {
+431: QString bgcolor ; bgcolor = QString ( "background:rgb(%1,%2,%3);" )
+432: . arg ( mWidgetStyle . widgetBGColor . red ( ) )
+433: . arg ( mWidgetStyle . widgetBGColor . green ( ) )
+434: . arg ( mWidgetStyle . widgetBGColor . blue ( ) ) ;
+435: QString fgcolor ; fgcolor = QString ( "color:rgb(%1,%2,%3);" )
+436: . arg ( mWidgetStyle . widgetFGColor . red ( ) )
+437: . arg ( mWidgetStyle . widgetFGColor . green ( ) )
+438: . arg ( mWidgetStyle . widgetFGColor . blue ( ) ) ;
+439: QString style ; style = QString ( "%1 %2" )
+440: . arg ( bgcolor )
+441: . arg ( fgcolor ) ;
+442: return style ;
+443: }
+
+
+
+##Value flow

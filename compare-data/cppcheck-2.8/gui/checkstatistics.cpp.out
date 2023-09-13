@@ -1,0 +1,301 @@
+
+
+##file cppcheck-2.8/gui/showtypes.h
+
+1:
+|
+37:
+38: class ShowTypes {
+39: public:
+40:
+|
+43:
+44: enum ShowType {
+45: ShowStyle = 0 ,
+46: ShowWarnings ,
+47: ShowPerformance ,
+48: ShowPortability ,
+49: ShowInformation ,
+50: ShowErrors ,
+51: ShowNone
+52: } ;
+53:
+|
+57:
+58: ShowTypes ( ) ;
+59:
+|
+63:
+64: ~ ShowTypes ( ) ;
+65:
+|
+68:
+69: void load ( ) ;
+70:
+|
+73:
+74: void save ( ) const ;
+75:
+|
+80:
+81: bool isShown ( ShowTypes :: ShowType category@var1 ) const ;
+82:
+|
+87:
+88: bool isShown ( Severity :: SeverityType severity@var2 ) const ;
+89:
+|
+94:
+95: void show ( ShowTypes :: ShowType category@var3 , bool showing@var4 ) ;
+96:
+|
+101:
+102: static ShowTypes :: ShowType SeverityToShowType ( Severity :: SeverityType severity@var5 ) ;
+103:
+|
+108:
+109: static Severity :: SeverityType ShowTypeToSeverity ( ShowTypes :: ShowType type@var6 ) ;
+110:
+|
+116:
+117: static ShowTypes :: ShowType VariantToShowType ( const QVariant & data@var7 ) ;
+118:
+119: bool mVisible@var8 [ ShowNone ] ;
+120: } ;
+
+##file cppcheck-2.8/gui/checkstatistics.h
+
+1:
+|
+33:
+34: class CheckStatistics : public QObject {
+35: public:
+36: explicit CheckStatistics ( QObject * parent@var9 = nullptr ) ;
+37:
+|
+43:
+44: void addItem ( const QString & tool@var10 , ShowTypes :: ShowType type@var11 ) ;
+45:
+|
+49:
+50: void clear ( ) ;
+51:
+|
+58:
+59: unsigned int getCount ( const QString & tool@var12 , ShowTypes :: ShowType type@var13 ) const ;
+60:
+61:
+62: QStringList getTools ( ) const ;
+63:
+64: private:
+65: QMap < QString , unsigned int > mStyle@var14 ;
+66: QMap < QString , unsigned int > mWarning@var15 ;
+67: QMap < QString , unsigned int > mPerformance@var16 ;
+68: QMap < QString , unsigned int > mPortability@var17 ;
+69: QMap < QString , unsigned int > mInformation@var18 ;
+70: QMap < QString , unsigned int > mError@var19 ;
+71: } ;
+
+##file cppcheck-2.8/gui/checkstatistics.cpp
+
+1:
+|
+22:
+23: CheckStatistics :: CheckStatistics ( QObject * parent@var20 )
+24: : QObject ( parent@var20 )
+25: {
+26: clear (@expr1073741859 ) ;
+27: }
+28:
+29: static void addItem ( QMap < QString , unsigned int > & m@var21 , const QString & key@var22 )
+30: {
+31: if (@expr1073741860 m@var21 .@expr1073741861 contains (@expr1073741862 key@var22 ) ) {
+32: m@var21 [@expr39 key@var22 ] ++@expr1073741864 ; }
+33: else {
+34: m@var21 [@expr39 key@var22 ] =@expr1073741866 0 ; }
+35: }
+36:
+37: void CheckStatistics :: addItem ( const QString & tool@var23 , ShowTypes :: ShowType type@var24 )
+38: {
+39: const QString lower@var25 =@expr1073741867 tool@var23 .@expr1073741868 toLower (@expr1073741869 ) ;
+40: switch (@expr1073741870 type@var24 ) {
+41: case ShowTypes ::@expr1073741871 ShowStyle :@expr48 ;
+42: ::@expr49 addItem (@expr1073741874 mStyle@var14 , tool@var23 ) ;
+43: break ;
+44: case ShowTypes ::@expr1073741875 ShowWarnings :@expr48 ;
+45: ::@expr49 addItem (@expr1073741878 mWarning@var15 , tool@var23 ) ;
+46: break ;
+47: case ShowTypes ::@expr1073741879 ShowPerformance :@expr48 ;
+48: ::@expr49 addItem (@expr1073741882 mPerformance@var16 , tool@var23 ) ;
+49: break ;
+50: case ShowTypes ::@expr1073741883 ShowPortability :@expr48 ;
+51: ::@expr49 addItem (@expr1073741886 mPortability@var17 , tool@var23 ) ;
+52: break ;
+53: case ShowTypes ::@expr1073741887 ShowErrors :@expr48 ;
+54: ::@expr49 addItem (@expr1073741890 mError@var19 , tool@var23 ) ;
+55: break ;
+56: case ShowTypes ::@expr1073741891 ShowInformation :@expr48 ;
+57: ::@expr49 addItem (@expr1073741894 mInformation@var18 , tool@var23 ) ;
+58: break ;
+59: case ShowTypes ::@expr1073741895 ShowNone :@expr48 ;
+60: default :@expr48 ;
+61: qDebug (@expr1073741898 ) <<@expr1073741899 "Unknown error type - not added to statistics." ;
+62: break ;
+63: }
+64: }
+65:
+66: void CheckStatistics :: clear ( )
+67: {
+68: mStyle@var14 .@expr1073741900 clear (@expr1073741901 ) ;
+69: mWarning@var15 .@expr1073741902 clear (@expr1073741903 ) ;
+70: mPerformance@var16 .@expr1073741904 clear (@expr1073741905 ) ;
+71: mPortability@var17 .@expr1073741906 clear (@expr1073741907 ) ;
+72: mInformation@var18 .@expr1073741908 clear (@expr1073741909 ) ;
+73: mError@var19 .@expr1073741910 clear (@expr1073741911 ) ;
+74: }
+75:
+76: unsigned int CheckStatistics :: getCount ( const QString & tool@var26 , ShowTypes :: ShowType type@var27 ) const
+77: {
+78: const QString lower@var28 =@expr1073741912 tool@var26 .@expr1073741913 toLower (@expr1073741914 ) ;
+79: switch (@expr1073741915 type@var27 ) {
+80: case ShowTypes ::@expr1073741916 ShowStyle :@expr93 ;
+81: return mStyle@var14 .@expr1073741918 value (@expr1073741919 lower@var28 , 0 ) ;
+82: case ShowTypes ::@expr1073741920 ShowWarnings :@expr93 ;
+83: return mWarning@var15 .@expr1073741922 value (@expr1073741923 lower@var28 , 0 ) ;
+84: case ShowTypes ::@expr1073741924 ShowPerformance :@expr93 ;
+85: return mPerformance@var16 .@expr1073741926 value (@expr1073741927 lower@var28 , 0 ) ;
+86: case ShowTypes ::@expr1073741928 ShowPortability :@expr93 ;
+87: return mPortability@var17 .@expr1073741930 value (@expr1073741931 lower@var28 , 0 ) ;
+88: case ShowTypes ::@expr1073741932 ShowErrors :@expr93 ;
+89: return mError@var19 .@expr1073741934 value (@expr1073741935 lower@var28 , 0 ) ;
+90: case ShowTypes ::@expr1073741936 ShowInformation :@expr93 ;
+91: return mInformation@var18 .@expr1073741938 value (@expr1073741939 lower@var28 , 0 ) ;
+92: case ShowTypes ::@expr1073741940 ShowNone :@expr93 ;
+93: default :@expr93 ;
+94: qDebug (@expr1073741943 ) <<@expr1073741944 "Unknown error type - returning zero statistics." ;
+95: return 0 ;
+96: }
+97: }
+98:
+99: QStringList CheckStatistics :: getTools ( ) const
+100: {
+101: QSet < QString > ret@var29 ;
+102: for (@expr1073741945 const QString &@expr122 tool@var30 :@expr1073741947 mStyle@var14 .@expr1073741948 keys (@expr1073741949 ) ) { ret@var29 .@expr126 insert (@expr1073741951 tool@var30 ) ; }
+103: for (@expr1073741952 const QString &@expr122 tool@var31 :@expr1073741954 mWarning@var15 .@expr1073741955 keys (@expr1073741956 ) ) { ret@var29 .@expr126 insert (@expr1073741958 tool@var31 ) ; }
+104: for (@expr1073741959 const QString &@expr122 tool@var32 :@expr1073741961 mPerformance@var16 .@expr1073741962 keys (@expr1073741963 ) ) { ret@var29 .@expr126 insert (@expr1073741965 tool@var32 ) ; }
+105: for (@expr1073741966 const QString &@expr122 tool@var33 :@expr1073741968 mPortability@var17 .@expr1073741969 keys (@expr1073741970 ) ) { ret@var29 .@expr126 insert (@expr1073741972 tool@var33 ) ; }
+106: for (@expr1073741973 const QString &@expr122 tool@var34 :@expr1073741975 mError@var19 .@expr1073741976 keys (@expr1073741977 ) ) { ret@var29 .@expr126 insert (@expr1073741979 tool@var34 ) ; }
+107: return QStringList (@expr1073741980 ret@var29 .@expr1073741981 values (@expr1073741982 ) ) ;
+108: }
+
+
+
+##Value flow
+Line 45
+  ShowStyle always 0
+  = always 0
+  0 always 0
+  , always 1
+Line 46
+  ShowWarnings always 1
+  , always 2
+Line 47
+  ShowPerformance always 2
+  , always 3
+Line 48
+  ShowPortability always 3
+  , always 4
+Line 49
+  ShowInformation always 4
+  , always 5
+Line 50
+  ShowErrors always 5
+  , always 6
+Line 51
+  ShowNone always 6
+Line 81
+  ( always {!<=-1,!>=2}
+Line 88
+  ( always {!<=-1,!>=2}
+Line 95
+  , always {!<=-1,!>=2}
+  showing always {!<=-1,!>=2}
+Line 119
+  ShowNone always 6
+Line 36
+  = always 0
+  nullptr always 0
+Line 59
+  ( always !<=-1
+Line 34
+  = always 0
+  0 always 0
+Line 41
+  :: always 0
+  ShowStyle always 0
+Line 44
+  :: always 1
+  ShowWarnings always 1
+Line 47
+  :: always 2
+  ShowPerformance always 2
+Line 50
+  :: always 3
+  ShowPortability always 3
+Line 53
+  :: always 5
+  ShowErrors always 5
+Line 56
+  :: always 4
+  ShowInformation always 4
+Line 59
+  :: always 6
+  ShowNone always 6
+Line 61
+  "Unknown error type - not added to statistics." always "Unknown error type - not added to statistics."
+Line 76
+  ( always !<=-1
+Line 80
+  :: always 0
+  ShowStyle always 0
+Line 81
+  return always !<=-1
+  0 always 0
+Line 82
+  :: always 1
+  ShowWarnings always 1
+Line 83
+  return always !<=-1
+  0 always 0
+Line 84
+  :: always 2
+  ShowPerformance always 2
+Line 85
+  return always !<=-1
+  0 always 0
+Line 86
+  :: always 3
+  ShowPortability always 3
+Line 87
+  return always !<=-1
+  0 always 0
+Line 88
+  :: always 5
+  ShowErrors always 5
+Line 89
+  return always !<=-1
+  0 always 0
+Line 90
+  :: always 4
+  ShowInformation always 4
+Line 91
+  return always !<=-1
+  0 always 0
+Line 92
+  :: always 6
+  ShowNone always 6
+Line 94
+  "Unknown error type - returning zero statistics." always "Unknown error type - returning zero statistics."
+Line 95
+  return always !<=-1
+  0 always 0

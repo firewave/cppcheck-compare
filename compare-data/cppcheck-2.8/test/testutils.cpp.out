@@ -1,0 +1,548 @@
+
+
+##file cppcheck-2.8/test/testutils.h
+
+1:
+|
+34:
+35: class Token ;
+36:
+37: class givenACodeSampleToTokenize {
+38: private:
+39: Tokenizer tokenizer@var1 ;
+40: static const Settings settings@var2 ;
+41:
+42: public:
+43: explicit givenACodeSampleToTokenize ( const char sample@var3 [ ] , bool createOnly@var4 = false , bool cpp@var5 = true )
+44: : tokenizer@var1 ( & settings@var2 , nullptr ) {
+45: std ::@expr1073741946 istringstream iss@var6 (@expr1073741947 sample@var3 ) ;
+46: if (@expr1073741948 createOnly@var4 ) {
+47: tokenizer@var1 .@expr1073741949 list@var7 .@expr1073741950 createTokens (@expr1073741951 iss@var6 , cpp@var5 ?@expr128 "test.cpp" :@expr129 "test.c" ) ; }
+48: else {
+49: tokenizer@var1 .@expr1073741954 tokenize (@expr1073741955 iss@var6 , cpp@var5 ?@expr128 "test.cpp" :@expr129 "test.c" ) ; }
+50: }
+51:
+52: const Token * tokens ( ) const {
+53: return tokenizer@var1 .@expr1073741958 tokens (@expr1073741959 ) ;
+54: }
+55: } ;
+56:
+57:
+58: class SimpleSuppressor : public ErrorLogger {
+59: public:
+60: SimpleSuppressor ( Settings & settings@var8 , ErrorLogger * next@var9 )
+61: : settings@var13 ( settings@var8 ) , next@var14 ( next@var9 ) { }
+62: void reportOut ( const std :: string & outmsg@var10 , Color = Color :: Reset ) override {
+63: next@var14 .@expr1073741960 reportOut (@expr1073741961 outmsg@var10 ) ;
+64: }
+65: void reportErr ( const ErrorMessage & msg@var11 ) override {
+66: if (@expr1073741962 !@expr1073741963 msg@var11 .@expr1073741964 callStack@var12 .@expr1073741965 empty (@expr1073741966 ) &&@expr1073741967 !@expr1073741968 settings@var13 .@expr1073741969 nomsg@var15 .@expr1073741970 isSuppressed (@expr1073741971 msg@var11 .@expr1073741972 toSuppressionsErrorMessage (@expr1073741973 ) ) ) {
+67: next@var14 .@expr1073741974 reportErr (@expr1073741975 msg@var11 ) ; }
+68: }
+69: private:
+70: Settings & settings@var13 ;
+71: ErrorLogger * next@var14 ;
+72: } ;
+73:
+74: class ScopedFile {
+75: public:
+76: ScopedFile ( const std :: string & name@var16 , const std :: string & content@var17 ) : mName@var19 ( name@var16 ) {
+77: std ::@expr1073741976 ofstream of@var18 (@expr1073741977 mName@var19 ) ;
+78: of@var18 <<@expr1073741978 content@var17 ;
+79: }
+80:
+81: ~ ScopedFile ( ) {
+82: remove (@expr1073741979 mName@var19 .@expr1073741980 c_str (@expr1073741981 ) ) ;
+83: }
+84: private:
+85: std :: string mName@var19 ;
+86: } ;
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var20 ;
+37: static unsigned int countTests@var21 ;
+38: static unsigned long fails_counter@var22 ;
+39: static unsigned long todos_counter@var23 ;
+40: static unsigned long succeeded_todos_counter@var24 ;
+41: static std :: set < std :: string > missingLibs@var25 ;
+42: bool mVerbose@var26 ;
+43: std :: string mTemplateFormat@var27 ;
+44: std :: string mTemplateLocation@var28 ;
+45: std :: string mTestname@var29 ;
+46:
+47: protected:
+48: std :: string exename@var30 ;
+49: std :: string testToRun@var31 ;
+50: bool quiet_tests@var32 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var33 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var34 , const unsigned int linenr@var35 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var36 , const unsigned int linenr@var37 , const bool condition@var38 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var39 , const unsigned int linenr@var40 , const T & expected@var41 , const U & actual@var42 , const std :: string & msg@var43 = emptyString ) const {
+61: if (@expr1073741982 expected@var41 !=@expr1073741983 actual@var42 ) {
+62: std ::@expr1073741984 ostringstream expectedStr@var44 ;
+63: expectedStr@var44 <<@expr1073741985 expected@var41 ;
+64: std ::@expr1073741986 ostringstream actualStr@var45 ;
+65: actualStr@var45 <<@expr1073741987 actual@var42 ;
+66:
+67: assertEqualsFailed (@expr1073741988 filename@var39 , linenr@var40 , expectedStr@var44 .@expr1073741989 str (@expr1073741990 ) , actualStr@var45 .@expr1073741991 str (@expr1073741992 ) , msg@var43 ) ;
+68: }
+69: return expected@var41 ==@expr1073741993 actual@var42 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var46 , const unsigned int linenr@var47 , const std :: string & expected@var48 , const std :: string & actual@var49 , const std :: string & msg@var50 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var51 , const unsigned int linenr@var52 , const std :: string & expected@var53 , const std :: string & actual@var54 , const std :: string & msg@var55 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var56 , const unsigned int linenr@var57 , const std :: string & expected@var58 , const std :: string & actual@var59 , const std :: string & msg@var60 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var61 , const unsigned int linenr@var62 , const char expected@var63 [ ] , const std :: string & actual@var64 , const std :: string & msg@var65 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var66 , const unsigned int linenr@var67 , const char expected@var68 [ ] , const char actual@var69 [ ] , const std :: string & msg@var70 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var71 , const unsigned int linenr@var72 , const std :: string & expected@var73 , const char actual@var74 [ ] , const std :: string & msg@var75 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var76 , const unsigned int linenr@var77 , const long long expected@var78 , const long long actual@var79 , const std :: string & msg@var80 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var81 , const unsigned int linenr@var82 , const double expected@var83 , const double actual@var84 , const double tolerance@var85 , const std :: string & msg@var86 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var87 , const unsigned int linenr@var88 , const std :: string & wanted@var89 ,
+85: const std :: string & current@var90 , const std :: string & actual@var91 ) const ;
+86: void todoAssertEquals ( const char * const filename@var92 , const unsigned int linenr@var93 , const char wanted@var94 [ ] ,
+87: const char current@var95 [ ] , const std :: string & actual@var96 ) const ;
+88: void todoAssertEquals ( const char * const filename@var97 , const unsigned int linenr@var98 , const long long wanted@var99 ,
+89: const long long current@var100 , const long long actual@var101 ) const ;
+90: void assertThrow ( const char * const filename@var102 , const unsigned int linenr@var103 ) const ;
+91: void assertThrowFail ( const char * const filename@var104 , const unsigned int linenr@var105 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var106 , const unsigned int linenr@var107 ) const ;
+93: static void complainMissingLib ( const char * const libname@var108 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var109 ) ;
+95:
+96: void setVerbose ( bool v@var110 ) {
+97: mVerbose@var26 =@expr1073741994 v@var110 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var27 =@expr1073741995 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var28 =@expr1073741996 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var111 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var112 , Color c@var113 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var114 ) override ;
+109: void run ( const std :: string & str@var115 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var116 ;
+112:
+113: explicit TestFixture ( const char * const _name@var117 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var118 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var119 ;
+120: extern std :: ostringstream output@var120 ;
+
+##file cppcheck-2.8/test/testutils.cpp
+
+1:
+|
+22:
+23: const Settings givenACodeSampleToTokenize :: settings@var2 ;
+24:
+25: class TestUtils : public TestFixture {
+26: public:
+27: TestUtils ( ) : TestFixture ( "TestUtils" ) { }
+28:
+29: private:
+30: void run ( ) override {
+31: $do ${ $if $(@expr1073741997 $prepareTest $(@expr1073741998 "isValidGlobPattern" $) $) ${ $setVerbose $(@expr1073741999 $false $) $; isValidGlobPattern $(@expr1073742000 $) $; $} $} $while $(@expr1073742001 $false $) ;
+32: $do ${ $if $(@expr1073742002 $prepareTest $(@expr1073742003 "matchglob" $) $) ${ $setVerbose $(@expr1073742004 $false $) $; matchglob $(@expr1073742005 $) $; $} $} $while $(@expr1073742006 $false $) ;
+33: }
+34:
+35: void isValidGlobPattern ( ) const {
+36: $if $(@expr1073742007 $!@expr1073742008 $assertEquals $(@expr1073742009 "cppcheck-2.8/test/testutils.cpp" $, 36 $, true $, ::@expr186 isValidGlobPattern (@expr1073742011 "*" ) $) $) { $return ; }
+37: $if $(@expr1073742012 $!@expr1073742013 $assertEquals $(@expr1073742014 "cppcheck-2.8/test/testutils.cpp" $, 37 $, true $, ::@expr186 isValidGlobPattern (@expr1073742016 "*x" ) $) $) { $return ; }
+38: $if $(@expr1073742017 $!@expr1073742018 $assertEquals $(@expr1073742019 "cppcheck-2.8/test/testutils.cpp" $, 38 $, true $, ::@expr186 isValidGlobPattern (@expr1073742021 "x*" ) $) $) { $return ; }
+39: $if $(@expr1073742022 $!@expr1073742023 $assertEquals $(@expr1073742024 "cppcheck-2.8/test/testutils.cpp" $, 39 $, true $, ::@expr186 isValidGlobPattern (@expr1073742026 "*/x/*" ) $) $) { $return ; }
+40: $if $(@expr1073742027 $!@expr1073742028 $assertEquals $(@expr1073742029 "cppcheck-2.8/test/testutils.cpp" $, 40 $, true $, ::@expr186 isValidGlobPattern (@expr1073742031 "x/*/z" ) $) $) { $return ; }
+41: $if $(@expr1073742032 $!@expr1073742033 $assertEquals $(@expr1073742034 "cppcheck-2.8/test/testutils.cpp" $, 41 $, false $, ::@expr186 isValidGlobPattern (@expr1073742036 "**" ) $) $) { $return ; }
+42: $if $(@expr1073742037 $!@expr1073742038 $assertEquals $(@expr1073742039 "cppcheck-2.8/test/testutils.cpp" $, 42 $, false $, ::@expr186 isValidGlobPattern (@expr1073742041 "**x" ) $) $) { $return ; }
+43: $if $(@expr1073742042 $!@expr1073742043 $assertEquals $(@expr1073742044 "cppcheck-2.8/test/testutils.cpp" $, 43 $, false $, ::@expr186 isValidGlobPattern (@expr1073742046 "x**" ) $) $) { $return ; }
+44:
+45: $if $(@expr1073742047 $!@expr1073742048 $assertEquals $(@expr1073742049 "cppcheck-2.8/test/testutils.cpp" $, 45 $, true $, ::@expr186 isValidGlobPattern (@expr1073742051 "?" ) $) $) { $return ; }
+46: $if $(@expr1073742052 $!@expr1073742053 $assertEquals $(@expr1073742054 "cppcheck-2.8/test/testutils.cpp" $, 46 $, true $, ::@expr186 isValidGlobPattern (@expr1073742056 "?x" ) $) $) { $return ; }
+47: $if $(@expr1073742057 $!@expr1073742058 $assertEquals $(@expr1073742059 "cppcheck-2.8/test/testutils.cpp" $, 47 $, true $, ::@expr186 isValidGlobPattern (@expr1073742061 "x?" ) $) $) { $return ; }
+48: $if $(@expr1073742062 $!@expr1073742063 $assertEquals $(@expr1073742064 "cppcheck-2.8/test/testutils.cpp" $, 48 $, true $, ::@expr186 isValidGlobPattern (@expr1073742066 "?/x/?" ) $) $) { $return ; }
+49: $if $(@expr1073742067 $!@expr1073742068 $assertEquals $(@expr1073742069 "cppcheck-2.8/test/testutils.cpp" $, 49 $, true $, ::@expr186 isValidGlobPattern (@expr1073742071 "x/?/z" ) $) $) { $return ; }
+50: $if $(@expr1073742072 $!@expr1073742073 $assertEquals $(@expr1073742074 "cppcheck-2.8/test/testutils.cpp" $, 50 $, false $, ::@expr186 isValidGlobPattern (@expr1073742076 "??" ) $) $) { $return ; }
+51: $if $(@expr1073742077 $!@expr1073742078 $assertEquals $(@expr1073742079 "cppcheck-2.8/test/testutils.cpp" $, 51 $, false $, ::@expr186 isValidGlobPattern (@expr1073742081 "??x" ) $) $) { $return ; }
+52: $if $(@expr1073742082 $!@expr1073742083 $assertEquals $(@expr1073742084 "cppcheck-2.8/test/testutils.cpp" $, 52 $, false $, ::@expr186 isValidGlobPattern (@expr1073742086 "x??" ) $) $) { $return ; }
+53: }
+54:
+55: void matchglob ( ) const {
+56: $if $(@expr1073742087 $!@expr1073742088 $assertEquals $(@expr1073742089 "cppcheck-2.8/test/testutils.cpp" $, 56 $, true $, $(@expr1073742090 ::@expr267 matchglob (@expr1073742092 "*" , "xyz" ) $) $) $) { $return ; }
+57: $if $(@expr1073742093 $!@expr1073742094 $assertEquals $(@expr1073742095 "cppcheck-2.8/test/testutils.cpp" $, 57 $, true $, $(@expr1073742096 ::@expr267 matchglob (@expr1073742098 "x*" , "xyz" ) $) $) $) { $return ; }
+58: $if $(@expr1073742099 $!@expr1073742100 $assertEquals $(@expr1073742101 "cppcheck-2.8/test/testutils.cpp" $, 58 $, true $, $(@expr1073742102 ::@expr267 matchglob (@expr1073742104 "*z" , "xyz" ) $) $) $) { $return ; }
+59: $if $(@expr1073742105 $!@expr1073742106 $assertEquals $(@expr1073742107 "cppcheck-2.8/test/testutils.cpp" $, 59 $, true $, $(@expr1073742108 ::@expr267 matchglob (@expr1073742110 "*y*" , "xyz" ) $) $) $) { $return ; }
+60: $if $(@expr1073742111 $!@expr1073742112 $assertEquals $(@expr1073742113 "cppcheck-2.8/test/testutils.cpp" $, 60 $, true $, $(@expr1073742114 ::@expr267 matchglob (@expr1073742116 "*y*" , "yz" ) $) $) $) { $return ; }
+61: $if $(@expr1073742117 $!@expr1073742118 $assertEquals $(@expr1073742119 "cppcheck-2.8/test/testutils.cpp" $, 61 $, false $, $(@expr1073742120 ::@expr267 matchglob (@expr1073742122 "*y*" , "abc" ) $) $) $) { $return ; }
+62: $if $(@expr1073742123 $!@expr1073742124 $assertEquals $(@expr1073742125 "cppcheck-2.8/test/testutils.cpp" $, 62 $, true $, $(@expr1073742126 ::@expr267 matchglob (@expr1073742128 "*" , "x/y/z" ) $) $) $) { $return ; }
+63: $if $(@expr1073742129 $!@expr1073742130 $assertEquals $(@expr1073742131 "cppcheck-2.8/test/testutils.cpp" $, 63 $, true $, $(@expr1073742132 ::@expr267 matchglob (@expr1073742134 "*/y/z" , "x/y/z" ) $) $) $) { $return ; }
+64:
+65: $if $(@expr1073742135 $!@expr1073742136 $assertEquals $(@expr1073742137 "cppcheck-2.8/test/testutils.cpp" $, 65 $, false $, $(@expr1073742138 ::@expr267 matchglob (@expr1073742140 "?" , "xyz" ) $) $) $) { $return ; }
+66: $if $(@expr1073742141 $!@expr1073742142 $assertEquals $(@expr1073742143 "cppcheck-2.8/test/testutils.cpp" $, 66 $, false $, $(@expr1073742144 ::@expr267 matchglob (@expr1073742146 "x?" , "xyz" ) $) $) $) { $return ; }
+67: $if $(@expr1073742147 $!@expr1073742148 $assertEquals $(@expr1073742149 "cppcheck-2.8/test/testutils.cpp" $, 67 $, false $, $(@expr1073742150 ::@expr267 matchglob (@expr1073742152 "?z" , "xyz" ) $) $) $) { $return ; }
+68: $if $(@expr1073742153 $!@expr1073742154 $assertEquals $(@expr1073742155 "cppcheck-2.8/test/testutils.cpp" $, 68 $, true $, $(@expr1073742156 ::@expr267 matchglob (@expr1073742158 "?y?" , "xyz" ) $) $) $) { $return ; }
+69: $if $(@expr1073742159 $!@expr1073742160 $assertEquals $(@expr1073742161 "cppcheck-2.8/test/testutils.cpp" $, 69 $, true $, $(@expr1073742162 ::@expr267 matchglob (@expr1073742164 "?/?/?" , "x/y/z" ) $) $) $) { $return ; }
+70: }
+71: } ;
+72:
+73: $namespace ${ TestUtils instance_TestUtils@var121 $; $}
+
+
+
+##Value flow
+Line 43
+  createOnly always {!<=-1,!>=2}
+  = always 0
+  false always 0
+  cpp always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 44
+  & {lifetime[Address]=(settings),!0}
+  nullptr always 0
+Line 46
+  createOnly always {!<=-1,!>=2}
+Line 47
+  cpp always {!<=-1,!>=2}
+  ? possible {"test.cpp","test.c"}
+  "test.cpp" always "test.cpp"
+  : always "test.c"
+  "test.c" always "test.c"
+Line 49
+  cpp always {!<=-1,!>=2}
+  ? possible {"test.cpp","test.c"}
+  "test.cpp" always "test.cpp"
+  : always "test.c"
+  "test.c" always "test.c"
+Line 60
+  ( possible lifetime[SubObject]=(Settings&settings)
+Line 66
+  ! always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+Line 82
+  ( {lifetime[Object]=(mName),!0}
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@1}
+  v {!<=-1,!>=2,0@1}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 27
+  "TestUtils" always "TestUtils"
+Line 31
+  ( always {!<=-1,!>=2}
+  "isValidGlobPattern" always "isValidGlobPattern"
+  false always 0
+  false always 0
+Line 32
+  ( always {!<=-1,!>=2}
+  "matchglob" always "matchglob"
+  false always 0
+  false always 0
+Line 36
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  36 always 36
+  true always 1
+  "*" always "*"
+Line 37
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  37 always 37
+  true always 1
+  "*x" always "*x"
+Line 38
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  38 always 38
+  true always 1
+  "x*" always "x*"
+Line 39
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  39 always 39
+  true always 1
+  "*/x/*" always "*/x/*"
+Line 40
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  40 always 40
+  true always 1
+  "x/*/z" always "x/*/z"
+Line 41
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  41 always 41
+  false always 0
+  "**" always "**"
+Line 42
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  42 always 42
+  false always 0
+  "**x" always "**x"
+Line 43
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  43 always 43
+  false always 0
+  "x**" always "x**"
+Line 45
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  45 always 45
+  true always 1
+  "?" always "?"
+Line 46
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  46 always 46
+  true always 1
+  "?x" always "?x"
+Line 47
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  47 always 47
+  true always 1
+  "x?" always "x?"
+Line 48
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  48 always 48
+  true always 1
+  "?/x/?" always "?/x/?"
+Line 49
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  49 always 49
+  true always 1
+  "x/?/z" always "x/?/z"
+Line 50
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  50 always 50
+  false always 0
+  "??" always "??"
+Line 51
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  51 always 51
+  false always 0
+  "??x" always "??x"
+Line 52
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  52 always 52
+  false always 0
+  "x??" always "x??"
+Line 56
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  56 always 56
+  true always 1
+  "*" always "*"
+  "xyz" always "xyz"
+Line 57
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  57 always 57
+  true always 1
+  "x*" always "x*"
+  "xyz" always "xyz"
+Line 58
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  58 always 58
+  true always 1
+  "*z" always "*z"
+  "xyz" always "xyz"
+Line 59
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  59 always 59
+  true always 1
+  "*y*" always "*y*"
+  "xyz" always "xyz"
+Line 60
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  60 always 60
+  true always 1
+  "*y*" always "*y*"
+  "yz" always "yz"
+Line 61
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  61 always 61
+  false always 0
+  "*y*" always "*y*"
+  "abc" always "abc"
+Line 62
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  62 always 62
+  true always 1
+  "*" always "*"
+  "x/y/z" always "x/y/z"
+Line 63
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  63 always 63
+  true always 1
+  "*/y/z" always "*/y/z"
+  "x/y/z" always "x/y/z"
+Line 65
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  65 always 65
+  false always 0
+  "?" always "?"
+  "xyz" always "xyz"
+Line 66
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  66 always 66
+  false always 0
+  "x?" always "x?"
+  "xyz" always "xyz"
+Line 67
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  67 always 67
+  false always 0
+  "?z" always "?z"
+  "xyz" always "xyz"
+Line 68
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  68 always 68
+  true always 1
+  "?y?" always "?y?"
+  "xyz" always "xyz"
+Line 69
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testutils.cpp" always "cppcheck-2.8/test/testutils.cpp"
+  69 always 69
+  true always 1
+  "?/?/?" always "?/?/?"
+  "x/y/z" always "x/y/z"

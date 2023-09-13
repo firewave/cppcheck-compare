@@ -1,0 +1,854 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741936 expected@var22 !=@expr1073741937 actual@var23 ) {
+62: std ::@expr1073741938 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741939 expected@var22 ;
+64: std ::@expr1073741940 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741941 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741942 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741943 str (@expr1073741944 ) , actualStr@var26 .@expr1073741945 str (@expr1073741946 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741947 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741948 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741949 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741950 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/test64bit.cpp
+
+1:
+|
+27:
+28: class Test64BitPortability : public TestFixture {
+29: public:
+30: Test64BitPortability ( ) : TestFixture ( "Test64BitPortability" ) { }
+31:
+32: private:
+33: Settings settings@var102 ;
+34:
+35: void run ( ) override {
+36: settings@var102 .@expr1073741952 severity@var103 .@expr1073741953 enable (@expr1073741954 Severity ::@expr1073741955 portability@expr1073741951 ) ;
+37:
+38: $do ${ $if $(@expr1073741956 $prepareTest $(@expr1073741957 "novardecl" $) $) ${ $setVerbose $(@expr1073741958 $false $) $; novardecl $(@expr1073741959 $) $; $} $} $while $(@expr1073741960 $false $) ;
+39: $do ${ $if $(@expr1073741961 $prepareTest $(@expr1073741962 "functionpar" $) $) ${ $setVerbose $(@expr1073741963 $false $) $; functionpar $(@expr1073741964 $) $; $} $} $while $(@expr1073741965 $false $) ;
+40: $do ${ $if $(@expr1073741966 $prepareTest $(@expr1073741967 "structmember" $) $) ${ $setVerbose $(@expr1073741968 $false $) $; structmember $(@expr1073741969 $) $; $} $} $while $(@expr1073741970 $false $) ;
+41: $do ${ $if $(@expr1073741971 $prepareTest $(@expr1073741972 "ptrcompare" $) $) ${ $setVerbose $(@expr1073741973 $false $) $; ptrcompare $(@expr1073741974 $) $; $} $} $while $(@expr1073741975 $false $) ;
+42: $do ${ $if $(@expr1073741976 $prepareTest $(@expr1073741977 "ptrarithmetic" $) $) ${ $setVerbose $(@expr1073741978 $false $) $; ptrarithmetic $(@expr1073741979 $) $; $} $} $while $(@expr1073741980 $false $) ;
+43: $do ${ $if $(@expr1073741981 $prepareTest $(@expr1073741982 "returnIssues" $) $) ${ $setVerbose $(@expr1073741983 $false $) $; returnIssues $(@expr1073741984 $) $; $} $} $while $(@expr1073741985 $false $) ;
+44: $do ${ $if $(@expr1073741986 $prepareTest $(@expr1073741987 "assignment" $) $) ${ $setVerbose $(@expr1073741988 $false $) $; assignment $(@expr1073741989 $) $; $} $} $while $(@expr1073741990 $false $) ;
+45: }
+46:
+47:
+48: void check_ ( const char code@var104 [ ] , const char * file@var105 , int line@var106 ) {
+49:
+50: errout@var100 .@expr1073741991 str (@expr1073741992 "" ) ;
+51:
+52:
+53: Tokenizer tokenizer@var107 (@expr1073741993 &@expr170 settings@var102 , this@expr171 ) ;
+54: $do ${ $if $(@expr1073741996 settings@var102 .@expr1073741997 library@var108 $.@expr1073741998 $load $(@expr1073741999 $exename@var11 $.@expr1073742000 $c_str $(@expr1073742001 $) $, "std.cfg" $) $.@expr1073742002 $errorcode $!=@expr1073742003 $Library $::@expr1073742004 $ErrorCode $::@expr1073742005 $OK $) ${ $complainMissingLib $(@expr1073742006 "std.cfg" $) $; $return $; $} $} $while $(@expr1073742007 $false $) ;
+55: std ::@expr1073742008 istringstream istr@var109 (@expr1073742009 code@var104 ) ;
+56: $assert_ $(@expr1073742010 file@var105 $, line@var106 $, $(@expr1073742011 tokenizer@var107 .@expr1073742012 tokenize (@expr1073742013 istr@var109 , "test.cpp" ) $) $) ;
+57:
+58:
+59: Check64BitPortability check64BitPortability@var110 (@expr1073742014 &@expr1073742015 tokenizer@var107 , &@expr170 settings@var102 , this@expr171 ) ;
+60: check64BitPortability@var110 .@expr1073742017 pointerassignment (@expr1073742018 ) ;
+61: }
+62:
+63: void assignment ( ) {
+64:
+65: $check_ $(@expr1073742019 "using CharArray = char[16];\nvoid f() {\n    CharArray foo = \"\";\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 65 $)
+66:
+67:
+68: ;
+69: $if $(@expr1073742020 $!@expr1073742021 $assertEquals $(@expr1073742022 "cppcheck-2.8/test/test64bit.cpp" $, 69 $, "" $, errout@var100 .@expr1073742023 str (@expr1073742024 ) $) $) { $return ; }
+70: }
+71:
+72: void novardecl ( ) {
+73:
+74: $check_ $(@expr1073742025 "void foo()\n{\n    a = p;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 74 $)
+75:
+76:
+77: ;
+78: $if $(@expr1073742026 $!@expr1073742027 $assertEquals $(@expr1073742028 "cppcheck-2.8/test/test64bit.cpp" $, 78 $, "" $, errout@var100 .@expr1073742029 str (@expr1073742030 ) $) $) { $return ; }
+79: }
+80:
+81: void functionpar ( ) {
+82: $check_ $(@expr1073742031 "int foo(int *p)\n{\n    int a = p;\n    return a + 4;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 82 $)
+83:
+84:
+85:
+86: ;
+87: $if $(@expr1073742032 $!@expr1073742033 $assertEquals $(@expr1073742034 "cppcheck-2.8/test/test64bit.cpp" $, 87 $, "[test.cpp:3]: (portability) Assigning a pointer to an integer is not portable.\n" $, errout@var100 .@expr211 str (@expr212 ) $) $) { $return ; }
+88:
+89: $check_ $(@expr1073742037 "int foo(int p[])\n{\n    int a = p;\n    return a + 4;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 89 $)
+90:
+91:
+92:
+93: ;
+94: $if $(@expr1073742038 $!@expr1073742039 $assertEquals $(@expr1073742040 "cppcheck-2.8/test/test64bit.cpp" $, 94 $, "[test.cpp:3]: (portability) Assigning a pointer to an integer is not portable.\n" $, errout@var100 .@expr211 str (@expr212 ) $) $) { $return ; }
+95:
+96: $check_ $(@expr1073742043 "int foo(int p[])\n{\n    int *a = p;\n    return a;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 96 $)
+97:
+98:
+99:
+100: ;
+101: $if $(@expr1073742044 $!@expr1073742045 $assertEquals $(@expr1073742046 "cppcheck-2.8/test/test64bit.cpp" $, 101 $, "[test.cpp:4]: (portability) Returning an address value in a function with integer return type is not portable.\n" $, errout@var100 .@expr211 str (@expr212 ) $) $) { $return ; }
+102:
+103: $check_ $(@expr1073742049 "void foo(int x)\n{\n    int *p = x;\n    *p = 0;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 103 $)
+104:
+105:
+106:
+107: ;
+108: $if $(@expr1073742050 $!@expr1073742051 $assertEquals $(@expr1073742052 "cppcheck-2.8/test/test64bit.cpp" $, 108 $, "[test.cpp:3]: (portability) Assigning an integer to a pointer is not portable.\n" $, errout@var100 .@expr211 str (@expr212 ) $) $) { $return ; }
+109:
+110: $check_ $(@expr1073742055 "int f(const char *p) {\n    return 6 + p[2] * 256;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 110 $)
+111:
+112: ;
+113: $if $(@expr1073742056 $!@expr1073742057 $assertEquals $(@expr1073742058 "cppcheck-2.8/test/test64bit.cpp" $, 113 $, "" $, errout@var100 .@expr211 str (@expr212 ) $) $) { $return ; }
+114:
+115: $check_ $(@expr1073742061 "int foo(int *p) {\n    bool a = p;\n    return a;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 115 $)
+116:
+117:
+118: ;
+119: $if $(@expr1073742062 $!@expr1073742063 $assertEquals $(@expr1073742064 "cppcheck-2.8/test/test64bit.cpp" $, 119 $, "" $, errout@var100 .@expr211 str (@expr212 ) $) $) { $return ; }
+120:
+121: $check_ $(@expr1073742067 "std::array<int,2> f();\nvoid g() {\n    std::array<int, 2> a = f();\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 121 $)
+122:
+123:
+124: ;
+125: $if $(@expr1073742068 $!@expr1073742069 $assertEquals $(@expr1073742070 "cppcheck-2.8/test/test64bit.cpp" $, 125 $, "" $, errout@var100 .@expr211 str (@expr212 ) $) $) { $return ; }
+126:
+127: $check_ $(@expr1073742073 "std::array<int,2> f(int x);\nvoid g(int i) {\n    std::array<int, 2> a = f(i);\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 127 $)
+128:
+129:
+130: ;
+131: $if $(@expr1073742074 $!@expr1073742075 $assertEquals $(@expr1073742076 "cppcheck-2.8/test/test64bit.cpp" $, 131 $, "" $, errout@var100 .@expr211 str (@expr212 ) $) $) { $return ; }
+132:
+133: $check_ $(@expr1073742079 "typedef std::array<int, 2> Array;\nArray f(int x);\nvoid g(int i) {\n    Array a = f(i);\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 133 $)
+134:
+135:
+136:
+137: ;
+138: $if $(@expr1073742080 $!@expr1073742081 $assertEquals $(@expr1073742082 "cppcheck-2.8/test/test64bit.cpp" $, 138 $, "" $, errout@var100 .@expr211 str (@expr212 ) $) $) { $return ; }
+139:
+140: $check_ $(@expr1073742085 "typedef std::array<int, 2> Array;\nArray f();\nvoid g(int i) {\n    Array a = f();\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 140 $)
+141:
+142:
+143:
+144: ;
+145: $if $(@expr1073742086 $!@expr1073742087 $assertEquals $(@expr1073742088 "cppcheck-2.8/test/test64bit.cpp" $, 145 $, "" $, errout@var100 .@expr211 str (@expr212 ) $) $) { $return ; }
+146:
+147: $check_ $(@expr1073742091 "struct S {\n    enum E { E0 };\n    std::array<double, 1> g(S::E);\n};\nvoid f() {\n    std::array<double, 1> a = S::g(S::E::E0);\n}\n" $, "cppcheck-2.8/test/test64bit.cpp" $, 147 $)
+148:
+|
+152:
+153: ;
+154: $if $(@expr1073742092 $!@expr1073742093 $assertEquals $(@expr1073742094 "cppcheck-2.8/test/test64bit.cpp" $, 154 $, "" $, errout@var100 .@expr211 str (@expr212 ) $) $) { $return ; }
+155: }
+156:
+157: void structmember ( ) {
+158: $check_ $(@expr1073742097 "struct Foo { int *p; };\nvoid f(struct Foo *foo) {\n    int i = foo->p;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 158 $)
+159:
+160:
+161: ;
+162: $if $(@expr1073742098 $!@expr1073742099 $assertEquals $(@expr1073742100 "cppcheck-2.8/test/test64bit.cpp" $, 162 $, "[test.cpp:3]: (portability) Assigning a pointer to an integer is not portable.\n" $, errout@var100 .@expr277 str (@expr278 ) $) $) { $return ; }
+163:
+164: $check_ $(@expr1073742103 "struct S {\n    enum class E { e1, e2 };\n    E e;\n    char* e1;\n};\nvoid f(S& s) {\n    s.e = S::E::e1;\n}\n" $, "cppcheck-2.8/test/test64bit.cpp" $, 164 $)
+165:
+|
+170:
+171: ;
+172: $if $(@expr1073742104 $!@expr1073742105 $assertEquals $(@expr1073742106 "cppcheck-2.8/test/test64bit.cpp" $, 172 $, "" $, errout@var100 .@expr277 str (@expr278 ) $) $) { $return ; }
+173: }
+174:
+175: void ptrcompare ( ) {
+176:
+177: $check_ $(@expr1073742109 "void foo(int *p) {\n    int a = (p != NULL);\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 177 $)
+178:
+179: ;
+180: $if $(@expr1073742110 $!@expr1073742111 $assertEquals $(@expr1073742112 "cppcheck-2.8/test/test64bit.cpp" $, 180 $, "" $, errout@var100 .@expr1073742113 str (@expr1073742114 ) $) $) { $return ; }
+181: }
+182:
+183: void ptrarithmetic ( ) {
+184:
+185: $check_ $(@expr1073742115 "void foo(int *p) {\n    int x = 10;\n    int *a = p + x;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 185 $)
+186:
+187:
+188: ;
+189: $if $(@expr1073742116 $!@expr1073742117 $assertEquals $(@expr1073742118 "cppcheck-2.8/test/test64bit.cpp" $, 189 $, "" $, errout@var100 .@expr295 str (@expr296 ) $) $) { $return ; }
+190:
+191: $check_ $(@expr1073742121 "void foo(int *p) {\n    int x = 10;\n    int *a = x + p;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 191 $)
+192:
+193:
+194: ;
+195: $if $(@expr1073742122 $!@expr1073742123 $assertEquals $(@expr1073742124 "cppcheck-2.8/test/test64bit.cpp" $, 195 $, "" $, errout@var100 .@expr295 str (@expr296 ) $) $) { $return ; }
+196:
+197: $check_ $(@expr1073742127 "void foo(int *p) {\n    int x = 10;\n    int *a = x * x;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 197 $)
+198:
+199:
+200: ;
+201: $if $(@expr1073742128 $!@expr1073742129 $assertEquals $(@expr1073742130 "cppcheck-2.8/test/test64bit.cpp" $, 201 $, "[test.cpp:3]: (portability) Assigning an integer to a pointer is not portable.\n" $, errout@var100 .@expr295 str (@expr296 ) $) $) { $return ; }
+202:
+203: $check_ $(@expr1073742133 "void foo(int *start, int *end) {\n    int len;\n    int len = end + 10 - start;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 203 $)
+204:
+205:
+206: ;
+207: $if $(@expr1073742134 $!@expr1073742135 $assertEquals $(@expr1073742136 "cppcheck-2.8/test/test64bit.cpp" $, 207 $, "" $, errout@var100 .@expr295 str (@expr296 ) $) $) { $return ; }
+208: }
+209:
+210: void returnIssues ( ) {
+211: $check_ $(@expr1073742139 "void* foo(int i) {\n    return i;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 211 $)
+212:
+213: ;
+214: $if $(@expr1073742140 $!@expr1073742141 $assertEquals $(@expr1073742142 "cppcheck-2.8/test/test64bit.cpp" $, 214 $, "[test.cpp:2]: (portability) Returning an integer in a function with pointer return type is not portable.\n" $, errout@var100 .@expr319 str (@expr320 ) $) $) { $return ; }
+215:
+216: $check_ $(@expr1073742145 "void* foo(int* i) {\n    return i;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 216 $)
+217:
+218: ;
+219: $if $(@expr1073742146 $!@expr1073742147 $assertEquals $(@expr1073742148 "cppcheck-2.8/test/test64bit.cpp" $, 219 $, "" $, errout@var100 .@expr319 str (@expr320 ) $) $) { $return ; }
+220:
+221: $check_ $(@expr1073742151 "void* foo() {\n    return 0;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 221 $)
+222:
+223: ;
+224: $if $(@expr1073742152 $!@expr1073742153 $assertEquals $(@expr1073742154 "cppcheck-2.8/test/test64bit.cpp" $, 224 $, "" $, errout@var100 .@expr319 str (@expr320 ) $) $) { $return ; }
+225:
+226: $check_ $(@expr1073742157 "int foo(int i) {\n    return i;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 226 $)
+227:
+228: ;
+229: $if $(@expr1073742158 $!@expr1073742159 $assertEquals $(@expr1073742160 "cppcheck-2.8/test/test64bit.cpp" $, 229 $, "" $, errout@var100 .@expr319 str (@expr320 ) $) $) { $return ; }
+230:
+231: $check_ $(@expr1073742163 "struct Foo {};\n\nint* dostuff(Foo foo) {\n  return foo;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 231 $)
+232:
+233:
+234:
+235: ;
+236: $if $(@expr1073742164 $!@expr1073742165 $assertEquals $(@expr1073742166 "cppcheck-2.8/test/test64bit.cpp" $, 236 $, "" $, errout@var100 .@expr319 str (@expr320 ) $) $) { $return ; }
+237:
+238: $check_ $(@expr1073742169 "int foo(char* c) {\n    return c;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 238 $)
+239:
+240: ;
+241: $if $(@expr1073742170 $!@expr1073742171 $assertEquals $(@expr1073742172 "cppcheck-2.8/test/test64bit.cpp" $, 241 $, "[test.cpp:2]: (portability) Returning an address value in a function with integer return type is not portable.\n" $, errout@var100 .@expr319 str (@expr320 ) $) $) { $return ; }
+242:
+243: $check_ $(@expr1073742175 "int foo(char* c) {\n    return 1+c;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 243 $)
+244:
+245: ;
+246: $if $(@expr1073742176 $!@expr1073742177 $assertEquals $(@expr1073742178 "cppcheck-2.8/test/test64bit.cpp" $, 246 $, "[test.cpp:2]: (portability) Returning an address value in a function with integer return type is not portable.\n" $, errout@var100 .@expr319 str (@expr320 ) $) $) { $return ; }
+247:
+248: $check_ $(@expr1073742181 "std::string foo(char* c) {\n    return c;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 248 $)
+249:
+250: ;
+251: $if $(@expr1073742182 $!@expr1073742183 $assertEquals $(@expr1073742184 "cppcheck-2.8/test/test64bit.cpp" $, 251 $, "" $, errout@var100 .@expr319 str (@expr320 ) $) $) { $return ; }
+252:
+253: $check_ $(@expr1073742187 "int foo(char *a, char *b) {\n    return a + 1 - b;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 253 $)
+254:
+255: ;
+256: $if $(@expr1073742188 $!@expr1073742189 $assertEquals $(@expr1073742190 "cppcheck-2.8/test/test64bit.cpp" $, 256 $, "" $, errout@var100 .@expr319 str (@expr320 ) $) $) { $return ; }
+257:
+258: $check_ $(@expr1073742193 "struct s {\n   int i;\n};\nint func(struct s *p) {\n return 1 + p->i;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 258 $)
+259:
+|
+262:
+263: ;
+264: $if $(@expr1073742194 $!@expr1073742195 $assertEquals $(@expr1073742196 "cppcheck-2.8/test/test64bit.cpp" $, 264 $, "" $, errout@var100 .@expr319 str (@expr320 ) $) $) { $return ; }
+265:
+266: $check_ $(@expr1073742199 "static void __iomem *f(unsigned int port_no) {\n  void __iomem *mmio = hpriv->mmio;\n  return mmio + (port_no * 0x80);\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 266 $)
+267:
+268:
+269: ;
+270: $if $(@expr1073742200 $!@expr1073742201 $assertEquals $(@expr1073742202 "cppcheck-2.8/test/test64bit.cpp" $, 270 $, "" $, errout@var100 .@expr319 str (@expr320 ) $) $) { $return ; }
+271:
+272:
+273: $check_ $(@expr1073742205 "int foo() {\n  struct {\n    const char * name() { return \"abc\"; }\n  } table;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 273 $)
+274:
+275:
+276:
+277: ;
+278: $if $(@expr1073742206 $!@expr1073742207 $assertEquals $(@expr1073742208 "cppcheck-2.8/test/test64bit.cpp" $, 278 $, "" $, errout@var100 .@expr319 str (@expr320 ) $) $) { $return ; }
+279:
+280:
+281: $check_ $(@expr1073742211 "const int* test(std::vector<int> outputs, const std::string& text) {\n  auto it = std::find_if(outputs.begin(), outputs.end(),\n     [&](int ele) { return \"test\" == text; });\n  return nullptr;\n}" $, "cppcheck-2.8/test/test64bit.cpp" $, 281 $)
+282:
+283:
+284:
+285: ;
+286: $if $(@expr1073742212 $!@expr1073742213 $assertEquals $(@expr1073742214 "cppcheck-2.8/test/test64bit.cpp" $, 286 $, "" $, errout@var100 .@expr319 str (@expr320 ) $) $) { $return ; }
+287: }
+288: } ;
+289:
+290: $namespace ${ Test64BitPortability instance_Test64BitPortability@var111 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@34}
+  v {!<=-1,!>=2,0@34}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 30
+  "Test64BitPortability" always "Test64BitPortability"
+Line 38
+  ( always {!<=-1,!>=2}
+  "novardecl" always "novardecl"
+  false always 0
+  false always 0
+Line 39
+  ( always {!<=-1,!>=2}
+  "functionpar" always "functionpar"
+  false always 0
+  false always 0
+Line 40
+  ( always {!<=-1,!>=2}
+  "structmember" always "structmember"
+  false always 0
+  false always 0
+Line 41
+  ( always {!<=-1,!>=2}
+  "ptrcompare" always "ptrcompare"
+  false always 0
+  false always 0
+Line 42
+  ( always {!<=-1,!>=2}
+  "ptrarithmetic" always "ptrarithmetic"
+  false always 0
+  false always 0
+Line 43
+  ( always {!<=-1,!>=2}
+  "returnIssues" always "returnIssues"
+  false always 0
+  false always 0
+Line 44
+  ( always {!<=-1,!>=2}
+  "assignment" always "assignment"
+  false always 0
+  false always 0
+Line 50
+  "" always ""
+Line 53
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 54
+  ( {lifetime[Object]=(exename),!0}
+  "std.cfg" always "std.cfg"
+  != always {!<=-1,!>=2}
+  "std.cfg" always "std.cfg"
+  false always 0
+Line 55
+  code possible {"void* foo(int i) {\n    return i;\n}"@1,"void* foo(int* i) {\n    return i;\n}"@2,"void* foo() {\n    return 0;\n}"@3,"int foo(int i) {\n    return i;\n}"@4,"struct Foo {};\n\nint* dostuff(Foo foo) {\n  return foo;\n}"@5,"int foo(char* c) {\n    return c;\n}"@6,"int foo(char* c) {\n    return 1+c;\n}"@7,"std::string foo(char* c) {\n    return c;\n}"@8,"int foo(char *a, char *b) {\n    return a + 1 - b;\n}"@9,"struct s {\n   int i;\n};\nint func(struct s *p) {\n return 1 + p->i;\n}"@10}
+Line 56
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/test64bit.cpp"@1,"cppcheck-2.8/test/test64bit.cpp"@2,"cppcheck-2.8/test/test64bit.cpp"@3,"cppcheck-2.8/test/test64bit.cpp"@4,"cppcheck-2.8/test/test64bit.cpp"@5,"cppcheck-2.8/test/test64bit.cpp"@6,"cppcheck-2.8/test/test64bit.cpp"@7,"cppcheck-2.8/test/test64bit.cpp"@8,"cppcheck-2.8/test/test64bit.cpp"@9,"cppcheck-2.8/test/test64bit.cpp"@10}
+  line inconclusive {211@1,216@2,221@3,226@4,231@5,238@6,243@7,248@8,253@9,258@10}
+  "test.cpp" always "test.cpp"
+Line 59
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 65
+  "using CharArray = char[16];\nvoid f() {\n    CharArray foo = \"\";\n}" always "using CharArray = char[16];\nvoid f() {\n    CharArray foo = \"\";\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  65 always 65
+Line 69
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  69 always 69
+  "" always ""
+Line 74
+  "void foo()\n{\n    a = p;\n}" always "void foo()\n{\n    a = p;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  74 always 74
+Line 78
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  78 always 78
+  "" always ""
+Line 82
+  "int foo(int *p)\n{\n    int a = p;\n    return a + 4;\n}" always "int foo(int *p)\n{\n    int a = p;\n    return a + 4;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  82 always 82
+Line 87
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  87 always 87
+  "[test.cpp:3]: (portability) Assigning a pointer to an integer is not portable.\n" always "[test.cpp:3]: (portability) Assigning a pointer to an integer is not portable.\n"
+Line 89
+  "int foo(int p[])\n{\n    int a = p;\n    return a + 4;\n}" always "int foo(int p[])\n{\n    int a = p;\n    return a + 4;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  89 always 89
+Line 94
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  94 always 94
+  "[test.cpp:3]: (portability) Assigning a pointer to an integer is not portable.\n" always "[test.cpp:3]: (portability) Assigning a pointer to an integer is not portable.\n"
+Line 96
+  "int foo(int p[])\n{\n    int *a = p;\n    return a;\n}" always "int foo(int p[])\n{\n    int *a = p;\n    return a;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  96 always 96
+Line 101
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  101 always 101
+  "[test.cpp:4]: (portability) Returning an address value in a function with integer return type is not portable.\n" always "[test.cpp:4]: (portability) Returning an address value in a function with integer return type is not portable.\n"
+Line 103
+  "void foo(int x)\n{\n    int *p = x;\n    *p = 0;\n}" always "void foo(int x)\n{\n    int *p = x;\n    *p = 0;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  103 always 103
+Line 108
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  108 always 108
+  "[test.cpp:3]: (portability) Assigning an integer to a pointer is not portable.\n" always "[test.cpp:3]: (portability) Assigning an integer to a pointer is not portable.\n"
+Line 110
+  "int f(const char *p) {\n    return 6 + p[2] * 256;\n}" always "int f(const char *p) {\n    return 6 + p[2] * 256;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  110 always 110
+Line 113
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  113 always 113
+  "" always ""
+Line 115
+  "int foo(int *p) {\n    bool a = p;\n    return a;\n}" always "int foo(int *p) {\n    bool a = p;\n    return a;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  115 always 115
+Line 119
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  119 always 119
+  "" always ""
+Line 121
+  "std::array<int,2> f();\nvoid g() {\n    std::array<int, 2> a = f();\n}" always "std::array<int,2> f();\nvoid g() {\n    std::array<int, 2> a = f();\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  121 always 121
+Line 125
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  125 always 125
+  "" always ""
+Line 127
+  "std::array<int,2> f(int x);\nvoid g(int i) {\n    std::array<int, 2> a = f(i);\n}" always "std::array<int,2> f(int x);\nvoid g(int i) {\n    std::array<int, 2> a = f(i);\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  127 always 127
+Line 131
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  131 always 131
+  "" always ""
+Line 133
+  "typedef std::array<int, 2> Array;\nArray f(int x);\nvoid g(int i) {\n    Array a = f(i);\n}" always "typedef std::array<int, 2> Array;\nArray f(int x);\nvoid g(int i) {\n    Array a = f(i);\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  133 always 133
+Line 138
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  138 always 138
+  "" always ""
+Line 140
+  "typedef std::array<int, 2> Array;\nArray f();\nvoid g(int i) {\n    Array a = f();\n}" always "typedef std::array<int, 2> Array;\nArray f();\nvoid g(int i) {\n    Array a = f();\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  140 always 140
+Line 145
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  145 always 145
+  "" always ""
+Line 147
+  "struct S {\n    enum E { E0 };\n    std::array<double, 1> g(S::E);\n};\nvoid f() {\n    std::array<double, 1> a = S::g(S::E::E0);\n}\n" always "struct S {\n    enum E { E0 };\n    std::array<double, 1> g(S::E);\n};\nvoid f() {\n    std::array<double, 1> a = S::g(S::E::E0);\n}\n"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  147 always 147
+Line 154
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  154 always 154
+  "" always ""
+Line 158
+  "struct Foo { int *p; };\nvoid f(struct Foo *foo) {\n    int i = foo->p;\n}" always "struct Foo { int *p; };\nvoid f(struct Foo *foo) {\n    int i = foo->p;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  158 always 158
+Line 162
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  162 always 162
+  "[test.cpp:3]: (portability) Assigning a pointer to an integer is not portable.\n" always "[test.cpp:3]: (portability) Assigning a pointer to an integer is not portable.\n"
+Line 164
+  "struct S {\n    enum class E { e1, e2 };\n    E e;\n    char* e1;\n};\nvoid f(S& s) {\n    s.e = S::E::e1;\n}\n" always "struct S {\n    enum class E { e1, e2 };\n    E e;\n    char* e1;\n};\nvoid f(S& s) {\n    s.e = S::E::e1;\n}\n"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  164 always 164
+Line 172
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  172 always 172
+  "" always ""
+Line 177
+  "void foo(int *p) {\n    int a = (p != NULL);\n}" always "void foo(int *p) {\n    int a = (p != NULL);\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  177 always 177
+Line 180
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  180 always 180
+  "" always ""
+Line 185
+  "void foo(int *p) {\n    int x = 10;\n    int *a = p + x;\n}" always "void foo(int *p) {\n    int x = 10;\n    int *a = p + x;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  185 always 185
+Line 189
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  189 always 189
+  "" always ""
+Line 191
+  "void foo(int *p) {\n    int x = 10;\n    int *a = x + p;\n}" always "void foo(int *p) {\n    int x = 10;\n    int *a = x + p;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  191 always 191
+Line 195
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  195 always 195
+  "" always ""
+Line 197
+  "void foo(int *p) {\n    int x = 10;\n    int *a = x * x;\n}" always "void foo(int *p) {\n    int x = 10;\n    int *a = x * x;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  197 always 197
+Line 201
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  201 always 201
+  "[test.cpp:3]: (portability) Assigning an integer to a pointer is not portable.\n" always "[test.cpp:3]: (portability) Assigning an integer to a pointer is not portable.\n"
+Line 203
+  "void foo(int *start, int *end) {\n    int len;\n    int len = end + 10 - start;\n}" always "void foo(int *start, int *end) {\n    int len;\n    int len = end + 10 - start;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  203 always 203
+Line 207
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  207 always 207
+  "" always ""
+Line 211
+  "void* foo(int i) {\n    return i;\n}" always "void* foo(int i) {\n    return i;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  211 always 211
+Line 214
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  214 always 214
+  "[test.cpp:2]: (portability) Returning an integer in a function with pointer return type is not portable.\n" always "[test.cpp:2]: (portability) Returning an integer in a function with pointer return type is not portable.\n"
+Line 216
+  "void* foo(int* i) {\n    return i;\n}" always "void* foo(int* i) {\n    return i;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  216 always 216
+Line 219
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  219 always 219
+  "" always ""
+Line 221
+  "void* foo() {\n    return 0;\n}" always "void* foo() {\n    return 0;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  221 always 221
+Line 224
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  224 always 224
+  "" always ""
+Line 226
+  "int foo(int i) {\n    return i;\n}" always "int foo(int i) {\n    return i;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  226 always 226
+Line 229
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  229 always 229
+  "" always ""
+Line 231
+  "struct Foo {};\n\nint* dostuff(Foo foo) {\n  return foo;\n}" always "struct Foo {};\n\nint* dostuff(Foo foo) {\n  return foo;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  231 always 231
+Line 236
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  236 always 236
+  "" always ""
+Line 238
+  "int foo(char* c) {\n    return c;\n}" always "int foo(char* c) {\n    return c;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  238 always 238
+Line 241
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  241 always 241
+  "[test.cpp:2]: (portability) Returning an address value in a function with integer return type is not portable.\n" always "[test.cpp:2]: (portability) Returning an address value in a function with integer return type is not portable.\n"
+Line 243
+  "int foo(char* c) {\n    return 1+c;\n}" always "int foo(char* c) {\n    return 1+c;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  243 always 243
+Line 246
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  246 always 246
+  "[test.cpp:2]: (portability) Returning an address value in a function with integer return type is not portable.\n" always "[test.cpp:2]: (portability) Returning an address value in a function with integer return type is not portable.\n"
+Line 248
+  "std::string foo(char* c) {\n    return c;\n}" always "std::string foo(char* c) {\n    return c;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  248 always 248
+Line 251
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  251 always 251
+  "" always ""
+Line 253
+  "int foo(char *a, char *b) {\n    return a + 1 - b;\n}" always "int foo(char *a, char *b) {\n    return a + 1 - b;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  253 always 253
+Line 256
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  256 always 256
+  "" always ""
+Line 258
+  "struct s {\n   int i;\n};\nint func(struct s *p) {\n return 1 + p->i;\n}" always "struct s {\n   int i;\n};\nint func(struct s *p) {\n return 1 + p->i;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  258 always 258
+Line 264
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  264 always 264
+  "" always ""
+Line 266
+  "static void __iomem *f(unsigned int port_no) {\n  void __iomem *mmio = hpriv->mmio;\n  return mmio + (port_no * 0x80);\n}" always "static void __iomem *f(unsigned int port_no) {\n  void __iomem *mmio = hpriv->mmio;\n  return mmio + (port_no * 0x80);\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  266 always 266
+Line 270
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  270 always 270
+  "" always ""
+Line 273
+  "int foo() {\n  struct {\n    const char * name() { return \"abc\"; }\n  } table;\n}" always "int foo() {\n  struct {\n    const char * name() { return \"abc\"; }\n  } table;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  273 always 273
+Line 278
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  278 always 278
+  "" always ""
+Line 281
+  "const int* test(std::vector<int> outputs, const std::string& text) {\n  auto it = std::find_if(outputs.begin(), outputs.end(),\n     [&](int ele) { return \"test\" == text; });\n  return nullptr;\n}" always "const int* test(std::vector<int> outputs, const std::string& text) {\n  auto it = std::find_if(outputs.begin(), outputs.end(),\n     [&](int ele) { return \"test\" == text; });\n  return nullptr;\n}"
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  281 always 281
+Line 286
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/test64bit.cpp" always "cppcheck-2.8/test/test64bit.cpp"
+  286 always 286
+  "" always ""

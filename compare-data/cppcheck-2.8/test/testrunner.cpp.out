@@ -1,0 +1,278 @@
+
+
+##file cppcheck-2.8/test/options.h
+
+1:
+|
+27:
+28: class options {
+29: public:
+30:
+31: options ( int argc@var1 , const char * const argv@var2 [ ] ) ;
+32:
+33: bool quiet ( ) const ;
+34:
+35: bool help ( ) const ;
+36:
+37: const std :: set < std :: string > & which_test ( ) const ;
+38:
+39: const std :: string & exe ( ) const ;
+40:
+41: private:
+42: options ( ) ;
+43: options ( const options & non_copy@var3 ) ;
+44: const options & operator= ( const options & non_assign@var4 ) ;
+45:
+46: private:
+47: std :: set < std :: string > mWhichTests@var5 ;
+48: const bool mQuiet@var6 ;
+49: const bool mHelp@var7 ;
+50: std :: string mExe@var8 ;
+51: } ;
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var9 ;
+37: static unsigned int countTests@var10 ;
+38: static unsigned long fails_counter@var11 ;
+39: static unsigned long todos_counter@var12 ;
+40: static unsigned long succeeded_todos_counter@var13 ;
+41: static std :: set < std :: string > missingLibs@var14 ;
+42: bool mVerbose@var15 ;
+43: std :: string mTemplateFormat@var16 ;
+44: std :: string mTemplateLocation@var17 ;
+45: std :: string mTestname@var18 ;
+46:
+47: protected:
+48: std :: string exename@var19 ;
+49: std :: string testToRun@var20 ;
+50: bool quiet_tests@var21 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var22 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var23 , const unsigned int linenr@var24 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var25 , const unsigned int linenr@var26 , const bool condition@var27 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var28 , const unsigned int linenr@var29 , const T & expected@var30 , const U & actual@var31 , const std :: string & msg@var32 = emptyString ) const {
+61: if (@expr1073741938 expected@var30 !=@expr1073741939 actual@var31 ) {
+62: std ::@expr1073741940 ostringstream expectedStr@var33 ;
+63: expectedStr@var33 <<@expr1073741941 expected@var30 ;
+64: std ::@expr1073741942 ostringstream actualStr@var34 ;
+65: actualStr@var34 <<@expr1073741943 actual@var31 ;
+66:
+67: assertEqualsFailed (@expr1073741944 filename@var28 , linenr@var29 , expectedStr@var33 .@expr1073741945 str (@expr1073741946 ) , actualStr@var34 .@expr1073741947 str (@expr1073741948 ) , msg@var32 ) ;
+68: }
+69: return expected@var30 ==@expr1073741949 actual@var31 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var35 , const unsigned int linenr@var36 , const std :: string & expected@var37 , const std :: string & actual@var38 , const std :: string & msg@var39 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var40 , const unsigned int linenr@var41 , const std :: string & expected@var42 , const std :: string & actual@var43 , const std :: string & msg@var44 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var45 , const unsigned int linenr@var46 , const std :: string & expected@var47 , const std :: string & actual@var48 , const std :: string & msg@var49 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var50 , const unsigned int linenr@var51 , const char expected@var52 [ ] , const std :: string & actual@var53 , const std :: string & msg@var54 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var55 , const unsigned int linenr@var56 , const char expected@var57 [ ] , const char actual@var58 [ ] , const std :: string & msg@var59 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var60 , const unsigned int linenr@var61 , const std :: string & expected@var62 , const char actual@var63 [ ] , const std :: string & msg@var64 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var65 , const unsigned int linenr@var66 , const long long expected@var67 , const long long actual@var68 , const std :: string & msg@var69 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var70 , const unsigned int linenr@var71 , const double expected@var72 , const double actual@var73 , const double tolerance@var74 , const std :: string & msg@var75 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var76 , const unsigned int linenr@var77 , const std :: string & wanted@var78 ,
+85: const std :: string & current@var79 , const std :: string & actual@var80 ) const ;
+86: void todoAssertEquals ( const char * const filename@var81 , const unsigned int linenr@var82 , const char wanted@var83 [ ] ,
+87: const char current@var84 [ ] , const std :: string & actual@var85 ) const ;
+88: void todoAssertEquals ( const char * const filename@var86 , const unsigned int linenr@var87 , const long long wanted@var88 ,
+89: const long long current@var89 , const long long actual@var90 ) const ;
+90: void assertThrow ( const char * const filename@var91 , const unsigned int linenr@var92 ) const ;
+91: void assertThrowFail ( const char * const filename@var93 , const unsigned int linenr@var94 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var95 , const unsigned int linenr@var96 ) const ;
+93: static void complainMissingLib ( const char * const libname@var97 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var98 ) ;
+95:
+96: void setVerbose ( bool v@var99 ) {
+97: mVerbose@var15 =@expr1073741950 v@var99 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var16 =@expr1073741951 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var17 =@expr1073741952 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var100 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var101 , Color c@var102 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var103 ) override ;
+109: void run ( const std :: string & str@var104 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var105 ;
+112:
+113: explicit TestFixture ( const char * const _name@var106 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var107 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var108 ;
+120: extern std :: ostringstream output@var109 ;
+
+##file cppcheck-2.8/test/testrunner.cpp
+
+1:
+|
+32:
+33: int main ( int argc@var110 , char * argv@var111 [ ] )
+34: {
+35:
+|
+42:
+43: Preprocessor ::@expr1073741955 macroChar@expr1073741953 =@expr1073741956 '$' ;
+44:
+45: options args@var112 (@expr1073741957 argc@var110 , argv@var111 ) ;
+46:
+47: if (@expr1073741958 args@var112 .@expr1073741959 help (@expr1073741960 ) ) {
+48: TestFixture ::@expr1073741961 printHelp (@expr1073741962 ) ;
+49: return EXIT_SUCCESS ;
+50: }
+51: const unsigned long failedTestsCount@var113 =@expr1073741963 TestFixture ::@expr1073741964 runTests (@expr1073741965 args@var112 ) ;
+52: return (@expr1073741966 failedTestsCount@var113 ==@expr1073741967 0 ) ?@expr1073741968 EXIT_SUCCESS :@expr1073741969 EXIT_FAILURE@expr1073741954 ;
+53:
+|
+63:
+64: }
+
+
+
+##Value flow
+Line 33
+  ( always {!<=-1,!>=2}
+Line 35
+  ( always {!<=-1,!>=2}
+Line 48
+  mQuiet always {!<=-1,!>=2}
+Line 49
+  mHelp always {!<=-1,!>=2}
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  v always {!<=-1,!>=2}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 43
+  = always 36
+  '$' always 36
+Line 47
+  ( always {!<=-1,!>=2}
+Line 51
+  failedTestsCount always !<=-1
+  = always !<=-1
+  ( always !<=-1
+Line 52
+  failedTestsCount {symbolic=(TestFixture::runTests(args)),!<=-1}
+  == always {!<=-1,!>=2}
+  0 always 0

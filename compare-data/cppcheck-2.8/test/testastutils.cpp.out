@@ -1,0 +1,2159 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073742005 expected@var22 !=@expr1073742006 actual@var23 ) {
+62: std ::@expr1073742007 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073742008 expected@var22 ;
+64: std ::@expr1073742009 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073742010 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073742011 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073742012 str (@expr1073742013 ) , actualStr@var26 .@expr1073742014 str (@expr1073742015 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073742016 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073742017 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073742018 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073742019 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testastutils.cpp
+
+1:
+|
+30:
+31: class TestAstUtils : public TestFixture {
+32: public:
+33: TestAstUtils ( ) : TestFixture ( "TestAstUtils" ) { }
+34:
+35: private:
+36:
+37: void run ( ) override {
+38: $do ${ $if $(@expr1073742020 $prepareTest $(@expr1073742021 "findLambdaEndTokenTest" $) $) ${ $setVerbose $(@expr1073742022 $false $) $; findLambdaEndTokenTest $(@expr1073742023 $) $; $} $} $while $(@expr1073742024 $false $) ;
+39: $do ${ $if $(@expr1073742025 $prepareTest $(@expr1073742026 "findLambdaStartTokenTest" $) $) ${ $setVerbose $(@expr1073742027 $false $) $; findLambdaStartTokenTest $(@expr1073742028 $) $; $} $} $while $(@expr1073742029 $false $) ;
+40: $do ${ $if $(@expr1073742030 $prepareTest $(@expr1073742031 "isNullOperandTest" $) $) ${ $setVerbose $(@expr1073742032 $false $) $; isNullOperandTest $(@expr1073742033 $) $; $} $} $while $(@expr1073742034 $false $) ;
+41: $do ${ $if $(@expr1073742035 $prepareTest $(@expr1073742036 "isReturnScopeTest" $) $) ${ $setVerbose $(@expr1073742037 $false $) $; isReturnScopeTest $(@expr1073742038 $) $; $} $} $while $(@expr1073742039 $false $) ;
+42: $do ${ $if $(@expr1073742040 $prepareTest $(@expr1073742041 "isSameExpressionTest" $) $) ${ $setVerbose $(@expr1073742042 $false $) $; isSameExpressionTest $(@expr1073742043 $) $; $} $} $while $(@expr1073742044 $false $) ;
+43: $do ${ $if $(@expr1073742045 $prepareTest $(@expr1073742046 "isVariableChangedTest" $) $) ${ $setVerbose $(@expr1073742047 $false $) $; isVariableChangedTest $(@expr1073742048 $) $; $} $} $while $(@expr1073742049 $false $) ;
+44: $do ${ $if $(@expr1073742050 $prepareTest $(@expr1073742051 "isVariableChangedByFunctionCallTest" $) $) ${ $setVerbose $(@expr1073742052 $false $) $; isVariableChangedByFunctionCallTest $(@expr1073742053 $) $; $} $} $while $(@expr1073742054 $false $) ;
+45: $do ${ $if $(@expr1073742055 $prepareTest $(@expr1073742056 "nextAfterAstRightmostLeafTest" $) $) ${ $setVerbose $(@expr1073742057 $false $) $; nextAfterAstRightmostLeafTest $(@expr1073742058 $) $; $} $} $while $(@expr1073742059 $false $) ;
+46: $do ${ $if $(@expr1073742060 $prepareTest $(@expr1073742061 "isUsedAsBool" $) $) ${ $setVerbose $(@expr1073742062 $false $) $; isUsedAsBool $(@expr1073742063 $) $; $} $} $while $(@expr1073742064 $false $) ;
+47: }
+48:
+49:
+50: bool findLambdaEndToken_ ( const char code@var102 [ ] , const char * file@var103 , int line@var104 ) {
+51: Settings settings@var105 ;
+52: Tokenizer tokenizer@var106 (@expr1073742065 &@expr1073742066 settings@var105 , this@expr1073742067 ) ;
+53: std ::@expr1073742068 istringstream istr@var107 (@expr1073742069 code@var102 ) ;
+54: $assert_ $(@expr1073742070 file@var103 $, line@var104 $, $(@expr1073742071 tokenizer@var106 .@expr1073742072 tokenize (@expr1073742073 istr@var107 , "test.cpp" ) $) $) ;
+55: const Token * const tokEnd@var108 ; tokEnd@var108 =@expr1073742074 (@expr1073742075 ::@expr1073742076 findLambdaEndToken ) (@expr1073742077 tokenizer@var106 .@expr1073742078 tokens (@expr1073742079 ) ) ;
+56: return tokEnd@var108 &&@expr1073742080 tokEnd@var108 .@expr1073742081 next (@expr1073742082 ) ==@expr1073742083 nullptr ;
+57: }
+58:
+59: void findLambdaEndTokenTest ( ) {
+60: const Token * nullTok@var109 ; nullTok@var109 =@expr1073742084 nullptr ;
+61: $if $(@expr1073742085 $!@expr1073742086 $assert_ $(@expr1073742087 "cppcheck-2.8/test/testastutils.cpp" $, 61 $, nullptr ==@expr1073742088 (@expr1073742089 ::@expr1073742090 findLambdaEndToken ) (@expr1073742091 nullTok@var109 ) $) $) { $return ; }
+62: $if $(@expr1073742092 $!@expr1073742093 $assertEquals $(@expr1073742094 "cppcheck-2.8/test/testastutils.cpp" $, 62 $, false $, $findLambdaEndToken_ $(@expr1073742095 "void f() { }" $, "cppcheck-2.8/test/testastutils.cpp" $, 62 $) $) $) { $return ; }
+63: $if $(@expr1073742096 $!@expr1073742097 $assertEquals $(@expr1073742098 "cppcheck-2.8/test/testastutils.cpp" $, 63 $, true $, $findLambdaEndToken_ $(@expr1073742099 "[]{ }" $, "cppcheck-2.8/test/testastutils.cpp" $, 63 $) $) $) { $return ; }
+64: $if $(@expr1073742100 $!@expr1073742101 $assertEquals $(@expr1073742102 "cppcheck-2.8/test/testastutils.cpp" $, 64 $, true $, $findLambdaEndToken_ $(@expr1073742103 "[]{ return 0; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 64 $) $) $) { $return ; }
+65: $if $(@expr1073742104 $!@expr1073742105 $assertEquals $(@expr1073742106 "cppcheck-2.8/test/testastutils.cpp" $, 65 $, true $, $findLambdaEndToken_ $(@expr1073742107 "[](){ }" $, "cppcheck-2.8/test/testastutils.cpp" $, 65 $) $) $) { $return ; }
+66: $if $(@expr1073742108 $!@expr1073742109 $assertEquals $(@expr1073742110 "cppcheck-2.8/test/testastutils.cpp" $, 66 $, true $, $findLambdaEndToken_ $(@expr1073742111 "[&](){ }" $, "cppcheck-2.8/test/testastutils.cpp" $, 66 $) $) $) { $return ; }
+67: $if $(@expr1073742112 $!@expr1073742113 $assertEquals $(@expr1073742114 "cppcheck-2.8/test/testastutils.cpp" $, 67 $, true $, $findLambdaEndToken_ $(@expr1073742115 "[&, i](){ }" $, "cppcheck-2.8/test/testastutils.cpp" $, 67 $) $) $) { $return ; }
+68: $if $(@expr1073742116 $!@expr1073742117 $assertEquals $(@expr1073742118 "cppcheck-2.8/test/testastutils.cpp" $, 68 $, true $, $findLambdaEndToken_ $(@expr1073742119 "[](void) { return -1; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 68 $) $) $) { $return ; }
+69: $if $(@expr1073742120 $!@expr1073742121 $assertEquals $(@expr1073742122 "cppcheck-2.8/test/testastutils.cpp" $, 69 $, true $, $findLambdaEndToken_ $(@expr1073742123 "[](int a, int b) { return a + b; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 69 $) $) $) { $return ; }
+70: $if $(@expr1073742124 $!@expr1073742125 $assertEquals $(@expr1073742126 "cppcheck-2.8/test/testastutils.cpp" $, 70 $, true $, $findLambdaEndToken_ $(@expr1073742127 "[](int a, int b) mutable { return a + b; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 70 $) $) $) { $return ; }
+71: $if $(@expr1073742128 $!@expr1073742129 $assertEquals $(@expr1073742130 "cppcheck-2.8/test/testastutils.cpp" $, 71 $, true $, $findLambdaEndToken_ $(@expr1073742131 "[](int a, int b) constexpr { return a + b; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 71 $) $) $) { $return ; }
+72: $if $(@expr1073742132 $!@expr1073742133 $assertEquals $(@expr1073742134 "cppcheck-2.8/test/testastutils.cpp" $, 72 $, true $, $findLambdaEndToken_ $(@expr1073742135 "[](void) -> int { return -1; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 72 $) $) $) { $return ; }
+73: $if $(@expr1073742136 $!@expr1073742137 $assertEquals $(@expr1073742138 "cppcheck-2.8/test/testastutils.cpp" $, 73 $, true $, $findLambdaEndToken_ $(@expr1073742139 "[](void) mutable -> int { return -1; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 73 $) $) $) { $return ; }
+74: $if $(@expr1073742140 $!@expr1073742141 $assertEquals $(@expr1073742142 "cppcheck-2.8/test/testastutils.cpp" $, 74 $, false $, $findLambdaEndToken_ $(@expr1073742143 "[](void) foo -> int { return -1; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 74 $) $) $) { $return ; }
+75: $if $(@expr1073742144 $!@expr1073742145 $assertEquals $(@expr1073742146 "cppcheck-2.8/test/testastutils.cpp" $, 75 $, true $, $findLambdaEndToken_ $(@expr1073742147 "[](void) constexpr -> int { return -1; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 75 $) $) $) { $return ; }
+76: $if $(@expr1073742148 $!@expr1073742149 $assertEquals $(@expr1073742150 "cppcheck-2.8/test/testastutils.cpp" $, 76 $, true $, $findLambdaEndToken_ $(@expr1073742151 "[](void) constexpr -> int* { return x; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 76 $) $) $) { $return ; }
+77: $if $(@expr1073742152 $!@expr1073742153 $assertEquals $(@expr1073742154 "cppcheck-2.8/test/testastutils.cpp" $, 77 $, true $, $findLambdaEndToken_ $(@expr1073742155 "[](void) constexpr -> const * int { return x; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 77 $) $) $) { $return ; }
+78: $if $(@expr1073742156 $!@expr1073742157 $assertEquals $(@expr1073742158 "cppcheck-2.8/test/testastutils.cpp" $, 78 $, true $, $findLambdaEndToken_ $(@expr1073742159 "[](void) mutable -> const * int { return x; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 78 $) $) $) { $return ; }
+79: $if $(@expr1073742160 $!@expr1073742161 $assertEquals $(@expr1073742162 "cppcheck-2.8/test/testastutils.cpp" $, 79 $, true $, $findLambdaEndToken_ $(@expr1073742163 "[](void) constexpr -> const ** int { return x; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 79 $) $) $) { $return ; }
+80: $if $(@expr1073742164 $!@expr1073742165 $assertEquals $(@expr1073742166 "cppcheck-2.8/test/testastutils.cpp" $, 80 $, true $, $findLambdaEndToken_ $(@expr1073742167 "[](void) constexpr -> const * const* int { return x; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 80 $) $) $) { $return ; }
+81: }
+82:
+83:
+84: bool findLambdaStartToken_ ( const char code@var110 [ ] , const char * file@var111 , int line@var112 ) {
+85: Settings settings@var113 ;
+86: Tokenizer tokenizer@var114 (@expr1073742168 &@expr1073742169 settings@var113 , this@expr1073742170 ) ;
+87: std ::@expr1073742171 istringstream istr@var115 (@expr1073742172 code@var110 ) ;
+88: $assert_ $(@expr1073742173 file@var111 $, line@var112 $, $(@expr1073742174 tokenizer@var114 .@expr1073742175 tokenize (@expr1073742176 istr@var115 , "test.cpp" ) $) $) ;
+89: const Token * const tokStart@var116 ; tokStart@var116 =@expr1073742177 (@expr1073742178 ::@expr1073742179 findLambdaStartToken ) (@expr1073742180 tokenizer@var114 .@expr357 list@var117 .@expr1073742182 back (@expr1073742183 ) ) ;
+90: return tokStart@var116 &&@expr1073742184 tokStart@var116 ==@expr1073742185 tokenizer@var114 .@expr357 list@var117 .@expr1073742187 front (@expr1073742188 ) ;
+91: }
+92:
+93: void findLambdaStartTokenTest ( ) {
+94: $if $(@expr1073742189 $!@expr1073742190 $assert_ $(@expr1073742191 "cppcheck-2.8/test/testastutils.cpp" $, 94 $, nullptr ==@expr1073742192 (@expr1073742193 ::@expr1073742194 findLambdaStartToken ) (@expr1073742195 nullptr ) $) $) { $return ; }
+95: $if $(@expr1073742196 $!@expr1073742197 $assertEquals $(@expr1073742198 "cppcheck-2.8/test/testastutils.cpp" $, 95 $, false $, $findLambdaStartToken_ $(@expr1073742199 "void f() { }" $, "cppcheck-2.8/test/testastutils.cpp" $, 95 $) $) $) { $return ; }
+96: $if $(@expr1073742200 $!@expr1073742201 $assertEquals $(@expr1073742202 "cppcheck-2.8/test/testastutils.cpp" $, 96 $, true $, $findLambdaStartToken_ $(@expr1073742203 "[]{ }" $, "cppcheck-2.8/test/testastutils.cpp" $, 96 $) $) $) { $return ; }
+97: $if $(@expr1073742204 $!@expr1073742205 $assertEquals $(@expr1073742206 "cppcheck-2.8/test/testastutils.cpp" $, 97 $, true $, $findLambdaStartToken_ $(@expr1073742207 "[]{ return 0; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 97 $) $) $) { $return ; }
+98: $if $(@expr1073742208 $!@expr1073742209 $assertEquals $(@expr1073742210 "cppcheck-2.8/test/testastutils.cpp" $, 98 $, true $, $findLambdaStartToken_ $(@expr1073742211 "[](){ }" $, "cppcheck-2.8/test/testastutils.cpp" $, 98 $) $) $) { $return ; }
+99: $if $(@expr1073742212 $!@expr1073742213 $assertEquals $(@expr1073742214 "cppcheck-2.8/test/testastutils.cpp" $, 99 $, true $, $findLambdaStartToken_ $(@expr1073742215 "[&](){ }" $, "cppcheck-2.8/test/testastutils.cpp" $, 99 $) $) $) { $return ; }
+100: $if $(@expr1073742216 $!@expr1073742217 $assertEquals $(@expr1073742218 "cppcheck-2.8/test/testastutils.cpp" $, 100 $, true $, $findLambdaStartToken_ $(@expr1073742219 "[&, i](){ }" $, "cppcheck-2.8/test/testastutils.cpp" $, 100 $) $) $) { $return ; }
+101: $if $(@expr1073742220 $!@expr1073742221 $assertEquals $(@expr1073742222 "cppcheck-2.8/test/testastutils.cpp" $, 101 $, true $, $findLambdaStartToken_ $(@expr1073742223 "[](void) { return -1; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 101 $) $) $) { $return ; }
+102: $if $(@expr1073742224 $!@expr1073742225 $assertEquals $(@expr1073742226 "cppcheck-2.8/test/testastutils.cpp" $, 102 $, true $, $findLambdaStartToken_ $(@expr1073742227 "[](int a, int b) { return a + b; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 102 $) $) $) { $return ; }
+103: $if $(@expr1073742228 $!@expr1073742229 $assertEquals $(@expr1073742230 "cppcheck-2.8/test/testastutils.cpp" $, 103 $, true $, $findLambdaStartToken_ $(@expr1073742231 "[](int a, int b) mutable { return a + b; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 103 $) $) $) { $return ; }
+104: $if $(@expr1073742232 $!@expr1073742233 $assertEquals $(@expr1073742234 "cppcheck-2.8/test/testastutils.cpp" $, 104 $, true $, $findLambdaStartToken_ $(@expr1073742235 "[](int a, int b) constexpr { return a + b; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 104 $) $) $) { $return ; }
+105: $if $(@expr1073742236 $!@expr1073742237 $assertEquals $(@expr1073742238 "cppcheck-2.8/test/testastutils.cpp" $, 105 $, true $, $findLambdaStartToken_ $(@expr1073742239 "[](void) -> int { return -1; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 105 $) $) $) { $return ; }
+106: $if $(@expr1073742240 $!@expr1073742241 $assertEquals $(@expr1073742242 "cppcheck-2.8/test/testastutils.cpp" $, 106 $, true $, $findLambdaStartToken_ $(@expr1073742243 "[](void) mutable -> int { return -1; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 106 $) $) $) { $return ; }
+107: $if $(@expr1073742244 $!@expr1073742245 $assertEquals $(@expr1073742246 "cppcheck-2.8/test/testastutils.cpp" $, 107 $, false $, $findLambdaStartToken_ $(@expr1073742247 "[](void) foo -> int { return -1; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 107 $) $) $) { $return ; }
+108: $if $(@expr1073742248 $!@expr1073742249 $assertEquals $(@expr1073742250 "cppcheck-2.8/test/testastutils.cpp" $, 108 $, true $, $findLambdaStartToken_ $(@expr1073742251 "[](void) constexpr -> int { return -1; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 108 $) $) $) { $return ; }
+109: $if $(@expr1073742252 $!@expr1073742253 $assertEquals $(@expr1073742254 "cppcheck-2.8/test/testastutils.cpp" $, 109 $, true $, $findLambdaStartToken_ $(@expr1073742255 "[](void) constexpr -> int* { return x; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 109 $) $) $) { $return ; }
+110: $if $(@expr1073742256 $!@expr1073742257 $assertEquals $(@expr1073742258 "cppcheck-2.8/test/testastutils.cpp" $, 110 $, true $, $findLambdaStartToken_ $(@expr1073742259 "[](void) constexpr -> const * int { return x; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 110 $) $) $) { $return ; }
+111: $if $(@expr1073742260 $!@expr1073742261 $assertEquals $(@expr1073742262 "cppcheck-2.8/test/testastutils.cpp" $, 111 $, true $, $findLambdaStartToken_ $(@expr1073742263 "[](void) mutable -> const * int { return x; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 111 $) $) $) { $return ; }
+112: $if $(@expr1073742264 $!@expr1073742265 $assertEquals $(@expr1073742266 "cppcheck-2.8/test/testastutils.cpp" $, 112 $, true $, $findLambdaStartToken_ $(@expr1073742267 "[](void) constexpr -> const ** int { return x; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 112 $) $) $) { $return ; }
+113: $if $(@expr1073742268 $!@expr1073742269 $assertEquals $(@expr1073742270 "cppcheck-2.8/test/testastutils.cpp" $, 113 $, true $, $findLambdaStartToken_ $(@expr1073742271 "[](void) constexpr -> const * const* int { return x; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 113 $) $) $) { $return ; }
+114: }
+115:
+116:
+117: bool isNullOperand_ ( const char code@var118 [ ] , const char * file@var119 , int line@var120 ) {
+118: Settings settings@var121 ;
+119: Tokenizer tokenizer@var122 (@expr1073742272 &@expr1073742273 settings@var121 , this@expr1073742274 ) ;
+120: std ::@expr1073742275 istringstream istr@var123 (@expr1073742276 code@var118 ) ;
+121: $assert_ $(@expr1073742277 file@var119 $, line@var120 $, $(@expr1073742278 tokenizer@var122 .@expr1073742279 tokenize (@expr1073742280 istr@var123 , "test.cpp" ) $) $) ;
+122: return (@expr1073742281 ::@expr1073742282 isNullOperand ) (@expr1073742283 tokenizer@var122 .@expr1073742284 tokens (@expr1073742285 ) ) ;
+123: }
+124:
+125: void isNullOperandTest ( ) {
+126: $if $(@expr1073742286 $!@expr1073742287 $assertEquals $(@expr1073742288 "cppcheck-2.8/test/testastutils.cpp" $, 126 $, true $, $isNullOperand_ $(@expr1073742289 "(void*)0;" $, "cppcheck-2.8/test/testastutils.cpp" $, 126 $) $) $) { $return ; }
+127: $if $(@expr1073742290 $!@expr1073742291 $assertEquals $(@expr1073742292 "cppcheck-2.8/test/testastutils.cpp" $, 127 $, true $, $isNullOperand_ $(@expr1073742293 "(void*)0U;" $, "cppcheck-2.8/test/testastutils.cpp" $, 127 $) $) $) { $return ; }
+128: $if $(@expr1073742294 $!@expr1073742295 $assertEquals $(@expr1073742296 "cppcheck-2.8/test/testastutils.cpp" $, 128 $, true $, $isNullOperand_ $(@expr1073742297 "(void*)0x0LL;" $, "cppcheck-2.8/test/testastutils.cpp" $, 128 $) $) $) { $return ; }
+129: $if $(@expr1073742298 $!@expr1073742299 $assertEquals $(@expr1073742300 "cppcheck-2.8/test/testastutils.cpp" $, 129 $, true $, $isNullOperand_ $(@expr1073742301 "NULL;" $, "cppcheck-2.8/test/testastutils.cpp" $, 129 $) $) $) { $return ; }
+130: $if $(@expr1073742302 $!@expr1073742303 $assertEquals $(@expr1073742304 "cppcheck-2.8/test/testastutils.cpp" $, 130 $, true $, $isNullOperand_ $(@expr1073742305 "nullptr;" $, "cppcheck-2.8/test/testastutils.cpp" $, 130 $) $) $) { $return ; }
+131: $if $(@expr1073742306 $!@expr1073742307 $assertEquals $(@expr1073742308 "cppcheck-2.8/test/testastutils.cpp" $, 131 $, true $, $isNullOperand_ $(@expr1073742309 "(void*)NULL;" $, "cppcheck-2.8/test/testastutils.cpp" $, 131 $) $) $) { $return ; }
+132: $if $(@expr1073742310 $!@expr1073742311 $assertEquals $(@expr1073742312 "cppcheck-2.8/test/testastutils.cpp" $, 132 $, true $, $isNullOperand_ $(@expr1073742313 "static_cast<int*>(0);" $, "cppcheck-2.8/test/testastutils.cpp" $, 132 $) $) $) { $return ; }
+133: $if $(@expr1073742314 $!@expr1073742315 $assertEquals $(@expr1073742316 "cppcheck-2.8/test/testastutils.cpp" $, 133 $, false $, $isNullOperand_ $(@expr1073742317 "0;" $, "cppcheck-2.8/test/testastutils.cpp" $, 133 $) $) $) { $return ; }
+134: $if $(@expr1073742318 $!@expr1073742319 $assertEquals $(@expr1073742320 "cppcheck-2.8/test/testastutils.cpp" $, 134 $, false $, $isNullOperand_ $(@expr1073742321 "(void*)0.0;" $, "cppcheck-2.8/test/testastutils.cpp" $, 134 $) $) $) { $return ; }
+135: $if $(@expr1073742322 $!@expr1073742323 $assertEquals $(@expr1073742324 "cppcheck-2.8/test/testastutils.cpp" $, 135 $, false $, $isNullOperand_ $(@expr1073742325 "(void*)1;" $, "cppcheck-2.8/test/testastutils.cpp" $, 135 $) $) $) { $return ; }
+136: }
+137:
+138:
+139: bool isReturnScope_ ( const char code@var124 [ ] , int offset@var125 , const char * file@var126 , int line@var127 ) {
+140: Settings settings@var128 ;
+141: Tokenizer tokenizer@var129 (@expr1073742326 &@expr1073742327 settings@var128 , this@expr1073742328 ) ;
+142: std ::@expr1073742329 istringstream istr@var130 (@expr1073742330 code@var124 ) ;
+143: $assert_ $(@expr1073742331 file@var126 $, line@var127 $, $(@expr1073742332 tokenizer@var129 .@expr1073742333 tokenize (@expr1073742334 istr@var130 , "test.cpp" ) $) $) ;
+144: const Token * const tok@var131 ; tok@var131 =@expr1073742335 (@expr1073742336 offset@var125 <@expr1073742337 0 )
+145: ?@expr1073742338 tokenizer@var129 .@expr1073742339 list@var132 .@expr1073742340 back (@expr1073742341 ) .@expr1073742342 tokAt (@expr1073742343 1 +@expr1073742344 offset@var125 )
+146: :@expr1073742345 tokenizer@var129 .@expr1073742346 tokens (@expr1073742347 ) .@expr1073742348 tokAt (@expr1073742349 offset@var125 ) ;
+147: return (@expr1073742350 ::@expr1073742351 isReturnScope ) (@expr1073742352 tok@var131 ) ;
+148: }
+149:
+150: void isReturnScopeTest ( ) {
+151: $if $(@expr1073742353 $!@expr1073742354 $assertEquals $(@expr1073742355 "cppcheck-2.8/test/testastutils.cpp" $, 151 $, true $, $isReturnScope_ $(@expr1073742356 "void f() { if (a) { return; } }" $, -2 $, "cppcheck-2.8/test/testastutils.cpp" $, 151 $) $) $) { $return ; }
+152: $if $(@expr1073742357 $!@expr1073742358 $assertEquals $(@expr1073742359 "cppcheck-2.8/test/testastutils.cpp" $, 152 $, true $, $isReturnScope_ $(@expr1073742360 "int f() { if (a) { return {}; } }" $, -2 $, "cppcheck-2.8/test/testastutils.cpp" $, 152 $) $) $) { $return ; }
+153: $if $(@expr1073742361 $!@expr1073742362 $assertEquals $(@expr1073742363 "cppcheck-2.8/test/testastutils.cpp" $, 153 $, true $, $isReturnScope_ $(@expr1073742364 "std::string f() { if (a) { return std::string{}; } }" $, -2 $, "cppcheck-2.8/test/testastutils.cpp" $, 153 $) $) $) { $return ; }
+154: $if $(@expr1073742365 $!@expr1073742366 $assertEquals $(@expr1073742367 "cppcheck-2.8/test/testastutils.cpp" $, 154 $, true $, $isReturnScope_ $(@expr1073742368 "std::string f() { if (a) { return std::string{\"\"}; } }" $, -2 $, "cppcheck-2.8/test/testastutils.cpp" $, 154 $) $) $) { $return ; }
+155: $if $(@expr1073742369 $!@expr1073742370 $assertEquals $(@expr1073742371 "cppcheck-2.8/test/testastutils.cpp" $, 155 $, true $, $isReturnScope_ $(@expr1073742372 "void f() { if (a) { return (ab){0}; } }" $, -2 $, "cppcheck-2.8/test/testastutils.cpp" $, 155 $) $) $) { $return ; }
+156: $if $(@expr1073742373 $!@expr1073742374 $assertEquals $(@expr1073742375 "cppcheck-2.8/test/testastutils.cpp" $, 156 $, false $, $isReturnScope_ $(@expr1073742376 "void f() { if (a) { return (ab){0}; } }" $, -4 $, "cppcheck-2.8/test/testastutils.cpp" $, 156 $) $) $) { $return ; }
+157: $if $(@expr1073742377 $!@expr1073742378 $assertEquals $(@expr1073742379 "cppcheck-2.8/test/testastutils.cpp" $, 157 $, true $, $isReturnScope_ $(@expr1073742380 "void f() { if (a) { {throw new string(x);}; } }" $, -4 $, "cppcheck-2.8/test/testastutils.cpp" $, 157 $) $) $) { $return ; }
+158: $if $(@expr1073742381 $!@expr1073742382 $assertEquals $(@expr1073742383 "cppcheck-2.8/test/testastutils.cpp" $, 158 $, true $, $isReturnScope_ $(@expr1073742384 "void f() { if (a) { {throw new string(x);}; } }" $, -2 $, "cppcheck-2.8/test/testastutils.cpp" $, 158 $) $) $) { $return ; }
+159: $if $(@expr1073742385 $!@expr1073742386 $assertEquals $(@expr1073742387 "cppcheck-2.8/test/testastutils.cpp" $, 159 $, false $, $isReturnScope_ $(@expr1073742388 "void f() { [=]() { return data; }; }" $, -1 $, "cppcheck-2.8/test/testastutils.cpp" $, 159 $) $) $) { $return ; }
+160: $if $(@expr1073742389 $!@expr1073742390 $assertEquals $(@expr1073742391 "cppcheck-2.8/test/testastutils.cpp" $, 160 $, true $, $isReturnScope_ $(@expr1073742392 "auto f() { return [=]() { return data; }; }" $, -1 $, "cppcheck-2.8/test/testastutils.cpp" $, 160 $) $) $) { $return ; }
+161: $if $(@expr1073742393 $!@expr1073742394 $assertEquals $(@expr1073742395 "cppcheck-2.8/test/testastutils.cpp" $, 161 $, true $, $isReturnScope_ $(@expr1073742396 "auto f() { return [=]() { return data; }(); }" $, -1 $, "cppcheck-2.8/test/testastutils.cpp" $, 161 $) $) $) { $return ; }
+162: $if $(@expr1073742397 $!@expr1073742398 $assertEquals $(@expr1073742399 "cppcheck-2.8/test/testastutils.cpp" $, 162 $, false $, $isReturnScope_ $(@expr1073742400 "auto f() { [=]() { return data; }(); }" $, -1 $, "cppcheck-2.8/test/testastutils.cpp" $, 162 $) $) $) { $return ; }
+163:
+164: $if $(@expr1073742401 $!@expr1073742402 $assertEquals $(@expr1073742403 "cppcheck-2.8/test/testastutils.cpp" $, 164 $, true $, $isReturnScope_ $(@expr1073742404 "void negativeTokenOffset() { return; }" $, -1 $, "cppcheck-2.8/test/testastutils.cpp" $, 164 $) $) $) { $return ; }
+165: $if $(@expr1073742405 $!@expr1073742406 $assertEquals $(@expr1073742407 "cppcheck-2.8/test/testastutils.cpp" $, 165 $, false $, $isReturnScope_ $(@expr1073742408 "void zeroTokenOffset() { return; }" $, 0 $, "cppcheck-2.8/test/testastutils.cpp" $, 165 $) $) $) { $return ; }
+166: $if $(@expr1073742409 $!@expr1073742410 $assertEquals $(@expr1073742411 "cppcheck-2.8/test/testastutils.cpp" $, 166 $, true $, $isReturnScope_ $(@expr1073742412 "void positiveTokenOffset() { return; }" $, 7 $, "cppcheck-2.8/test/testastutils.cpp" $, 166 $) $) $) { $return ; }
+167: }
+168:
+169:
+170: bool isSameExpression_ ( const char code@var133 [ ] , const char tokStr1@var134 [ ] , const char tokStr2@var135 [ ] , const char * file@var136 , int line@var137 ) {
+171: Settings settings@var138 ;
+172: Library library@var139 ;
+173: Tokenizer tokenizer@var140 (@expr1073742413 &@expr1073742414 settings@var138 , this@expr1073742415 ) ;
+174: std ::@expr1073742416 istringstream istr@var141 (@expr1073742417 code@var133 ) ;
+175: $assert_ $(@expr1073742418 file@var136 $, line@var137 $, $(@expr1073742419 tokenizer@var140 .@expr1073742420 tokenize (@expr1073742421 istr@var141 , "test.cpp" ) $) $) ;
+176: tokenizer@var140 .@expr1073742422 simplifyTokens1 (@expr1073742423 "" ) ;
+177: const Token * const tok1@var142 ; tok1@var142 =@expr1073742424 Token ::@expr601 findsimplematch (@expr1073742426 tokenizer@var140 .@expr1073742427 tokens (@expr1073742428 ) , tokStr1@var134 , strlen (@expr1073742429 tokStr1@var134 ) ) ;
+178: const Token * const tok2@var143 ; tok2@var143 =@expr1073742430 Token ::@expr601 findsimplematch (@expr1073742432 tok1@var142 .@expr1073742433 next (@expr1073742434 ) , tokStr2@var135 , strlen (@expr1073742435 tokStr2@var135 ) ) ;
+179: return (@expr1073742436 ::@expr1073742437 isSameExpression ) (@expr1073742438 false , false , tok1@var142 , tok2@var143 , library@var139 , false , true , nullptr ) ;
+180: }
+181:
+182: void isSameExpressionTest ( ) {
+183: $if $(@expr1073742439 $!@expr1073742440 $assertEquals $(@expr1073742441 "cppcheck-2.8/test/testastutils.cpp" $, 183 $, true $, $isSameExpression_ $(@expr1073742442 "x = 1 + 1;" $, "1" $, "1" $, "cppcheck-2.8/test/testastutils.cpp" $, 183 $) $) $) { $return ; }
+184: $if $(@expr1073742443 $!@expr1073742444 $assertEquals $(@expr1073742445 "cppcheck-2.8/test/testastutils.cpp" $, 184 $, false $, $isSameExpression_ $(@expr1073742446 "x = 1 + 1u;" $, "1" $, "1u" $, "cppcheck-2.8/test/testastutils.cpp" $, 184 $) $) $) { $return ; }
+185: $if $(@expr1073742447 $!@expr1073742448 $assertEquals $(@expr1073742449 "cppcheck-2.8/test/testastutils.cpp" $, 185 $, true $, $isSameExpression_ $(@expr1073742450 "x = 1.0 + 1.0;" $, "1.0" $, "1.0" $, "cppcheck-2.8/test/testastutils.cpp" $, 185 $) $) $) { $return ; }
+186: $if $(@expr1073742451 $!@expr1073742452 $assertEquals $(@expr1073742453 "cppcheck-2.8/test/testastutils.cpp" $, 186 $, false $, $isSameExpression_ $(@expr1073742454 "x = 1.0f + 1.0;" $, "1.0f" $, "1.0" $, "cppcheck-2.8/test/testastutils.cpp" $, 186 $) $) $) { $return ; }
+187: $if $(@expr1073742455 $!@expr1073742456 $assertEquals $(@expr1073742457 "cppcheck-2.8/test/testastutils.cpp" $, 187 $, false $, $isSameExpression_ $(@expr1073742458 "x = 1L + 1;" $, "1L" $, "1" $, "cppcheck-2.8/test/testastutils.cpp" $, 187 $) $) $) { $return ; }
+188: $if $(@expr1073742459 $!@expr1073742460 $assertEquals $(@expr1073742461 "cppcheck-2.8/test/testastutils.cpp" $, 188 $, true $, $isSameExpression_ $(@expr1073742462 "x = 0.0f + 0x0p+0f;" $, "0.0f" $, "0x0p+0f" $, "cppcheck-2.8/test/testastutils.cpp" $, 188 $) $) $) { $return ; }
+189: $if $(@expr1073742463 $!@expr1073742464 $assertEquals $(@expr1073742465 "cppcheck-2.8/test/testastutils.cpp" $, 189 $, true $, $isSameExpression_ $(@expr1073742466 "x < x;" $, "x" $, "x" $, "cppcheck-2.8/test/testastutils.cpp" $, 189 $) $) $) { $return ; }
+190: $if $(@expr1073742467 $!@expr1073742468 $assertEquals $(@expr1073742469 "cppcheck-2.8/test/testastutils.cpp" $, 190 $, false $, $isSameExpression_ $(@expr1073742470 "x < y;" $, "x" $, "y" $, "cppcheck-2.8/test/testastutils.cpp" $, 190 $) $) $) { $return ; }
+191: $if $(@expr1073742471 $!@expr1073742472 $assertEquals $(@expr1073742473 "cppcheck-2.8/test/testastutils.cpp" $, 191 $, true $, $isSameExpression_ $(@expr1073742474 "(x + 1) < (x + 1);" $, "+" $, "+" $, "cppcheck-2.8/test/testastutils.cpp" $, 191 $) $) $) { $return ; }
+192: $if $(@expr1073742475 $!@expr1073742476 $assertEquals $(@expr1073742477 "cppcheck-2.8/test/testastutils.cpp" $, 192 $, false $, $isSameExpression_ $(@expr1073742478 "(x + 1) < (x + 1L);" $, "+" $, "+" $, "cppcheck-2.8/test/testastutils.cpp" $, 192 $) $) $) { $return ; }
+193: $if $(@expr1073742479 $!@expr1073742480 $assertEquals $(@expr1073742481 "cppcheck-2.8/test/testastutils.cpp" $, 193 $, true $, $isSameExpression_ $(@expr1073742482 "(1 + x) < (x + 1);" $, "+" $, "+" $, "cppcheck-2.8/test/testastutils.cpp" $, 193 $) $) $) { $return ; }
+194: $if $(@expr1073742483 $!@expr1073742484 $assertEquals $(@expr1073742485 "cppcheck-2.8/test/testastutils.cpp" $, 194 $, false $, $isSameExpression_ $(@expr1073742486 "(1.0l + x) < (1.0 + x);" $, "+" $, "+" $, "cppcheck-2.8/test/testastutils.cpp" $, 194 $) $) $) { $return ; }
+195: $if $(@expr1073742487 $!@expr1073742488 $assertEquals $(@expr1073742489 "cppcheck-2.8/test/testastutils.cpp" $, 195 $, true $, $isSameExpression_ $(@expr1073742490 "(0.0 + x) < (x + 0x0p+0);" $, "+" $, "+" $, "cppcheck-2.8/test/testastutils.cpp" $, 195 $) $) $) { $return ; }
+196: $if $(@expr1073742491 $!@expr1073742492 $assertEquals $(@expr1073742493 "cppcheck-2.8/test/testastutils.cpp" $, 196 $, true $, $isSameExpression_ $(@expr1073742494 "void f() {double y = 1e1; (x + y) < (x + 10.0); } " $, "+" $, "+" $, "cppcheck-2.8/test/testastutils.cpp" $, 196 $) $) $) { $return ; }
+197: $if $(@expr1073742495 $!@expr1073742496 $assertEquals $(@expr1073742497 "cppcheck-2.8/test/testastutils.cpp" $, 197 $, true $, $isSameExpression_ $(@expr1073742498 "void f() {double y = 1e1; (x + 10.0) < (y + x); } " $, "+" $, "+" $, "cppcheck-2.8/test/testastutils.cpp" $, 197 $) $) $) { $return ; }
+198: $if $(@expr1073742499 $!@expr1073742500 $assertEquals $(@expr1073742501 "cppcheck-2.8/test/testastutils.cpp" $, 198 $, true $, $isSameExpression_ $(@expr1073742502 "void f() {double y = 1e1; double z = 10.0; (x + y) < (x + z); } " $, "+" $, "+" $, "cppcheck-2.8/test/testastutils.cpp" $, 198 $) $) $) { $return ; }
+199: $if $(@expr1073742503 $!@expr1073742504 $assertEquals $(@expr1073742505 "cppcheck-2.8/test/testastutils.cpp" $, 199 $, true $, $isSameExpression_ $(@expr1073742506 "A + A" $, "A" $, "A" $, "cppcheck-2.8/test/testastutils.cpp" $, 199 $) $) $) { $return ; }
+200:
+201:
+202: $if $(@expr1073742507 $!@expr1073742508 $assertEquals $(@expr1073742509 "cppcheck-2.8/test/testastutils.cpp" $, 202 $, true $, $isSameExpression_ $(@expr1073742510 "A::B + A::B;" $, "::" $, "::" $, "cppcheck-2.8/test/testastutils.cpp" $, 202 $) $) $) { $return ; }
+203: $if $(@expr1073742511 $!@expr1073742512 $assertEquals $(@expr1073742513 "cppcheck-2.8/test/testastutils.cpp" $, 203 $, false $, $isSameExpression_ $(@expr1073742514 "A::B + A::C;" $, "::" $, "::" $, "cppcheck-2.8/test/testastutils.cpp" $, 203 $) $) $) { $return ; }
+204: $if $(@expr1073742515 $!@expr1073742516 $assertEquals $(@expr1073742517 "cppcheck-2.8/test/testastutils.cpp" $, 204 $, true $, $isSameExpression_ $(@expr1073742518 "A::B* get() { if(x) return new A::B(true); else return new A::B(true); }" $, "new" $, "new" $, "cppcheck-2.8/test/testastutils.cpp" $, 204 $) $) $) { $return ; }
+205: $if $(@expr1073742519 $!@expr1073742520 $assertEquals $(@expr1073742521 "cppcheck-2.8/test/testastutils.cpp" $, 205 $, false $, $isSameExpression_ $(@expr1073742522 "A::B* get() { if(x) return new A::B(true); else return new A::C(true); }" $, "new" $, "new" $, "cppcheck-2.8/test/testastutils.cpp" $, 205 $) $) $) { $return ; }
+206: $if $(@expr1073742523 $!@expr1073742524 $assertEquals $(@expr1073742525 "cppcheck-2.8/test/testastutils.cpp" $, 206 $, true $, true $) $) { $return ; }
+207: }
+208:
+209:
+210: bool isVariableChanged_ ( const char code@var144 [ ] , const char startPattern@var145 [ ] , const char endPattern@var146 [ ] , const char * file@var147 , int line@var148 ) {
+211: Settings settings@var149 ;
+212: Tokenizer tokenizer@var150 (@expr1073742526 &@expr703 settings@var149 , this@expr1073742528 ) ;
+213: std ::@expr1073742529 istringstream istr@var151 (@expr1073742530 code@var144 ) ;
+214: $assert_ $(@expr1073742531 file@var147 $, line@var148 $, $(@expr1073742532 tokenizer@var150 .@expr1073742533 tokenize (@expr1073742534 istr@var151 , "test.cpp" ) $) $) ;
+215: const Token * const tok1@var152 ; tok1@var152 =@expr1073742535 Token ::@expr712 findsimplematch (@expr1073742537 tokenizer@var150 .@expr714 tokens (@expr715 ) , startPattern@var145 , strlen (@expr1073742540 startPattern@var145 ) ) ;
+216: const Token * const tok2@var153 ; tok2@var153 =@expr1073742541 Token ::@expr712 findsimplematch (@expr1073742543 tokenizer@var150 .@expr714 tokens (@expr715 ) , endPattern@var146 , strlen (@expr1073742546 endPattern@var146 ) ) ;
+217: return (@expr1073742547 ::@expr1073742548 isVariableChanged ) (@expr1073742549 tok1@var152 , tok2@var153 , 1 , false , &@expr703 settings@var149 , true ) ;
+218: }
+219:
+220: void isVariableChangedTest ( ) {
+221:
+222: $isVariableChanged_ $(@expr1073742551 "void f() {\n  int b;\n  if (b) { (int)((INTOF(8))result >> b); }\n}" $, "if" $, "}" $, "cppcheck-2.8/test/testastutils.cpp" $, 222 $)
+223:
+224:
+225: ;
+226:
+227: $if $(@expr1073742552 $!@expr1073742553 $assertEquals $(@expr1073742554 "cppcheck-2.8/test/testastutils.cpp" $, 227 $, true $, $isVariableChanged_ $(@expr1073742555 "void f() {\n    int &a = a;\n}\n" $, "= a" $, "}" $, "cppcheck-2.8/test/testastutils.cpp" $, 227 $) $) $) { $return
+228:
+229: ; }
+230: }
+231:
+232:
+233: bool isVariableChangedByFunctionCall_ ( const char code@var154 [ ] , const char pattern@var155 [ ] , bool * inconclusive@var156 , const char * file@var157 , int line@var158 ) {
+234: Settings settings@var159 ;
+235: Tokenizer tokenizer@var160 (@expr1073742556 &@expr733 settings@var159 , this@expr1073742558 ) ;
+236: std ::@expr1073742559 istringstream istr@var161 (@expr1073742560 code@var154 ) ;
+237: $assert_ $(@expr1073742561 file@var157 $, line@var158 $, $(@expr1073742562 tokenizer@var160 .@expr1073742563 tokenize (@expr1073742564 istr@var161 , "test.cpp" ) $) $) ;
+238: const Token * const argtok@var162 ; argtok@var162 =@expr1073742565 Token ::@expr1073742566 findmatch (@expr1073742567 tokenizer@var160 .@expr1073742568 tokens (@expr1073742569 ) , pattern@var155 ) ;
+239: return (@expr1073742570 ::@expr1073742571 isVariableChangedByFunctionCall ) (@expr1073742572 argtok@var162 , 0 , &@expr733 settings@var159 , inconclusive@var156 ) ;
+240: }
+241:
+242: void isVariableChangedByFunctionCallTest ( ) {
+243: const char * code@var163 ;
+244: bool inconclusive@var164 ;
+245:
+246:
+247: code@var163 =@expr1073742574 "void f(int x) {\n  a<int>(x);\n}"
+248:
+249: ;
+250: inconclusive@var164 =@expr1073742575 false ;
+251: $if $(@expr1073742576 $!@expr1073742577 $assertEquals $(@expr1073742578 "cppcheck-2.8/test/testastutils.cpp" $, 251 $, false $, $isVariableChangedByFunctionCall_ $(@expr1073742579 code@var163 $, "x ) ;" $, &@expr756 inconclusive@var164 $, "cppcheck-2.8/test/testastutils.cpp" $, 251 $) $) $) { $return ; }
+252: $if $(@expr1073742581 $!@expr1073742582 $assertEquals $(@expr1073742583 "cppcheck-2.8/test/testastutils.cpp" $, 252 $, true $, inconclusive@var164 $) $) { $return ; }
+253:
+254: code@var163 =@expr1073742584 "int f(int x) {\nreturn int(x);\n}\n"
+255:
+256: ;
+257: $if $(@expr1073742585 $!@expr1073742586 $assertEquals $(@expr1073742587 "cppcheck-2.8/test/testastutils.cpp" $, 257 $, false $, $isVariableChangedByFunctionCall_ $(@expr1073742588 code@var163 $, "x ) ;" $, &@expr756 inconclusive@var164 $, "cppcheck-2.8/test/testastutils.cpp" $, 257 $) $) $) { $return ; }
+258: $todoAssertEquals $(@expr1073742590 "cppcheck-2.8/test/testastutils.cpp" $, 258 $, false $, true $, inconclusive@var164 $) ;
+259: }
+260:
+261:
+262: bool nextAfterAstRightmostLeaf_ ( const char code@var165 [ ] , const char parentPattern@var166 [ ] , const char rightPattern@var167 [ ] , const char * file@var168 , int line@var169 ) {
+263: Settings settings@var170 ;
+264: Tokenizer tokenizer@var171 (@expr1073742591 &@expr1073742592 settings@var170 , this@expr1073742593 ) ;
+265: std ::@expr1073742594 istringstream istr@var172 (@expr1073742595 code@var165 ) ;
+266: $assert_ $(@expr1073742596 file@var168 $, line@var169 $, $(@expr1073742597 tokenizer@var171 .@expr1073742598 tokenize (@expr1073742599 istr@var172 , "test.cpp" ) $) $) ;
+267: const Token * tok@var173 ; tok@var173 =@expr1073742600 Token ::@expr1073742601 findsimplematch (@expr1073742602 tokenizer@var171 .@expr1073742603 tokens (@expr1073742604 ) , parentPattern@var166 , strlen (@expr1073742605 parentPattern@var166 ) ) ;
+268: return Token ::@expr1073742606 simpleMatch (@expr1073742607 (@expr1073742608 ::@expr1073742609 nextAfterAstRightmostLeaf ) (@expr1073742610 tok@var173 ) , rightPattern@var167 , strlen (@expr1073742611 rightPattern@var167 ) ) ;
+269: }
+270:
+271: void nextAfterAstRightmostLeafTest ( ) {
+272: $if $(@expr1073742612 $!@expr1073742613 $assertEquals $(@expr1073742614 "cppcheck-2.8/test/testastutils.cpp" $, 272 $, true $, $nextAfterAstRightmostLeaf_ $(@expr1073742615 "void f(int a, int b) { int x = a + b; }" $, "=" $, "; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 272 $) $) $) { $return ; }
+273: $if $(@expr1073742616 $!@expr1073742617 $assertEquals $(@expr1073742618 "cppcheck-2.8/test/testastutils.cpp" $, 273 $, true $, $nextAfterAstRightmostLeaf_ $(@expr1073742619 "int * g(int); void f(int a, int b) { int x = g(a); }" $, "=" $, "; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 273 $) $) $) { $return ; }
+274: $if $(@expr1073742620 $!@expr1073742621 $assertEquals $(@expr1073742622 "cppcheck-2.8/test/testastutils.cpp" $, 274 $, true $, $nextAfterAstRightmostLeaf_ $(@expr1073742623 "int * g(int); void f(int a, int b) { int x = g(a)[b]; }" $, "=" $, "; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 274 $) $) $) { $return ; }
+275: $if $(@expr1073742624 $!@expr1073742625 $assertEquals $(@expr1073742626 "cppcheck-2.8/test/testastutils.cpp" $, 275 $, true $, $nextAfterAstRightmostLeaf_ $(@expr1073742627 "int * g(int); void f(int a, int b) { int x = g(g(a)[b]); }" $, "=" $, "; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 275 $) $) $) { $return ; }
+276: $if $(@expr1073742628 $!@expr1073742629 $assertEquals $(@expr1073742630 "cppcheck-2.8/test/testastutils.cpp" $, 276 $, true $, $nextAfterAstRightmostLeaf_ $(@expr1073742631 "int * g(int); void f(int a, int b) { int x = g(g(a)[b] + a); }" $, "=" $, "; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 276 $) $) $) { $return ; }
+277: $if $(@expr1073742632 $!@expr1073742633 $assertEquals $(@expr1073742634 "cppcheck-2.8/test/testastutils.cpp" $, 277 $, true $, $nextAfterAstRightmostLeaf_ $(@expr1073742635 "int * g(int); void f(int a, int b) { int x = g(a)[b + 1]; }" $, "=" $, "; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 277 $) $) $) { $return ; }
+278: $if $(@expr1073742636 $!@expr1073742637 $assertEquals $(@expr1073742638 "cppcheck-2.8/test/testastutils.cpp" $, 278 $, true $, $nextAfterAstRightmostLeaf_ $(@expr1073742639 "void f() { int a; int b; int x = [](int a){}; }" $, "=" $, "; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 278 $) $) $) { $return ; }
+279:
+280: $if $(@expr1073742640 $!@expr1073742641 $assertEquals $(@expr1073742642 "cppcheck-2.8/test/testastutils.cpp" $, 280 $, true $, $nextAfterAstRightmostLeaf_ $(@expr1073742643 "int * g(int); void f(int a, int b) { int x = a + b; }" $, "+" $, "; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 280 $) $) $) { $return ; }
+281: $if $(@expr1073742644 $!@expr1073742645 $assertEquals $(@expr1073742646 "cppcheck-2.8/test/testastutils.cpp" $, 281 $, true $, $nextAfterAstRightmostLeaf_ $(@expr1073742647 "int * g(int); void f(int a, int b) { int x = g(a)[b + 1]; }" $, "+" $, "] ; }" $, "cppcheck-2.8/test/testastutils.cpp" $, 281 $) $) $) { $return ; }
+282: $if $(@expr1073742648 $!@expr1073742649 $assertEquals $(@expr1073742650 "cppcheck-2.8/test/testastutils.cpp" $, 282 $, true $, $nextAfterAstRightmostLeaf_ $(@expr1073742651 "int * g(int); void f(int a, int b) { int x = g(a + 1)[b]; }" $, "+" $, ") [" $, "cppcheck-2.8/test/testastutils.cpp" $, 282 $) $) $) { $return ; }
+283: }
+284:
+285: enum class Result { False , True , Fail } ;
+286:
+287: Result isUsedAsBool ( const char code@var174 [ ] , const char pattern@var175 [ ] ) {
+288: Settings settings@var176 ;
+289: Tokenizer tokenizer@var177 (@expr1073742652 &@expr1073742653 settings@var176 , this@expr1073742654 ) ;
+290: std ::@expr1073742655 istringstream istr@var178 (@expr1073742656 code@var174 ) ;
+291: if (@expr1073742657 !@expr1073742658 tokenizer@var177 .@expr1073742659 tokenize (@expr1073742660 istr@var178 , "test.cpp" ) ) {
+292: return Result ::@expr837 Fail ; }
+293: const Token * const argtok@var179 ; argtok@var179 =@expr1073742662 Token ::@expr1073742663 findmatch (@expr1073742664 tokenizer@var177 .@expr1073742665 tokens (@expr1073742666 ) , pattern@var175 ) ;
+294: if (@expr1073742667 !@expr1073742668 argtok@var179 ) {
+295: return Result ::@expr837 Fail ; }
+296: return ::@expr1073742670 isUsedAsBool (@expr1073742671 argtok@var179 ) ?@expr1073742672 Result ::@expr1073742673 True :@expr1073742674 Result ::@expr1073742675 False ;
+297: }
+298:
+299: void isUsedAsBool ( ) {
+300: $if $(@expr1073742676 $!@expr1073742677 $assert_ $(@expr1073742678 "cppcheck-2.8/test/testastutils.cpp" $, 300 $, $(@expr1073742679 Result ::@expr856 True ==@expr1073742681 isUsedAsBool (@expr1073742682 "void f() { bool b = true; }" , "b" ) $) $) $) { $return ; }
+301: $if $(@expr1073742683 $!@expr1073742684 $assert_ $(@expr1073742685 "cppcheck-2.8/test/testastutils.cpp" $, 301 $, $(@expr1073742686 Result ::@expr863 False ==@expr1073742688 isUsedAsBool (@expr1073742689 "void f() { int i = true; }" , "i" ) $) $) $) { $return ; }
+302: $if $(@expr1073742690 $!@expr1073742691 $assert_ $(@expr1073742692 "cppcheck-2.8/test/testastutils.cpp" $, 302 $, $(@expr1073742693 Result ::@expr856 True ==@expr1073742695 isUsedAsBool (@expr1073742696 "void f() { int i; if (i) {} }" , "i )" ) $) $) $) { $return ; }
+303: $if $(@expr1073742697 $!@expr1073742698 $assert_ $(@expr1073742699 "cppcheck-2.8/test/testastutils.cpp" $, 303 $, $(@expr1073742700 Result ::@expr856 True ==@expr1073742702 isUsedAsBool (@expr1073742703 "void f() { int i; while (i) {} }" , "i )" ) $) $) $) { $return ; }
+304: $if $(@expr1073742704 $!@expr1073742705 $assert_ $(@expr1073742706 "cppcheck-2.8/test/testastutils.cpp" $, 304 $, $(@expr1073742707 Result ::@expr856 True ==@expr1073742709 isUsedAsBool (@expr1073742710 "void f() { int i; for (;i;) {} }" , "i ; )" ) $) $) $) { $return ; }
+305: $if $(@expr1073742711 $!@expr1073742712 $assert_ $(@expr1073742713 "cppcheck-2.8/test/testastutils.cpp" $, 305 $, $(@expr1073742714 Result ::@expr863 False ==@expr1073742716 isUsedAsBool (@expr1073742717 "void f() { int i; for (;;i) {} }" , "i )" ) $) $) $) { $return ; }
+306: $if $(@expr1073742718 $!@expr1073742719 $assert_ $(@expr1073742720 "cppcheck-2.8/test/testastutils.cpp" $, 306 $, $(@expr1073742721 Result ::@expr863 False ==@expr1073742723 isUsedAsBool (@expr1073742724 "void f() { int i; for (i;;) {} }" , "i ; ; )" ) $) $) $) { $return ; }
+307: $if $(@expr1073742725 $!@expr1073742726 $assert_ $(@expr1073742727 "cppcheck-2.8/test/testastutils.cpp" $, 307 $, $(@expr1073742728 Result ::@expr856 True ==@expr1073742730 isUsedAsBool (@expr1073742731 "void f() { int i; for (int j=0; i; ++j) {} }" , "i ; ++" ) $) $) $) { $return ; }
+308: $if $(@expr1073742732 $!@expr1073742733 $assert_ $(@expr1073742734 "cppcheck-2.8/test/testastutils.cpp" $, 308 $, $(@expr1073742735 Result ::@expr863 False ==@expr1073742737 isUsedAsBool (@expr1073742738 "void f() { int i; if (i == 2) {} }" , "i ==" ) $) $) $) { $return ; }
+309: $if $(@expr1073742739 $!@expr1073742740 $assert_ $(@expr1073742741 "cppcheck-2.8/test/testastutils.cpp" $, 309 $, $(@expr1073742742 Result ::@expr863 False ==@expr1073742744 isUsedAsBool (@expr1073742745 "void f() { int i; if (i == true) {} }" , "i ==" ) $) $) $) { $return ; }
+310: $if $(@expr1073742746 $!@expr1073742747 $assert_ $(@expr1073742748 "cppcheck-2.8/test/testastutils.cpp" $, 310 $, $(@expr1073742749 Result ::@expr863 False ==@expr1073742751 isUsedAsBool (@expr1073742752 "void f() { int i,j; if (i == (j&&f())) {} }" , "i ==" ) $) $) $) { $return ; }
+311: $if $(@expr1073742753 $!@expr1073742754 $assert_ $(@expr1073742755 "cppcheck-2.8/test/testastutils.cpp" $, 311 $, $(@expr1073742756 Result ::@expr856 True ==@expr1073742758 isUsedAsBool (@expr1073742759 "void f() { int i; if (!i == 0) {} }" , "i ==" ) $) $) $) { $return ; }
+312: $if $(@expr1073742760 $!@expr1073742761 $assert_ $(@expr1073742762 "cppcheck-2.8/test/testastutils.cpp" $, 312 $, $(@expr1073742763 Result ::@expr856 True ==@expr1073742765 isUsedAsBool (@expr1073742766 "void f() { int i; if (!i) {} }" , "i )" ) $) $) $) { $return ; }
+313: $if $(@expr1073742767 $!@expr1073742768 $assert_ $(@expr1073742769 "cppcheck-2.8/test/testastutils.cpp" $, 313 $, $(@expr1073742770 Result ::@expr856 True ==@expr1073742772 isUsedAsBool (@expr1073742773 "void f() { int i; if (!!i) {} }" , "i )" ) $) $) $) { $return ; }
+314: $if $(@expr1073742774 $!@expr1073742775 $assert_ $(@expr1073742776 "cppcheck-2.8/test/testastutils.cpp" $, 314 $, $(@expr1073742777 Result ::@expr856 True ==@expr1073742779 isUsedAsBool (@expr1073742780 "void f() { int i; if (i && f()) {} }" , "i &&" ) $) $) $) { $return ; }
+315: $if $(@expr1073742781 $!@expr1073742782 $assert_ $(@expr1073742783 "cppcheck-2.8/test/testastutils.cpp" $, 315 $, $(@expr1073742784 Result ::@expr856 True ==@expr1073742786 isUsedAsBool (@expr1073742787 "void f() { int i; int j = i && f(); }" , "i &&" ) $) $) $) { $return ; }
+316: $if $(@expr1073742788 $!@expr1073742789 $assert_ $(@expr1073742790 "cppcheck-2.8/test/testastutils.cpp" $, 316 $, $(@expr1073742791 Result ::@expr863 False ==@expr1073742793 isUsedAsBool (@expr1073742794 "void f() { int i; if (i & f()) {} }" , "i &" ) $) $) $) { $return ; }
+317: $if $(@expr1073742795 $!@expr1073742796 $assert_ $(@expr1073742797 "cppcheck-2.8/test/testastutils.cpp" $, 317 $, $(@expr1073742798 Result ::@expr856 True ==@expr1073742800 isUsedAsBool (@expr1073742801 "void f() { int i; if (static_cast<bool>(i)) {} }" , "i )" ) $) $) $) { $return ; }
+318: $if $(@expr1073742802 $!@expr1073742803 $assert_ $(@expr1073742804 "cppcheck-2.8/test/testastutils.cpp" $, 318 $, $(@expr1073742805 Result ::@expr856 True ==@expr1073742807 isUsedAsBool (@expr1073742808 "void f() { int i; if ((bool)i) {} }" , "i )" ) $) $) $) { $return ; }
+319: $if $(@expr1073742809 $!@expr1073742810 $assert_ $(@expr1073742811 "cppcheck-2.8/test/testastutils.cpp" $, 319 $, $(@expr1073742812 Result ::@expr856 True ==@expr1073742814 isUsedAsBool (@expr1073742815 "void f() { int i; if (1+static_cast<bool>(i)) {} }" , "i )" ) $) $) $) { $return ; }
+320: $if $(@expr1073742816 $!@expr1073742817 $assert_ $(@expr1073742818 "cppcheck-2.8/test/testastutils.cpp" $, 320 $, $(@expr1073742819 Result ::@expr856 True ==@expr1073742821 isUsedAsBool (@expr1073742822 "void f() { int i; if (1+(bool)i) {} }" , "i )" ) $) $) $) { $return ; }
+321: $if $(@expr1073742823 $!@expr1073742824 $assert_ $(@expr1073742825 "cppcheck-2.8/test/testastutils.cpp" $, 321 $, $(@expr1073742826 Result ::@expr863 False ==@expr1073742828 isUsedAsBool (@expr1073742829 "void f() { int i; if (1+static_cast<int>(i)) {} }" , "i )" ) $) $) $) { $return ; }
+322: $if $(@expr1073742830 $!@expr1073742831 $assert_ $(@expr1073742832 "cppcheck-2.8/test/testastutils.cpp" $, 322 $, $(@expr1073742833 Result ::@expr856 True ==@expr1073742835 isUsedAsBool (@expr1073742836 "void f() { int i; if (1+!static_cast<int>(i)) {} }" , "i )" ) $) $) $) { $return ; }
+323: $if $(@expr1073742837 $!@expr1073742838 $assert_ $(@expr1073742839 "cppcheck-2.8/test/testastutils.cpp" $, 323 $, $(@expr1073742840 Result ::@expr863 False ==@expr1073742842 isUsedAsBool (@expr1073742843 "void f() { int i; if (1+(int)i) {} }" , "i )" ) $) $) $) { $return ; }
+324: $if $(@expr1073742844 $!@expr1073742845 $assert_ $(@expr1073742846 "cppcheck-2.8/test/testastutils.cpp" $, 324 $, $(@expr1073742847 Result ::@expr863 False ==@expr1073742849 isUsedAsBool (@expr1073742850 "void f() { int i; if (i + 2) {} }" , "i +" ) $) $) $) { $return ; }
+325: $if $(@expr1073742851 $!@expr1073742852 $assert_ $(@expr1073742853 "cppcheck-2.8/test/testastutils.cpp" $, 325 $, $(@expr1073742854 Result ::@expr856 True ==@expr1073742856 isUsedAsBool (@expr1073742857 "void f() { int i; bool b = i; }" , "i ; }" ) $) $) $) { $return ; }
+326: $if $(@expr1073742858 $!@expr1073742859 $assert_ $(@expr1073742860 "cppcheck-2.8/test/testastutils.cpp" $, 326 $, $(@expr1073742861 Result ::@expr856 True ==@expr1073742863 isUsedAsBool (@expr1073742864 "void f(bool b); void f() { int i; f(i); }" , "i )" ) $) $) $) { $return ; }
+327: $if $(@expr1073742865 $!@expr1073742866 $assert_ $(@expr1073742867 "cppcheck-2.8/test/testastutils.cpp" $, 327 $, $(@expr1073742868 Result ::@expr856 True ==@expr1073742870 isUsedAsBool (@expr1073742871 "void f() { int *i; if (*i) {} }" , "i )" ) $) $) $) { $return ; }
+328: $if $(@expr1073742872 $!@expr1073742873 $assert_ $(@expr1073742874 "cppcheck-2.8/test/testastutils.cpp" $, 328 $, $(@expr1073742875 Result ::@expr856 True ==@expr1073742877 isUsedAsBool (@expr1073742878 "void f() { int *i; if (*i) {} }" , "* i )" ) $) $) $) { $return ; }
+329: }
+330: } ;
+331:
+332: $namespace ${ TestAstUtils instance_TestAstUtils@var180 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@128}
+  v {!<=-1,!>=2,0@128}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 33
+  "TestAstUtils" always "TestAstUtils"
+Line 38
+  ( always {!<=-1,!>=2}
+  "findLambdaEndTokenTest" always "findLambdaEndTokenTest"
+  false always 0
+  false always 0
+Line 39
+  ( always {!<=-1,!>=2}
+  "findLambdaStartTokenTest" always "findLambdaStartTokenTest"
+  false always 0
+  false always 0
+Line 40
+  ( always {!<=-1,!>=2}
+  "isNullOperandTest" always "isNullOperandTest"
+  false always 0
+  false always 0
+Line 41
+  ( always {!<=-1,!>=2}
+  "isReturnScopeTest" always "isReturnScopeTest"
+  false always 0
+  false always 0
+Line 42
+  ( always {!<=-1,!>=2}
+  "isSameExpressionTest" always "isSameExpressionTest"
+  false always 0
+  false always 0
+Line 43
+  ( always {!<=-1,!>=2}
+  "isVariableChangedTest" always "isVariableChangedTest"
+  false always 0
+  false always 0
+Line 44
+  ( always {!<=-1,!>=2}
+  "isVariableChangedByFunctionCallTest" always "isVariableChangedByFunctionCallTest"
+  false always 0
+  false always 0
+Line 45
+  ( always {!<=-1,!>=2}
+  "nextAfterAstRightmostLeafTest" always "nextAfterAstRightmostLeafTest"
+  false always 0
+  false always 0
+Line 46
+  ( always {!<=-1,!>=2}
+  "isUsedAsBool" always "isUsedAsBool"
+  false always 0
+  false always 0
+Line 50
+  ( always {!<=-1,!>=2}
+Line 52
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 53
+  code possible {"void f() { }"@109,"[]{ }"@110,"[]{ return 0; }"@111,"[](){ }"@112,"[&](){ }"@113,"[&, i](){ }"@114,"[](void) { return -1; }"@115,"[](int a, int b) { return a + b; }"@116,"[](int a, int b) mutable { return a + b; }"@117,"[](int a, int b) constexpr { return a + b; }"@118}
+Line 54
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testastutils.cpp"@109,"cppcheck-2.8/test/testastutils.cpp"@110,"cppcheck-2.8/test/testastutils.cpp"@111,"cppcheck-2.8/test/testastutils.cpp"@112,"cppcheck-2.8/test/testastutils.cpp"@113,"cppcheck-2.8/test/testastutils.cpp"@114,"cppcheck-2.8/test/testastutils.cpp"@115,"cppcheck-2.8/test/testastutils.cpp"@116,"cppcheck-2.8/test/testastutils.cpp"@117,"cppcheck-2.8/test/testastutils.cpp"@118}
+  line inconclusive {62@109,63@110,64@111,65@112,66@113,67@114,68@115,69@116,70@117,71@118}
+  "test.cpp" always "test.cpp"
+Line 56
+  return always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  tokEnd always !0
+  == always {!<=-1,!>=2}
+  nullptr always 0
+Line 60
+  = always 0
+  nullptr always 0
+Line 61
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  61 always 61
+  nullptr always 0
+  == always 1
+  ( always 0
+  nullTok always 0
+Line 62
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  62 always 62
+  false always 0
+  ( always {!<=-1,!>=2}
+  "void f() { }" always "void f() { }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  62 always 62
+Line 63
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  63 always 63
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[]{ }" always "[]{ }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  63 always 63
+Line 64
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  64 always 64
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[]{ return 0; }" always "[]{ return 0; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  64 always 64
+Line 65
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  65 always 65
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](){ }" always "[](){ }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  65 always 65
+Line 66
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  66 always 66
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[&](){ }" always "[&](){ }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  66 always 66
+Line 67
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  67 always 67
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[&, i](){ }" always "[&, i](){ }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  67 always 67
+Line 68
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  68 always 68
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) { return -1; }" always "[](void) { return -1; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  68 always 68
+Line 69
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  69 always 69
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](int a, int b) { return a + b; }" always "[](int a, int b) { return a + b; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  69 always 69
+Line 70
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  70 always 70
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](int a, int b) mutable { return a + b; }" always "[](int a, int b) mutable { return a + b; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  70 always 70
+Line 71
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  71 always 71
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](int a, int b) constexpr { return a + b; }" always "[](int a, int b) constexpr { return a + b; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  71 always 71
+Line 72
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  72 always 72
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) -> int { return -1; }" always "[](void) -> int { return -1; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  72 always 72
+Line 73
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  73 always 73
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) mutable -> int { return -1; }" always "[](void) mutable -> int { return -1; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  73 always 73
+Line 74
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  74 always 74
+  false always 0
+  ( always {!<=-1,!>=2}
+  "[](void) foo -> int { return -1; }" always "[](void) foo -> int { return -1; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  74 always 74
+Line 75
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  75 always 75
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) constexpr -> int { return -1; }" always "[](void) constexpr -> int { return -1; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  75 always 75
+Line 76
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  76 always 76
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) constexpr -> int* { return x; }" always "[](void) constexpr -> int* { return x; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  76 always 76
+Line 77
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  77 always 77
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) constexpr -> const * int { return x; }" always "[](void) constexpr -> const * int { return x; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  77 always 77
+Line 78
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  78 always 78
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) mutable -> const * int { return x; }" always "[](void) mutable -> const * int { return x; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  78 always 78
+Line 79
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  79 always 79
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) constexpr -> const ** int { return x; }" always "[](void) constexpr -> const ** int { return x; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  79 always 79
+Line 80
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  80 always 80
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) constexpr -> const * const* int { return x; }" always "[](void) constexpr -> const * const* int { return x; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  80 always 80
+Line 84
+  ( always {!<=-1,!>=2}
+Line 86
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 87
+  code possible {"void f() { }"@90,"[]{ }"@91,"[]{ return 0; }"@92,"[](){ }"@93,"[&](){ }"@94,"[&, i](){ }"@95,"[](void) { return -1; }"@96,"[](int a, int b) { return a + b; }"@97,"[](int a, int b) mutable { return a + b; }"@98,"[](int a, int b) constexpr { return a + b; }"@99}
+Line 88
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testastutils.cpp"@90,"cppcheck-2.8/test/testastutils.cpp"@91,"cppcheck-2.8/test/testastutils.cpp"@92,"cppcheck-2.8/test/testastutils.cpp"@93,"cppcheck-2.8/test/testastutils.cpp"@94,"cppcheck-2.8/test/testastutils.cpp"@95,"cppcheck-2.8/test/testastutils.cpp"@96,"cppcheck-2.8/test/testastutils.cpp"@97,"cppcheck-2.8/test/testastutils.cpp"@98,"cppcheck-2.8/test/testastutils.cpp"@99}
+  line inconclusive {95@90,96@91,97@92,98@93,99@94,100@95,101@96,102@97,103@98,104@99}
+  "test.cpp" always "test.cpp"
+Line 90
+  return always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  tokStart always !0
+  == always {!<=-1,!>=2}
+Line 94
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  94 always 94
+  nullptr always 0
+  == always 1
+  ( always 0
+  nullptr always 0
+Line 95
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  95 always 95
+  false always 0
+  ( always {!<=-1,!>=2}
+  "void f() { }" always "void f() { }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  95 always 95
+Line 96
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  96 always 96
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[]{ }" always "[]{ }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  96 always 96
+Line 97
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  97 always 97
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[]{ return 0; }" always "[]{ return 0; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  97 always 97
+Line 98
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  98 always 98
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](){ }" always "[](){ }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  98 always 98
+Line 99
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  99 always 99
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[&](){ }" always "[&](){ }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  99 always 99
+Line 100
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  100 always 100
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[&, i](){ }" always "[&, i](){ }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  100 always 100
+Line 101
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  101 always 101
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) { return -1; }" always "[](void) { return -1; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  101 always 101
+Line 102
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  102 always 102
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](int a, int b) { return a + b; }" always "[](int a, int b) { return a + b; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  102 always 102
+Line 103
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  103 always 103
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](int a, int b) mutable { return a + b; }" always "[](int a, int b) mutable { return a + b; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  103 always 103
+Line 104
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  104 always 104
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](int a, int b) constexpr { return a + b; }" always "[](int a, int b) constexpr { return a + b; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  104 always 104
+Line 105
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  105 always 105
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) -> int { return -1; }" always "[](void) -> int { return -1; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  105 always 105
+Line 106
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  106 always 106
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) mutable -> int { return -1; }" always "[](void) mutable -> int { return -1; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  106 always 106
+Line 107
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  107 always 107
+  false always 0
+  ( always {!<=-1,!>=2}
+  "[](void) foo -> int { return -1; }" always "[](void) foo -> int { return -1; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  107 always 107
+Line 108
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  108 always 108
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) constexpr -> int { return -1; }" always "[](void) constexpr -> int { return -1; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  108 always 108
+Line 109
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  109 always 109
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) constexpr -> int* { return x; }" always "[](void) constexpr -> int* { return x; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  109 always 109
+Line 110
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  110 always 110
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) constexpr -> const * int { return x; }" always "[](void) constexpr -> const * int { return x; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  110 always 110
+Line 111
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  111 always 111
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) mutable -> const * int { return x; }" always "[](void) mutable -> const * int { return x; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  111 always 111
+Line 112
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  112 always 112
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) constexpr -> const ** int { return x; }" always "[](void) constexpr -> const ** int { return x; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  112 always 112
+Line 113
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  113 always 113
+  true always 1
+  ( always {!<=-1,!>=2}
+  "[](void) constexpr -> const * const* int { return x; }" always "[](void) constexpr -> const * const* int { return x; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  113 always 113
+Line 117
+  ( always {!<=-1,!>=2}
+Line 119
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 120
+  code possible {"(void*)0;"@80,"(void*)0U;"@81,"(void*)0x0LL;"@82,"NULL;"@83,"nullptr;"@84,"(void*)NULL;"@85,"static_cast<int*>(0);"@86,"0;"@87,"(void*)0.0;"@88,"(void*)1;"@89}
+Line 121
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testastutils.cpp"@80,"cppcheck-2.8/test/testastutils.cpp"@81,"cppcheck-2.8/test/testastutils.cpp"@82,"cppcheck-2.8/test/testastutils.cpp"@83,"cppcheck-2.8/test/testastutils.cpp"@84,"cppcheck-2.8/test/testastutils.cpp"@85,"cppcheck-2.8/test/testastutils.cpp"@86,"cppcheck-2.8/test/testastutils.cpp"@87,"cppcheck-2.8/test/testastutils.cpp"@88,"cppcheck-2.8/test/testastutils.cpp"@89}
+  line inconclusive {126@80,127@81,128@82,129@83,130@84,131@85,132@86,133@87,134@88,135@89}
+  "test.cpp" always "test.cpp"
+Line 122
+  return always {!<=-1,!>=2}
+Line 126
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  126 always 126
+  true always 1
+  ( always {!<=-1,!>=2}
+  "(void*)0;" always "(void*)0;"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  126 always 126
+Line 127
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  127 always 127
+  true always 1
+  ( always {!<=-1,!>=2}
+  "(void*)0U;" always "(void*)0U;"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  127 always 127
+Line 128
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  128 always 128
+  true always 1
+  ( always {!<=-1,!>=2}
+  "(void*)0x0LL;" always "(void*)0x0LL;"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  128 always 128
+Line 129
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  129 always 129
+  true always 1
+  ( always {!<=-1,!>=2}
+  "NULL;" always "NULL;"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  129 always 129
+Line 130
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  130 always 130
+  true always 1
+  ( always {!<=-1,!>=2}
+  "nullptr;" always "nullptr;"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  130 always 130
+Line 131
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  131 always 131
+  true always 1
+  ( always {!<=-1,!>=2}
+  "(void*)NULL;" always "(void*)NULL;"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  131 always 131
+Line 132
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  132 always 132
+  true always 1
+  ( always {!<=-1,!>=2}
+  "static_cast<int*>(0);" always "static_cast<int*>(0);"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  132 always 132
+Line 133
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  133 always 133
+  false always 0
+  ( always {!<=-1,!>=2}
+  "0;" always "0;"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  133 always 133
+Line 134
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  134 always 134
+  false always 0
+  ( always {!<=-1,!>=2}
+  "(void*)0.0;" always "(void*)0.0;"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  134 always 134
+Line 135
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  135 always 135
+  false always 0
+  ( always {!<=-1,!>=2}
+  "(void*)1;" always "(void*)1;"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  135 always 135
+Line 139
+  ( always {!<=-1,!>=2}
+Line 141
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 142
+  code possible {"void f() { if (a) { return; } }"@65,"int f() { if (a) { return {}; } }"@66,"std::string f() { if (a) { return std::string{}; } }"@67,"std::string f() { if (a) { return std::string{\"\"}; } }"@68,"void f() { if (a) { return (ab){0}; } }"@69,"void f() { if (a) { return (ab){0}; } }"@70,"void f() { if (a) { {throw new string(x);}; } }"@71,"void f() { if (a) { {throw new string(x);}; } }"@72,"void f() { [=]() { return data; }; }"@73,"auto f() { return [=]() { return data; }; }"@74}
+Line 143
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testastutils.cpp"@65,"cppcheck-2.8/test/testastutils.cpp"@66,"cppcheck-2.8/test/testastutils.cpp"@67,"cppcheck-2.8/test/testastutils.cpp"@68,"cppcheck-2.8/test/testastutils.cpp"@69,"cppcheck-2.8/test/testastutils.cpp"@70,"cppcheck-2.8/test/testastutils.cpp"@71,"cppcheck-2.8/test/testastutils.cpp"@72,"cppcheck-2.8/test/testastutils.cpp"@73,"cppcheck-2.8/test/testastutils.cpp"@74}
+  line inconclusive {151@65,152@66,153@67,154@68,155@69,156@70,157@71,158@72,159@73,160@74}
+  "test.cpp" always "test.cpp"
+Line 144
+  offset inconclusive {-2@65,-4@70,-1@73,0@78,7@79}
+  < always {!<=-1,!>=2}
+  0 always 0
+Line 145
+  1 always 1
+  + {<=0,!>=1}
+  offset {<=-1,!>=0,-2@65,-4@70}
+Line 146
+  offset {!<=-1,>=0,7@79}
+Line 147
+  return always {!<=-1,!>=2}
+Line 151
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  151 always 151
+  true always 1
+  ( always {!<=-1,!>=2}
+  "void f() { if (a) { return; } }" always "void f() { if (a) { return; } }"
+  -2 always -2
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  151 always 151
+Line 152
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  152 always 152
+  true always 1
+  ( always {!<=-1,!>=2}
+  "int f() { if (a) { return {}; } }" always "int f() { if (a) { return {}; } }"
+  -2 always -2
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  152 always 152
+Line 153
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  153 always 153
+  true always 1
+  ( always {!<=-1,!>=2}
+  "std::string f() { if (a) { return std::string{}; } }" always "std::string f() { if (a) { return std::string{}; } }"
+  -2 always -2
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  153 always 153
+Line 154
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  154 always 154
+  true always 1
+  ( always {!<=-1,!>=2}
+  "std::string f() { if (a) { return std::string{\"\"}; } }" always "std::string f() { if (a) { return std::string{\"\"}; } }"
+  -2 always -2
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  154 always 154
+Line 155
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  155 always 155
+  true always 1
+  ( always {!<=-1,!>=2}
+  "void f() { if (a) { return (ab){0}; } }" always "void f() { if (a) { return (ab){0}; } }"
+  -2 always -2
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  155 always 155
+Line 156
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  156 always 156
+  false always 0
+  ( always {!<=-1,!>=2}
+  "void f() { if (a) { return (ab){0}; } }" always "void f() { if (a) { return (ab){0}; } }"
+  -4 always -4
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  156 always 156
+Line 157
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  157 always 157
+  true always 1
+  ( always {!<=-1,!>=2}
+  "void f() { if (a) { {throw new string(x);}; } }" always "void f() { if (a) { {throw new string(x);}; } }"
+  -4 always -4
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  157 always 157
+Line 158
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  158 always 158
+  true always 1
+  ( always {!<=-1,!>=2}
+  "void f() { if (a) { {throw new string(x);}; } }" always "void f() { if (a) { {throw new string(x);}; } }"
+  -2 always -2
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  158 always 158
+Line 159
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  159 always 159
+  false always 0
+  ( always {!<=-1,!>=2}
+  "void f() { [=]() { return data; }; }" always "void f() { [=]() { return data; }; }"
+  -1 always -1
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  159 always 159
+Line 160
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  160 always 160
+  true always 1
+  ( always {!<=-1,!>=2}
+  "auto f() { return [=]() { return data; }; }" always "auto f() { return [=]() { return data; }; }"
+  -1 always -1
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  160 always 160
+Line 161
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  161 always 161
+  true always 1
+  ( always {!<=-1,!>=2}
+  "auto f() { return [=]() { return data; }(); }" always "auto f() { return [=]() { return data; }(); }"
+  -1 always -1
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  161 always 161
+Line 162
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  162 always 162
+  false always 0
+  ( always {!<=-1,!>=2}
+  "auto f() { [=]() { return data; }(); }" always "auto f() { [=]() { return data; }(); }"
+  -1 always -1
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  162 always 162
+Line 164
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  164 always 164
+  true always 1
+  ( always {!<=-1,!>=2}
+  "void negativeTokenOffset() { return; }" always "void negativeTokenOffset() { return; }"
+  -1 always -1
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  164 always 164
+Line 165
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  165 always 165
+  false always 0
+  ( always {!<=-1,!>=2}
+  "void zeroTokenOffset() { return; }" always "void zeroTokenOffset() { return; }"
+  0 always 0
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  165 always 165
+Line 166
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  166 always 166
+  true always 1
+  ( always {!<=-1,!>=2}
+  "void positiveTokenOffset() { return; }" always "void positiveTokenOffset() { return; }"
+  7 always 7
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  166 always 166
+Line 170
+  ( always {!<=-1,!>=2}
+Line 173
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 174
+  code possible {"x = 1 + 1;"@44,"x = 1 + 1u;"@45,"x = 1.0 + 1.0;"@46,"x = 1.0f + 1.0;"@47,"x = 1L + 1;"@48,"x = 0.0f + 0x0p+0f;"@49,"x < x;"@50,"x < y;"@51,"(x + 1) < (x + 1);"@52,"(x + 1) < (x + 1L);"@53}
+Line 175
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testastutils.cpp"@44,"cppcheck-2.8/test/testastutils.cpp"@45,"cppcheck-2.8/test/testastutils.cpp"@46,"cppcheck-2.8/test/testastutils.cpp"@47,"cppcheck-2.8/test/testastutils.cpp"@48,"cppcheck-2.8/test/testastutils.cpp"@49,"cppcheck-2.8/test/testastutils.cpp"@50,"cppcheck-2.8/test/testastutils.cpp"@51,"cppcheck-2.8/test/testastutils.cpp"@52,"cppcheck-2.8/test/testastutils.cpp"@53}
+  line inconclusive {183@44,184@45,185@46,186@47,187@48,188@49,189@50,190@51,191@52,192@53}
+  "test.cpp" always "test.cpp"
+Line 176
+  "" always ""
+Line 177
+  tokStr1 inconclusive {"1"@44,"1"@45,"1.0"@46,"1.0f"@47,"1L"@48,"0.0f"@49,"x"@50,"x"@51,"+"@52,"+"@53}
+  ( {!<=-1,1@44,3@46,4@47}
+  tokStr1 inconclusive {"1"@44,"1"@45,"1.0"@46,"1.0f"@47,"1L"@48,"0.0f"@49,"x"@50,"x"@51,"+"@52,"+"@53}
+Line 178
+  tokStr2 inconclusive {"1"@44,"1u"@45,"1.0"@46,"1.0"@47,"1"@48,"0x0p+0f"@49,"x"@50,"y"@51,"+"@52,"+"@53}
+  ( {!<=-1,1@44,2@45,3@46}
+  tokStr2 inconclusive {"1"@44,"1u"@45,"1.0"@46,"1.0"@47,"1"@48,"0x0p+0f"@49,"x"@50,"y"@51,"+"@52,"+"@53}
+Line 179
+  return always {!<=-1,!>=2}
+  false always 0
+  false always 0
+  false always 0
+  true always 1
+  nullptr always 0
+Line 183
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  183 always 183
+  true always 1
+  ( always {!<=-1,!>=2}
+  "x = 1 + 1;" always "x = 1 + 1;"
+  "1" always "1"
+  "1" always "1"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  183 always 183
+Line 184
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  184 always 184
+  false always 0
+  ( always {!<=-1,!>=2}
+  "x = 1 + 1u;" always "x = 1 + 1u;"
+  "1" always "1"
+  "1u" always "1u"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  184 always 184
+Line 185
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  185 always 185
+  true always 1
+  ( always {!<=-1,!>=2}
+  "x = 1.0 + 1.0;" always "x = 1.0 + 1.0;"
+  "1.0" always "1.0"
+  "1.0" always "1.0"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  185 always 185
+Line 186
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  186 always 186
+  false always 0
+  ( always {!<=-1,!>=2}
+  "x = 1.0f + 1.0;" always "x = 1.0f + 1.0;"
+  "1.0f" always "1.0f"
+  "1.0" always "1.0"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  186 always 186
+Line 187
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  187 always 187
+  false always 0
+  ( always {!<=-1,!>=2}
+  "x = 1L + 1;" always "x = 1L + 1;"
+  "1L" always "1L"
+  "1" always "1"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  187 always 187
+Line 188
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  188 always 188
+  true always 1
+  ( always {!<=-1,!>=2}
+  "x = 0.0f + 0x0p+0f;" always "x = 0.0f + 0x0p+0f;"
+  "0.0f" always "0.0f"
+  "0x0p+0f" always "0x0p+0f"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  188 always 188
+Line 189
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  189 always 189
+  true always 1
+  ( always {!<=-1,!>=2}
+  "x < x;" always "x < x;"
+  "x" always "x"
+  "x" always "x"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  189 always 189
+Line 190
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  190 always 190
+  false always 0
+  ( always {!<=-1,!>=2}
+  "x < y;" always "x < y;"
+  "x" always "x"
+  "y" always "y"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  190 always 190
+Line 191
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  191 always 191
+  true always 1
+  ( always {!<=-1,!>=2}
+  "(x + 1) < (x + 1);" always "(x + 1) < (x + 1);"
+  "+" always "+"
+  "+" always "+"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  191 always 191
+Line 192
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  192 always 192
+  false always 0
+  ( always {!<=-1,!>=2}
+  "(x + 1) < (x + 1L);" always "(x + 1) < (x + 1L);"
+  "+" always "+"
+  "+" always "+"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  192 always 192
+Line 193
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  193 always 193
+  true always 1
+  ( always {!<=-1,!>=2}
+  "(1 + x) < (x + 1);" always "(1 + x) < (x + 1);"
+  "+" always "+"
+  "+" always "+"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  193 always 193
+Line 194
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  194 always 194
+  false always 0
+  ( always {!<=-1,!>=2}
+  "(1.0l + x) < (1.0 + x);" always "(1.0l + x) < (1.0 + x);"
+  "+" always "+"
+  "+" always "+"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  194 always 194
+Line 195
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  195 always 195
+  true always 1
+  ( always {!<=-1,!>=2}
+  "(0.0 + x) < (x + 0x0p+0);" always "(0.0 + x) < (x + 0x0p+0);"
+  "+" always "+"
+  "+" always "+"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  195 always 195
+Line 196
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  196 always 196
+  true always 1
+  ( always {!<=-1,!>=2}
+  "void f() {double y = 1e1; (x + y) < (x + 10.0); } " always "void f() {double y = 1e1; (x + y) < (x + 10.0); } "
+  "+" always "+"
+  "+" always "+"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  196 always 196
+Line 197
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  197 always 197
+  true always 1
+  ( always {!<=-1,!>=2}
+  "void f() {double y = 1e1; (x + 10.0) < (y + x); } " always "void f() {double y = 1e1; (x + 10.0) < (y + x); } "
+  "+" always "+"
+  "+" always "+"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  197 always 197
+Line 198
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  198 always 198
+  true always 1
+  ( always {!<=-1,!>=2}
+  "void f() {double y = 1e1; double z = 10.0; (x + y) < (x + z); } " always "void f() {double y = 1e1; double z = 10.0; (x + y) < (x + z); } "
+  "+" always "+"
+  "+" always "+"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  198 always 198
+Line 199
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  199 always 199
+  true always 1
+  ( always {!<=-1,!>=2}
+  "A + A" always "A + A"
+  "A" always "A"
+  "A" always "A"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  199 always 199
+Line 202
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  202 always 202
+  true always 1
+  ( always {!<=-1,!>=2}
+  "A::B + A::B;" always "A::B + A::B;"
+  "::" always "::"
+  "::" always "::"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  202 always 202
+Line 203
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  203 always 203
+  false always 0
+  ( always {!<=-1,!>=2}
+  "A::B + A::C;" always "A::B + A::C;"
+  "::" always "::"
+  "::" always "::"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  203 always 203
+Line 204
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  204 always 204
+  true always 1
+  ( always {!<=-1,!>=2}
+  "A::B* get() { if(x) return new A::B(true); else return new A::B(true); }" always "A::B* get() { if(x) return new A::B(true); else return new A::B(true); }"
+  "new" always "new"
+  "new" always "new"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  204 always 204
+Line 205
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  205 always 205
+  false always 0
+  ( always {!<=-1,!>=2}
+  "A::B* get() { if(x) return new A::B(true); else return new A::C(true); }" always "A::B* get() { if(x) return new A::B(true); else return new A::C(true); }"
+  "new" always "new"
+  "new" always "new"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  205 always 205
+Line 206
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  206 always 206
+  true always 1
+  true always 1
+Line 210
+  ( always {!<=-1,!>=2}
+Line 212
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 213
+  code possible {"void f() {\n  int b;\n  if (b) { (int)((INTOF(8))result >> b); }\n}"@42,"void f() {\n    int &a = a;\n}\n"@43}
+Line 214
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testastutils.cpp"@42,"cppcheck-2.8/test/testastutils.cpp"@43}
+  line inconclusive {222@42,227@43}
+  "test.cpp" always "test.cpp"
+Line 215
+  startPattern inconclusive {"if"@42,"= a"@43}
+  ( {!<=-1,2@42,3@43}
+  startPattern inconclusive {"if"@42,"= a"@43}
+Line 216
+  endPattern inconclusive {"}"@42,"}"@43}
+  ( {!<=-1,1@42}
+  endPattern inconclusive {"}"@42,"}"@43}
+Line 217
+  return always {!<=-1,!>=2}
+  1 always 1
+  false always 0
+  & {lifetime[Address]=(settings),!0}
+  true always 1
+Line 222
+  ( always {!<=-1,!>=2}
+  "void f() {\n  int b;\n  if (b) { (int)((INTOF(8))result >> b); }\n}" always "void f() {\n  int b;\n  if (b) { (int)((INTOF(8))result >> b); }\n}"
+  "if" always "if"
+  "}" always "}"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  222 always 222
+Line 227
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  227 always 227
+  true always 1
+  ( always {!<=-1,!>=2}
+  "void f() {\n    int &a = a;\n}\n" always "void f() {\n    int &a = a;\n}\n"
+  "= a" always "= a"
+  "}" always "}"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  227 always 227
+Line 233
+  ( always {!<=-1,!>=2}
+Line 235
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 236
+  code possible {"void f(int x) {\n  a<int>(x);\n}"@40,"int f(int x) {\nreturn int(x);\n}\n"@41}
+Line 237
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testastutils.cpp"@40,"cppcheck-2.8/test/testastutils.cpp"@41}
+  line inconclusive {251@40,257@41}
+  "test.cpp" always "test.cpp"
+Line 238
+  pattern inconclusive {"x ) ;"@40,"x ) ;"@41}
+Line 239
+  return always {!<=-1,!>=2}
+  0 always 0
+  & {lifetime[Address]=(settings),!0}
+  inconclusive inconclusive {lifetime[Address]=(inconclusive)@40,lifetime[Address]=(inconclusive)@41}
+Line 244
+  inconclusive always {!<=-1,!>=2}
+Line 247
+  = always "void f(int x) {\n  a<int>(x);\n}"
+  "void f(int x) {\n  a<int>(x);\n}" always "void f(int x) {\n  a<int>(x);\n}"
+Line 250
+  inconclusive always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 251
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  251 always 251
+  false always 0
+  ( always {!<=-1,!>=2}
+  code always "void f(int x) {\n  a<int>(x);\n}"
+  "x ) ;" always "x ) ;"
+  & {lifetime[Address]=(inconclusive),!0}
+  inconclusive always 0
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  251 always 251
+Line 252
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  252 always 252
+  true always 1
+  inconclusive always {!<=-1,!>=2}
+Line 254
+  = always "int f(int x) {\nreturn int(x);\n}\n"
+  "int f(int x) {\nreturn int(x);\n}\n" always "int f(int x) {\nreturn int(x);\n}\n"
+Line 257
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  257 always 257
+  false always 0
+  ( always {!<=-1,!>=2}
+  code always "int f(int x) {\nreturn int(x);\n}\n"
+  "x ) ;" always "x ) ;"
+  & {lifetime[Address]=(inconclusive),!0}
+  inconclusive always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  257 always 257
+Line 258
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  258 always 258
+  false always 0
+  true always 1
+  inconclusive always {!<=-1,!>=2}
+Line 262
+  ( always {!<=-1,!>=2}
+Line 264
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 265
+  code possible {"void f(int a, int b) { int x = a + b; }"@30,"int * g(int); void f(int a, int b) { int x = g(a); }"@31,"int * g(int); void f(int a, int b) { int x = g(a)[b]; }"@32,"int * g(int); void f(int a, int b) { int x = g(g(a)[b]); }"@33,"int * g(int); void f(int a, int b) { int x = g(g(a)[b] + a); }"@34,"int * g(int); void f(int a, int b) { int x = g(a)[b + 1]; }"@35,"void f() { int a; int b; int x = [](int a){}; }"@36,"int * g(int); void f(int a, int b) { int x = a + b; }"@37,"int * g(int); void f(int a, int b) { int x = g(a)[b + 1]; }"@38,"int * g(int); void f(int a, int b) { int x = g(a + 1)[b]; }"@39}
+Line 266
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testastutils.cpp"@30,"cppcheck-2.8/test/testastutils.cpp"@31,"cppcheck-2.8/test/testastutils.cpp"@32,"cppcheck-2.8/test/testastutils.cpp"@33,"cppcheck-2.8/test/testastutils.cpp"@34,"cppcheck-2.8/test/testastutils.cpp"@35,"cppcheck-2.8/test/testastutils.cpp"@36,"cppcheck-2.8/test/testastutils.cpp"@37,"cppcheck-2.8/test/testastutils.cpp"@38,"cppcheck-2.8/test/testastutils.cpp"@39}
+  line inconclusive {272@30,273@31,274@32,275@33,276@34,277@35,278@36,280@37,281@38,282@39}
+  "test.cpp" always "test.cpp"
+Line 267
+  parentPattern inconclusive {"="@30,"="@31,"="@32,"="@33,"="@34,"="@35,"="@36,"+"@37,"+"@38,"+"@39}
+  ( {!<=-1,1@30}
+  parentPattern inconclusive {"="@30,"="@31,"="@32,"="@33,"="@34,"="@35,"="@36,"+"@37,"+"@38,"+"@39}
+Line 268
+  return always {!<=-1,!>=2}
+  rightPattern inconclusive {"; }"@30,"; }"@31,"; }"@32,"; }"@33,"; }"@34,"; }"@35,"; }"@36,"; }"@37,"] ; }"@38,") ["@39}
+  ( {!<=-1,3@30}
+  rightPattern inconclusive {"; }"@30,"; }"@31,"; }"@32,"; }"@33,"; }"@34,"; }"@35,"; }"@36,"; }"@37,"] ; }"@38,") ["@39}
+Line 272
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  272 always 272
+  true always 1
+  ( always {!<=-1,!>=2}
+  "void f(int a, int b) { int x = a + b; }" always "void f(int a, int b) { int x = a + b; }"
+  "=" always "="
+  "; }" always "; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  272 always 272
+Line 273
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  273 always 273
+  true always 1
+  ( always {!<=-1,!>=2}
+  "int * g(int); void f(int a, int b) { int x = g(a); }" always "int * g(int); void f(int a, int b) { int x = g(a); }"
+  "=" always "="
+  "; }" always "; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  273 always 273
+Line 274
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  274 always 274
+  true always 1
+  ( always {!<=-1,!>=2}
+  "int * g(int); void f(int a, int b) { int x = g(a)[b]; }" always "int * g(int); void f(int a, int b) { int x = g(a)[b]; }"
+  "=" always "="
+  "; }" always "; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  274 always 274
+Line 275
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  275 always 275
+  true always 1
+  ( always {!<=-1,!>=2}
+  "int * g(int); void f(int a, int b) { int x = g(g(a)[b]); }" always "int * g(int); void f(int a, int b) { int x = g(g(a)[b]); }"
+  "=" always "="
+  "; }" always "; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  275 always 275
+Line 276
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  276 always 276
+  true always 1
+  ( always {!<=-1,!>=2}
+  "int * g(int); void f(int a, int b) { int x = g(g(a)[b] + a); }" always "int * g(int); void f(int a, int b) { int x = g(g(a)[b] + a); }"
+  "=" always "="
+  "; }" always "; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  276 always 276
+Line 277
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  277 always 277
+  true always 1
+  ( always {!<=-1,!>=2}
+  "int * g(int); void f(int a, int b) { int x = g(a)[b + 1]; }" always "int * g(int); void f(int a, int b) { int x = g(a)[b + 1]; }"
+  "=" always "="
+  "; }" always "; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  277 always 277
+Line 278
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  278 always 278
+  true always 1
+  ( always {!<=-1,!>=2}
+  "void f() { int a; int b; int x = [](int a){}; }" always "void f() { int a; int b; int x = [](int a){}; }"
+  "=" always "="
+  "; }" always "; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  278 always 278
+Line 280
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  280 always 280
+  true always 1
+  ( always {!<=-1,!>=2}
+  "int * g(int); void f(int a, int b) { int x = a + b; }" always "int * g(int); void f(int a, int b) { int x = a + b; }"
+  "+" always "+"
+  "; }" always "; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  280 always 280
+Line 281
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  281 always 281
+  true always 1
+  ( always {!<=-1,!>=2}
+  "int * g(int); void f(int a, int b) { int x = g(a)[b + 1]; }" always "int * g(int); void f(int a, int b) { int x = g(a)[b + 1]; }"
+  "+" always "+"
+  "] ; }" always "] ; }"
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  281 always 281
+Line 282
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  282 always 282
+  true always 1
+  ( always {!<=-1,!>=2}
+  "int * g(int); void f(int a, int b) { int x = g(a + 1)[b]; }" always "int * g(int); void f(int a, int b) { int x = g(a + 1)[b]; }"
+  "+" always "+"
+  ") [" always ") ["
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  282 always 282
+Line 285
+  False always 0
+  True always 1
+  Fail always 2
+Line 289
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 290
+  code possible {"void f() { bool b = true; }"@1,"void f() { int i = true; }"@2,"void f() { int i; if (i) {} }"@3,"void f() { int i; while (i) {} }"@4,"void f() { int i; for (;i;) {} }"@5,"void f() { int i; for (;;i) {} }"@6,"void f() { int i; for (i;;) {} }"@7,"void f() { int i; for (int j=0; i; ++j) {} }"@8,"void f() { int i; if (i == 2) {} }"@9,"void f() { int i; if (i == true) {} }"@10}
+Line 291
+  ! always {!<=-1,!>=2}
+  "test.cpp" always "test.cpp"
+Line 292
+  :: always 2
+  Fail always 2
+Line 293
+  pattern inconclusive {"b"@1,"i"@2,"i )"@3,"i )"@4,"i ; )"@5,"i )"@6,"i ; ; )"@7,"i ; ++"@8,"i =="@9,"i =="@10}
+Line 294
+  ! always {!<=-1,!>=2}
+Line 295
+  :: always 2
+  Fail always 2
+Line 296
+  argtok always !0
+  :: always 1
+  True always 1
+  : always 0
+  :: always 0
+  False always 0
+Line 300
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  300 always 300
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { bool b = true; }" always "void f() { bool b = true; }"
+  "b" always "b"
+Line 301
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  301 always 301
+  :: always 0
+  False always 0
+  == always {!<=-1,!>=2}
+  "void f() { int i = true; }" always "void f() { int i = true; }"
+  "i" always "i"
+Line 302
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  302 always 302
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (i) {} }" always "void f() { int i; if (i) {} }"
+  "i )" always "i )"
+Line 303
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  303 always 303
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; while (i) {} }" always "void f() { int i; while (i) {} }"
+  "i )" always "i )"
+Line 304
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  304 always 304
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; for (;i;) {} }" always "void f() { int i; for (;i;) {} }"
+  "i ; )" always "i ; )"
+Line 305
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  305 always 305
+  :: always 0
+  False always 0
+  == always {!<=-1,!>=2}
+  "void f() { int i; for (;;i) {} }" always "void f() { int i; for (;;i) {} }"
+  "i )" always "i )"
+Line 306
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  306 always 306
+  :: always 0
+  False always 0
+  == always {!<=-1,!>=2}
+  "void f() { int i; for (i;;) {} }" always "void f() { int i; for (i;;) {} }"
+  "i ; ; )" always "i ; ; )"
+Line 307
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  307 always 307
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; for (int j=0; i; ++j) {} }" always "void f() { int i; for (int j=0; i; ++j) {} }"
+  "i ; ++" always "i ; ++"
+Line 308
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  308 always 308
+  :: always 0
+  False always 0
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (i == 2) {} }" always "void f() { int i; if (i == 2) {} }"
+  "i ==" always "i =="
+Line 309
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  309 always 309
+  :: always 0
+  False always 0
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (i == true) {} }" always "void f() { int i; if (i == true) {} }"
+  "i ==" always "i =="
+Line 310
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  310 always 310
+  :: always 0
+  False always 0
+  == always {!<=-1,!>=2}
+  "void f() { int i,j; if (i == (j&&f())) {} }" always "void f() { int i,j; if (i == (j&&f())) {} }"
+  "i ==" always "i =="
+Line 311
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  311 always 311
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (!i == 0) {} }" always "void f() { int i; if (!i == 0) {} }"
+  "i ==" always "i =="
+Line 312
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  312 always 312
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (!i) {} }" always "void f() { int i; if (!i) {} }"
+  "i )" always "i )"
+Line 313
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  313 always 313
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (!!i) {} }" always "void f() { int i; if (!!i) {} }"
+  "i )" always "i )"
+Line 314
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  314 always 314
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (i && f()) {} }" always "void f() { int i; if (i && f()) {} }"
+  "i &&" always "i &&"
+Line 315
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  315 always 315
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; int j = i && f(); }" always "void f() { int i; int j = i && f(); }"
+  "i &&" always "i &&"
+Line 316
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  316 always 316
+  :: always 0
+  False always 0
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (i & f()) {} }" always "void f() { int i; if (i & f()) {} }"
+  "i &" always "i &"
+Line 317
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  317 always 317
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (static_cast<bool>(i)) {} }" always "void f() { int i; if (static_cast<bool>(i)) {} }"
+  "i )" always "i )"
+Line 318
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  318 always 318
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; if ((bool)i) {} }" always "void f() { int i; if ((bool)i) {} }"
+  "i )" always "i )"
+Line 319
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  319 always 319
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (1+static_cast<bool>(i)) {} }" always "void f() { int i; if (1+static_cast<bool>(i)) {} }"
+  "i )" always "i )"
+Line 320
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  320 always 320
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (1+(bool)i) {} }" always "void f() { int i; if (1+(bool)i) {} }"
+  "i )" always "i )"
+Line 321
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  321 always 321
+  :: always 0
+  False always 0
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (1+static_cast<int>(i)) {} }" always "void f() { int i; if (1+static_cast<int>(i)) {} }"
+  "i )" always "i )"
+Line 322
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  322 always 322
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (1+!static_cast<int>(i)) {} }" always "void f() { int i; if (1+!static_cast<int>(i)) {} }"
+  "i )" always "i )"
+Line 323
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  323 always 323
+  :: always 0
+  False always 0
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (1+(int)i) {} }" always "void f() { int i; if (1+(int)i) {} }"
+  "i )" always "i )"
+Line 324
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  324 always 324
+  :: always 0
+  False always 0
+  == always {!<=-1,!>=2}
+  "void f() { int i; if (i + 2) {} }" always "void f() { int i; if (i + 2) {} }"
+  "i +" always "i +"
+Line 325
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  325 always 325
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int i; bool b = i; }" always "void f() { int i; bool b = i; }"
+  "i ; }" always "i ; }"
+Line 326
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  326 always 326
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f(bool b); void f() { int i; f(i); }" always "void f(bool b); void f() { int i; f(i); }"
+  "i )" always "i )"
+Line 327
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  327 always 327
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int *i; if (*i) {} }" always "void f() { int *i; if (*i) {} }"
+  "i )" always "i )"
+Line 328
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testastutils.cpp" always "cppcheck-2.8/test/testastutils.cpp"
+  328 always 328
+  :: always 1
+  True always 1
+  == always {!<=-1,!>=2}
+  "void f() { int *i; if (*i) {} }" always "void f() { int *i; if (*i) {} }"
+  "* i )" always "* i )"

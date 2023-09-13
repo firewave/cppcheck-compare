@@ -1,0 +1,1027 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073742037 expected@var22 !=@expr1073742038 actual@var23 ) {
+62: std ::@expr1073742039 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073742040 expected@var22 ;
+64: std ::@expr1073742041 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073742042 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073742043 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073742044 str (@expr1073742045 ) , actualStr@var26 .@expr1073742046 str (@expr1073742047 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073742048 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073742049 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073742050 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073742051 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testplatform.cpp
+
+1:
+|
+24:
+25: class TestPlatform : public TestFixture {
+26: public:
+27: TestPlatform ( ) : TestFixture ( "TestPlatform" ) { }
+28:
+29: private:
+30: void run ( ) override {
+31: $do ${ $if $(@expr1073742052 $prepareTest $(@expr1073742053 "empty" $) $) ${ $setVerbose $(@expr1073742054 $false $) $; empty $(@expr1073742055 $) $; $} $} $while $(@expr1073742056 $false $) ;
+32: $do ${ $if $(@expr1073742057 $prepareTest $(@expr1073742058 "valid_config_native_1" $) $) ${ $setVerbose $(@expr1073742059 $false $) $; valid_config_native_1 $(@expr1073742060 $) $; $} $} $while $(@expr1073742061 $false $) ;
+33: $do ${ $if $(@expr1073742062 $prepareTest $(@expr1073742063 "valid_config_native_2" $) $) ${ $setVerbose $(@expr1073742064 $false $) $; valid_config_native_2 $(@expr1073742065 $) $; $} $} $while $(@expr1073742066 $false $) ;
+34: $do ${ $if $(@expr1073742067 $prepareTest $(@expr1073742068 "valid_config_file_1" $) $) ${ $setVerbose $(@expr1073742069 $false $) $; valid_config_file_1 $(@expr1073742070 $) $; $} $} $while $(@expr1073742071 $false $) ;
+35: $do ${ $if $(@expr1073742072 $prepareTest $(@expr1073742073 "valid_config_file_2" $) $) ${ $setVerbose $(@expr1073742074 $false $) $; valid_config_file_2 $(@expr1073742075 $) $; $} $} $while $(@expr1073742076 $false $) ;
+36: $do ${ $if $(@expr1073742077 $prepareTest $(@expr1073742078 "valid_config_file_3" $) $) ${ $setVerbose $(@expr1073742079 $false $) $; valid_config_file_3 $(@expr1073742080 $) $; $} $} $while $(@expr1073742081 $false $) ;
+37: $do ${ $if $(@expr1073742082 $prepareTest $(@expr1073742083 "valid_config_file_4" $) $) ${ $setVerbose $(@expr1073742084 $false $) $; valid_config_file_4 $(@expr1073742085 $) $; $} $} $while $(@expr1073742086 $false $) ;
+38: $do ${ $if $(@expr1073742087 $prepareTest $(@expr1073742088 "invalid_config_file_1" $) $) ${ $setVerbose $(@expr1073742089 $false $) $; invalid_config_file_1 $(@expr1073742090 $) $; $} $} $while $(@expr1073742091 $false $) ;
+39:
+40: }
+41:
+42: static bool readPlatform ( cppcheck :: Platform & platform@var102 , const char * xmldata@var103 ) {
+43: tinyxml2 ::@expr1073742092 XMLDocument doc@var104 ;
+44: doc@var104 .@expr1073742093 Parse (@expr1073742094 xmldata@var103 ) ;
+45: return platform@var102 .@expr1073742095 loadFromXmlDocument (@expr1073742096 &@expr1073742097 doc@var104 ) ;
+46: }
+47:
+48: void empty ( ) const {
+49:
+50: const char xmldata@var105 [@expr1073742100 34 ] =@expr1073742101 "<?xml version=\"1.0\"?>\n<platform/>" ;
+51: cppcheck ::@expr1073742102 Platform platform@var106 ;
+52: $if $(@expr1073742103 $!@expr1073742104 $assert_ $(@expr1073742105 "cppcheck-2.8/test/testplatform.cpp" $, 52 $, platform@var106 .@expr1073742106 platform (@expr1073742107 cppcheck ::@expr284 Platform ::@expr1073742109 Win64@expr1073742098 ) $) $) { $return ; }
+53: $if $(@expr1073742110 $!@expr1073742111 $assert_ $(@expr1073742112 "cppcheck-2.8/test/testplatform.cpp" $, 53 $, readPlatform (@expr1073742113 platform@var106 , xmldata@var105 ) $) $) { $return ; }
+54: $if $(@expr1073742114 $!@expr1073742115 $assertEquals $(@expr1073742116 "cppcheck-2.8/test/testplatform.cpp" $, 54 $, cppcheck ::@expr284 Platform ::@expr1073742118 PlatformFile@expr1073742099 $, platform@var106 .@expr1073742119 platformType@var107 $) $) { $return ; }
+55: $if $(@expr1073742120 $!@expr1073742121 $assert_ $(@expr1073742122 "cppcheck-2.8/test/testplatform.cpp" $, 55 $, !@expr1073742123 platform@var106 .@expr1073742124 isWindowsPlatform (@expr1073742125 ) $) $) { $return ; }
+56: $if $(@expr1073742126 $!@expr1073742127 $assertEquals $(@expr1073742128 "cppcheck-2.8/test/testplatform.cpp" $, 56 $, 8 $, platform@var106 .@expr1073742129 char_bit@var108 $) $) { $return ; }
+57: $if $(@expr1073742130 $!@expr1073742131 $assertEquals $(@expr1073742132 "cppcheck-2.8/test/testplatform.cpp" $, 57 $, '\0' $, platform@var106 .@expr1073742133 defaultSign@var109 $) $) { $return ; }
+58: $if $(@expr1073742134 $!@expr1073742135 $assertEquals $(@expr1073742136 "cppcheck-2.8/test/testplatform.cpp" $, 58 $, 1 $, platform@var106 .@expr1073742137 sizeof_bool@var110 $) $) { $return ; }
+59: $if $(@expr1073742138 $!@expr1073742139 $assertEquals $(@expr1073742140 "cppcheck-2.8/test/testplatform.cpp" $, 59 $, 2 $, platform@var106 .@expr1073742141 sizeof_short@var111 $) $) { $return ; }
+60: $if $(@expr1073742142 $!@expr1073742143 $assertEquals $(@expr1073742144 "cppcheck-2.8/test/testplatform.cpp" $, 60 $, 4 $, platform@var106 .@expr1073742145 sizeof_int@var112 $) $) { $return ; }
+61: $if $(@expr1073742146 $!@expr1073742147 $assertEquals $(@expr1073742148 "cppcheck-2.8/test/testplatform.cpp" $, 61 $, 4 $, platform@var106 .@expr1073742149 sizeof_long@var113 $) $) { $return ; }
+62: $if $(@expr1073742150 $!@expr1073742151 $assertEquals $(@expr1073742152 "cppcheck-2.8/test/testplatform.cpp" $, 62 $, 8 $, platform@var106 .@expr1073742153 sizeof_long_long@var114 $) $) { $return ; }
+63: }
+64:
+65: void valid_config_native_1 ( ) {
+66:
+67: cppcheck ::@expr1073742155 Platform platform@var115 ;
+68: $if $(@expr1073742156 $!@expr1073742157 $assert_ $(@expr1073742158 "cppcheck-2.8/test/testplatform.cpp" $, 68 $, platform@var115 .@expr1073742159 platform (@expr1073742160 cppcheck ::@expr337 Platform ::@expr338 Win32A@expr330 ) $) $) { $return ; }
+69: $if $(@expr1073742163 $!@expr1073742164 $assertEquals $(@expr1073742165 "cppcheck-2.8/test/testplatform.cpp" $, 69 $, cppcheck ::@expr337 Platform ::@expr338 Win32A@expr330 $, platform@var115 .@expr1073742168 platformType@var116 $) $) { $return ; }
+70: $if $(@expr1073742169 $!@expr1073742170 $assert_ $(@expr1073742171 "cppcheck-2.8/test/testplatform.cpp" $, 70 $, platform@var115 .@expr1073742172 isWindowsPlatform (@expr1073742173 ) $) $) { $return ; }
+71: $if $(@expr1073742174 $!@expr1073742175 $assertEquals $(@expr1073742176 "cppcheck-2.8/test/testplatform.cpp" $, 71 $, '\0' $, platform@var115 .@expr1073742177 defaultSign@var117 $) $) { $return ; }
+72: $if $(@expr1073742178 $!@expr1073742179 $assertEquals $(@expr1073742180 "cppcheck-2.8/test/testplatform.cpp" $, 72 $, 8 $, platform@var115 .@expr1073742181 char_bit@var118 $) $) { $return ; }
+73: $if $(@expr1073742182 $!@expr1073742183 $assertEquals $(@expr1073742184 "cppcheck-2.8/test/testplatform.cpp" $, 73 $, 1 $, platform@var115 .@expr1073742185 sizeof_bool@var119 $) $) { $return ; }
+74: $if $(@expr1073742186 $!@expr1073742187 $assertEquals $(@expr1073742188 "cppcheck-2.8/test/testplatform.cpp" $, 74 $, 2 $, platform@var115 .@expr1073742189 sizeof_short@var120 $) $) { $return ; }
+75: $if $(@expr1073742190 $!@expr1073742191 $assertEquals $(@expr1073742192 "cppcheck-2.8/test/testplatform.cpp" $, 75 $, 4 $, platform@var115 .@expr1073742193 sizeof_int@var121 $) $) { $return ; }
+76: $if $(@expr1073742194 $!@expr1073742195 $assertEquals $(@expr1073742196 "cppcheck-2.8/test/testplatform.cpp" $, 76 $, 4 $, platform@var115 .@expr1073742197 sizeof_long@var122 $) $) { $return ; }
+77: $if $(@expr1073742198 $!@expr1073742199 $assertEquals $(@expr1073742200 "cppcheck-2.8/test/testplatform.cpp" $, 77 $, 8 $, platform@var115 .@expr1073742201 sizeof_long_long@var123 $) $) { $return ; }
+78: $if $(@expr1073742202 $!@expr1073742203 $assertEquals $(@expr1073742204 "cppcheck-2.8/test/testplatform.cpp" $, 78 $, 16 $, platform@var115 .@expr1073742205 short_bit@var124 $) $) { $return ; }
+79: $if $(@expr1073742206 $!@expr1073742207 $assertEquals $(@expr1073742208 "cppcheck-2.8/test/testplatform.cpp" $, 79 $, 32 $, platform@var115 .@expr1073742209 int_bit@var125 $) $) { $return ; }
+80: $if $(@expr1073742210 $!@expr1073742211 $assertEquals $(@expr1073742212 "cppcheck-2.8/test/testplatform.cpp" $, 80 $, 32 $, platform@var115 .@expr1073742213 long_bit@var126 $) $) { $return ; }
+81: $if $(@expr1073742214 $!@expr1073742215 $assertEquals $(@expr1073742216 "cppcheck-2.8/test/testplatform.cpp" $, 81 $, 64 $, platform@var115 .@expr1073742217 long_long_bit@var127 $) $) { $return ; }
+82: }
+83:
+84: void valid_config_native_2 ( ) {
+85:
+86: cppcheck ::@expr1073742219 Platform platform@var128 ;
+87: $if $(@expr1073742220 $!@expr1073742221 $assert_ $(@expr1073742222 "cppcheck-2.8/test/testplatform.cpp" $, 87 $, platform@var128 .@expr1073742223 platform (@expr1073742224 cppcheck ::@expr401 Platform ::@expr402 Unix64@expr394 ) $) $) { $return ; }
+88: $if $(@expr1073742227 $!@expr1073742228 $assertEquals $(@expr1073742229 "cppcheck-2.8/test/testplatform.cpp" $, 88 $, cppcheck ::@expr401 Platform ::@expr402 Unix64@expr394 $, platform@var128 .@expr1073742232 platformType@var129 $) $) { $return ; }
+89: $if $(@expr1073742233 $!@expr1073742234 $assert_ $(@expr1073742235 "cppcheck-2.8/test/testplatform.cpp" $, 89 $, !@expr1073742236 platform@var128 .@expr1073742237 isWindowsPlatform (@expr1073742238 ) $) $) { $return ; }
+90: $if $(@expr1073742239 $!@expr1073742240 $assertEquals $(@expr1073742241 "cppcheck-2.8/test/testplatform.cpp" $, 90 $, '\0' $, platform@var128 .@expr1073742242 defaultSign@var130 $) $) { $return ; }
+91: $if $(@expr1073742243 $!@expr1073742244 $assertEquals $(@expr1073742245 "cppcheck-2.8/test/testplatform.cpp" $, 91 $, 8 $, platform@var128 .@expr1073742246 char_bit@var131 $) $) { $return ; }
+92: $if $(@expr1073742247 $!@expr1073742248 $assertEquals $(@expr1073742249 "cppcheck-2.8/test/testplatform.cpp" $, 92 $, 4 $, platform@var128 .@expr1073742250 sizeof_int@var132 $) $) { $return ; }
+93: $if $(@expr1073742251 $!@expr1073742252 $assertEquals $(@expr1073742253 "cppcheck-2.8/test/testplatform.cpp" $, 93 $, 32 $, platform@var128 .@expr1073742254 int_bit@var133 $) $) { $return ; }
+94: $if $(@expr1073742255 $!@expr1073742256 $assertEquals $(@expr1073742257 "cppcheck-2.8/test/testplatform.cpp" $, 94 $, 8 $, platform@var128 .@expr1073742258 sizeof_long@var134 $) $) { $return ; }
+95: $if $(@expr1073742259 $!@expr1073742260 $assertEquals $(@expr1073742261 "cppcheck-2.8/test/testplatform.cpp" $, 95 $, 64 $, platform@var128 .@expr1073742262 long_bit@var135 $) $) { $return ; }
+96: }
+97:
+98: void valid_config_file_1 ( ) {
+99:
+100:
+101: const char xmldata@var136 [@expr1073742263 389 ] =@expr1073742264 "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>8</char_bit>\n  <default-sign>unsigned</default-sign>\n  <sizeof>\n    <bool>1</bool>\n    <short>2</short>\n    <int>2</int>\n    <long>4</long>\n    <long-long>8</long-long>\n    <float>4</float>\n    <double>4</double>\n    <long-double>4</long-double>\n    <pointer>2</pointer>\n    <size_t>2</size_t>\n    <wchar_t>2</wchar_t>\n  </sizeof>\n </platform>"
+102:
+|
+117:
+118: ;
+119: cppcheck ::@expr1073742265 Platform platform@var137 ;
+120: $if $(@expr1073742266 $!@expr1073742267 $assert_ $(@expr1073742268 "cppcheck-2.8/test/testplatform.cpp" $, 120 $, readPlatform (@expr1073742269 platform@var137 , xmldata@var136 ) $) $) { $return ; }
+121: $if $(@expr1073742270 $!@expr1073742271 $assertEquals $(@expr1073742272 "cppcheck-2.8/test/testplatform.cpp" $, 121 $, platform@var137 .@expr1073742273 PlatformFile@var138 $, platform@var137 .@expr1073742274 platformType@var139 $) $) { $return ; }
+122: $if $(@expr1073742275 $!@expr1073742276 $assert_ $(@expr1073742277 "cppcheck-2.8/test/testplatform.cpp" $, 122 $, !@expr1073742278 platform@var137 .@expr1073742279 isWindowsPlatform (@expr1073742280 ) $) $) { $return ; }
+123: $if $(@expr1073742281 $!@expr1073742282 $assertEquals $(@expr1073742283 "cppcheck-2.8/test/testplatform.cpp" $, 123 $, 8 $, platform@var137 .@expr1073742284 char_bit@var140 $) $) { $return ; }
+124: $if $(@expr1073742285 $!@expr1073742286 $assertEquals $(@expr1073742287 "cppcheck-2.8/test/testplatform.cpp" $, 124 $, 'u' $, platform@var137 .@expr1073742288 defaultSign@var141 $) $) { $return ; }
+125: $if $(@expr1073742289 $!@expr1073742290 $assertEquals $(@expr1073742291 "cppcheck-2.8/test/testplatform.cpp" $, 125 $, 1 $, platform@var137 .@expr1073742292 sizeof_bool@var142 $) $) { $return ; }
+126: $if $(@expr1073742293 $!@expr1073742294 $assertEquals $(@expr1073742295 "cppcheck-2.8/test/testplatform.cpp" $, 126 $, 2 $, platform@var137 .@expr1073742296 sizeof_short@var143 $) $) { $return ; }
+127: $if $(@expr1073742297 $!@expr1073742298 $assertEquals $(@expr1073742299 "cppcheck-2.8/test/testplatform.cpp" $, 127 $, 2 $, platform@var137 .@expr1073742300 sizeof_int@var144 $) $) { $return ; }
+128: $if $(@expr1073742301 $!@expr1073742302 $assertEquals $(@expr1073742303 "cppcheck-2.8/test/testplatform.cpp" $, 128 $, 4 $, platform@var137 .@expr1073742304 sizeof_long@var145 $) $) { $return ; }
+129: $if $(@expr1073742305 $!@expr1073742306 $assertEquals $(@expr1073742307 "cppcheck-2.8/test/testplatform.cpp" $, 129 $, 8 $, platform@var137 .@expr1073742308 sizeof_long_long@var146 $) $) { $return ; }
+130: $if $(@expr1073742309 $!@expr1073742310 $assertEquals $(@expr1073742311 "cppcheck-2.8/test/testplatform.cpp" $, 130 $, 4 $, platform@var137 .@expr1073742312 sizeof_float@var147 $) $) { $return ; }
+131: $if $(@expr1073742313 $!@expr1073742314 $assertEquals $(@expr1073742315 "cppcheck-2.8/test/testplatform.cpp" $, 131 $, 4 $, platform@var137 .@expr1073742316 sizeof_double@var148 $) $) { $return ; }
+132: $if $(@expr1073742317 $!@expr1073742318 $assertEquals $(@expr1073742319 "cppcheck-2.8/test/testplatform.cpp" $, 132 $, 4 $, platform@var137 .@expr1073742320 sizeof_long_double@var149 $) $) { $return ; }
+133: $if $(@expr1073742321 $!@expr1073742322 $assertEquals $(@expr1073742323 "cppcheck-2.8/test/testplatform.cpp" $, 133 $, 2 $, platform@var137 .@expr1073742324 sizeof_pointer@var150 $) $) { $return ; }
+134: $if $(@expr1073742325 $!@expr1073742326 $assertEquals $(@expr1073742327 "cppcheck-2.8/test/testplatform.cpp" $, 134 $, 2 $, platform@var137 .@expr1073742328 sizeof_size_t@var151 $) $) { $return ; }
+135: $if $(@expr1073742329 $!@expr1073742330 $assertEquals $(@expr1073742331 "cppcheck-2.8/test/testplatform.cpp" $, 135 $, 2 $, platform@var137 .@expr1073742332 sizeof_wchar_t@var152 $) $) { $return ; }
+136: $if $(@expr1073742333 $!@expr1073742334 $assertEquals $(@expr1073742335 "cppcheck-2.8/test/testplatform.cpp" $, 136 $, 16 $, platform@var137 .@expr1073742336 short_bit@var153 $) $) { $return ; }
+137: $if $(@expr1073742337 $!@expr1073742338 $assertEquals $(@expr1073742339 "cppcheck-2.8/test/testplatform.cpp" $, 137 $, 16 $, platform@var137 .@expr1073742340 int_bit@var154 $) $) { $return ; }
+138: $if $(@expr1073742341 $!@expr1073742342 $assertEquals $(@expr1073742343 "cppcheck-2.8/test/testplatform.cpp" $, 138 $, 32 $, platform@var137 .@expr1073742344 long_bit@var155 $) $) { $return ; }
+139: $if $(@expr1073742345 $!@expr1073742346 $assertEquals $(@expr1073742347 "cppcheck-2.8/test/testplatform.cpp" $, 139 $, 64 $, platform@var137 .@expr1073742348 long_long_bit@var156 $) $) { $return ; }
+140: }
+141:
+142: void valid_config_file_2 ( ) {
+143:
+144:
+145: const char xmldata@var157 [@expr1073742349 390 ] =@expr1073742350 "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>20</char_bit>\n  <default-sign>signed</default-sign>\n  <sizeof>\n    <bool>1</bool>\n    <short>2</short>\n    <int>3</int>\n    <long>4</long>\n    <long-long>5</long-long>\n    <float>6</float>\n    <double>7</double>\n    <long-double>8</long-double>\n    <pointer>9</pointer>\n    <size_t>10</size_t>\n    <wchar_t>11</wchar_t>\n  </sizeof>\n </platform>"
+146:
+|
+161:
+162: ;
+163: cppcheck ::@expr1073742351 Platform platform@var158 ;
+164: $if $(@expr1073742352 $!@expr1073742353 $assert_ $(@expr1073742354 "cppcheck-2.8/test/testplatform.cpp" $, 164 $, readPlatform (@expr1073742355 platform@var158 , xmldata@var157 ) $) $) { $return ; }
+165: $if $(@expr1073742356 $!@expr1073742357 $assertEquals $(@expr1073742358 "cppcheck-2.8/test/testplatform.cpp" $, 165 $, platform@var158 .@expr1073742359 PlatformFile@var159 $, platform@var158 .@expr1073742360 platformType@var160 $) $) { $return ; }
+166: $if $(@expr1073742361 $!@expr1073742362 $assert_ $(@expr1073742363 "cppcheck-2.8/test/testplatform.cpp" $, 166 $, !@expr1073742364 platform@var158 .@expr1073742365 isWindowsPlatform (@expr1073742366 ) $) $) { $return ; }
+167: $if $(@expr1073742367 $!@expr1073742368 $assertEquals $(@expr1073742369 "cppcheck-2.8/test/testplatform.cpp" $, 167 $, 20 $, platform@var158 .@expr1073742370 char_bit@var161 $) $) { $return ; }
+168: $if $(@expr1073742371 $!@expr1073742372 $assertEquals $(@expr1073742373 "cppcheck-2.8/test/testplatform.cpp" $, 168 $, 's' $, platform@var158 .@expr1073742374 defaultSign@var162 $) $) { $return ; }
+169: $if $(@expr1073742375 $!@expr1073742376 $assertEquals $(@expr1073742377 "cppcheck-2.8/test/testplatform.cpp" $, 169 $, 1 $, platform@var158 .@expr1073742378 sizeof_bool@var163 $) $) { $return ; }
+170: $if $(@expr1073742379 $!@expr1073742380 $assertEquals $(@expr1073742381 "cppcheck-2.8/test/testplatform.cpp" $, 170 $, 2 $, platform@var158 .@expr1073742382 sizeof_short@var164 $) $) { $return ; }
+171: $if $(@expr1073742383 $!@expr1073742384 $assertEquals $(@expr1073742385 "cppcheck-2.8/test/testplatform.cpp" $, 171 $, 3 $, platform@var158 .@expr1073742386 sizeof_int@var165 $) $) { $return ; }
+172: $if $(@expr1073742387 $!@expr1073742388 $assertEquals $(@expr1073742389 "cppcheck-2.8/test/testplatform.cpp" $, 172 $, 4 $, platform@var158 .@expr1073742390 sizeof_long@var166 $) $) { $return ; }
+173: $if $(@expr1073742391 $!@expr1073742392 $assertEquals $(@expr1073742393 "cppcheck-2.8/test/testplatform.cpp" $, 173 $, 5 $, platform@var158 .@expr1073742394 sizeof_long_long@var167 $) $) { $return ; }
+174: $if $(@expr1073742395 $!@expr1073742396 $assertEquals $(@expr1073742397 "cppcheck-2.8/test/testplatform.cpp" $, 174 $, 6 $, platform@var158 .@expr1073742398 sizeof_float@var168 $) $) { $return ; }
+175: $if $(@expr1073742399 $!@expr1073742400 $assertEquals $(@expr1073742401 "cppcheck-2.8/test/testplatform.cpp" $, 175 $, 7 $, platform@var158 .@expr1073742402 sizeof_double@var169 $) $) { $return ; }
+176: $if $(@expr1073742403 $!@expr1073742404 $assertEquals $(@expr1073742405 "cppcheck-2.8/test/testplatform.cpp" $, 176 $, 8 $, platform@var158 .@expr1073742406 sizeof_long_double@var170 $) $) { $return ; }
+177: $if $(@expr1073742407 $!@expr1073742408 $assertEquals $(@expr1073742409 "cppcheck-2.8/test/testplatform.cpp" $, 177 $, 9 $, platform@var158 .@expr1073742410 sizeof_pointer@var171 $) $) { $return ; }
+178: $if $(@expr1073742411 $!@expr1073742412 $assertEquals $(@expr1073742413 "cppcheck-2.8/test/testplatform.cpp" $, 178 $, 10 $, platform@var158 .@expr1073742414 sizeof_size_t@var172 $) $) { $return ; }
+179: $if $(@expr1073742415 $!@expr1073742416 $assertEquals $(@expr1073742417 "cppcheck-2.8/test/testplatform.cpp" $, 179 $, 11 $, platform@var158 .@expr1073742418 sizeof_wchar_t@var173 $) $) { $return ; }
+180: $if $(@expr1073742419 $!@expr1073742420 $assertEquals $(@expr1073742421 "cppcheck-2.8/test/testplatform.cpp" $, 180 $, 40 $, platform@var158 .@expr1073742422 short_bit@var174 $) $) { $return ; }
+181: $if $(@expr1073742423 $!@expr1073742424 $assertEquals $(@expr1073742425 "cppcheck-2.8/test/testplatform.cpp" $, 181 $, 60 $, platform@var158 .@expr1073742426 int_bit@var175 $) $) { $return ; }
+182: $if $(@expr1073742427 $!@expr1073742428 $assertEquals $(@expr1073742429 "cppcheck-2.8/test/testplatform.cpp" $, 182 $, 80 $, platform@var158 .@expr1073742430 long_bit@var176 $) $) { $return ; }
+183: $if $(@expr1073742431 $!@expr1073742432 $assertEquals $(@expr1073742433 "cppcheck-2.8/test/testplatform.cpp" $, 183 $, 100 $, platform@var158 .@expr1073742434 long_long_bit@var177 $) $) { $return ; }
+184: }
+185:
+186: void valid_config_file_3 ( ) {
+187:
+188:
+189: const char xmldata@var178 [@expr1073742436 419 ] =@expr1073742437 "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit1>8</char_bit1>\n  <default-sign1>unsigned</default-sign1>\n  <sizeof1>\n    <bool1>1</bool1>\n    <short1>2</short1>\n    <int1>3</int1>\n    <long1>4</long1>\n    <long-long1>5</long-long1>\n    <float1>6</float1>\n    <double1>7</double1>\n    <long-double1>8</long-double1>\n    <pointer1>9</pointer1>\n    <size_t1>10</size_t1>\n    <wchar_t1>11</wchar_t1>\n  </sizeof1>\n </platform>"
+190:
+|
+205:
+206: ;
+207: cppcheck ::@expr1073742438 Platform platform@var179 ;
+208: $if $(@expr1073742439 $!@expr1073742440 $assert_ $(@expr1073742441 "cppcheck-2.8/test/testplatform.cpp" $, 208 $, platform@var179 .@expr1073742442 platform (@expr1073742443 cppcheck ::@expr1073742444 Platform ::@expr1073742445 Win64@expr1073742435 ) $) $) { $return ; }
+209: $if $(@expr1073742446 $!@expr1073742447 $assert_ $(@expr1073742448 "cppcheck-2.8/test/testplatform.cpp" $, 209 $, readPlatform (@expr1073742449 platform@var179 , xmldata@var178 ) $) $) { $return ; }
+210: $if $(@expr1073742450 $!@expr1073742451 $assertEquals $(@expr1073742452 "cppcheck-2.8/test/testplatform.cpp" $, 210 $, platform@var179 .@expr1073742453 PlatformFile@var180 $, platform@var179 .@expr1073742454 platformType@var181 $) $) { $return ; }
+211: $if $(@expr1073742455 $!@expr1073742456 $assert_ $(@expr1073742457 "cppcheck-2.8/test/testplatform.cpp" $, 211 $, !@expr1073742458 platform@var179 .@expr1073742459 isWindowsPlatform (@expr1073742460 ) $) $) { $return ; }
+212: $if $(@expr1073742461 $!@expr1073742462 $assertEquals $(@expr1073742463 "cppcheck-2.8/test/testplatform.cpp" $, 212 $, 8 $, platform@var179 .@expr1073742464 char_bit@var182 $) $) { $return ; }
+213: $if $(@expr1073742465 $!@expr1073742466 $assertEquals $(@expr1073742467 "cppcheck-2.8/test/testplatform.cpp" $, 213 $, '\0' $, platform@var179 .@expr1073742468 defaultSign@var183 $) $) { $return ; }
+214: $if $(@expr1073742469 $!@expr1073742470 $assertEquals $(@expr1073742471 "cppcheck-2.8/test/testplatform.cpp" $, 214 $, 1 $, platform@var179 .@expr1073742472 sizeof_bool@var184 $) $) { $return ; }
+215: $if $(@expr1073742473 $!@expr1073742474 $assertEquals $(@expr1073742475 "cppcheck-2.8/test/testplatform.cpp" $, 215 $, 2 $, platform@var179 .@expr1073742476 sizeof_short@var185 $) $) { $return ; }
+216: $if $(@expr1073742477 $!@expr1073742478 $assertEquals $(@expr1073742479 "cppcheck-2.8/test/testplatform.cpp" $, 216 $, 4 $, platform@var179 .@expr1073742480 sizeof_int@var186 $) $) { $return ; }
+217: $if $(@expr1073742481 $!@expr1073742482 $assertEquals $(@expr1073742483 "cppcheck-2.8/test/testplatform.cpp" $, 217 $, 4 $, platform@var179 .@expr1073742484 sizeof_long@var187 $) $) { $return ; }
+218: $if $(@expr1073742485 $!@expr1073742486 $assertEquals $(@expr1073742487 "cppcheck-2.8/test/testplatform.cpp" $, 218 $, 8 $, platform@var179 .@expr1073742488 sizeof_long_long@var188 $) $) { $return ; }
+219: }
+220:
+221: void valid_config_file_4 ( ) {
+222:
+223:
+224: const char xmldata@var189 [@expr1073742489 382 ] =@expr1073742490 "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>0</char_bit>\n  <default-sign>z</default-sign>\n  <sizeof>\n    <bool>0</bool>\n    <short>0</short>\n    <int>0</int>\n    <long>0</long>\n    <long-long>0</long-long>\n    <float>0</float>\n    <double>0</double>\n    <long-double>0</long-double>\n    <pointer>0</pointer>\n    <size_t>0</size_t>\n    <wchar_t>0</wchar_t>\n  </sizeof>\n </platform>"
+225:
+|
+240:
+241: ;
+242: cppcheck ::@expr1073742491 Platform platform@var190 ;
+243: $if $(@expr1073742492 $!@expr1073742493 $assert_ $(@expr1073742494 "cppcheck-2.8/test/testplatform.cpp" $, 243 $, readPlatform (@expr1073742495 platform@var190 , xmldata@var189 ) $) $) { $return ; }
+244: $if $(@expr1073742496 $!@expr1073742497 $assertEquals $(@expr1073742498 "cppcheck-2.8/test/testplatform.cpp" $, 244 $, platform@var190 .@expr1073742499 PlatformFile@var191 $, platform@var190 .@expr1073742500 platformType@var192 $) $) { $return ; }
+245: $if $(@expr1073742501 $!@expr1073742502 $assert_ $(@expr1073742503 "cppcheck-2.8/test/testplatform.cpp" $, 245 $, !@expr1073742504 platform@var190 .@expr1073742505 isWindowsPlatform (@expr1073742506 ) $) $) { $return ; }
+246: $if $(@expr1073742507 $!@expr1073742508 $assertEquals $(@expr1073742509 "cppcheck-2.8/test/testplatform.cpp" $, 246 $, 0 $, platform@var190 .@expr1073742510 char_bit@var193 $) $) { $return ; }
+247: $if $(@expr1073742511 $!@expr1073742512 $assertEquals $(@expr1073742513 "cppcheck-2.8/test/testplatform.cpp" $, 247 $, 'z' $, platform@var190 .@expr1073742514 defaultSign@var194 $) $) { $return ; }
+248: $if $(@expr1073742515 $!@expr1073742516 $assertEquals $(@expr1073742517 "cppcheck-2.8/test/testplatform.cpp" $, 248 $, 0 $, platform@var190 .@expr1073742518 sizeof_bool@var195 $) $) { $return ; }
+249: $if $(@expr1073742519 $!@expr1073742520 $assertEquals $(@expr1073742521 "cppcheck-2.8/test/testplatform.cpp" $, 249 $, 0 $, platform@var190 .@expr1073742522 sizeof_short@var196 $) $) { $return ; }
+250: $if $(@expr1073742523 $!@expr1073742524 $assertEquals $(@expr1073742525 "cppcheck-2.8/test/testplatform.cpp" $, 250 $, 0 $, platform@var190 .@expr1073742526 sizeof_int@var197 $) $) { $return ; }
+251: $if $(@expr1073742527 $!@expr1073742528 $assertEquals $(@expr1073742529 "cppcheck-2.8/test/testplatform.cpp" $, 251 $, 0 $, platform@var190 .@expr1073742530 sizeof_long@var198 $) $) { $return ; }
+252: $if $(@expr1073742531 $!@expr1073742532 $assertEquals $(@expr1073742533 "cppcheck-2.8/test/testplatform.cpp" $, 252 $, 0 $, platform@var190 .@expr1073742534 sizeof_long_long@var199 $) $) { $return ; }
+253: $if $(@expr1073742535 $!@expr1073742536 $assertEquals $(@expr1073742537 "cppcheck-2.8/test/testplatform.cpp" $, 253 $, 0 $, platform@var190 .@expr1073742538 sizeof_float@var200 $) $) { $return ; }
+254: $if $(@expr1073742539 $!@expr1073742540 $assertEquals $(@expr1073742541 "cppcheck-2.8/test/testplatform.cpp" $, 254 $, 0 $, platform@var190 .@expr1073742542 sizeof_double@var201 $) $) { $return ; }
+255: $if $(@expr1073742543 $!@expr1073742544 $assertEquals $(@expr1073742545 "cppcheck-2.8/test/testplatform.cpp" $, 255 $, 0 $, platform@var190 .@expr1073742546 sizeof_long_double@var202 $) $) { $return ; }
+256: $if $(@expr1073742547 $!@expr1073742548 $assertEquals $(@expr1073742549 "cppcheck-2.8/test/testplatform.cpp" $, 256 $, 0 $, platform@var190 .@expr1073742550 sizeof_pointer@var203 $) $) { $return ; }
+257: $if $(@expr1073742551 $!@expr1073742552 $assertEquals $(@expr1073742553 "cppcheck-2.8/test/testplatform.cpp" $, 257 $, 0 $, platform@var190 .@expr1073742554 sizeof_size_t@var204 $) $) { $return ; }
+258: $if $(@expr1073742555 $!@expr1073742556 $assertEquals $(@expr1073742557 "cppcheck-2.8/test/testplatform.cpp" $, 258 $, 0 $, platform@var190 .@expr1073742558 sizeof_wchar_t@var205 $) $) { $return ; }
+259: $if $(@expr1073742559 $!@expr1073742560 $assertEquals $(@expr1073742561 "cppcheck-2.8/test/testplatform.cpp" $, 259 $, 0 $, platform@var190 .@expr1073742562 short_bit@var206 $) $) { $return ; }
+260: $if $(@expr1073742563 $!@expr1073742564 $assertEquals $(@expr1073742565 "cppcheck-2.8/test/testplatform.cpp" $, 260 $, 0 $, platform@var190 .@expr1073742566 int_bit@var207 $) $) { $return ; }
+261: $if $(@expr1073742567 $!@expr1073742568 $assertEquals $(@expr1073742569 "cppcheck-2.8/test/testplatform.cpp" $, 261 $, 0 $, platform@var190 .@expr1073742570 long_bit@var208 $) $) { $return ; }
+262: $if $(@expr1073742571 $!@expr1073742572 $assertEquals $(@expr1073742573 "cppcheck-2.8/test/testplatform.cpp" $, 262 $, 0 $, platform@var190 .@expr1073742574 long_long_bit@var209 $) $) { $return ; }
+263: }
+264:
+265: void invalid_config_file_1 ( ) const {
+266:
+267: const char xmldata@var210 [@expr1073742575 390 ] =@expr1073742576 "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>8</char_bit>\n  <default-sign>unsigned</default-sign>\n  <sizeof>\n    <boolt>1</bool>\n    <short>2</short>\n    <int>2</int>\n    <long>4</long>\n    <long-long>8</long-long>\n    <float>4</float>\n    <double>4</double>\n    <long-double>4</long-double>\n    <pointer>2</pointer>\n    <size_t>2</size_t>\n    <wchar_t>2</wchar_t>\n  </sizeof>\n </platform>"
+268:
+|
+283:
+284: ;
+285: cppcheck ::@expr1073742577 Platform platform@var211 ;
+286: $if $(@expr1073742578 $!@expr1073742579 $assert_ $(@expr1073742580 "cppcheck-2.8/test/testplatform.cpp" $, 286 $, $(@expr1073742581 !@expr1073742582 readPlatform (@expr1073742583 platform@var211 , xmldata@var210 ) $) $) $) { $return ; }
+287: }
+288:
+|
+324:
+325: } ;
+326:
+327: $namespace ${ TestPlatform instance_TestPlatform@var212 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@7}
+  v {!<=-1,!>=2,0@7}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 27
+  "TestPlatform" always "TestPlatform"
+Line 31
+  ( always {!<=-1,!>=2}
+  "empty" always "empty"
+  false always 0
+  false always 0
+Line 32
+  ( always {!<=-1,!>=2}
+  "valid_config_native_1" always "valid_config_native_1"
+  false always 0
+  false always 0
+Line 33
+  ( always {!<=-1,!>=2}
+  "valid_config_native_2" always "valid_config_native_2"
+  false always 0
+  false always 0
+Line 34
+  ( always {!<=-1,!>=2}
+  "valid_config_file_1" always "valid_config_file_1"
+  false always 0
+  false always 0
+Line 35
+  ( always {!<=-1,!>=2}
+  "valid_config_file_2" always "valid_config_file_2"
+  false always 0
+  false always 0
+Line 36
+  ( always {!<=-1,!>=2}
+  "valid_config_file_3" always "valid_config_file_3"
+  false always 0
+  false always 0
+Line 37
+  ( always {!<=-1,!>=2}
+  "valid_config_file_4" always "valid_config_file_4"
+  false always 0
+  false always 0
+Line 38
+  ( always {!<=-1,!>=2}
+  "invalid_config_file_1" always "invalid_config_file_1"
+  false always 0
+  false always 0
+Line 42
+  ( always {!<=-1,!>=2}
+Line 44
+  xmldata possible {"<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>8</char_bit>\n  <default-sign>unsigned</default-sign>\n  <sizeof>\n    <boolt>1</bool>\n    <short>2</short>\n    <int>2</int>\n    <long>4</long>\n    <long-long>8</long-long>\n    <float>4</float>\n    <double>4</double>\n    <long-double>4</long-double>\n    <pointer>2</pointer>\n    <size_t>2</size_t>\n    <wchar_t>2</wchar_t>\n  </sizeof>\n </platform>"@1,"<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>0</char_bit>\n  <default-sign>z</default-sign>\n  <sizeof>\n    <bool>0</bool>\n    <short>0</short>\n    <int>0</int>\n    <long>0</long>\n    <long-long>0</long-long>\n    <float>0</float>\n    <double>0</double>\n    <long-double>0</long-double>\n    <pointer>0</pointer>\n    <size_t>0</size_t>\n    <wchar_t>0</wchar_t>\n  </sizeof>\n </platform>"@2,"<?xml version=\"1.0\"?>\n<platform>\n  <char_bit1>8</char_bit1>\n  <default-sign1>unsigned</default-sign1>\n  <sizeof1>\n    <bool1>1</bool1>\n    <short1>2</short1>\n    <int1>3</int1>\n    <long1>4</long1>\n    <long-long1>5</long-long1>\n    <float1>6</float1>\n    <double1>7</double1>\n    <long-double1>8</long-double1>\n    <pointer1>9</pointer1>\n    <size_t1>10</size_t1>\n    <wchar_t1>11</wchar_t1>\n  </sizeof1>\n </platform>"@3,"<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>20</char_bit>\n  <default-sign>signed</default-sign>\n  <sizeof>\n    <bool>1</bool>\n    <short>2</short>\n    <int>3</int>\n    <long>4</long>\n    <long-long>5</long-long>\n    <float>6</float>\n    <double>7</double>\n    <long-double>8</long-double>\n    <pointer>9</pointer>\n    <size_t>10</size_t>\n    <wchar_t>11</wchar_t>\n  </sizeof>\n </platform>"@4,"<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>8</char_bit>\n  <default-sign>unsigned</default-sign>\n  <sizeof>\n    <bool>1</bool>\n    <short>2</short>\n    <int>2</int>\n    <long>4</long>\n    <long-long>8</long-long>\n    <float>4</float>\n    <double>4</double>\n    <long-double>4</long-double>\n    <pointer>2</pointer>\n    <size_t>2</size_t>\n    <wchar_t>2</wchar_t>\n  </sizeof>\n </platform>"@5,"<?xml version=\"1.0\"?>\n<platform/>"@6}
+Line 45
+  return always {!<=-1,!>=2}
+  & {lifetime[Address]=(doc),!0}
+Line 50
+  34 always 34
+  = always "<?xml version=\"1.0\"?>\n<platform/>"
+  "<?xml version=\"1.0\"?>\n<platform/>" always "<?xml version=\"1.0\"?>\n<platform/>"
+Line 52
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  52 always 52
+Line 53
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  53 always 53
+  ( always {!<=-1,!>=2}
+  xmldata always "<?xml version=\"1.0\"?>\n<platform/>"
+Line 54
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  54 always 54
+Line 55
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  55 always 55
+  ! always {!<=-1,!>=2}
+Line 56
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  56 always 56
+  8 always 8
+Line 57
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  57 always 57
+  '\0' always 0
+Line 58
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  58 always 58
+  1 always 1
+Line 59
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  59 always 59
+  2 always 2
+Line 60
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  60 always 60
+  4 always 4
+Line 61
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  61 always 61
+  4 always 4
+Line 62
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  62 always 62
+  8 always 8
+Line 68
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  68 always 68
+Line 69
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  69 always 69
+Line 70
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  70 always 70
+Line 71
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  71 always 71
+  '\0' always 0
+Line 72
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  72 always 72
+  8 always 8
+Line 73
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  73 always 73
+  1 always 1
+Line 74
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  74 always 74
+  2 always 2
+Line 75
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  75 always 75
+  4 always 4
+Line 76
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  76 always 76
+  4 always 4
+Line 77
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  77 always 77
+  8 always 8
+Line 78
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  78 always 78
+  16 always 16
+Line 79
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  79 always 79
+  32 always 32
+Line 80
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  80 always 80
+  32 always 32
+Line 81
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  81 always 81
+  64 always 64
+Line 87
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  87 always 87
+Line 88
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  88 always 88
+Line 89
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  89 always 89
+  ! always {!<=-1,!>=2}
+Line 90
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  90 always 90
+  '\0' always 0
+Line 91
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  91 always 91
+  8 always 8
+Line 92
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  92 always 92
+  4 always 4
+Line 93
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  93 always 93
+  32 always 32
+Line 94
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  94 always 94
+  8 always 8
+Line 95
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  95 always 95
+  64 always 64
+Line 101
+  389 always 389
+  = always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>8</char_bit>\n  <default-sign>unsigned</default-sign>\n  <sizeof>\n    <bool>1</bool>\n    <short>2</short>\n    <int>2</int>\n    <long>4</long>\n    <long-long>8</long-long>\n    <float>4</float>\n    <double>4</double>\n    <long-double>4</long-double>\n    <pointer>2</pointer>\n    <size_t>2</size_t>\n    <wchar_t>2</wchar_t>\n  </sizeof>\n </platform>"
+  "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>8</char_bit>\n  <default-sign>unsigned</default-sign>\n  <sizeof>\n    <bool>1</bool>\n    <short>2</short>\n    <int>2</int>\n    <long>4</long>\n    <long-long>8</long-long>\n    <float>4</float>\n    <double>4</double>\n    <long-double>4</long-double>\n    <pointer>2</pointer>\n    <size_t>2</size_t>\n    <wchar_t>2</wchar_t>\n  </sizeof>\n </platform>" always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>8</char_bit>\n  <default-sign>unsigned</default-sign>\n  <sizeof>\n    <bool>1</bool>\n    <short>2</short>\n    <int>2</int>\n    <long>4</long>\n    <long-long>8</long-long>\n    <float>4</float>\n    <double>4</double>\n    <long-double>4</long-double>\n    <pointer>2</pointer>\n    <size_t>2</size_t>\n    <wchar_t>2</wchar_t>\n  </sizeof>\n </platform>"
+Line 120
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  120 always 120
+  ( always {!<=-1,!>=2}
+  xmldata always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>8</char_bit>\n  <default-sign>unsigned</default-sign>\n  <sizeof>\n    <bool>1</bool>\n    <short>2</short>\n    <int>2</int>\n    <long>4</long>\n    <long-long>8</long-long>\n    <float>4</float>\n    <double>4</double>\n    <long-double>4</long-double>\n    <pointer>2</pointer>\n    <size_t>2</size_t>\n    <wchar_t>2</wchar_t>\n  </sizeof>\n </platform>"
+Line 121
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  121 always 121
+Line 122
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  122 always 122
+  ! always {!<=-1,!>=2}
+Line 123
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  123 always 123
+  8 always 8
+Line 124
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  124 always 124
+  'u' always 117
+Line 125
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  125 always 125
+  1 always 1
+Line 126
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  126 always 126
+  2 always 2
+Line 127
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  127 always 127
+  2 always 2
+Line 128
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  128 always 128
+  4 always 4
+Line 129
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  129 always 129
+  8 always 8
+Line 130
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  130 always 130
+  4 always 4
+Line 131
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  131 always 131
+  4 always 4
+Line 132
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  132 always 132
+  4 always 4
+Line 133
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  133 always 133
+  2 always 2
+Line 134
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  134 always 134
+  2 always 2
+Line 135
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  135 always 135
+  2 always 2
+Line 136
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  136 always 136
+  16 always 16
+Line 137
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  137 always 137
+  16 always 16
+Line 138
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  138 always 138
+  32 always 32
+Line 139
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  139 always 139
+  64 always 64
+Line 145
+  390 always 390
+  = always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>20</char_bit>\n  <default-sign>signed</default-sign>\n  <sizeof>\n    <bool>1</bool>\n    <short>2</short>\n    <int>3</int>\n    <long>4</long>\n    <long-long>5</long-long>\n    <float>6</float>\n    <double>7</double>\n    <long-double>8</long-double>\n    <pointer>9</pointer>\n    <size_t>10</size_t>\n    <wchar_t>11</wchar_t>\n  </sizeof>\n </platform>"
+  "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>20</char_bit>\n  <default-sign>signed</default-sign>\n  <sizeof>\n    <bool>1</bool>\n    <short>2</short>\n    <int>3</int>\n    <long>4</long>\n    <long-long>5</long-long>\n    <float>6</float>\n    <double>7</double>\n    <long-double>8</long-double>\n    <pointer>9</pointer>\n    <size_t>10</size_t>\n    <wchar_t>11</wchar_t>\n  </sizeof>\n </platform>" always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>20</char_bit>\n  <default-sign>signed</default-sign>\n  <sizeof>\n    <bool>1</bool>\n    <short>2</short>\n    <int>3</int>\n    <long>4</long>\n    <long-long>5</long-long>\n    <float>6</float>\n    <double>7</double>\n    <long-double>8</long-double>\n    <pointer>9</pointer>\n    <size_t>10</size_t>\n    <wchar_t>11</wchar_t>\n  </sizeof>\n </platform>"
+Line 164
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  164 always 164
+  ( always {!<=-1,!>=2}
+  xmldata always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>20</char_bit>\n  <default-sign>signed</default-sign>\n  <sizeof>\n    <bool>1</bool>\n    <short>2</short>\n    <int>3</int>\n    <long>4</long>\n    <long-long>5</long-long>\n    <float>6</float>\n    <double>7</double>\n    <long-double>8</long-double>\n    <pointer>9</pointer>\n    <size_t>10</size_t>\n    <wchar_t>11</wchar_t>\n  </sizeof>\n </platform>"
+Line 165
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  165 always 165
+Line 166
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  166 always 166
+  ! always {!<=-1,!>=2}
+Line 167
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  167 always 167
+  20 always 20
+Line 168
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  168 always 168
+  's' always 115
+Line 169
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  169 always 169
+  1 always 1
+Line 170
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  170 always 170
+  2 always 2
+Line 171
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  171 always 171
+  3 always 3
+Line 172
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  172 always 172
+  4 always 4
+Line 173
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  173 always 173
+  5 always 5
+Line 174
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  174 always 174
+  6 always 6
+Line 175
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  175 always 175
+  7 always 7
+Line 176
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  176 always 176
+  8 always 8
+Line 177
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  177 always 177
+  9 always 9
+Line 178
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  178 always 178
+  10 always 10
+Line 179
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  179 always 179
+  11 always 11
+Line 180
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  180 always 180
+  40 always 40
+Line 181
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  181 always 181
+  60 always 60
+Line 182
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  182 always 182
+  80 always 80
+Line 183
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  183 always 183
+  100 always 100
+Line 189
+  419 always 419
+  = always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit1>8</char_bit1>\n  <default-sign1>unsigned</default-sign1>\n  <sizeof1>\n    <bool1>1</bool1>\n    <short1>2</short1>\n    <int1>3</int1>\n    <long1>4</long1>\n    <long-long1>5</long-long1>\n    <float1>6</float1>\n    <double1>7</double1>\n    <long-double1>8</long-double1>\n    <pointer1>9</pointer1>\n    <size_t1>10</size_t1>\n    <wchar_t1>11</wchar_t1>\n  </sizeof1>\n </platform>"
+  "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit1>8</char_bit1>\n  <default-sign1>unsigned</default-sign1>\n  <sizeof1>\n    <bool1>1</bool1>\n    <short1>2</short1>\n    <int1>3</int1>\n    <long1>4</long1>\n    <long-long1>5</long-long1>\n    <float1>6</float1>\n    <double1>7</double1>\n    <long-double1>8</long-double1>\n    <pointer1>9</pointer1>\n    <size_t1>10</size_t1>\n    <wchar_t1>11</wchar_t1>\n  </sizeof1>\n </platform>" always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit1>8</char_bit1>\n  <default-sign1>unsigned</default-sign1>\n  <sizeof1>\n    <bool1>1</bool1>\n    <short1>2</short1>\n    <int1>3</int1>\n    <long1>4</long1>\n    <long-long1>5</long-long1>\n    <float1>6</float1>\n    <double1>7</double1>\n    <long-double1>8</long-double1>\n    <pointer1>9</pointer1>\n    <size_t1>10</size_t1>\n    <wchar_t1>11</wchar_t1>\n  </sizeof1>\n </platform>"
+Line 208
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  208 always 208
+Line 209
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  209 always 209
+  ( always {!<=-1,!>=2}
+  xmldata always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit1>8</char_bit1>\n  <default-sign1>unsigned</default-sign1>\n  <sizeof1>\n    <bool1>1</bool1>\n    <short1>2</short1>\n    <int1>3</int1>\n    <long1>4</long1>\n    <long-long1>5</long-long1>\n    <float1>6</float1>\n    <double1>7</double1>\n    <long-double1>8</long-double1>\n    <pointer1>9</pointer1>\n    <size_t1>10</size_t1>\n    <wchar_t1>11</wchar_t1>\n  </sizeof1>\n </platform>"
+Line 210
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  210 always 210
+Line 211
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  211 always 211
+  ! always {!<=-1,!>=2}
+Line 212
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  212 always 212
+  8 always 8
+Line 213
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  213 always 213
+  '\0' always 0
+Line 214
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  214 always 214
+  1 always 1
+Line 215
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  215 always 215
+  2 always 2
+Line 216
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  216 always 216
+  4 always 4
+Line 217
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  217 always 217
+  4 always 4
+Line 218
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  218 always 218
+  8 always 8
+Line 224
+  382 always 382
+  = always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>0</char_bit>\n  <default-sign>z</default-sign>\n  <sizeof>\n    <bool>0</bool>\n    <short>0</short>\n    <int>0</int>\n    <long>0</long>\n    <long-long>0</long-long>\n    <float>0</float>\n    <double>0</double>\n    <long-double>0</long-double>\n    <pointer>0</pointer>\n    <size_t>0</size_t>\n    <wchar_t>0</wchar_t>\n  </sizeof>\n </platform>"
+  "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>0</char_bit>\n  <default-sign>z</default-sign>\n  <sizeof>\n    <bool>0</bool>\n    <short>0</short>\n    <int>0</int>\n    <long>0</long>\n    <long-long>0</long-long>\n    <float>0</float>\n    <double>0</double>\n    <long-double>0</long-double>\n    <pointer>0</pointer>\n    <size_t>0</size_t>\n    <wchar_t>0</wchar_t>\n  </sizeof>\n </platform>" always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>0</char_bit>\n  <default-sign>z</default-sign>\n  <sizeof>\n    <bool>0</bool>\n    <short>0</short>\n    <int>0</int>\n    <long>0</long>\n    <long-long>0</long-long>\n    <float>0</float>\n    <double>0</double>\n    <long-double>0</long-double>\n    <pointer>0</pointer>\n    <size_t>0</size_t>\n    <wchar_t>0</wchar_t>\n  </sizeof>\n </platform>"
+Line 243
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  243 always 243
+  ( always {!<=-1,!>=2}
+  xmldata always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>0</char_bit>\n  <default-sign>z</default-sign>\n  <sizeof>\n    <bool>0</bool>\n    <short>0</short>\n    <int>0</int>\n    <long>0</long>\n    <long-long>0</long-long>\n    <float>0</float>\n    <double>0</double>\n    <long-double>0</long-double>\n    <pointer>0</pointer>\n    <size_t>0</size_t>\n    <wchar_t>0</wchar_t>\n  </sizeof>\n </platform>"
+Line 244
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  244 always 244
+Line 245
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  245 always 245
+  ! always {!<=-1,!>=2}
+Line 246
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  246 always 246
+  0 always 0
+Line 247
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  247 always 247
+  'z' always 122
+Line 248
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  248 always 248
+  0 always 0
+Line 249
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  249 always 249
+  0 always 0
+Line 250
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  250 always 250
+  0 always 0
+Line 251
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  251 always 251
+  0 always 0
+Line 252
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  252 always 252
+  0 always 0
+Line 253
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  253 always 253
+  0 always 0
+Line 254
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  254 always 254
+  0 always 0
+Line 255
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  255 always 255
+  0 always 0
+Line 256
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  256 always 256
+  0 always 0
+Line 257
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  257 always 257
+  0 always 0
+Line 258
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  258 always 258
+  0 always 0
+Line 259
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  259 always 259
+  0 always 0
+Line 260
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  260 always 260
+  0 always 0
+Line 261
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  261 always 261
+  0 always 0
+Line 262
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  262 always 262
+  0 always 0
+Line 267
+  390 always 390
+  = always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>8</char_bit>\n  <default-sign>unsigned</default-sign>\n  <sizeof>\n    <boolt>1</bool>\n    <short>2</short>\n    <int>2</int>\n    <long>4</long>\n    <long-long>8</long-long>\n    <float>4</float>\n    <double>4</double>\n    <long-double>4</long-double>\n    <pointer>2</pointer>\n    <size_t>2</size_t>\n    <wchar_t>2</wchar_t>\n  </sizeof>\n </platform>"
+  "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>8</char_bit>\n  <default-sign>unsigned</default-sign>\n  <sizeof>\n    <boolt>1</bool>\n    <short>2</short>\n    <int>2</int>\n    <long>4</long>\n    <long-long>8</long-long>\n    <float>4</float>\n    <double>4</double>\n    <long-double>4</long-double>\n    <pointer>2</pointer>\n    <size_t>2</size_t>\n    <wchar_t>2</wchar_t>\n  </sizeof>\n </platform>" always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>8</char_bit>\n  <default-sign>unsigned</default-sign>\n  <sizeof>\n    <boolt>1</bool>\n    <short>2</short>\n    <int>2</int>\n    <long>4</long>\n    <long-long>8</long-long>\n    <float>4</float>\n    <double>4</double>\n    <long-double>4</long-double>\n    <pointer>2</pointer>\n    <size_t>2</size_t>\n    <wchar_t>2</wchar_t>\n  </sizeof>\n </platform>"
+Line 286
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testplatform.cpp" always "cppcheck-2.8/test/testplatform.cpp"
+  286 always 286
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  xmldata always "<?xml version=\"1.0\"?>\n<platform>\n  <char_bit>8</char_bit>\n  <default-sign>unsigned</default-sign>\n  <sizeof>\n    <boolt>1</bool>\n    <short>2</short>\n    <int>2</int>\n    <long>4</long>\n    <long-long>8</long-long>\n    <float>4</float>\n    <double>4</double>\n    <long-double>4</long-double>\n    <pointer>2</pointer>\n    <size_t>2</size_t>\n    <wchar_t>2</wchar_t>\n  </sizeof>\n </platform>"

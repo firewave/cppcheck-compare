@@ -1,0 +1,194 @@
+
+
+##file cppcheck-2.8/cli/threadexecutor.h
+
+1:
+|
+28:
+29: class Settings ;
+30: class ErrorLogger ;
+31:
+|
+38:
+39: class ThreadExecutor {
+40: public:
+41: ThreadExecutor ( const std :: map < std :: string , unsigned long > & files@var1 , Settings & settings@var2 , ErrorLogger & errorLogger@var3 ) ;
+42: ThreadExecutor ( const ThreadExecutor & ) = delete ;
+43: ~ ThreadExecutor ( ) ;
+44: void operator= ( const ThreadExecutor & ) = delete ;
+45: unsigned int check ( ) ;
+46:
+47: private:
+48: const std :: map < std :: string , unsigned long > & mFiles@var4 ;
+49: Settings & mSettings@var5 ;
+50: ErrorLogger & mErrorLogger@var6 ;
+51: std :: list < std :: string > mErrorList@var7 ;
+52:
+|
+82:
+83: public:
+84:
+85:
+86:
+87: static bool isEnabled ( ) ;
+88: } ;
+
+##file cppcheck-2.8/cli/cppcheckexecutor.h
+
+1:
+|
+32:
+33: class CppCheck ;
+34: class Library ;
+35: class Settings ;
+36:
+|
+43:
+44: class CppCheckExecutor : public ErrorLogger {
+45: public:
+46:
+47:
+48:
+49: CppCheckExecutor ( ) ;
+50: CppCheckExecutor ( const CppCheckExecutor & ) = delete ;
+51: void operator= ( const CppCheckExecutor & ) = delete ;
+52:
+|
+55:
+56: ~ CppCheckExecutor ( ) override ;
+57:
+|
+68:
+69: int check ( int argc@var8 , const char * const argv@var9 [ ] ) ;
+70:
+|
+76:
+77: void reportOut ( const std :: string & outmsg@var10 , Color c@var11 = Color :: Reset ) override ;
+78:
+79:
+80: void reportErr ( const ErrorMessage & msg@var12 ) override ;
+81:
+82: void reportProgress ( const std :: string & filename@var13 , const char stage@var14 [ ] , const unsigned long value@var15 ) override ;
+83:
+|
+86:
+87: void reportInfo ( const ErrorMessage & msg@var16 ) override ;
+88:
+|
+96:
+97: static void reportStatus ( unsigned long fileindex@var17 , unsigned long filecount@var18 , unsigned long sizedone@var19 , unsigned long sizetotal@var20 ) ;
+98:
+|
+101:
+102: static void setExceptionOutput ( FILE * exceptionOutput@var21 ) ;
+103:
+104:
+105:
+106: static FILE * getExceptionOutput ( ) ;
+107:
+|
+111:
+112: static bool tryLoadLibrary ( Library & destination@var22 , const std :: string & basepath@var23 , const char * filename@var24 ) ;
+113:
+|
+116:
+117: static bool executeCommand ( std :: string exe@var25 , std :: vector < std :: string > args@var26 , const std :: string & redirect@var27 , std :: string * output_@var28 ) ;
+118:
+119: protected:
+120:
+|
+124:
+125: void reportErr ( const std :: string & errmsg@var29 ) ;
+126:
+|
+135:
+136: bool parseFromArgs ( CppCheck * cppcheck@var30 , int argc@var31 , const char * const argv@var32 [ ] ) ;
+137:
+|
+141:
+142: void setSettings ( const Settings & settings@var33 ) ;
+143:
+144: private:
+145:
+|
+151:
+152: int check_wrapper ( CppCheck & cppcheck@var34 ) ;
+153:
+|
+163:
+164: int check_internal ( CppCheck & cppcheck@var35 ) ;
+165:
+|
+168:
+169: const Settings * mSettings@var36 ;
+170:
+|
+173:
+174: std :: set < std :: string > mShownErrors@var37 ;
+175:
+|
+178:
+179: std :: map < std :: string , unsigned long > mFiles@var38 ;
+180:
+|
+183:
+184: std :: time_t mLatestProgressOutputTime@var39 ;
+185:
+|
+188:
+189: static FILE * mExceptionOutput@var40 ;
+190:
+|
+193:
+194: std :: ofstream * mErrorOutput@var41 ;
+195:
+|
+198:
+199: bool mShowAllErrors@var42 ;
+200: } ;
+
+##file cppcheck-2.8/cli/threadexecutor.cpp
+
+1:
+|
+62:
+63: ThreadExecutor :: ThreadExecutor ( const std :: map < std :: string , unsigned long > & files@var43 , Settings & settings@var44 , ErrorLogger & errorLogger@var45 )
+64: : mFiles@var4 ( files@var43 ) , mSettings@var5 ( settings@var44 ) , mErrorLogger@var6 ( errorLogger@var45 )
+65: { }
+66:
+67: ThreadExecutor :: ~ ThreadExecutor ( )
+68: { }
+69:
+|
+545:
+546: bool ThreadExecutor :: isEnabled ( ) {
+547: return true ;
+548: }
+
+
+
+##Value flow
+Line 45
+  ( always !<=-1
+Line 87
+  ( always {!<=-1,!>=2}
+Line 82
+  value always !<=-1
+Line 97
+  fileindex always !<=-1
+  filecount always !<=-1
+  sizedone always !<=-1
+  sizetotal always !<=-1
+Line 112
+  ( always {!<=-1,!>=2}
+Line 117
+  ( always {!<=-1,!>=2}
+Line 136
+  ( always {!<=-1,!>=2}
+Line 199
+  mShowAllErrors always {!<=-1,!>=2}
+Line 546
+  ( always {!<=-1,!>=2}
+Line 547
+  return always {!<=-1,!>=2}
+  true always 1

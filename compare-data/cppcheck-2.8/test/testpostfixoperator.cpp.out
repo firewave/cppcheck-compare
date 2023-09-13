@@ -1,0 +1,853 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741935 expected@var22 !=@expr1073741936 actual@var23 ) {
+62: std ::@expr1073741937 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741938 expected@var22 ;
+64: std ::@expr1073741939 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741940 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741941 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741942 str (@expr1073741943 ) , actualStr@var26 .@expr1073741944 str (@expr1073741945 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741946 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741947 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741948 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741949 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testpostfixoperator.cpp
+
+1:
+|
+27:
+28: class TestPostfixOperator : public TestFixture {
+29: public:
+30: TestPostfixOperator ( ) : TestFixture ( "TestPostfixOperator" ) { }
+31:
+32: private:
+33: Settings settings@var102 ;
+34:
+35:
+36: void check_ ( const char code@var103 [ ] , const char * file@var104 , int line@var105 ) {
+37:
+38: errout@var100 .@expr1073741950 str (@expr1073741951 "" ) ;
+39:
+40:
+41: Tokenizer tokenizer@var106 (@expr1073741952 &@expr129 settings@var102 , this@expr130 ) ;
+42: std ::@expr1073741955 istringstream istr@var107 (@expr1073741956 code@var103 ) ;
+43: $assert_ $(@expr1073741957 file@var104 $, line@var105 $, $(@expr1073741958 tokenizer@var106 .@expr1073741959 tokenize (@expr1073741960 istr@var107 , "test.cpp" ) $) $) ;
+44:
+45:
+46: CheckPostfixOperator checkPostfixOperator@var108 (@expr1073741961 &@expr1073741962 tokenizer@var106 , &@expr129 settings@var102 , this@expr130 ) ;
+47: checkPostfixOperator@var108 .@expr1073741964 postfixOperator (@expr1073741965 ) ;
+48: }
+49:
+50: void run ( ) override {
+51: settings@var102 .@expr1073741967 severity@var109 .@expr1073741968 enable (@expr1073741969 Severity ::@expr1073741970 performance@expr1073741966 ) ;
+52:
+53: $do ${ $if $(@expr1073741971 $prepareTest $(@expr1073741972 "testsimple" $) $) ${ $setVerbose $(@expr1073741973 $false $) $; testsimple $(@expr1073741974 $) $; $} $} $while $(@expr1073741975 $false $) ;
+54: $do ${ $if $(@expr1073741976 $prepareTest $(@expr1073741977 "testfor" $) $) ${ $setVerbose $(@expr1073741978 $false $) $; testfor $(@expr1073741979 $) $; $} $} $while $(@expr1073741980 $false $) ;
+55: $do ${ $if $(@expr1073741981 $prepareTest $(@expr1073741982 "testvolatile" $) $) ${ $setVerbose $(@expr1073741983 $false $) $; testvolatile $(@expr1073741984 $) $; $} $} $while $(@expr1073741985 $false $) ;
+56: $do ${ $if $(@expr1073741986 $prepareTest $(@expr1073741987 "testiterator" $) $) ${ $setVerbose $(@expr1073741988 $false $) $; testiterator $(@expr1073741989 $) $; $} $} $while $(@expr1073741990 $false $) ;
+57: $do ${ $if $(@expr1073741991 $prepareTest $(@expr1073741992 "test2168" $) $) ${ $setVerbose $(@expr1073741993 $false $) $; test2168 $(@expr1073741994 $) $; $} $} $while $(@expr1073741995 $false $) ;
+58: $do ${ $if $(@expr1073741996 $prepareTest $(@expr1073741997 "pointerSimplest" $) $) ${ $setVerbose $(@expr1073741998 $false $) $; pointerSimplest $(@expr1073741999 $) $; $} $} $while $(@expr1073742000 $false $) ;
+59: $do ${ $if $(@expr1073742001 $prepareTest $(@expr1073742002 "pointer" $) $) ${ $setVerbose $(@expr1073742003 $false $) $; pointer $(@expr1073742004 $) $; $} $} $while $(@expr1073742005 $false $) ;
+60: $do ${ $if $(@expr1073742006 $prepareTest $(@expr1073742007 "testtemplate" $) $) ${ $setVerbose $(@expr1073742008 $false $) $; testtemplate $(@expr1073742009 $) $; $} $} $while $(@expr1073742010 $false $) ;
+61: $do ${ $if $(@expr1073742011 $prepareTest $(@expr1073742012 "testmember" $) $) ${ $setVerbose $(@expr1073742013 $false $) $; testmember $(@expr1073742014 $) $; $} $} $while $(@expr1073742015 $false $) ;
+62: $do ${ $if $(@expr1073742016 $prepareTest $(@expr1073742017 "testcomma" $) $) ${ $setVerbose $(@expr1073742018 $false $) $; testcomma $(@expr1073742019 $) $; $} $} $while $(@expr1073742020 $false $) ;
+63: $do ${ $if $(@expr1073742021 $prepareTest $(@expr1073742022 "testauto" $) $) ${ $setVerbose $(@expr1073742023 $false $) $; testauto $(@expr1073742024 $) $; $} $} $while $(@expr1073742025 $false $) ;
+64: }
+65:
+66: void testsimple ( ) {
+67: $check_ $(@expr1073742026 "int main()\n{\n    unsigned int k(0);\n    std::cout << k << std::endl;\n    k++;\n    std::cout << k << std::endl;\n    if(k) {\n        k++;\n    }\n    std::cout << k << std::endl;\n    k--;\n    std::cout << k << std::endl;\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 67 $)
+68:
+|
+79:
+80: ;
+81: $if $(@expr1073742027 $!@expr1073742028 $assertEquals $(@expr1073742029 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 81 $, "" $, errout@var100 .@expr206 str (@expr207 ) $) $) { $return ; }
+82:
+83: $check_ $(@expr1073742032 "class K {};int main()\n{\n    K k(0);\n    std::cout << k << std::endl;\n    k++;\n    std::cout << k << std::endl;\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 83 $)
+84:
+|
+90:
+91: ;
+92: $if $(@expr1073742033 $!@expr1073742034 $assertEquals $(@expr1073742035 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 92 $, "[test.cpp:5]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr206 str (@expr207 ) $) $) { $return ; }
+93:
+94: $check_ $(@expr1073742038 "struct K {};void foo()\n{\n    K k(0);\n    k++;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 94 $)
+95:
+|
+98:
+99: ;
+100: $if $(@expr1073742039 $!@expr1073742040 $assertEquals $(@expr1073742041 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 100 $, "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr206 str (@expr207 ) $) $) { $return ; }
+101:
+102: $check_ $(@expr1073742044 "struct K {};\nvoid foo(K& k)\n{\n    k++;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 102 $)
+103:
+104:
+105:
+106: ;
+107: $if $(@expr1073742045 $!@expr1073742046 $assertEquals $(@expr1073742047 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 107 $, "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr206 str (@expr207 ) $) $) { $return ; }
+108:
+109: $check_ $(@expr1073742050 "union K {};void foo()\n{\n    K k(0);\n    k++;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 109 $)
+110:
+|
+113:
+114: ;
+115: $if $(@expr1073742051 $!@expr1073742052 $assertEquals $(@expr1073742053 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 115 $, "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr206 str (@expr207 ) $) $) { $return ; }
+116:
+117: $check_ $(@expr1073742056 "class K {};int main()\n{\n    K k(1);\n    std::cout << k << std::endl;\n    if(k) {\n        k++;\n    }\n    std::cout << k << std::endl;\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 117 $)
+118:
+|
+126:
+127: ;
+128: $if $(@expr1073742057 $!@expr1073742058 $assertEquals $(@expr1073742059 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 128 $, "[test.cpp:6]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr206 str (@expr207 ) $) $) { $return ; }
+129:
+130: $check_ $(@expr1073742062 "class K {};int main()\n{\n    K k(1);\n    std::cout << k << std::endl;\n    if(k) {\n        ++k;\n    }\n    k++;\n    std::cout << k << std::endl;\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 130 $)
+131:
+|
+140:
+141: ;
+142: $if $(@expr1073742063 $!@expr1073742064 $assertEquals $(@expr1073742065 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 142 $, "[test.cpp:8]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr206 str (@expr207 ) $) $) { $return ; }
+143:
+144:
+145: $check_ $(@expr1073742068 "class K {};int main()\n{\n    K k(0);\n    std::cout << k << std::endl;\n    k--;\n    std::cout << k << std::endl;\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 145 $)
+146:
+|
+152:
+153: ;
+154: $if $(@expr1073742069 $!@expr1073742070 $assertEquals $(@expr1073742071 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 154 $, "[test.cpp:5]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr206 str (@expr207 ) $) $) { $return ; }
+155:
+156: $check_ $(@expr1073742074 "class K {};int main()\n{\n    K k(0);\n    std::cout << k << std::endl;\n    ++k;\n    std::cout << k << std::endl;\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 156 $)
+157:
+|
+163:
+164: ;
+165: $if $(@expr1073742075 $!@expr1073742076 $assertEquals $(@expr1073742077 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 165 $, "" $, errout@var100 .@expr206 str (@expr207 ) $) $) { $return ; }
+166:
+167: $check_ $(@expr1073742080 "class K {};int main()\n{\n    K k(0);\n    std::cout << k << std::endl;\n    --k;\n    std::cout << k << std::endl;\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 167 $)
+168:
+|
+174:
+175: ;
+176: $if $(@expr1073742081 $!@expr1073742082 $assertEquals $(@expr1073742083 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 176 $, "" $, errout@var100 .@expr206 str (@expr207 ) $) $) { $return ; }
+177:
+178:
+179: $check_ $(@expr1073742086 "template <class T>\nclass c {\n    int i = 0;\n    c() { i--; }\n};\ntemplate <class T>\nclass s {};\nusing BOOL = char;" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 179 $)
+180:
+|
+185:
+186: ;
+187: $if $(@expr1073742087 $!@expr1073742088 $assertEquals $(@expr1073742089 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 187 $, "" $, errout@var100 .@expr206 str (@expr207 ) $) $) { $return ; }
+188: }
+189:
+190: void testfor ( ) {
+191: $check_ $(@expr1073742092 "int main()\n{\n    for ( unsigned int i=0; i <= 10; i++) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 191 $)
+192:
+|
+196:
+197: ;
+198: $if $(@expr1073742093 $!@expr1073742094 $assertEquals $(@expr1073742095 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 198 $, "" $, errout@var100 .@expr272 str (@expr273 ) $) $) { $return ; }
+199:
+200: $check_ $(@expr1073742098 "class K {};\nint main()\n{\n    for ( K i(0); i <= 10; i++) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 200 $)
+201:
+|
+206:
+207: ;
+208: $if $(@expr1073742099 $!@expr1073742100 $assertEquals $(@expr1073742101 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 208 $, "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr272 str (@expr273 ) $) $) { $return ; }
+209:
+210: $check_ $(@expr1073742104 "class K {};\nint main()\n{\n    for ( K i(0); i <= 10; ++i) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 210 $)
+211:
+|
+216:
+217: ;
+218: $if $(@expr1073742105 $!@expr1073742106 $assertEquals $(@expr1073742107 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 218 $, "" $, errout@var100 .@expr272 str (@expr273 ) $) $) { $return ; }
+219:
+220: $check_ $(@expr1073742110 "class K {};\nint main()\n{\n    for ( K i(10); i > 1; i--) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 220 $)
+221:
+|
+226:
+227: ;
+228: $if $(@expr1073742111 $!@expr1073742112 $assertEquals $(@expr1073742113 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 228 $, "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr272 str (@expr273 ) $) $) { $return ; }
+229:
+230: $check_ $(@expr1073742116 "class K {};\nint main(int argc, char *argv[])\n{\n    for ( K i=10; i > 1; --i) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 230 $)
+231:
+|
+236:
+237: ;
+238: $if $(@expr1073742117 $!@expr1073742118 $assertEquals $(@expr1073742119 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 238 $, "" $, errout@var100 .@expr272 str (@expr273 ) $) $) { $return ; }
+239:
+240:
+241: }
+242:
+243: void testvolatile ( ) {
+244: $check_ $(@expr1073742122 "class K {};\nint main()\n{\n    volatile K k(0);\n    std::cout << k << std::endl;\n    k++;\n    std::cout << k << std::endl;\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 244 $)
+245:
+|
+251:
+252: ;
+253: $if $(@expr1073742123 $!@expr1073742124 $assertEquals $(@expr1073742125 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 253 $, "[test.cpp:6]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr1073742126 str (@expr1073742127 ) $) $) { $return ; }
+254: }
+255:
+256: void testiterator ( ) {
+257: $check_ $(@expr1073742128 "class Base {};\nint main() {\n    std::vector<Base*> v;\n    v.push_back(new Base());\n    v.push_back(new Base());\n    for (std::vector<Base*>::iterator i=v.begin(); i!=v.end(); i++) {\n        ;;\n    }\n    v.clear();\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 257 $)
+258:
+|
+266:
+267: ;
+268: $if $(@expr1073742129 $!@expr1073742130 $assertEquals $(@expr1073742131 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 268 $, "[test.cpp:6]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+269:
+270: $check_ $(@expr1073742134 "int main() {\n    std::vector<int> v;\n    std::vector<int>::iterator it;\n    for( int i=0; i < 10; ++i ) v.push_back(i);\n        unsigned int total = 0;\n    it = v.begin();\n    while( it != v.end() ) {\n       total += *it;\n       it++;\n    }\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 270 $)
+271:
+|
+280:
+281: ;
+282: $if $(@expr1073742135 $!@expr1073742136 $assertEquals $(@expr1073742137 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 282 $, "[test.cpp:9]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+283:
+284: $check_ $(@expr1073742140 "int main() {\n    std::vector<int> v;\n    std::vector<int>::const_iterator it;\n    for( int i=0; i < 10; ++i ) v.push_back(i);\n        unsigned int total = 0;\n    it = v.begin();\n    while( it != v.end() ) {\n       it++;\n    }\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 284 $)
+285:
+|
+293:
+294: ;
+295: $if $(@expr1073742141 $!@expr1073742142 $assertEquals $(@expr1073742143 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 295 $, "[test.cpp:8]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+296:
+297: $check_ $(@expr1073742146 "int main() {\n    std::vector<int> v;\n    std::vector<int>::iterator it;\n    for( int i=0; i < 10; ++i ) v.push_back(i);\n        unsigned int total = 0;\n    std::vector<int>::reverse_iterator rit;\n    rit= v.rend();\n    while( rit != v.rbegin() ) {\n       rit--;\n    }\n    return 0;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 297 $)
+298:
+|
+307:
+308: ;
+309: $if $(@expr1073742147 $!@expr1073742148 $assertEquals $(@expr1073742149 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 309 $, "[test.cpp:9]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr308 str (@expr309 ) $) $) { $return ; }
+310:
+311: }
+312:
+313: void test2168 ( ) {
+314: $check_ $(@expr1073742152 "--> declare allocator lock here\nint main(){}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 314 $)
+315: ;
+316: $if $(@expr1073742153 $!@expr1073742154 $assertEquals $(@expr1073742155 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 316 $, "" $, errout@var100 .@expr1073742156 str (@expr1073742157 ) $) $) { $return ; }
+317: }
+318:
+319: void pointerSimplest ( ) {
+320: $check_ $(@expr1073742158 "void f(int* p){\n    p++;\n    std::cout << *p;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 320 $)
+321:
+322:
+323: ;
+324: $if $(@expr1073742159 $!@expr1073742160 $assertEquals $(@expr1073742161 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 324 $, "" $, errout@var100 .@expr1073742162 str (@expr1073742163 ) $) $) { $return ; }
+325: }
+326:
+327: void pointer ( ) {
+328: $check_ $(@expr1073742164 "static struct class * ab;\nint * p;\n\nvoid f() {\n    p++;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 328 $)
+329:
+|
+332:
+333: ;
+334: $if $(@expr1073742165 $!@expr1073742166 $assertEquals $(@expr1073742167 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 334 $, "" $, errout@var100 .@expr1073742168 str (@expr1073742169 ) $) $) { $return ; }
+335: }
+336:
+337: void testtemplate ( ) {
+338: $check_ $(@expr1073742170 "bool foo() {\n    std::vector<FilterConfigCacheEntry>::iterator aIter(aImport.begin());\n    aIter++;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 338 $)
+339:
+340:
+341: ;
+342: $if $(@expr1073742171 $!@expr1073742172 $assertEquals $(@expr1073742173 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 342 $, "[test.cpp:3]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr1073742174 str (@expr1073742175 ) $) $) { $return ; }
+343: }
+344:
+345: void testmember ( ) {
+346: $check_ $(@expr1073742176 "bool foo() {\n    class A {}; class B {A a;};\n    B b;\n    b.a++;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 346 $)
+347:
+348:
+349:
+350: ;
+351: $if $(@expr1073742177 $!@expr1073742178 $assertEquals $(@expr1073742179 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 351 $, "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr356 str (@expr357 ) $) $) { $return ; }
+352:
+353: $check_ $(@expr1073742182 "bool foo() {\n    class A {}; class B {A a;};\n    B b;\n    foo(b.a++);\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 353 $)
+354:
+355:
+356:
+357: ;
+358: $if $(@expr1073742183 $!@expr1073742184 $assertEquals $(@expr1073742185 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 358 $, "" $, errout@var100 .@expr356 str (@expr357 ) $) $) { $return ; }
+359: }
+360:
+361: void testcomma ( ) {
+362: $check_ $(@expr1073742188 "bool foo(int i) {\n    class A {};\n    A a;\n    i++, a++;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 362 $)
+363:
+364:
+365:
+366: ;
+367: $if $(@expr1073742189 $!@expr1073742190 $assertEquals $(@expr1073742191 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 367 $, "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" $, errout@var100 .@expr368 str (@expr369 ) $) $) { $return ; }
+368:
+369: $check_ $(@expr1073742194 "bool foo(int i) {\n    class A {};\n    A a;\n    foo(i, a++);\n    foo(a++, i);\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 369 $)
+370:
+|
+373:
+374: ;
+375: $if $(@expr1073742195 $!@expr1073742196 $assertEquals $(@expr1073742197 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 375 $, "" $, errout@var100 .@expr368 str (@expr369 ) $) $) { $return ; }
+376: }
+377:
+378: void testauto ( ) {
+379: $check_ $(@expr1073742200 "enum class Color { Red = 0, Green = 1, };\nint fun(const Color color) {\n    auto a = 0;\n    for (auto i = static_cast<int>(color); i < 10; i++) {\n        a += i;\n    }\n    return a;\n}" $, "cppcheck-2.8/test/testpostfixoperator.cpp" $, 379 $)
+380:
+|
+385:
+386: ;
+387: $if $(@expr1073742201 $!@expr1073742202 $assertEquals $(@expr1073742203 "cppcheck-2.8/test/testpostfixoperator.cpp" $, 387 $, "" $, errout@var100 .@expr1073742204 str (@expr1073742205 ) $) $) { $return ; }
+388: }
+389: } ;
+390:
+391: $namespace ${ TestPostfixOperator instance_TestPostfixOperator@var110 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@31}
+  v {!<=-1,!>=2,0@31}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 30
+  "TestPostfixOperator" always "TestPostfixOperator"
+Line 38
+  "" always ""
+Line 41
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 42
+  code possible {"enum class Color { Red = 0, Green = 1, };\nint fun(const Color color) {\n    auto a = 0;\n    for (auto i = static_cast<int>(color); i < 10; i++) {\n        a += i;\n    }\n    return a;\n}"@1,"bool foo(int i) {\n    class A {};\n    A a;\n    i++, a++;\n}"@2,"bool foo(int i) {\n    class A {};\n    A a;\n    foo(i, a++);\n    foo(a++, i);\n}"@3,"bool foo() {\n    class A {}; class B {A a;};\n    B b;\n    b.a++;\n}"@4,"bool foo() {\n    class A {}; class B {A a;};\n    B b;\n    foo(b.a++);\n}"@5,"bool foo() {\n    std::vector<FilterConfigCacheEntry>::iterator aIter(aImport.begin());\n    aIter++;\n}"@6,"static struct class * ab;\nint * p;\n\nvoid f() {\n    p++;\n}"@7,"void f(int* p){\n    p++;\n    std::cout << *p;\n}"@8,"--> declare allocator lock here\nint main(){}"@9,"class Base {};\nint main() {\n    std::vector<Base*> v;\n    v.push_back(new Base());\n    v.push_back(new Base());\n    for (std::vector<Base*>::iterator i=v.begin(); i!=v.end(); i++) {\n        ;;\n    }\n    v.clear();\n    return 0;\n}"@10}
+Line 43
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testpostfixoperator.cpp"@1,"cppcheck-2.8/test/testpostfixoperator.cpp"@2,"cppcheck-2.8/test/testpostfixoperator.cpp"@3,"cppcheck-2.8/test/testpostfixoperator.cpp"@4,"cppcheck-2.8/test/testpostfixoperator.cpp"@5,"cppcheck-2.8/test/testpostfixoperator.cpp"@6,"cppcheck-2.8/test/testpostfixoperator.cpp"@7,"cppcheck-2.8/test/testpostfixoperator.cpp"@8,"cppcheck-2.8/test/testpostfixoperator.cpp"@9,"cppcheck-2.8/test/testpostfixoperator.cpp"@10}
+  line inconclusive {379@1,362@2,369@3,346@4,353@5,338@6,328@7,320@8,314@9,257@10}
+  "test.cpp" always "test.cpp"
+Line 46
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 53
+  ( always {!<=-1,!>=2}
+  "testsimple" always "testsimple"
+  false always 0
+  false always 0
+Line 54
+  ( always {!<=-1,!>=2}
+  "testfor" always "testfor"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "testvolatile" always "testvolatile"
+  false always 0
+  false always 0
+Line 56
+  ( always {!<=-1,!>=2}
+  "testiterator" always "testiterator"
+  false always 0
+  false always 0
+Line 57
+  ( always {!<=-1,!>=2}
+  "test2168" always "test2168"
+  false always 0
+  false always 0
+Line 58
+  ( always {!<=-1,!>=2}
+  "pointerSimplest" always "pointerSimplest"
+  false always 0
+  false always 0
+Line 59
+  ( always {!<=-1,!>=2}
+  "pointer" always "pointer"
+  false always 0
+  false always 0
+Line 60
+  ( always {!<=-1,!>=2}
+  "testtemplate" always "testtemplate"
+  false always 0
+  false always 0
+Line 61
+  ( always {!<=-1,!>=2}
+  "testmember" always "testmember"
+  false always 0
+  false always 0
+Line 62
+  ( always {!<=-1,!>=2}
+  "testcomma" always "testcomma"
+  false always 0
+  false always 0
+Line 63
+  ( always {!<=-1,!>=2}
+  "testauto" always "testauto"
+  false always 0
+  false always 0
+Line 67
+  "int main()\n{\n    unsigned int k(0);\n    std::cout << k << std::endl;\n    k++;\n    std::cout << k << std::endl;\n    if(k) {\n        k++;\n    }\n    std::cout << k << std::endl;\n    k--;\n    std::cout << k << std::endl;\n    return 0;\n}" always "int main()\n{\n    unsigned int k(0);\n    std::cout << k << std::endl;\n    k++;\n    std::cout << k << std::endl;\n    if(k) {\n        k++;\n    }\n    std::cout << k << std::endl;\n    k--;\n    std::cout << k << std::endl;\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  67 always 67
+Line 81
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  81 always 81
+  "" always ""
+Line 83
+  "class K {};int main()\n{\n    K k(0);\n    std::cout << k << std::endl;\n    k++;\n    std::cout << k << std::endl;\n    return 0;\n}" always "class K {};int main()\n{\n    K k(0);\n    std::cout << k << std::endl;\n    k++;\n    std::cout << k << std::endl;\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  83 always 83
+Line 92
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  92 always 92
+  "[test.cpp:5]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:5]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 94
+  "struct K {};void foo()\n{\n    K k(0);\n    k++;\n}" always "struct K {};void foo()\n{\n    K k(0);\n    k++;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  94 always 94
+Line 100
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  100 always 100
+  "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 102
+  "struct K {};\nvoid foo(K& k)\n{\n    k++;\n}" always "struct K {};\nvoid foo(K& k)\n{\n    k++;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  102 always 102
+Line 107
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  107 always 107
+  "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 109
+  "union K {};void foo()\n{\n    K k(0);\n    k++;\n}" always "union K {};void foo()\n{\n    K k(0);\n    k++;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  109 always 109
+Line 115
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  115 always 115
+  "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 117
+  "class K {};int main()\n{\n    K k(1);\n    std::cout << k << std::endl;\n    if(k) {\n        k++;\n    }\n    std::cout << k << std::endl;\n    return 0;\n}" always "class K {};int main()\n{\n    K k(1);\n    std::cout << k << std::endl;\n    if(k) {\n        k++;\n    }\n    std::cout << k << std::endl;\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  117 always 117
+Line 128
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  128 always 128
+  "[test.cpp:6]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:6]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 130
+  "class K {};int main()\n{\n    K k(1);\n    std::cout << k << std::endl;\n    if(k) {\n        ++k;\n    }\n    k++;\n    std::cout << k << std::endl;\n    return 0;\n}" always "class K {};int main()\n{\n    K k(1);\n    std::cout << k << std::endl;\n    if(k) {\n        ++k;\n    }\n    k++;\n    std::cout << k << std::endl;\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  130 always 130
+Line 142
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  142 always 142
+  "[test.cpp:8]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:8]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 145
+  "class K {};int main()\n{\n    K k(0);\n    std::cout << k << std::endl;\n    k--;\n    std::cout << k << std::endl;\n    return 0;\n}" always "class K {};int main()\n{\n    K k(0);\n    std::cout << k << std::endl;\n    k--;\n    std::cout << k << std::endl;\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  145 always 145
+Line 154
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  154 always 154
+  "[test.cpp:5]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:5]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 156
+  "class K {};int main()\n{\n    K k(0);\n    std::cout << k << std::endl;\n    ++k;\n    std::cout << k << std::endl;\n    return 0;\n}" always "class K {};int main()\n{\n    K k(0);\n    std::cout << k << std::endl;\n    ++k;\n    std::cout << k << std::endl;\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  156 always 156
+Line 165
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  165 always 165
+  "" always ""
+Line 167
+  "class K {};int main()\n{\n    K k(0);\n    std::cout << k << std::endl;\n    --k;\n    std::cout << k << std::endl;\n    return 0;\n}" always "class K {};int main()\n{\n    K k(0);\n    std::cout << k << std::endl;\n    --k;\n    std::cout << k << std::endl;\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  167 always 167
+Line 176
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  176 always 176
+  "" always ""
+Line 179
+  "template <class T>\nclass c {\n    int i = 0;\n    c() { i--; }\n};\ntemplate <class T>\nclass s {};\nusing BOOL = char;" always "template <class T>\nclass c {\n    int i = 0;\n    c() { i--; }\n};\ntemplate <class T>\nclass s {};\nusing BOOL = char;"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  179 always 179
+Line 187
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  187 always 187
+  "" always ""
+Line 191
+  "int main()\n{\n    for ( unsigned int i=0; i <= 10; i++) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}" always "int main()\n{\n    for ( unsigned int i=0; i <= 10; i++) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  191 always 191
+Line 198
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  198 always 198
+  "" always ""
+Line 200
+  "class K {};\nint main()\n{\n    for ( K i(0); i <= 10; i++) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}" always "class K {};\nint main()\n{\n    for ( K i(0); i <= 10; i++) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  200 always 200
+Line 208
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  208 always 208
+  "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 210
+  "class K {};\nint main()\n{\n    for ( K i(0); i <= 10; ++i) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}" always "class K {};\nint main()\n{\n    for ( K i(0); i <= 10; ++i) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  210 always 210
+Line 218
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  218 always 218
+  "" always ""
+Line 220
+  "class K {};\nint main()\n{\n    for ( K i(10); i > 1; i--) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}" always "class K {};\nint main()\n{\n    for ( K i(10); i > 1; i--) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  220 always 220
+Line 228
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  228 always 228
+  "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 230
+  "class K {};\nint main(int argc, char *argv[])\n{\n    for ( K i=10; i > 1; --i) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}" always "class K {};\nint main(int argc, char *argv[])\n{\n    for ( K i=10; i > 1; --i) {\n         std::cout << i << std::endl;\n    }\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  230 always 230
+Line 238
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  238 always 238
+  "" always ""
+Line 244
+  "class K {};\nint main()\n{\n    volatile K k(0);\n    std::cout << k << std::endl;\n    k++;\n    std::cout << k << std::endl;\n    return 0;\n}" always "class K {};\nint main()\n{\n    volatile K k(0);\n    std::cout << k << std::endl;\n    k++;\n    std::cout << k << std::endl;\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  244 always 244
+Line 253
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  253 always 253
+  "[test.cpp:6]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:6]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 257
+  "class Base {};\nint main() {\n    std::vector<Base*> v;\n    v.push_back(new Base());\n    v.push_back(new Base());\n    for (std::vector<Base*>::iterator i=v.begin(); i!=v.end(); i++) {\n        ;;\n    }\n    v.clear();\n    return 0;\n}" always "class Base {};\nint main() {\n    std::vector<Base*> v;\n    v.push_back(new Base());\n    v.push_back(new Base());\n    for (std::vector<Base*>::iterator i=v.begin(); i!=v.end(); i++) {\n        ;;\n    }\n    v.clear();\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  257 always 257
+Line 268
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  268 always 268
+  "[test.cpp:6]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:6]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 270
+  "int main() {\n    std::vector<int> v;\n    std::vector<int>::iterator it;\n    for( int i=0; i < 10; ++i ) v.push_back(i);\n        unsigned int total = 0;\n    it = v.begin();\n    while( it != v.end() ) {\n       total += *it;\n       it++;\n    }\n    return 0;\n}" always "int main() {\n    std::vector<int> v;\n    std::vector<int>::iterator it;\n    for( int i=0; i < 10; ++i ) v.push_back(i);\n        unsigned int total = 0;\n    it = v.begin();\n    while( it != v.end() ) {\n       total += *it;\n       it++;\n    }\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  270 always 270
+Line 282
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  282 always 282
+  "[test.cpp:9]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:9]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 284
+  "int main() {\n    std::vector<int> v;\n    std::vector<int>::const_iterator it;\n    for( int i=0; i < 10; ++i ) v.push_back(i);\n        unsigned int total = 0;\n    it = v.begin();\n    while( it != v.end() ) {\n       it++;\n    }\n    return 0;\n}" always "int main() {\n    std::vector<int> v;\n    std::vector<int>::const_iterator it;\n    for( int i=0; i < 10; ++i ) v.push_back(i);\n        unsigned int total = 0;\n    it = v.begin();\n    while( it != v.end() ) {\n       it++;\n    }\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  284 always 284
+Line 295
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  295 always 295
+  "[test.cpp:8]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:8]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 297
+  "int main() {\n    std::vector<int> v;\n    std::vector<int>::iterator it;\n    for( int i=0; i < 10; ++i ) v.push_back(i);\n        unsigned int total = 0;\n    std::vector<int>::reverse_iterator rit;\n    rit= v.rend();\n    while( rit != v.rbegin() ) {\n       rit--;\n    }\n    return 0;\n}" always "int main() {\n    std::vector<int> v;\n    std::vector<int>::iterator it;\n    for( int i=0; i < 10; ++i ) v.push_back(i);\n        unsigned int total = 0;\n    std::vector<int>::reverse_iterator rit;\n    rit= v.rend();\n    while( rit != v.rbegin() ) {\n       rit--;\n    }\n    return 0;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  297 always 297
+Line 309
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  309 always 309
+  "[test.cpp:9]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:9]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 314
+  "--> declare allocator lock here\nint main(){}" always "--> declare allocator lock here\nint main(){}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  314 always 314
+Line 316
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  316 always 316
+  "" always ""
+Line 320
+  "void f(int* p){\n    p++;\n    std::cout << *p;\n}" always "void f(int* p){\n    p++;\n    std::cout << *p;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  320 always 320
+Line 324
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  324 always 324
+  "" always ""
+Line 328
+  "static struct class * ab;\nint * p;\n\nvoid f() {\n    p++;\n}" always "static struct class * ab;\nint * p;\n\nvoid f() {\n    p++;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  328 always 328
+Line 334
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  334 always 334
+  "" always ""
+Line 338
+  "bool foo() {\n    std::vector<FilterConfigCacheEntry>::iterator aIter(aImport.begin());\n    aIter++;\n}" always "bool foo() {\n    std::vector<FilterConfigCacheEntry>::iterator aIter(aImport.begin());\n    aIter++;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  338 always 338
+Line 342
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  342 always 342
+  "[test.cpp:3]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:3]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 346
+  "bool foo() {\n    class A {}; class B {A a;};\n    B b;\n    b.a++;\n}" always "bool foo() {\n    class A {}; class B {A a;};\n    B b;\n    b.a++;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  346 always 346
+Line 351
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  351 always 351
+  "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 353
+  "bool foo() {\n    class A {}; class B {A a;};\n    B b;\n    foo(b.a++);\n}" always "bool foo() {\n    class A {}; class B {A a;};\n    B b;\n    foo(b.a++);\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  353 always 353
+Line 358
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  358 always 358
+  "" always ""
+Line 362
+  "bool foo(int i) {\n    class A {};\n    A a;\n    i++, a++;\n}" always "bool foo(int i) {\n    class A {};\n    A a;\n    i++, a++;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  362 always 362
+Line 367
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  367 always 367
+  "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n" always "[test.cpp:4]: (performance) Prefer prefix ++/-- operators for non-primitive types.\n"
+Line 369
+  "bool foo(int i) {\n    class A {};\n    A a;\n    foo(i, a++);\n    foo(a++, i);\n}" always "bool foo(int i) {\n    class A {};\n    A a;\n    foo(i, a++);\n    foo(a++, i);\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  369 always 369
+Line 375
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  375 always 375
+  "" always ""
+Line 379
+  "enum class Color { Red = 0, Green = 1, };\nint fun(const Color color) {\n    auto a = 0;\n    for (auto i = static_cast<int>(color); i < 10; i++) {\n        a += i;\n    }\n    return a;\n}" always "enum class Color { Red = 0, Green = 1, };\nint fun(const Color color) {\n    auto a = 0;\n    for (auto i = static_cast<int>(color); i < 10; i++) {\n        a += i;\n    }\n    return a;\n}"
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  379 always 379
+Line 387
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testpostfixoperator.cpp" always "cppcheck-2.8/test/testpostfixoperator.cpp"
+  387 always 387
+  "" always ""

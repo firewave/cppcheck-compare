@@ -1,0 +1,1420 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741943 expected@var22 !=@expr1073741944 actual@var23 ) {
+62: std ::@expr1073741945 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741946 expected@var22 ;
+64: std ::@expr1073741947 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741948 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741949 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741950 str (@expr1073741951 ) , actualStr@var26 .@expr1073741952 str (@expr1073741953 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741954 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741955 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741956 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741957 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testunusedfunctions.cpp
+
+1:
+|
+28:
+29: class TestUnusedFunctions : public TestFixture {
+30: public:
+31: TestUnusedFunctions ( ) : TestFixture ( "TestUnusedFunctions" ) { }
+32:
+33: private:
+34: Settings settings@var102 ;
+35:
+36: void run ( ) override {
+37: settings@var102 .@expr1073741959 severity@var103 .@expr1073741960 enable (@expr1073741961 Severity ::@expr1073741962 style@expr1073741958 ) ;
+38:
+39: $do ${ $if $(@expr1073741963 $prepareTest $(@expr1073741964 "incondition" $) $) ${ $setVerbose $(@expr1073741965 $false $) $; incondition $(@expr1073741966 $) $; $} $} $while $(@expr1073741967 $false $) ;
+40: $do ${ $if $(@expr1073741968 $prepareTest $(@expr1073741969 "return1" $) $) ${ $setVerbose $(@expr1073741970 $false $) $; return1 $(@expr1073741971 $) $; $} $} $while $(@expr1073741972 $false $) ;
+41: $do ${ $if $(@expr1073741973 $prepareTest $(@expr1073741974 "return2" $) $) ${ $setVerbose $(@expr1073741975 $false $) $; return2 $(@expr1073741976 $) $; $} $} $while $(@expr1073741977 $false $) ;
+42: $do ${ $if $(@expr1073741978 $prepareTest $(@expr1073741979 "callback1" $) $) ${ $setVerbose $(@expr1073741980 $false $) $; callback1 $(@expr1073741981 $) $; $} $} $while $(@expr1073741982 $false $) ;
+43: $do ${ $if $(@expr1073741983 $prepareTest $(@expr1073741984 "callback2" $) $) ${ $setVerbose $(@expr1073741985 $false $) $; callback2 $(@expr1073741986 $) $; $} $} $while $(@expr1073741987 $false $) ;
+44: $do ${ $if $(@expr1073741988 $prepareTest $(@expr1073741989 "else1" $) $) ${ $setVerbose $(@expr1073741990 $false $) $; else1 $(@expr1073741991 $) $; $} $} $while $(@expr1073741992 $false $) ;
+45: $do ${ $if $(@expr1073741993 $prepareTest $(@expr1073741994 "functionpointer" $) $) ${ $setVerbose $(@expr1073741995 $false $) $; functionpointer $(@expr1073741996 $) $; $} $} $while $(@expr1073741997 $false $) ;
+46: $do ${ $if $(@expr1073741998 $prepareTest $(@expr1073741999 "template1" $) $) ${ $setVerbose $(@expr1073742000 $false $) $; template1 $(@expr1073742001 $) $; $} $} $while $(@expr1073742002 $false $) ;
+47: $do ${ $if $(@expr1073742003 $prepareTest $(@expr1073742004 "template2" $) $) ${ $setVerbose $(@expr1073742005 $false $) $; template2 $(@expr1073742006 $) $; $} $} $while $(@expr1073742007 $false $) ;
+48: $do ${ $if $(@expr1073742008 $prepareTest $(@expr1073742009 "template3" $) $) ${ $setVerbose $(@expr1073742010 $false $) $; template3 $(@expr1073742011 $) $; $} $} $while $(@expr1073742012 $false $) ;
+49: $do ${ $if $(@expr1073742013 $prepareTest $(@expr1073742014 "template4" $) $) ${ $setVerbose $(@expr1073742015 $false $) $; template4 $(@expr1073742016 $) $; $} $} $while $(@expr1073742017 $false $) ;
+50: $do ${ $if $(@expr1073742018 $prepareTest $(@expr1073742019 "template5" $) $) ${ $setVerbose $(@expr1073742020 $false $) $; template5 $(@expr1073742021 $) $; $} $} $while $(@expr1073742022 $false $) ;
+51: $do ${ $if $(@expr1073742023 $prepareTest $(@expr1073742024 "template6" $) $) ${ $setVerbose $(@expr1073742025 $false $) $; template6 $(@expr1073742026 $) $; $} $} $while $(@expr1073742027 $false $) ;
+52: $do ${ $if $(@expr1073742028 $prepareTest $(@expr1073742029 "template7" $) $) ${ $setVerbose $(@expr1073742030 $false $) $; template7 $(@expr1073742031 $) $; $} $} $while $(@expr1073742032 $false $) ;
+53: $do ${ $if $(@expr1073742033 $prepareTest $(@expr1073742034 "throwIsNotAFunction" $) $) ${ $setVerbose $(@expr1073742035 $false $) $; throwIsNotAFunction $(@expr1073742036 $) $; $} $} $while $(@expr1073742037 $false $) ;
+54: $do ${ $if $(@expr1073742038 $prepareTest $(@expr1073742039 "unusedError" $) $) ${ $setVerbose $(@expr1073742040 $false $) $; unusedError $(@expr1073742041 $) $; $} $} $while $(@expr1073742042 $false $) ;
+55: $do ${ $if $(@expr1073742043 $prepareTest $(@expr1073742044 "unusedMain" $) $) ${ $setVerbose $(@expr1073742045 $false $) $; unusedMain $(@expr1073742046 $) $; $} $} $while $(@expr1073742047 $false $) ;
+56: $do ${ $if $(@expr1073742048 $prepareTest $(@expr1073742049 "initializationIsNotAFunction" $) $) ${ $setVerbose $(@expr1073742050 $false $) $; initializationIsNotAFunction $(@expr1073742051 $) $; $} $} $while $(@expr1073742052 $false $) ;
+57: $do ${ $if $(@expr1073742053 $prepareTest $(@expr1073742054 "operator1" $) $) ${ $setVerbose $(@expr1073742055 $false $) $; operator1 $(@expr1073742056 $) $; $} $} $while $(@expr1073742057 $false $) ;
+58: $do ${ $if $(@expr1073742058 $prepareTest $(@expr1073742059 "operator2" $) $) ${ $setVerbose $(@expr1073742060 $false $) $; operator2 $(@expr1073742061 $) $; $} $} $while $(@expr1073742062 $false $) ;
+59: $do ${ $if $(@expr1073742063 $prepareTest $(@expr1073742064 "returnRef" $) $) ${ $setVerbose $(@expr1073742065 $false $) $; returnRef $(@expr1073742066 $) $; $} $} $while $(@expr1073742067 $false $) ;
+60: $do ${ $if $(@expr1073742068 $prepareTest $(@expr1073742069 "attribute" $) $) ${ $setVerbose $(@expr1073742070 $false $) $; attribute $(@expr1073742071 $) $; $} $} $while $(@expr1073742072 $false $) ;
+61: $do ${ $if $(@expr1073742073 $prepareTest $(@expr1073742074 "initializer_list" $) $) ${ $setVerbose $(@expr1073742075 $false $) $; initializer_list $(@expr1073742076 $) $; $} $} $while $(@expr1073742077 $false $) ;
+62: $do ${ $if $(@expr1073742078 $prepareTest $(@expr1073742079 "member_function_ternary" $) $) ${ $setVerbose $(@expr1073742080 $false $) $; member_function_ternary $(@expr1073742081 $) $; $} $} $while $(@expr1073742082 $false $) ;
+63: $do ${ $if $(@expr1073742083 $prepareTest $(@expr1073742084 "boost" $) $) ${ $setVerbose $(@expr1073742085 $false $) $; boost $(@expr1073742086 $) $; $} $} $while $(@expr1073742087 $false $) ;
+64:
+65: $do ${ $if $(@expr1073742088 $prepareTest $(@expr1073742089 "multipleFiles" $) $) ${ $setVerbose $(@expr1073742090 $false $) $; multipleFiles $(@expr1073742091 $) $; $} $} $while $(@expr1073742092 $false $) ;
+66:
+67: $do ${ $if $(@expr1073742093 $prepareTest $(@expr1073742094 "lineNumber" $) $) ${ $setVerbose $(@expr1073742095 $false $) $; lineNumber $(@expr1073742096 $) $; $} $} $while $(@expr1073742097 $false $) ;
+68:
+69: $do ${ $if $(@expr1073742098 $prepareTest $(@expr1073742099 "ignore_declaration" $) $) ${ $setVerbose $(@expr1073742100 $false $) $; ignore_declaration $(@expr1073742101 $) $; $} $} $while $(@expr1073742102 $false $) ;
+70:
+71: $do ${ $if $(@expr1073742103 $prepareTest $(@expr1073742104 "operatorOverload" $) $) ${ $setVerbose $(@expr1073742105 $false $) $; operatorOverload $(@expr1073742106 $) $; $} $} $while $(@expr1073742107 $false $) ;
+72: }
+73:
+74:
+75: void check_ ( const char * file@var104 , int line@var105 , const char code@var106 [ ] , Settings :: PlatformType platform@var107 = Settings :: Native ) {
+76:
+77: errout@var100 .@expr284 str (@expr1073742109 "" ) ;
+78:
+79: settings@var102 .@expr1073742110 platform (@expr1073742111 platform@var107 ) ;
+80:
+81:
+82: Tokenizer tokenizer@var108 (@expr1073742112 &@expr289 settings@var102 , this@expr290 ) ;
+83: std ::@expr1073742115 istringstream istr@var109 (@expr1073742116 code@var106 ) ;
+84: $assert_ $(@expr1073742117 file@var104 $, line@var105 $, $(@expr1073742118 tokenizer@var108 .@expr1073742119 tokenize (@expr1073742120 istr@var109 , "test.cpp" ) $) $) ;
+85:
+86:
+87: CheckUnusedFunctions checkUnusedFunctions@var110 (@expr1073742121 &@expr1073742122 tokenizer@var108 , &@expr289 settings@var102 , this@expr290 ) ;
+88: checkUnusedFunctions@var110 .@expr1073742124 parseTokens (@expr1073742125 tokenizer@var108 , "someFile.c" , &@expr289 settings@var102 ) ;
+89:
+90: if (@expr1073742127 checkUnusedFunctions@var110 .@expr1073742128 check (@expr1073742129 this@expr290 , settings@var102 ) ) {
+91: $if $(@expr1073742130 $!@expr1073742131 $assert_ $(@expr1073742132 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 91 $, !@expr1073742133 errout@var100 .@expr284 str (@expr311 ) .@expr1073742136 empty (@expr1073742137 ) $) $) { $return ; }
+92: } else {
+93: $if $(@expr1073742138 $!@expr1073742139 $assertEquals $(@expr1073742140 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 93 $, "" $, errout@var100 .@expr284 str (@expr311 ) $) $) { $return ; }
+94: }
+95: }
+96:
+97: void incondition ( ) {
+98: $check_ $(@expr1073742143 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 98 $, "int f1()\n{\n    if (f1())\n    { }\n}" $)
+99:
+100:
+101:
+102: ;
+103: $if $(@expr1073742144 $!@expr1073742145 $assertEquals $(@expr1073742146 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 103 $, "" $, errout@var100 .@expr1073742147 str (@expr1073742148 ) $) $) { $return ; }
+104: }
+105:
+106: void return1 ( ) {
+107: $check_ $(@expr1073742149 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 107 $, "int f1()\n{\n    return f1();\n}" $)
+108:
+109:
+110: ;
+111: $if $(@expr1073742150 $!@expr1073742151 $assertEquals $(@expr1073742152 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 111 $, "" $, errout@var100 .@expr1073742153 str (@expr1073742154 ) $) $) { $return ; }
+112: }
+113:
+114: void return2 ( ) {
+115: $check_ $(@expr1073742155 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 115 $, "char * foo()\n{\n    return *foo();\n}" $)
+116:
+117:
+118: ;
+119: $if $(@expr1073742156 $!@expr1073742157 $assertEquals $(@expr1073742158 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 119 $, "" $, errout@var100 .@expr1073742159 str (@expr1073742160 ) $) $) { $return ; }
+120: }
+121:
+122: void callback1 ( ) {
+123: $check_ $(@expr1073742161 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 123 $, "void f1()\n{\n    void (*f)() = cond ? f1 : NULL;\n}" $)
+124:
+125:
+126: ;
+127: $if $(@expr1073742162 $!@expr1073742163 $assertEquals $(@expr1073742164 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 127 $, "" $, errout@var100 .@expr1073742165 str (@expr1073742166 ) $) $) { $return ; }
+128: }
+129:
+130: void callback2 ( ) {
+131: $check_ $(@expr1073742167 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 131 $, "class C {\npublic:\n    void callback();\n    void start();\n};\n\nvoid C::callback() {}\n\nvoid C::start() { ev.set<C, &C::callback>(this); }" $)
+132:
+|
+138:
+139: ;
+140: $if $(@expr1073742168 $!@expr1073742169 $assertEquals $(@expr1073742170 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 140 $, "[test.cpp:9]: (style) The function 'start' is never used.\n" $, errout@var100 .@expr1073742171 str (@expr1073742172 ) $) $) { $return ; }
+141: }
+142:
+143: void else1 ( ) {
+144: $check_ $(@expr1073742173 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 144 $, "void f1()\n{\n    if (cond) ;\n    else f1();\n}" $)
+145:
+146:
+147:
+148: ;
+149: $if $(@expr1073742174 $!@expr1073742175 $assertEquals $(@expr1073742176 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 149 $, "" $, errout@var100 .@expr1073742177 str (@expr1073742178 ) $) $) { $return ; }
+150: }
+151:
+152: void functionpointer ( ) {
+153: $check_ $(@expr1073742179 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 153 $, "void foo() { }\nint main() {\n    f(&foo);\n    return 0\n}" $)
+154:
+155:
+156:
+157: ;
+158: $if $(@expr1073742180 $!@expr1073742181 $assertEquals $(@expr1073742182 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 158 $, "" $, errout@var100 .@expr359 str (@expr360 ) $) $) { $return ; }
+159:
+160: $check_ $(@expr1073742185 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 160 $, "void foo() { }\nint main() {\n    f(&::foo);\n    return 0\n}" $)
+161:
+162:
+163:
+164: ;
+165: $if $(@expr1073742186 $!@expr1073742187 $assertEquals $(@expr1073742188 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 165 $, "" $, errout@var100 .@expr359 str (@expr360 ) $) $) { $return ; }
+166:
+167: $check_ $(@expr1073742191 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 167 $, "namespace abc {\n    void foo() { }\n};\nint main() {\n    f(&abc::foo);\n    return 0\n}" $)
+168:
+|
+172:
+173: ;
+174: $if $(@expr1073742192 $!@expr1073742193 $assertEquals $(@expr1073742194 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 174 $, "" $, errout@var100 .@expr359 str (@expr360 ) $) $) { $return ; }
+175:
+176: $check_ $(@expr1073742197 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 176 $, "namespace abc {\n    void foo() { }\n};\nint main() {\n    f = &abc::foo;\n    return 0\n}" $)
+177:
+|
+181:
+182: ;
+183: $if $(@expr1073742198 $!@expr1073742199 $assertEquals $(@expr1073742200 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 183 $, "" $, errout@var100 .@expr359 str (@expr360 ) $) $) { $return ; }
+184:
+185: $check_ $(@expr1073742203 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 185 $, "namespace abc {\n    void foo() { }\n};\nint main() {\n    f = &::abc::foo;\n    return 0\n}" $)
+186:
+|
+190:
+191: ;
+192: $if $(@expr1073742204 $!@expr1073742205 $assertEquals $(@expr1073742206 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 192 $, "" $, errout@var100 .@expr359 str (@expr360 ) $) $) { $return ; }
+193:
+194: $check_ $(@expr1073742209 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 194 $, "namespace abc {\n    void foo() { }\n};\nint main() {\n    f(abc::foo);\n    return 0\n}" $)
+195:
+|
+199:
+200: ;
+201: $if $(@expr1073742210 $!@expr1073742211 $assertEquals $(@expr1073742212 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 201 $, "" $, errout@var100 .@expr359 str (@expr360 ) $) $) { $return ; }
+202: }
+203:
+204: void template1 ( ) {
+205: $check_ $(@expr1073742215 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 205 $, "template<class T> void foo() { }\n\nint main()\n{\n    foo<int>();\n    return 0\n}" $)
+206:
+|
+210:
+211: ;
+212: $if $(@expr1073742216 $!@expr1073742217 $assertEquals $(@expr1073742218 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 212 $, "" $, errout@var100 .@expr1073742219 str (@expr1073742220 ) $) $) { $return ; }
+213: }
+214:
+215: void template2 ( ) {
+216: $check_ $(@expr1073742221 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 216 $, "void f() { }\n\ntemplate<class T> void g()\n{\n    f();\n}\n\nvoid h() { g<int>(); h(); }" $)
+217:
+|
+222:
+223: ;
+224: $if $(@expr1073742222 $!@expr1073742223 $assertEquals $(@expr1073742224 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 224 $, "" $, errout@var100 .@expr1073742225 str (@expr1073742226 ) $) $) { $return ; }
+225: }
+226:
+227: void template3 ( ) {
+228: $check_ $(@expr1073742227 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 228 $, "class X {\npublic:\n    void bar() { foo<int>(0); }\nprivate:\n    template<typename T> void foo( T t ) const;\n};\ntemplate<typename T> void X::foo( T t ) const { }" $)
+229:
+|
+233:
+234: ;
+235: $if $(@expr1073742228 $!@expr1073742229 $assertEquals $(@expr1073742230 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 235 $, "[test.cpp:3]: (style) The function 'bar' is never used.\n" $, errout@var100 .@expr1073742231 str (@expr1073742232 ) $) $) { $return ; }
+236: }
+237:
+238: void template4 ( ) {
+239: $check_ $(@expr1073742233 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 239 $, "struct A {\n    int a = 0;\n    void f() { a = 1; }\n    template <typename T, typename... Args> auto call(const Args &... args) -> T {\n        a = 2;\n        return T{};\n    }\n};\n\nstruct B : public A {\n    void test() {\n        f();\n        call<int>(1, 2, 3);\n        test();\n    }\n};" $)
+240:
+|
+253:
+254: ;
+255: $if $(@expr1073742234 $!@expr1073742235 $assertEquals $(@expr1073742236 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 255 $, "" $, errout@var100 .@expr1073742237 str (@expr1073742238 ) $) $) { $return ; }
+256: }
+257:
+258: void template5 ( ) {
+259: $check_ $(@expr1073742239 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 259 $, "void f(){}\n\ntypedef void(*Filter)();\n\ntemplate <Filter fun>\nvoid g() { fun(); }\n\nint main() { g<f>(); return 0;}" $)
+260:
+|
+265:
+266: ;
+267: $if $(@expr1073742240 $!@expr1073742241 $assertEquals $(@expr1073742242 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 267 $, "" $, errout@var100 .@expr1073742243 str (@expr1073742244 ) $) $) { $return ; }
+268: }
+269:
+270: void template6 ( ) {
+271: $check_ $(@expr1073742245 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 271 $, "template<template<typename...> class Ref, typename... Args>\nstruct Foo<Ref<Args...>, Ref> : std::true_type {};\n" $)
+272: ;
+273: $if $(@expr1073742246 $!@expr1073742247 $assertEquals $(@expr1073742248 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 273 $, "" $, errout@var100 .@expr1073742249 str (@expr1073742250 ) $) $) { $return ; }
+274: }
+275:
+276: void template7 ( )
+277: {
+278: $check_ $(@expr1073742251 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 278 $, "void f() {\n    std::array<std::array<double,3>,3> array;\n}\n" $)
+279:
+280: ;
+281: $if $(@expr1073742252 $!@expr1073742253 $assertEquals $(@expr1073742254 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 281 $, "[test.cpp:1]: (style) The function 'f' is never used.\n" $, errout@var100 .@expr1073742255 str (@expr1073742256 ) $) $) { $return ; }
+282: }
+283:
+284: void throwIsNotAFunction ( ) {
+285: $check_ $(@expr1073742257 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 285 $, "struct A {void f() const throw () {}}; int main() {A a; a.f();}" $) ;
+286: $if $(@expr1073742258 $!@expr1073742259 $assertEquals $(@expr1073742260 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 286 $, "" $, errout@var100 .@expr1073742261 str (@expr1073742262 ) $) $) { $return ; }
+287: }
+288:
+289: void unusedError ( ) {
+290: $check_ $(@expr1073742263 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 290 $, "void foo() {}\nint main()" $)
+291: ;
+292: $if $(@expr1073742264 $!@expr1073742265 $assertEquals $(@expr1073742266 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 292 $, "[test.cpp:1]: (style) The function 'foo' is never used.\n" $, errout@var100 .@expr443 str (@expr444 ) $) $) { $return ; }
+293:
+294: $check_ $(@expr1073742269 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 294 $, "void foo() const {}\nint main()" $)
+295: ;
+296: $if $(@expr1073742270 $!@expr1073742271 $assertEquals $(@expr1073742272 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 296 $, "[test.cpp:1]: (style) The function 'foo' is never used.\n" $, errout@var100 .@expr443 str (@expr444 ) $) $) { $return ; }
+297:
+298: $check_ $(@expr1073742275 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 298 $, "void foo() const throw() {}\nint main()" $)
+299: ;
+300: $if $(@expr1073742276 $!@expr1073742277 $assertEquals $(@expr1073742278 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 300 $, "[test.cpp:1]: (style) The function 'foo' is never used.\n" $, errout@var100 .@expr443 str (@expr444 ) $) $) { $return ; }
+301:
+302: $check_ $(@expr1073742281 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 302 $, "void foo() throw() {}\nint main()" $)
+303: ;
+304: $if $(@expr1073742282 $!@expr1073742283 $assertEquals $(@expr1073742284 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 304 $, "[test.cpp:1]: (style) The function 'foo' is never used.\n" $, errout@var100 .@expr443 str (@expr444 ) $) $) { $return ; }
+305: }
+306:
+307: void unusedMain ( ) {
+308: $check_ $(@expr1073742288 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 308 $, "int main() { }" $) ;
+309: $if $(@expr1073742289 $!@expr1073742290 $assertEquals $(@expr1073742291 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 309 $, "" $, errout@var100 .@expr468 str (@expr469 ) $) $) { $return ; }
+310:
+311: $check_ $(@expr1073742294 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 311 $, "int _tmain() { }" , Settings ::@expr471 Win32A@expr463 $) ;
+312: $if $(@expr1073742296 $!@expr1073742297 $assertEquals $(@expr1073742298 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 312 $, "" $, errout@var100 .@expr468 str (@expr469 ) $) $) { $return ; }
+313:
+314: $check_ $(@expr1073742301 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 314 $, "int WinMain() { }" , Settings ::@expr471 Win32A@expr463 $) ;
+315: $if $(@expr1073742303 $!@expr1073742304 $assertEquals $(@expr1073742305 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 315 $, "" $, errout@var100 .@expr468 str (@expr469 ) $) $) { $return ; }
+316: }
+317:
+318: void initializationIsNotAFunction ( ) {
+319: $check_ $(@expr1073742308 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 319 $, "struct B: N::A {\n  B(): N::A() {};\n};" $)
+320:
+321: ;
+322: $if $(@expr1073742309 $!@expr1073742310 $assertEquals $(@expr1073742311 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 322 $, "" $, errout@var100 .@expr1073742312 str (@expr1073742313 ) $) $) { $return ; }
+323: }
+324:
+325: void operator1 ( ) {
+326: $check_ $(@expr1073742314 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 326 $, "struct Foo { void operator()(int a) {} };" $) ;
+327: $if $(@expr1073742315 $!@expr1073742316 $assertEquals $(@expr1073742317 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 327 $, "" $, errout@var100 .@expr494 str (@expr495 ) $) $) { $return ; }
+328:
+329: $check_ $(@expr1073742320 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 329 $, "struct Foo { operator std::string(int a) {} };" $) ;
+330: $if $(@expr1073742321 $!@expr1073742322 $assertEquals $(@expr1073742323 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 330 $, "" $, errout@var100 .@expr494 str (@expr495 ) $) $) { $return ; }
+331: }
+332:
+333: void operator2 ( ) {
+334: $check_ $(@expr1073742326 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 334 $, "bool operator==(const data_t& a, const data_t& b) {\n    return (a.fd == b.fd);\n}\nbool operator==(const event& a, const event& b) {\n    return ((a.events == b.events) && (a.data == b.data));\n}\nint main(event a, event b) {\n    return a == b;\n}\n" $)
+335:
+|
+341:
+342: ;
+343: $if $(@expr1073742327 $!@expr1073742328 $assertEquals $(@expr1073742329 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 343 $, "" $, errout@var100 .@expr1073742330 str (@expr1073742331 ) $) $) { $return ; }
+344: }
+345:
+346: void returnRef ( ) {
+347: $check_ $(@expr1073742332 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 347 $, "int& foo() {return x;}" $) ;
+348: $if $(@expr1073742333 $!@expr1073742334 $assertEquals $(@expr1073742335 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 348 $, "[test.cpp:1]: (style) The function 'foo' is never used.\n" $, errout@var100 .@expr1073742336 str (@expr1073742337 ) $) $) { $return ; }
+349: }
+350:
+351: void attribute ( ) {
+352: $check_ $(@expr1073742338 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 352 $, "void __attribute__((constructor)) f() {}" $) ;
+353: $if $(@expr1073742339 $!@expr1073742340 $assertEquals $(@expr1073742341 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 353 $, "" $, errout@var100 .@expr518 str (@expr519 ) $) $) { $return ; }
+354:
+355: $check_ $(@expr1073742344 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 355 $, "void __attribute__((constructor(1000))) f() {}" $) ;
+356: $if $(@expr1073742345 $!@expr1073742346 $assertEquals $(@expr1073742347 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 356 $, "" $, errout@var100 .@expr518 str (@expr519 ) $) $) { $return ; }
+357:
+358: $check_ $(@expr1073742350 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 358 $, "void __attribute__((destructor)) f() {}" $) ;
+359: $if $(@expr1073742351 $!@expr1073742352 $assertEquals $(@expr1073742353 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 359 $, "" $, errout@var100 .@expr518 str (@expr519 ) $) $) { $return ; }
+360:
+361: $check_ $(@expr1073742356 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 361 $, "void __attribute__((destructor(1000))) f() {}" $) ;
+362: $if $(@expr1073742357 $!@expr1073742358 $assertEquals $(@expr1073742359 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 362 $, "" $, errout@var100 .@expr518 str (@expr519 ) $) $) { $return ; }
+363:
+364:
+365: $check_ $(@expr1073742362 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 365 $, "__attribute__((constructor)) void f() {}" $) ;
+366: $if $(@expr1073742363 $!@expr1073742364 $assertEquals $(@expr1073742365 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 366 $, "" $, errout@var100 .@expr518 str (@expr519 ) $) $) { $return ; }
+367:
+368: $check_ $(@expr1073742368 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 368 $, "__attribute__((constructor(1000))) void f() {}" $) ;
+369: $if $(@expr1073742369 $!@expr1073742370 $assertEquals $(@expr1073742371 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 369 $, "" $, errout@var100 .@expr518 str (@expr519 ) $) $) { $return ; }
+370:
+371: $check_ $(@expr1073742374 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 371 $, "__attribute__((destructor)) void f() {}" $) ;
+372: $if $(@expr1073742375 $!@expr1073742376 $assertEquals $(@expr1073742377 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 372 $, "" $, errout@var100 .@expr518 str (@expr519 ) $) $) { $return ; }
+373:
+374: $check_ $(@expr1073742380 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 374 $, "__attribute__((destructor(1000))) void f() {}" $) ;
+375: $if $(@expr1073742381 $!@expr1073742382 $assertEquals $(@expr1073742383 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 375 $, "" $, errout@var100 .@expr518 str (@expr519 ) $) $) { $return ; }
+376:
+377:
+378: $check_ $(@expr1073742386 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 378 $, "void f() __attribute__((constructor));\nvoid f() { }" $)
+379: ;
+380: $if $(@expr1073742387 $!@expr1073742388 $assertEquals $(@expr1073742389 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 380 $, "" $, errout@var100 .@expr518 str (@expr519 ) $) $) { $return ; }
+381:
+382: $check_ $(@expr1073742392 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 382 $, "void f() __attribute__((constructor(1000)));\nvoid f() { }" $)
+383: ;
+384: $if $(@expr1073742393 $!@expr1073742394 $assertEquals $(@expr1073742395 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 384 $, "" $, errout@var100 .@expr518 str (@expr519 ) $) $) { $return ; }
+385:
+386: $check_ $(@expr1073742398 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 386 $, "void f() __attribute__((destructor));\nvoid f() { }" $)
+387: ;
+388: $if $(@expr1073742399 $!@expr1073742400 $assertEquals $(@expr1073742401 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 388 $, "" $, errout@var100 .@expr518 str (@expr519 ) $) $) { $return ; }
+389:
+390: $check_ $(@expr1073742404 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 390 $, "void f() __attribute__((destructor(1000)));\nvoid f() { }" $)
+391: ;
+392: $if $(@expr1073742405 $!@expr1073742406 $assertEquals $(@expr1073742407 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 392 $, "" $, errout@var100 .@expr518 str (@expr519 ) $) $) { $return ; }
+393:
+394:
+395: $check_ $(@expr1073742410 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 395 $, "int x __attribute__((constructor));\nint y __attribute__((destructor));" $)
+396: ;
+397: }
+398:
+399: void initializer_list ( ) {
+400: $check_ $(@expr1073742411 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 400 $, "int foo() { return 0; }\nstruct A {\n    A() : m_i(foo())\n    {}\nint m_i;\n};" $)
+401:
+|
+404:
+405: ;
+406: $if $(@expr1073742412 $!@expr1073742413 $assertEquals $(@expr1073742414 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 406 $, "" $, errout@var100 .@expr591 str (@expr592 ) $) $) { $return ; }
+407:
+408:
+409: $check_ $(@expr1073742417 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 409 $, "int foo() { return 12345; }\nint bar(std::function<int()> func) { return func(); }\n\nclass A {\npublic:\n  A() : a(bar([] { return foo(); })) {}\n  const int a;\n};" $)
+410:
+|
+415:
+416: ;
+417: $if $(@expr1073742418 $!@expr1073742419 $assertEquals $(@expr1073742420 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 417 $, "" $, errout@var100 .@expr591 str (@expr592 ) $) $) { $return ; }
+418: }
+419:
+420: void member_function_ternary ( ) {
+421: $check_ $(@expr1073742423 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 421 $, "struct Foo {\n    void F1() {}\n    void F2() {}\n};\nint main(int argc, char *argv[]) {\n    Foo foo;\n    void (Foo::*ptr)();\n    ptr = (argc > 1 && !strcmp(argv[1], \"F2\")) ? &Foo::F2 : &Foo::F1;\n    (foo.*ptr)();\n}" $)
+422:
+|
+429:
+430: ;
+431: $if $(@expr1073742424 $!@expr1073742425 $assertEquals $(@expr1073742426 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 431 $, "" $, errout@var100 .@expr1073742427 str (@expr1073742428 ) $) $) { $return ; }
+432: }
+433:
+434: void boost ( ) {
+435: $check_ $(@expr1073742429 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 435 $, "static void _xy(const char *b, const char *e)\n{}\nparse(line, blanks_p >> ident[&_xy] >> blanks_p >> eol_p).full" $)
+436:
+437: ;
+438: $if $(@expr1073742430 $!@expr1073742431 $assertEquals $(@expr1073742432 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 438 $, "" $, errout@var100 .@expr1073742433 str (@expr1073742434 ) $) $) { $return ; }
+439: }
+440:
+441: void multipleFiles ( ) {
+442: Tokenizer tokenizer@var111 (@expr1073742435 &@expr612 settings@var102 , this@expr613 ) ;
+443: CheckUnusedFunctions c@var112 (@expr1073742438 &@expr1073742439 tokenizer@var111 , &@expr612 settings@var102 , nullptr ) ;
+444:
+445:
+446: errout@var100 .@expr617 str (@expr618 "" ) ;
+447:
+448: const char code@var113 [@expr1073742443 20 ] =@expr1073742444 "static void f() { }" ;
+449:
+450: for (@expr1073742445 int i@var114 =@expr1073742446 1 ; i@var114 <=@expr1073742447 2 ; ++@expr1073742448 i@var114 ) {
+451: std ::@expr1073742449 ostringstream fname@var115 ;
+452: fname@var115 <<@expr1073742450 "test" <<@expr1073742451 i@var114 <<@expr1073742452 ".cpp" ;
+453:
+454:
+455: errout@var100 .@expr617 str (@expr618 "" ) ;
+456:
+457: Tokenizer tokenizer2@var116 (@expr1073742455 &@expr612 settings@var102 , this@expr613 ) ;
+458: std ::@expr1073742457 istringstream istr@var117 (@expr1073742458 code@var113 ) ;
+459: $if $(@expr1073742459 $!@expr1073742460 $assert_ $(@expr1073742461 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 459 $, $(@expr1073742462 tokenizer2@var116 .@expr1073742463 tokenize (@expr1073742464 istr@var117 , fname@var115 .@expr1073742465 str (@expr1073742466 ) .@expr1073742467 c_str (@expr1073742468 ) ) $) $) $) { $return ; }
+460:
+461: c@var112 .@expr1073742469 parseTokens (@expr1073742470 tokenizer2@var116 , "someFile.c" , &@expr612 settings@var102 ) ;
+462: }
+463:
+464:
+465: c@var112 .@expr1073742472 check (@expr1073742473 this@expr613 , settings@var102 ) ;
+466:
+467: $if $(@expr1073742474 $!@expr1073742475 $assertEquals $(@expr1073742476 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 467 $, "[test1.cpp:1]: (style) The function 'f' is never used.\n" $, errout@var100 .@expr617 str (@expr1073742478 ) $) $) { $return ; }
+468: }
+469:
+470: void lineNumber ( ) {
+471: $check_ $(@expr1073742479 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 471 $, "void foo() {}\nvoid bar() {}\nint main()" $)
+472:
+473: ;
+474: $if $(@expr1073742480 $!@expr1073742481 $assertEquals $(@expr1073742482 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 474 $, "[test.cpp:2]: (style) The function 'bar' is never used.\n[test.cpp:1]: (style) The function 'foo' is never used.\n" $, errout@var100 .@expr1073742483 str (@expr1073742484 ) $) $) { $return
+475: ; }
+476: }
+477:
+478: void ignore_declaration ( ) {
+479: $check_ $(@expr1073742485 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 479 $, "void f();\nvoid f() {}" $)
+480: ;
+481: $if $(@expr1073742486 $!@expr1073742487 $assertEquals $(@expr1073742488 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 481 $, "[test.cpp:2]: (style) The function 'f' is never used.\n" $, errout@var100 .@expr665 str (@expr666 ) $) $) { $return ; }
+482:
+483: $check_ $(@expr1073742491 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 483 $, "void f(void) {}\nvoid (*list[])(void) = {f}" $)
+484: ;
+485: $if $(@expr1073742492 $!@expr1073742493 $assertEquals $(@expr1073742494 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 485 $, "" $, errout@var100 .@expr665 str (@expr666 ) $) $) { $return ; }
+486: }
+487:
+488: void operatorOverload ( ) {
+489: $check_ $(@expr1073742497 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 489 $, "class A {\nprivate:\n    friend std::ostream & operator<<(std::ostream &, const A&);\n};\nstd::ostream & operator<<(std::ostream &os, const A&) {\n    os << \"This is class A\";\n}" $)
+490:
+|
+494:
+495: ;
+496: $if $(@expr1073742498 $!@expr1073742499 $assertEquals $(@expr1073742500 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 496 $, "" $, errout@var100 .@expr677 str (@expr678 ) $) $) { $return ; }
+497:
+498: $check_ $(@expr1073742503 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 498 $, "class A{};\nA operator + (const A &, const A &){ return A(); }\nA operator - (const A &, const A &){ return A(); }\nA operator * (const A &, const A &){ return A(); }\nA operator / (const A &, const A &){ return A(); }\nA operator % (const A &, const A &){ return A(); }\nA operator & (const A &, const A &){ return A(); }\nA operator | (const A &, const A &){ return A(); }\nA operator ~ (const A &){ return A(); }\nA operator ! (const A &){ return A(); }\nbool operator < (const A &, const A &){ return true; }\nbool operator > (const A &, const A &){ return true; }\nA operator += (const A &, const A &){ return A(); }\nA operator -= (const A &, const A &){ return A(); }\nA operator *= (const A &, const A &){ return A(); }\nA operator /= (const A &, const A &){ return A(); }\nA operator %= (const A &, const A &){ return A(); }\nA operator &= (const A &, const A &){ return A(); }\nA operator ^= (const A &, const A &){ return A(); }\nA operator |= (const A &, const A &){ return A(); }\nA operator << (const A &, const int){ return A(); }\nA operator >> (const A &, const int){ return A(); }\nA operator <<= (const A &, const int){ return A(); }\nA operator >>= (const A &, const int){ return A(); }\nbool operator == (const A &, const A &){ return true; }\nbool operator != (const A &, const A &){ return true; }\nbool operator <= (const A &, const A &){ return true; }\nbool operator >= (const A &, const A &){ return true; }\nA operator && (const A &, const int){ return A(); }\nA operator || (const A &, const int){ return A(); }\nA operator ++ (const A &, const int){ return A(); }\nA operator ++ (const A &){ return A(); }\nA operator -- (const A &, const int){ return A(); }\nA operator -- (const A &){ return A(); }\nA operator , (const A &, const A &){ return A(); }" $)
+499:
+|
+531:
+532: ;
+533: $if $(@expr1073742504 $!@expr1073742505 $assertEquals $(@expr1073742506 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 533 $, "" $, errout@var100 .@expr677 str (@expr678 ) $) $) { $return ; }
+534:
+535:
+536: $check_ $(@expr1073742509 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 536 $, "class A {\npublic:\n    static void * operator new(std::size_t);\n    static void * operator new[](std::size_t);\n};\nvoid * A::operator new(std::size_t s) {\n    return malloc(s);\n}\nvoid * A::operator new[](std::size_t s) {\n    return malloc(s);\n}" $)
+537:
+|
+545:
+546: ;
+547: $if $(@expr1073742510 $!@expr1073742511 $assertEquals $(@expr1073742512 "cppcheck-2.8/test/testunusedfunctions.cpp" $, 547 $, "" $, errout@var100 .@expr677 str (@expr678 ) $) $) { $return ; }
+548: }
+549:
+550: } ;
+551:
+552: $namespace ${ TestUnusedFunctions instance_TestUnusedFunctions@var118 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@56}
+  v {!<=-1,!>=2,0@56}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 31
+  "TestUnusedFunctions" always "TestUnusedFunctions"
+Line 39
+  ( always {!<=-1,!>=2}
+  "incondition" always "incondition"
+  false always 0
+  false always 0
+Line 40
+  ( always {!<=-1,!>=2}
+  "return1" always "return1"
+  false always 0
+  false always 0
+Line 41
+  ( always {!<=-1,!>=2}
+  "return2" always "return2"
+  false always 0
+  false always 0
+Line 42
+  ( always {!<=-1,!>=2}
+  "callback1" always "callback1"
+  false always 0
+  false always 0
+Line 43
+  ( always {!<=-1,!>=2}
+  "callback2" always "callback2"
+  false always 0
+  false always 0
+Line 44
+  ( always {!<=-1,!>=2}
+  "else1" always "else1"
+  false always 0
+  false always 0
+Line 45
+  ( always {!<=-1,!>=2}
+  "functionpointer" always "functionpointer"
+  false always 0
+  false always 0
+Line 46
+  ( always {!<=-1,!>=2}
+  "template1" always "template1"
+  false always 0
+  false always 0
+Line 47
+  ( always {!<=-1,!>=2}
+  "template2" always "template2"
+  false always 0
+  false always 0
+Line 48
+  ( always {!<=-1,!>=2}
+  "template3" always "template3"
+  false always 0
+  false always 0
+Line 49
+  ( always {!<=-1,!>=2}
+  "template4" always "template4"
+  false always 0
+  false always 0
+Line 50
+  ( always {!<=-1,!>=2}
+  "template5" always "template5"
+  false always 0
+  false always 0
+Line 51
+  ( always {!<=-1,!>=2}
+  "template6" always "template6"
+  false always 0
+  false always 0
+Line 52
+  ( always {!<=-1,!>=2}
+  "template7" always "template7"
+  false always 0
+  false always 0
+Line 53
+  ( always {!<=-1,!>=2}
+  "throwIsNotAFunction" always "throwIsNotAFunction"
+  false always 0
+  false always 0
+Line 54
+  ( always {!<=-1,!>=2}
+  "unusedError" always "unusedError"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "unusedMain" always "unusedMain"
+  false always 0
+  false always 0
+Line 56
+  ( always {!<=-1,!>=2}
+  "initializationIsNotAFunction" always "initializationIsNotAFunction"
+  false always 0
+  false always 0
+Line 57
+  ( always {!<=-1,!>=2}
+  "operator1" always "operator1"
+  false always 0
+  false always 0
+Line 58
+  ( always {!<=-1,!>=2}
+  "operator2" always "operator2"
+  false always 0
+  false always 0
+Line 59
+  ( always {!<=-1,!>=2}
+  "returnRef" always "returnRef"
+  false always 0
+  false always 0
+Line 60
+  ( always {!<=-1,!>=2}
+  "attribute" always "attribute"
+  false always 0
+  false always 0
+Line 61
+  ( always {!<=-1,!>=2}
+  "initializer_list" always "initializer_list"
+  false always 0
+  false always 0
+Line 62
+  ( always {!<=-1,!>=2}
+  "member_function_ternary" always "member_function_ternary"
+  false always 0
+  false always 0
+Line 63
+  ( always {!<=-1,!>=2}
+  "boost" always "boost"
+  false always 0
+  false always 0
+Line 65
+  ( always {!<=-1,!>=2}
+  "multipleFiles" always "multipleFiles"
+  false always 0
+  false always 0
+Line 67
+  ( always {!<=-1,!>=2}
+  "lineNumber" always "lineNumber"
+  false always 0
+  false always 0
+Line 69
+  ( always {!<=-1,!>=2}
+  "ignore_declaration" always "ignore_declaration"
+  false always 0
+  false always 0
+Line 71
+  ( always {!<=-1,!>=2}
+  "operatorOverload" always "operatorOverload"
+  false always 0
+  false always 0
+Line 77
+  "" always ""
+Line 82
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 83
+  code possible {"class A {\nprivate:\n    friend std::ostream & operator<<(std::ostream &, const A&);\n};\nstd::ostream & operator<<(std::ostream &os, const A&) {\n    os << \"This is class A\";\n}"@1,"class A{};\nA operator + (const A &, const A &){ return A(); }\nA operator - (const A &, const A &){ return A(); }\nA operator * (const A &, const A &){ return A(); }\nA operator / (const A &, const A &){ return A(); }\nA operator % (const A &, const A &){ return A(); }\nA operator & (const A &, const A &){ return A(); }\nA operator | (const A &, const A &){ return A(); }\nA operator ~ (const A &){ return A(); }\nA operator ! (const A &){ return A(); }\nbool operator < (const A &, const A &){ return true; }\nbool operator > (const A &, const A &){ return true; }\nA operator += (const A &, const A &){ return A(); }\nA operator -= (const A &, const A &){ return A(); }\nA operator *= (const A &, const A &){ return A(); }\nA operator /= (const A &, const A &){ return A(); }\nA operator %= (const A &, const A &){ return A(); }\nA operator &= (const A &, const A &){ return A(); }\nA operator ^= (const A &, const A &){ return A(); }\nA operator |= (const A &, const A &){ return A(); }\nA operator << (const A &, const int){ return A(); }\nA operator >> (const A &, const int){ return A(); }\nA operator <<= (const A &, const int){ return A(); }\nA operator >>= (const A &, const int){ return A(); }\nbool operator == (const A &, const A &){ return true; }\nbool operator != (const A &, const A &){ return true; }\nbool operator <= (const A &, const A &){ return true; }\nbool operator >= (const A &, const A &){ return true; }\nA operator && (const A &, const int){ return A(); }\nA operator || (const A &, const int){ return A(); }\nA operator ++ (const A &, const int){ return A(); }\nA operator ++ (const A &){ return A(); }\nA operator -- (const A &, const int){ return A(); }\nA operator -- (const A &){ return A(); }\nA operator , (const A &, const A &){ return A(); }"@2,"class A {\npublic:\n    static void * operator new(std::size_t);\n    static void * operator new[](std::size_t);\n};\nvoid * A::operator new(std::size_t s) {\n    return malloc(s);\n}\nvoid * A::operator new[](std::size_t s) {\n    return malloc(s);\n}"@3,"void f();\nvoid f() {}"@4,"void f(void) {}\nvoid (*list[])(void) = {f}"@5,"void foo() {}\nvoid bar() {}\nint main()"@6,"static void _xy(const char *b, const char *e)\n{}\nparse(line, blanks_p >> ident[&_xy] >> blanks_p >> eol_p).full"@7,"struct Foo {\n    void F1() {}\n    void F2() {}\n};\nint main(int argc, char *argv[]) {\n    Foo foo;\n    void (Foo::*ptr)();\n    ptr = (argc > 1 && !strcmp(argv[1], \"F2\")) ? &Foo::F2 : &Foo::F1;\n    (foo.*ptr)();\n}"@8,"int foo() { return 0; }\nstruct A {\n    A() : m_i(foo())\n    {}\nint m_i;\n};"@9,"int foo() { return 12345; }\nint bar(std::function<int()> func) { return func(); }\n\nclass A {\npublic:\n  A() : a(bar([] { return foo(); })) {}\n  const int a;\n};"@10}
+Line 84
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testunusedfunctions.cpp"@1,"cppcheck-2.8/test/testunusedfunctions.cpp"@2,"cppcheck-2.8/test/testunusedfunctions.cpp"@3,"cppcheck-2.8/test/testunusedfunctions.cpp"@4,"cppcheck-2.8/test/testunusedfunctions.cpp"@5,"cppcheck-2.8/test/testunusedfunctions.cpp"@6,"cppcheck-2.8/test/testunusedfunctions.cpp"@7,"cppcheck-2.8/test/testunusedfunctions.cpp"@8,"cppcheck-2.8/test/testunusedfunctions.cpp"@9,"cppcheck-2.8/test/testunusedfunctions.cpp"@10}
+  line inconclusive {489@1,498@2,536@3,479@4,483@5,471@6,435@7,421@8,400@9,409@10}
+  "test.cpp" always "test.cpp"
+Line 87
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 88
+  "someFile.c" always "someFile.c"
+  & {lifetime[Address]=(settings),!0}
+Line 90
+  this always !0
+Line 91
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  91 always 91
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 93
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  93 always 93
+  "" always ""
+Line 98
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  98 always 98
+  "int f1()\n{\n    if (f1())\n    { }\n}" always "int f1()\n{\n    if (f1())\n    { }\n}"
+Line 103
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  103 always 103
+  "" always ""
+Line 107
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  107 always 107
+  "int f1()\n{\n    return f1();\n}" always "int f1()\n{\n    return f1();\n}"
+Line 111
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  111 always 111
+  "" always ""
+Line 115
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  115 always 115
+  "char * foo()\n{\n    return *foo();\n}" always "char * foo()\n{\n    return *foo();\n}"
+Line 119
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  119 always 119
+  "" always ""
+Line 123
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  123 always 123
+  "void f1()\n{\n    void (*f)() = cond ? f1 : NULL;\n}" always "void f1()\n{\n    void (*f)() = cond ? f1 : NULL;\n}"
+Line 127
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  127 always 127
+  "" always ""
+Line 131
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  131 always 131
+  "class C {\npublic:\n    void callback();\n    void start();\n};\n\nvoid C::callback() {}\n\nvoid C::start() { ev.set<C, &C::callback>(this); }" always "class C {\npublic:\n    void callback();\n    void start();\n};\n\nvoid C::callback() {}\n\nvoid C::start() { ev.set<C, &C::callback>(this); }"
+Line 140
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  140 always 140
+  "[test.cpp:9]: (style) The function 'start' is never used.\n" always "[test.cpp:9]: (style) The function 'start' is never used.\n"
+Line 144
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  144 always 144
+  "void f1()\n{\n    if (cond) ;\n    else f1();\n}" always "void f1()\n{\n    if (cond) ;\n    else f1();\n}"
+Line 149
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  149 always 149
+  "" always ""
+Line 153
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  153 always 153
+  "void foo() { }\nint main() {\n    f(&foo);\n    return 0\n}" always "void foo() { }\nint main() {\n    f(&foo);\n    return 0\n}"
+Line 158
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  158 always 158
+  "" always ""
+Line 160
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  160 always 160
+  "void foo() { }\nint main() {\n    f(&::foo);\n    return 0\n}" always "void foo() { }\nint main() {\n    f(&::foo);\n    return 0\n}"
+Line 165
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  165 always 165
+  "" always ""
+Line 167
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  167 always 167
+  "namespace abc {\n    void foo() { }\n};\nint main() {\n    f(&abc::foo);\n    return 0\n}" always "namespace abc {\n    void foo() { }\n};\nint main() {\n    f(&abc::foo);\n    return 0\n}"
+Line 174
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  174 always 174
+  "" always ""
+Line 176
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  176 always 176
+  "namespace abc {\n    void foo() { }\n};\nint main() {\n    f = &abc::foo;\n    return 0\n}" always "namespace abc {\n    void foo() { }\n};\nint main() {\n    f = &abc::foo;\n    return 0\n}"
+Line 183
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  183 always 183
+  "" always ""
+Line 185
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  185 always 185
+  "namespace abc {\n    void foo() { }\n};\nint main() {\n    f = &::abc::foo;\n    return 0\n}" always "namespace abc {\n    void foo() { }\n};\nint main() {\n    f = &::abc::foo;\n    return 0\n}"
+Line 192
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  192 always 192
+  "" always ""
+Line 194
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  194 always 194
+  "namespace abc {\n    void foo() { }\n};\nint main() {\n    f(abc::foo);\n    return 0\n}" always "namespace abc {\n    void foo() { }\n};\nint main() {\n    f(abc::foo);\n    return 0\n}"
+Line 201
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  201 always 201
+  "" always ""
+Line 205
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  205 always 205
+  "template<class T> void foo() { }\n\nint main()\n{\n    foo<int>();\n    return 0\n}" always "template<class T> void foo() { }\n\nint main()\n{\n    foo<int>();\n    return 0\n}"
+Line 212
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  212 always 212
+  "" always ""
+Line 216
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  216 always 216
+  "void f() { }\n\ntemplate<class T> void g()\n{\n    f();\n}\n\nvoid h() { g<int>(); h(); }" always "void f() { }\n\ntemplate<class T> void g()\n{\n    f();\n}\n\nvoid h() { g<int>(); h(); }"
+Line 224
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  224 always 224
+  "" always ""
+Line 228
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  228 always 228
+  "class X {\npublic:\n    void bar() { foo<int>(0); }\nprivate:\n    template<typename T> void foo( T t ) const;\n};\ntemplate<typename T> void X::foo( T t ) const { }" always "class X {\npublic:\n    void bar() { foo<int>(0); }\nprivate:\n    template<typename T> void foo( T t ) const;\n};\ntemplate<typename T> void X::foo( T t ) const { }"
+Line 235
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  235 always 235
+  "[test.cpp:3]: (style) The function 'bar' is never used.\n" always "[test.cpp:3]: (style) The function 'bar' is never used.\n"
+Line 239
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  239 always 239
+  "struct A {\n    int a = 0;\n    void f() { a = 1; }\n    template <typename T, typename... Args> auto call(const Args &... args) -> T {\n        a = 2;\n        return T{};\n    }\n};\n\nstruct B : public A {\n    void test() {\n        f();\n        call<int>(1, 2, 3);\n        test();\n    }\n};" always "struct A {\n    int a = 0;\n    void f() { a = 1; }\n    template <typename T, typename... Args> auto call(const Args &... args) -> T {\n        a = 2;\n        return T{};\n    }\n};\n\nstruct B : public A {\n    void test() {\n        f();\n        call<int>(1, 2, 3);\n        test();\n    }\n};"
+Line 255
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  255 always 255
+  "" always ""
+Line 259
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  259 always 259
+  "void f(){}\n\ntypedef void(*Filter)();\n\ntemplate <Filter fun>\nvoid g() { fun(); }\n\nint main() { g<f>(); return 0;}" always "void f(){}\n\ntypedef void(*Filter)();\n\ntemplate <Filter fun>\nvoid g() { fun(); }\n\nint main() { g<f>(); return 0;}"
+Line 267
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  267 always 267
+  "" always ""
+Line 271
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  271 always 271
+  "template<template<typename...> class Ref, typename... Args>\nstruct Foo<Ref<Args...>, Ref> : std::true_type {};\n" always "template<template<typename...> class Ref, typename... Args>\nstruct Foo<Ref<Args...>, Ref> : std::true_type {};\n"
+Line 273
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  273 always 273
+  "" always ""
+Line 278
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  278 always 278
+  "void f() {\n    std::array<std::array<double,3>,3> array;\n}\n" always "void f() {\n    std::array<std::array<double,3>,3> array;\n}\n"
+Line 281
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  281 always 281
+  "[test.cpp:1]: (style) The function 'f' is never used.\n" always "[test.cpp:1]: (style) The function 'f' is never used.\n"
+Line 285
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  285 always 285
+  "struct A {void f() const throw () {}}; int main() {A a; a.f();}" always "struct A {void f() const throw () {}}; int main() {A a; a.f();}"
+Line 286
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  286 always 286
+  "" always ""
+Line 290
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  290 always 290
+  "void foo() {}\nint main()" always "void foo() {}\nint main()"
+Line 292
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  292 always 292
+  "[test.cpp:1]: (style) The function 'foo' is never used.\n" always "[test.cpp:1]: (style) The function 'foo' is never used.\n"
+Line 294
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  294 always 294
+  "void foo() const {}\nint main()" always "void foo() const {}\nint main()"
+Line 296
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  296 always 296
+  "[test.cpp:1]: (style) The function 'foo' is never used.\n" always "[test.cpp:1]: (style) The function 'foo' is never used.\n"
+Line 298
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  298 always 298
+  "void foo() const throw() {}\nint main()" always "void foo() const throw() {}\nint main()"
+Line 300
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  300 always 300
+  "[test.cpp:1]: (style) The function 'foo' is never used.\n" always "[test.cpp:1]: (style) The function 'foo' is never used.\n"
+Line 302
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  302 always 302
+  "void foo() throw() {}\nint main()" always "void foo() throw() {}\nint main()"
+Line 304
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  304 always 304
+  "[test.cpp:1]: (style) The function 'foo' is never used.\n" always "[test.cpp:1]: (style) The function 'foo' is never used.\n"
+Line 308
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  308 always 308
+  "int main() { }" always "int main() { }"
+Line 309
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  309 always 309
+  "" always ""
+Line 311
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  311 always 311
+  "int _tmain() { }" always "int _tmain() { }"
+Line 312
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  312 always 312
+  "" always ""
+Line 314
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  314 always 314
+  "int WinMain() { }" always "int WinMain() { }"
+Line 315
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  315 always 315
+  "" always ""
+Line 319
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  319 always 319
+  "struct B: N::A {\n  B(): N::A() {};\n};" always "struct B: N::A {\n  B(): N::A() {};\n};"
+Line 322
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  322 always 322
+  "" always ""
+Line 326
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  326 always 326
+  "struct Foo { void operator()(int a) {} };" always "struct Foo { void operator()(int a) {} };"
+Line 327
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  327 always 327
+  "" always ""
+Line 329
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  329 always 329
+  "struct Foo { operator std::string(int a) {} };" always "struct Foo { operator std::string(int a) {} };"
+Line 330
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  330 always 330
+  "" always ""
+Line 334
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  334 always 334
+  "bool operator==(const data_t& a, const data_t& b) {\n    return (a.fd == b.fd);\n}\nbool operator==(const event& a, const event& b) {\n    return ((a.events == b.events) && (a.data == b.data));\n}\nint main(event a, event b) {\n    return a == b;\n}\n" always "bool operator==(const data_t& a, const data_t& b) {\n    return (a.fd == b.fd);\n}\nbool operator==(const event& a, const event& b) {\n    return ((a.events == b.events) && (a.data == b.data));\n}\nint main(event a, event b) {\n    return a == b;\n}\n"
+Line 343
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  343 always 343
+  "" always ""
+Line 347
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  347 always 347
+  "int& foo() {return x;}" always "int& foo() {return x;}"
+Line 348
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  348 always 348
+  "[test.cpp:1]: (style) The function 'foo' is never used.\n" always "[test.cpp:1]: (style) The function 'foo' is never used.\n"
+Line 352
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  352 always 352
+  "void __attribute__((constructor)) f() {}" always "void __attribute__((constructor)) f() {}"
+Line 353
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  353 always 353
+  "" always ""
+Line 355
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  355 always 355
+  "void __attribute__((constructor(1000))) f() {}" always "void __attribute__((constructor(1000))) f() {}"
+Line 356
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  356 always 356
+  "" always ""
+Line 358
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  358 always 358
+  "void __attribute__((destructor)) f() {}" always "void __attribute__((destructor)) f() {}"
+Line 359
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  359 always 359
+  "" always ""
+Line 361
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  361 always 361
+  "void __attribute__((destructor(1000))) f() {}" always "void __attribute__((destructor(1000))) f() {}"
+Line 362
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  362 always 362
+  "" always ""
+Line 365
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  365 always 365
+  "__attribute__((constructor)) void f() {}" always "__attribute__((constructor)) void f() {}"
+Line 366
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  366 always 366
+  "" always ""
+Line 368
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  368 always 368
+  "__attribute__((constructor(1000))) void f() {}" always "__attribute__((constructor(1000))) void f() {}"
+Line 369
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  369 always 369
+  "" always ""
+Line 371
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  371 always 371
+  "__attribute__((destructor)) void f() {}" always "__attribute__((destructor)) void f() {}"
+Line 372
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  372 always 372
+  "" always ""
+Line 374
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  374 always 374
+  "__attribute__((destructor(1000))) void f() {}" always "__attribute__((destructor(1000))) void f() {}"
+Line 375
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  375 always 375
+  "" always ""
+Line 378
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  378 always 378
+  "void f() __attribute__((constructor));\nvoid f() { }" always "void f() __attribute__((constructor));\nvoid f() { }"
+Line 380
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  380 always 380
+  "" always ""
+Line 382
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  382 always 382
+  "void f() __attribute__((constructor(1000)));\nvoid f() { }" always "void f() __attribute__((constructor(1000)));\nvoid f() { }"
+Line 384
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  384 always 384
+  "" always ""
+Line 386
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  386 always 386
+  "void f() __attribute__((destructor));\nvoid f() { }" always "void f() __attribute__((destructor));\nvoid f() { }"
+Line 388
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  388 always 388
+  "" always ""
+Line 390
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  390 always 390
+  "void f() __attribute__((destructor(1000)));\nvoid f() { }" always "void f() __attribute__((destructor(1000)));\nvoid f() { }"
+Line 392
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  392 always 392
+  "" always ""
+Line 395
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  395 always 395
+  "int x __attribute__((constructor));\nint y __attribute__((destructor));" always "int x __attribute__((constructor));\nint y __attribute__((destructor));"
+Line 400
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  400 always 400
+  "int foo() { return 0; }\nstruct A {\n    A() : m_i(foo())\n    {}\nint m_i;\n};" always "int foo() { return 0; }\nstruct A {\n    A() : m_i(foo())\n    {}\nint m_i;\n};"
+Line 406
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  406 always 406
+  "" always ""
+Line 409
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  409 always 409
+  "int foo() { return 12345; }\nint bar(std::function<int()> func) { return func(); }\n\nclass A {\npublic:\n  A() : a(bar([] { return foo(); })) {}\n  const int a;\n};" always "int foo() { return 12345; }\nint bar(std::function<int()> func) { return func(); }\n\nclass A {\npublic:\n  A() : a(bar([] { return foo(); })) {}\n  const int a;\n};"
+Line 417
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  417 always 417
+  "" always ""
+Line 421
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  421 always 421
+  "struct Foo {\n    void F1() {}\n    void F2() {}\n};\nint main(int argc, char *argv[]) {\n    Foo foo;\n    void (Foo::*ptr)();\n    ptr = (argc > 1 && !strcmp(argv[1], \"F2\")) ? &Foo::F2 : &Foo::F1;\n    (foo.*ptr)();\n}" always "struct Foo {\n    void F1() {}\n    void F2() {}\n};\nint main(int argc, char *argv[]) {\n    Foo foo;\n    void (Foo::*ptr)();\n    ptr = (argc > 1 && !strcmp(argv[1], \"F2\")) ? &Foo::F2 : &Foo::F1;\n    (foo.*ptr)();\n}"
+Line 431
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  431 always 431
+  "" always ""
+Line 435
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  435 always 435
+  "static void _xy(const char *b, const char *e)\n{}\nparse(line, blanks_p >> ident[&_xy] >> blanks_p >> eol_p).full" always "static void _xy(const char *b, const char *e)\n{}\nparse(line, blanks_p >> ident[&_xy] >> blanks_p >> eol_p).full"
+Line 438
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  438 always 438
+  "" always ""
+Line 442
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 443
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  nullptr always 0
+Line 446
+  "" always ""
+Line 448
+  20 always 20
+  = always "static void f() { }"
+  "static void f() { }" always "static void f() { }"
+Line 450
+  = always 1
+  1 always 1
+  i possible 1
+  <= {!<=-1,!>=2,1}
+  2 always 2
+Line 452
+  "test" always "test"
+  i {1,<=2,!>=3,!<=0}
+  ".cpp" always ".cpp"
+Line 455
+  "" always ""
+Line 457
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 458
+  code always "static void f() { }"
+Line 459
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  459 always 459
+  ( {lifetime[Object]=(fname.str()),!0}
+Line 461
+  "someFile.c" always "someFile.c"
+  & {lifetime[Address]=(settings),!0}
+Line 465
+  this always !0
+Line 467
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  467 always 467
+  "[test1.cpp:1]: (style) The function 'f' is never used.\n" always "[test1.cpp:1]: (style) The function 'f' is never used.\n"
+Line 471
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  471 always 471
+  "void foo() {}\nvoid bar() {}\nint main()" always "void foo() {}\nvoid bar() {}\nint main()"
+Line 474
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  474 always 474
+  "[test.cpp:2]: (style) The function 'bar' is never used.\n[test.cpp:1]: (style) The function 'foo' is never used.\n" always "[test.cpp:2]: (style) The function 'bar' is never used.\n[test.cpp:1]: (style) The function 'foo' is never used.\n"
+Line 479
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  479 always 479
+  "void f();\nvoid f() {}" always "void f();\nvoid f() {}"
+Line 481
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  481 always 481
+  "[test.cpp:2]: (style) The function 'f' is never used.\n" always "[test.cpp:2]: (style) The function 'f' is never used.\n"
+Line 483
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  483 always 483
+  "void f(void) {}\nvoid (*list[])(void) = {f}" always "void f(void) {}\nvoid (*list[])(void) = {f}"
+Line 485
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  485 always 485
+  "" always ""
+Line 489
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  489 always 489
+  "class A {\nprivate:\n    friend std::ostream & operator<<(std::ostream &, const A&);\n};\nstd::ostream & operator<<(std::ostream &os, const A&) {\n    os << \"This is class A\";\n}" always "class A {\nprivate:\n    friend std::ostream & operator<<(std::ostream &, const A&);\n};\nstd::ostream & operator<<(std::ostream &os, const A&) {\n    os << \"This is class A\";\n}"
+Line 496
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  496 always 496
+  "" always ""
+Line 498
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  498 always 498
+  "class A{};\nA operator + (const A &, const A &){ return A(); }\nA operator - (const A &, const A &){ return A(); }\nA operator * (const A &, const A &){ return A(); }\nA operator / (const A &, const A &){ return A(); }\nA operator % (const A &, const A &){ return A(); }\nA operator & (const A &, const A &){ return A(); }\nA operator | (const A &, const A &){ return A(); }\nA operator ~ (const A &){ return A(); }\nA operator ! (const A &){ return A(); }\nbool operator < (const A &, const A &){ return true; }\nbool operator > (const A &, const A &){ return true; }\nA operator += (const A &, const A &){ return A(); }\nA operator -= (const A &, const A &){ return A(); }\nA operator *= (const A &, const A &){ return A(); }\nA operator /= (const A &, const A &){ return A(); }\nA operator %= (const A &, const A &){ return A(); }\nA operator &= (const A &, const A &){ return A(); }\nA operator ^= (const A &, const A &){ return A(); }\nA operator |= (const A &, const A &){ return A(); }\nA operator << (const A &, const int){ return A(); }\nA operator >> (const A &, const int){ return A(); }\nA operator <<= (const A &, const int){ return A(); }\nA operator >>= (const A &, const int){ return A(); }\nbool operator == (const A &, const A &){ return true; }\nbool operator != (const A &, const A &){ return true; }\nbool operator <= (const A &, const A &){ return true; }\nbool operator >= (const A &, const A &){ return true; }\nA operator && (const A &, const int){ return A(); }\nA operator || (const A &, const int){ return A(); }\nA operator ++ (const A &, const int){ return A(); }\nA operator ++ (const A &){ return A(); }\nA operator -- (const A &, const int){ return A(); }\nA operator -- (const A &){ return A(); }\nA operator , (const A &, const A &){ return A(); }" always "class A{};\nA operator + (const A &, const A &){ return A(); }\nA operator - (const A &, const A &){ return A(); }\nA operator * (const A &, const A &){ return A(); }\nA operator / (const A &, const A &){ return A(); }\nA operator % (const A &, const A &){ return A(); }\nA operator & (const A &, const A &){ return A(); }\nA operator | (const A &, const A &){ return A(); }\nA operator ~ (const A &){ return A(); }\nA operator ! (const A &){ return A(); }\nbool operator < (const A &, const A &){ return true; }\nbool operator > (const A &, const A &){ return true; }\nA operator += (const A &, const A &){ return A(); }\nA operator -= (const A &, const A &){ return A(); }\nA operator *= (const A &, const A &){ return A(); }\nA operator /= (const A &, const A &){ return A(); }\nA operator %= (const A &, const A &){ return A(); }\nA operator &= (const A &, const A &){ return A(); }\nA operator ^= (const A &, const A &){ return A(); }\nA operator |= (const A &, const A &){ return A(); }\nA operator << (const A &, const int){ return A(); }\nA operator >> (const A &, const int){ return A(); }\nA operator <<= (const A &, const int){ return A(); }\nA operator >>= (const A &, const int){ return A(); }\nbool operator == (const A &, const A &){ return true; }\nbool operator != (const A &, const A &){ return true; }\nbool operator <= (const A &, const A &){ return true; }\nbool operator >= (const A &, const A &){ return true; }\nA operator && (const A &, const int){ return A(); }\nA operator || (const A &, const int){ return A(); }\nA operator ++ (const A &, const int){ return A(); }\nA operator ++ (const A &){ return A(); }\nA operator -- (const A &, const int){ return A(); }\nA operator -- (const A &){ return A(); }\nA operator , (const A &, const A &){ return A(); }"
+Line 533
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  533 always 533
+  "" always ""
+Line 536
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  536 always 536
+  "class A {\npublic:\n    static void * operator new(std::size_t);\n    static void * operator new[](std::size_t);\n};\nvoid * A::operator new(std::size_t s) {\n    return malloc(s);\n}\nvoid * A::operator new[](std::size_t s) {\n    return malloc(s);\n}" always "class A {\npublic:\n    static void * operator new(std::size_t);\n    static void * operator new[](std::size_t);\n};\nvoid * A::operator new(std::size_t s) {\n    return malloc(s);\n}\nvoid * A::operator new[](std::size_t s) {\n    return malloc(s);\n}"
+Line 547
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedfunctions.cpp" always "cppcheck-2.8/test/testunusedfunctions.cpp"
+  547 always 547
+  "" always ""

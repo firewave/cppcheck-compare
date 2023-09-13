@@ -1,0 +1,1936 @@
+
+
+##file cppcheck-2.8/cli/cppcheckexecutor.h
+
+1:
+|
+32:
+33: class CppCheck ;
+34: class Library ;
+35: class Settings ;
+36:
+|
+43:
+44: class CppCheckExecutor : public ErrorLogger {
+45: public:
+46:
+47:
+48:
+49: CppCheckExecutor ( ) ;
+50: CppCheckExecutor ( const CppCheckExecutor & ) = delete ;
+51: void operator= ( const CppCheckExecutor & ) = delete ;
+52:
+|
+55:
+56: ~ CppCheckExecutor ( ) override ;
+57:
+|
+68:
+69: int check ( int argc@var1 , const char * const argv@var2 [ ] ) ;
+70:
+|
+76:
+77: void reportOut ( const std :: string & outmsg@var3 , Color c@var4 = Color :: Reset ) override ;
+78:
+79:
+80: void reportErr ( const ErrorMessage & msg@var5 ) override ;
+81:
+82: void reportProgress ( const std :: string & filename@var6 , const char stage@var7 [ ] , const unsigned long value@var8 ) override ;
+83:
+|
+86:
+87: void reportInfo ( const ErrorMessage & msg@var9 ) override ;
+88:
+|
+96:
+97: static void reportStatus ( unsigned long fileindex@var10 , unsigned long filecount@var11 , unsigned long sizedone@var12 , unsigned long sizetotal@var13 ) ;
+98:
+|
+101:
+102: static void setExceptionOutput ( FILE * exceptionOutput@var14 ) ;
+103:
+104:
+105:
+106: static FILE * getExceptionOutput ( ) ;
+107:
+|
+111:
+112: static bool tryLoadLibrary ( Library & destination@var15 , const std :: string & basepath@var16 , const char * filename@var17 ) ;
+113:
+|
+116:
+117: static bool executeCommand ( std :: string exe@var18 , std :: vector < std :: string > args@var19 , const std :: string & redirect@var20 , std :: string * output_@var21 ) ;
+118:
+119: protected:
+120:
+|
+124:
+125: void reportErr ( const std :: string & errmsg@var22 ) ;
+126:
+|
+135:
+136: bool parseFromArgs ( CppCheck * cppcheck@var23 , int argc@var24 , const char * const argv@var25 [ ] ) ;
+137:
+|
+141:
+142: void setSettings ( const Settings & settings@var26 ) ;
+143:
+144: private:
+145:
+|
+151:
+152: int check_wrapper ( CppCheck & cppcheck@var27 ) ;
+153:
+|
+163:
+164: int check_internal ( CppCheck & cppcheck@var28 ) ;
+165:
+|
+168:
+169: const Settings * mSettings@var29 ;
+170:
+|
+173:
+174: std :: set < std :: string > mShownErrors@var30 ;
+175:
+|
+178:
+179: std :: map < std :: string , unsigned long > mFiles@var31 ;
+180:
+|
+183:
+184: std :: time_t mLatestProgressOutputTime@var32 ;
+185:
+|
+188:
+189: static FILE * mExceptionOutput@var33 ;
+190:
+|
+193:
+194: std :: ofstream * mErrorOutput@var34 ;
+195:
+|
+198:
+199: bool mShowAllErrors@var35 ;
+200: } ;
+
+##file cppcheck-2.8/cli/cmdlineparser.h
+
+1:
+|
+24:
+25: class Settings ;
+26:
+|
+38:
+39: class CmdLineParser {
+40: public:
+41:
+|
+45:
+46: explicit CmdLineParser ( Settings * settings@var36 ) ;
+47:
+|
+51:
+52: bool parseFromArgs ( int argc@var37 , const char * const argv@var38 [ ] ) ;
+53:
+|
+56:
+57: bool getShowVersion ( ) const {
+58: return mShowVersion@var45 ;
+59: }
+60:
+|
+63:
+64: bool getShowErrorMessages ( ) const {
+65: return mShowErrorMessages@var46 ;
+66: }
+67:
+|
+70:
+71: const std :: vector < std :: string > & getPathNames ( ) const {
+72: return mPathNames@var41 ;
+73: }
+74:
+|
+77:
+78: bool getShowHelp ( ) const {
+79: return mShowHelp@var44 ;
+80: }
+81:
+|
+84:
+85: bool exitAfterPrinting ( ) const {
+86: return mExitAfterPrint@var47 ;
+87: }
+88:
+|
+91:
+92: const std :: vector < std :: string > & getIgnoredPaths ( ) const {
+93: return mIgnoredPaths@var42 ;
+94: }
+95:
+96: protected:
+97:
+|
+100:
+101: static void printHelp ( ) ;
+102:
+|
+105:
+106: static void printMessage ( const std :: string & message@var39 ) ;
+107:
+|
+110:
+111: static void printError ( const std :: string & message@var40 ) ;
+112:
+113: private:
+114: std :: vector < std :: string > mPathNames@var41 ;
+115: std :: vector < std :: string > mIgnoredPaths@var42 ;
+116: Settings * mSettings@var43 ;
+117: bool mShowHelp@var44 ;
+118: bool mShowVersion@var45 ;
+119: bool mShowErrorMessages@var46 ;
+120: bool mExitAfterPrint@var47 ;
+121: std :: string mVSConfig@var48 ;
+122: } ;
+
+##file cppcheck-2.8/cli/filelister.h
+
+1:
+|
+26:
+27: class PathMatch ;
+28:
+|
+32:
+33: class FileLister {
+34: public:
+35:
+|
+44:
+45: static std :: string recursiveAddFiles ( std :: map < std :: string , unsigned long > & files@var49 , const std :: string & path@var50 , const PathMatch & ignored@var51 ) {
+46: const std ::@expr1073742057 set < std ::@expr1073742058 string > extra@var52 ;
+47: return recursiveAddFiles (@expr1073742059 files@var49 , path@var50 , extra@var52 , ignored@var51 ) ;
+48: }
+49:
+|
+60:
+61: static std :: string recursiveAddFiles ( std :: map < std :: string , unsigned long > & files@var53 , const std :: string & path@var54 , const std :: set < std :: string > & extra@var55 , const PathMatch & ignored@var56 ) ;
+62:
+|
+74:
+75: static std :: string addFiles ( std :: map < std :: string , unsigned long > & files@var57 , const std :: string & path@var58 , const std :: set < std :: string > & extra@var59 , bool recursive@var60 , const PathMatch & ignored@var61 ) ;
+76:
+|
+80:
+81: static bool isDirectory ( const std :: string & path@var62 ) ;
+82:
+|
+86:
+87: static bool fileExists ( const std :: string & path@var63 ) ;
+88: } ;
+
+##file cppcheck-2.8/cli/threadexecutor.h
+
+1:
+|
+28:
+29: class Settings ;
+30: class ErrorLogger ;
+31:
+|
+38:
+39: class ThreadExecutor {
+40: public:
+41: ThreadExecutor ( const std :: map < std :: string , unsigned long > & files@var64 , Settings & settings@var65 , ErrorLogger & errorLogger@var66 ) ;
+42: ThreadExecutor ( const ThreadExecutor & ) = delete ;
+43: ~ ThreadExecutor ( ) ;
+44: void operator= ( const ThreadExecutor & ) = delete ;
+45: unsigned int check ( ) ;
+46:
+47: private:
+48: const std :: map < std :: string , unsigned long > & mFiles@var67 ;
+49: Settings & mSettings@var68 ;
+50: ErrorLogger & mErrorLogger@var69 ;
+51: std :: list < std :: string > mErrorList@var70 ;
+52:
+|
+82:
+83: public:
+84:
+85:
+86:
+87: static bool isEnabled ( ) ;
+88: } ;
+
+##file cppcheck-2.8/cli/cppcheckexecutor.cpp
+
+1:
+|
+91:
+92: FILE * CppCheckExecutor :: mExceptionOutput@var33 = stdout ;
+93:
+94: CppCheckExecutor :: CppCheckExecutor ( )
+95: : mSettings@var29 ( nullptr ) , mLatestProgressOutputTime@var32 ( 0 ) , mErrorOutput@var34 ( nullptr ) , mShowAllErrors@var35 ( false )
+96: { }
+97:
+98: CppCheckExecutor :: ~ CppCheckExecutor ( )
+99: {
+100: delete mErrorOutput@var34 ;
+101: }
+102:
+103: bool CppCheckExecutor :: parseFromArgs ( CppCheck * cppcheck@var71 , int argc@var72 , const char * const argv@var73 [ ] )
+104: {
+105: Settings &@expr239 settings@var74 =@expr1073742064 cppcheck@var71 .@expr1073742065 settings (@expr1073742066 ) ;
+106: CmdLineParser parser@var75 (@expr1073742067 &@expr1073742068 settings@var74 ) ;
+107: const bool success@var76 =@expr1073742069 parser@var75 .@expr1073742070 parseFromArgs (@expr1073742071 argc@var72 , argv@var73 ) ;
+108:
+109: if (@expr1073742072 success@var76 ) {
+110: if (@expr1073742073 parser@var75 .@expr1073742074 getShowVersion (@expr1073742075 ) &&@expr1073742076 !@expr1073742077 parser@var75 .@expr254 getShowErrorMessages (@expr255 ) ) {
+111: if (@expr1073742080 !@expr1073742081 settings@var74 .@expr258 cppcheckCfgProductName@var77 .@expr1073742083 empty (@expr1073742084 ) ) {
+112: std ::@expr261 cout@expr236 <<@expr1073742086 settings@var74 .@expr258 cppcheckCfgProductName@var77 <<@expr1073742088 std ::@expr265 endl@expr237 ;
+113: } else {
+114: const char * const extraVersion@var78 ; extraVersion@var78 =@expr1073742090 CppCheck ::@expr1073742091 extraVersion (@expr1073742092 ) ;
+115: if (@expr1073742093 *@expr1073742094 extraVersion@var78 !=@expr1073742095 0 ) {
+116: std ::@expr261 cout@expr236 <<@expr273 "Cppcheck " <<@expr274 CppCheck ::@expr275 version (@expr276 ) <<@expr1073742101 " ("
+117: <<@expr1073742102 extraVersion@var78 <<@expr1073742103 ')' <<@expr1073742104 std ::@expr265 endl@expr237 ; }
+118: else {
+119: std ::@expr261 cout@expr236 <<@expr273 "Cppcheck " <<@expr274 CppCheck ::@expr275 version (@expr276 ) <<@expr1073742111 std ::@expr265 endl@expr237 ; }
+120: }
+121: }
+122:
+123: if (@expr1073742113 parser@var75 .@expr254 getShowErrorMessages (@expr255 ) ) {
+124: mShowAllErrors@var35 =@expr1073742116 true ;
+125: std ::@expr261 cout@expr236 <<@expr1073742118 ErrorMessage ::@expr1073742119 getXMLHeader (@expr1073742120 ) ;
+126: cppcheck@var71 .@expr1073742121 getErrorMessages (@expr1073742122 ) ;
+127: std ::@expr261 cout@expr236 <<@expr1073742124 ErrorMessage ::@expr1073742125 getXMLFooter (@expr1073742126 ) <<@expr1073742127 std ::@expr265 endl@expr237 ;
+128: }
+129:
+130: if (@expr1073742129 parser@var75 .@expr1073742130 exitAfterPrinting (@expr1073742131 ) ) {
+131: Settings ::@expr1073742132 terminate (@expr1073742133 ) ;
+132: return true ;
+133: }
+134: } else {
+135: return false ;
+136: }
+137:
+138:
+139: {
+140: for (@expr1073742134 std ::@expr311 list < std ::@expr311 string > ::@expr311 iterator iter@var79 =@expr1073742138 settings@var74 .@expr315 includePaths@var80 .@expr1073742140 begin (@expr1073742141 ) ;
+141: iter@var79 !=@expr1073742142 settings@var74 .@expr315 includePaths@var80 .@expr1073742144 end (@expr1073742145 ) ;
+142: ) {
+143: const std ::@expr1073742146 string path@var81 (@expr1073742147 Path ::@expr324 toNativeSeparators (@expr1073742149 *@expr1073742150 iter@var79 ) ) ;
+144: if (@expr1073742151 FileLister ::@expr1073742152 isDirectory (@expr1073742153 path@var81 ) ) {
+145: ++@expr1073742154 iter@var79 ; }
+146: else {
+147:
+148: if (@expr1073742155 settings@var74 .@expr1073742156 severity@var82 .@expr1073742157 isEnabled (@expr1073742158 Severity ::@expr1073742159 information@expr1073742062 ) ) {
+149: std ::@expr261 cout@expr236 <<@expr1073742161 "(information) Couldn't find path given by -I '" <<@expr1073742162 path@var81 <<@expr1073742163 '\'' <<@expr1073742164 std ::@expr265 endl@expr237 ; }
+150: iter@var79 =@expr1073742166 settings@var74 .@expr315 includePaths@var80 .@expr1073742168 erase (@expr1073742169 iter@var79 ) ;
+151: }
+152: }
+153: }
+154:
+155:
+156: bool warn@var83 ; warn@var83 =@expr1073742170 false ;
+157: const std ::@expr347 vector < std ::@expr311 string > & ignored@var84 =@expr1073742173 parser@var75 .@expr1073742174 getIgnoredPaths (@expr1073742175 ) ;
+158: for (@expr1073742176 const std ::@expr311 string &@expr239 i@var85 :@expr1073742179 ignored@var84 ) {
+159: if (@expr1073742180 Path ::@expr1073742181 isHeader (@expr1073742182 i@var85 ) ) {
+160: warn@var83 =@expr1073742183 true ;
+161: break ;
+162: }
+163: }
+164: if (@expr1073742184 warn@var83 ) {
+165: std ::@expr261 cout@expr236 <<@expr1073742186 "cppcheck: filename exclusion does not apply to header (.h and .hpp) files." <<@expr1073742187 std ::@expr265 endl@expr237 ;
+166: std ::@expr261 cout@expr236 <<@expr1073742190 "cppcheck: Please use --suppress for ignoring results from the header files." <<@expr1073742191 std ::@expr265 endl@expr237 ;
+167: }
+168:
+169: const std ::@expr347 vector < std ::@expr311 string > & pathnames@var86 =@expr1073742195 parser@var75 .@expr1073742196 getPathNames (@expr1073742197 ) ;
+170:
+|
+174:
+175: const bool caseSensitive@var87 =@expr1073742198 true ;
+176:
+177: if (@expr1073742199 !@expr1073742200 mSettings@var29 .@expr1073742201 project@var233 .@expr1073742202 fileSettings@var234 .@expr1073742203 empty (@expr1073742204 ) &&@expr1073742205 !@expr382 mSettings@var29 .@expr383 fileFilters@var235 .@expr384 empty (@expr385 ) ) {
+178:
+179: std ::@expr1073742210 list < ImportProject ::@expr311 FileSettings > newList@var88 ;
+180:
+181: for (@expr1073742212 const ImportProject ::@expr311 FileSettings &@expr239 fsetting@var89 :@expr1073742215 settings@var74 .@expr392 project@var90 .@expr393 fileSettings@var91 ) {
+182: if (@expr1073742218 matchglobs (@expr1073742219 mSettings@var29 .@expr383 fileFilters@var235 , fsetting@var89 .@expr1073742221 filename@var92 ) ) {
+183: newList@var88 .@expr1073742222 emplace_back (@expr1073742223 fsetting@var89 ) ;
+184: }
+185: }
+186: if (@expr1073742224 !@expr1073742225 newList@var88 .@expr1073742226 empty (@expr1073742227 ) ) {
+187: settings@var74 .@expr392 project@var90 .@expr393 fileSettings@var91 =@expr1073742230 newList@var88 ; }
+188: else {
+189: std ::@expr261 cout@expr236 <<@expr408 "cppcheck: error: could not find any files matching the filter." <<@expr409 std ::@expr265 endl@expr237 ;
+190: return false ;
+191: }
+192: } else { if (@expr1073742235 !@expr1073742236 pathnames@var86 .@expr1073742237 empty (@expr1073742238 ) ) {
+193:
+194: const PathMatch matcher@var93 (@expr1073742239 ignored@var84 , caseSensitive@var87 ) ;
+195: for (@expr1073742240 const std ::@expr311 string &@expr239 pathname@var94 :@expr1073742243 pathnames@var86 ) {
+196: std ::@expr1073742244 string err@var95 ; err@var95 =@expr1073742245 FileLister ::@expr1073742246 recursiveAddFiles (@expr1073742247 mFiles@var31 , Path ::@expr324 toNativeSeparators (@expr1073742249 pathname@var94 ) , mSettings@var29 .@expr1073742250 library@var236 .@expr1073742251 markupExtensions (@expr1073742252 ) , matcher@var93 ) ;
+197: if (@expr1073742253 !@expr1073742254 err@var95 .@expr1073742255 empty (@expr1073742256 ) ) {
+198: std ::@expr261 cout@expr236 <<@expr1073742258 "cppcheck: " <<@expr1073742259 err@var95 <<@expr1073742260 std ::@expr265 endl@expr237 ;
+199: }
+200: }
+201: } }
+202:
+203: if (@expr1073742262 mFiles@var31 .@expr439 empty (@expr440 ) &&@expr1073742265 settings@var74 .@expr392 project@var90 .@expr393 fileSettings@var91 .@expr444 empty (@expr445 ) ) {
+204: std ::@expr261 cout@expr236 <<@expr1073742271 "cppcheck: error: could not find or open any of the paths given." <<@expr1073742272 std ::@expr265 endl@expr237 ;
+205: if (@expr1073742274 !@expr1073742275 ignored@var84 .@expr1073742276 empty (@expr1073742277 ) ) {
+206: std ::@expr261 cout@expr236 <<@expr1073742279 "cppcheck: Maybe all paths were ignored?" <<@expr1073742280 std ::@expr265 endl@expr237 ; }
+207: return false ;
+208: } else { if (@expr1073742282 !@expr382 mSettings@var29 .@expr383 fileFilters@var235 .@expr384 empty (@expr385 ) &&@expr1073742287 settings@var74 .@expr392 project@var90 .@expr393 fileSettings@var91 .@expr444 empty (@expr445 ) ) {
+209: std ::@expr1073742292 map < std ::@expr311 string , unsigned long > newMap@var96 ;
+210: for (@expr1073742294 std ::@expr311 map < std ::@expr311 string , unsigned long > ::@expr311 const_iterator i@var97 =@expr1073742298 mFiles@var31 .@expr1073742299 begin (@expr1073742300 ) ; i@var97 !=@expr1073742301 mFiles@var31 .@expr1073742302 end (@expr1073742303 ) ; ++@expr1073742304 i@var97 ) {
+211: if (@expr1073742305 matchglobs (@expr1073742306 mSettings@var29 .@expr383 fileFilters@var235 , i@var97 .@expr484 first@var98 ) ) {
+212: newMap@var96 [@expr1073742309 i@var97 .@expr484 first@var98 ] =@expr1073742311 i@var97 .@expr1073742312 second@var99 ;
+213: } }
+214: mFiles@var31 =@expr1073742313 newMap@var96 ;
+215: if (@expr1073742314 mFiles@var31 .@expr439 empty (@expr440 ) ) {
+216: std ::@expr261 cout@expr236 <<@expr408 "cppcheck: error: could not find any files matching the filter." <<@expr409 std ::@expr265 endl@expr237 ;
+217: return false ;
+218: }
+219:
+220: } }
+221:
+222: return true ;
+223: }
+224:
+225: int CppCheckExecutor :: check ( int argc@var100 , const char * const argv@var101 [ ] )
+226: {
+227: Preprocessor ::@expr1073742324 missingIncludeFlag@expr1073742321 =@expr1073742325 false ;
+228: Preprocessor ::@expr1073742326 missingSystemIncludeFlag@expr1073742322 =@expr1073742327 false ;
+229:
+230: CheckUnusedFunctions ::@expr1073742328 clear (@expr1073742329 ) ;
+231:
+232: CppCheck cppCheck@var102 (@expr1073742330 *@expr1073742331 this@expr1073742332 , true , executeCommand ) ;
+233:
+234: const Settings &@expr1073742333 settings@var103 =@expr1073742334 cppCheck@var102 .@expr511 settings (@expr512 ) ;
+235: mSettings@var29 =@expr1073742337 &@expr1073742338 settings@var103 ;
+236:
+237: if (@expr1073742339 !@expr1073742340 parseFromArgs (@expr1073742341 &@expr1073742342 cppCheck@var102 , argc@var100 , argv@var101 ) ) {
+238: mSettings@var29 =@expr1073742343 nullptr ;
+239: return EXIT_FAILURE ;
+240: }
+241: if (@expr1073742344 Settings ::@expr1073742345 terminated (@expr1073742346 ) ) {
+242: mSettings@var29 =@expr1073742347 nullptr ;
+243: return EXIT_SUCCESS ;
+244: }
+245:
+246: int ret@var104 ;
+247:
+248: if (@expr1073742348 cppCheck@var102 .@expr511 settings (@expr512 ) .@expr1073742351 exceptionHandling@expr1073742323 ) {
+249: ret@var104 =@expr1073742352 check_wrapper (@expr1073742353 cppCheck@var102 ) ; }
+250: else {
+251: ret@var104 =@expr1073742354 check_internal (@expr1073742355 cppCheck@var102 ) ; }
+252:
+253: mSettings@var29 =@expr1073742356 nullptr ;
+254: return ret@var104 ;
+255: }
+256:
+257: void CppCheckExecutor :: setSettings ( const Settings & settings@var105 )
+258: {
+259: mSettings@var29 =@expr1073742357 &@expr1073742358 settings@var105 ;
+260: }
+261:
+|
+265:
+266: template < typename T , int size >
+267: unsigned long getArrayLength ( const T ( & ) [ size ] )
+268: {
+269: return size ;
+270: }
+271:
+|
+279:
+280: static void print_stacktrace ( FILE * output@var106 , bool demangling@var107 , int maxdepth@var108 , bool lowMem@var109 )
+281: {
+282:
+|
+344:
+345: (@expr1073742359 void ) output@var106 ;
+346: (@expr1073742360 void ) demangling@var107 ;
+347: (@expr1073742361 void ) maxdepth@var108 ;
+348: (@expr1073742362 void ) lowMem@var109 ;
+349:
+350: }
+351:
+|
+354:
+355: static const unsigned long MYSTACKSIZE@var110 = 16 * 1024 + SIGSTKSZ ;
+356:
+357: static char mytstack@var111 [ MYSTACKSIZE@var110 ] = { 0 } ;
+358: static bool bStackBelowHeap@var112 = false ;
+359:
+|
+364:
+365: static bool IsAddressOnStack ( const void * ptr@var113 )
+366: {
+367: if (@expr1073742363 nullptr ==@expr1073742364 ptr@var113 ) {
+368: return false ; }
+369: char a@var114 ;
+370: if (@expr1073742365 bStackBelowHeap@var112 ) {
+371: return ptr@var113 <@expr1073742366 &@expr543 a@var114 ; }
+372: else {
+373: return ptr@var113 >@expr1073742368 &@expr543 a@var114 ; }
+374: }
+375:
+|
+383:
+384: static const std :: map < int , std :: string > listofsignals@var115 = {
+385: $std $:: $make_pair $( $6 $, "6" $) ,
+386: $std $:: $make_pair $( SIGBUS $, "SIGBUS" $) ,
+387: $std $:: $make_pair $( $8 $, "8" $) ,
+388: $std $:: $make_pair $( SIGILL $, "SIGILL" $) ,
+389: $std $:: $make_pair $( $2 $, "2" $) ,
+390: $std $:: $make_pair $( SIGQUIT $, "SIGQUIT" $) ,
+391: $std $:: $make_pair $( $11 $, "11" $) ,
+392: $std $:: $make_pair $( SIGSYS $, "SIGSYS" $) ,
+393:
+394: $std $:: $make_pair $( SIGUSR1 $, "SIGUSR1" $) ,
+395:
+396: } ;
+397:
+|
+404:
+405: static void CppcheckSignalHandler ( int signo@var116 , siginfo_t * info@var117 , void * context@var118 )
+406: {
+407: int type@var119 ; type@var119 =@expr1073742371 -1 ;
+408: pid_t killid@var120 ;
+409:
+|
+415:
+416: (@expr1073742372 void ) context@var118 ;
+417: killid@var120 =@expr1073742373 getpid (@expr1073742374 ) ;
+418:
+419:
+420: const std ::@expr1073742375 map < int , std ::@expr1073742376 string > ::@expr1073742377 const_iterator it@var121 =@expr1073742378 listofsignals@var115 .@expr1073742379 find (@expr1073742380 signo@var116 ) ;
+421: const char * const signame@var122 ; signame@var122 =@expr1073742381 (@expr1073742382 it@var121 ==@expr1073742383 listofsignals@var115 .@expr1073742384 end (@expr1073742385 ) ) ?@expr1073742386 "unknown" :@expr1073742387 it@var121 .@expr1073742388 second@var123 .@expr1073742389 c_str (@expr1073742390 ) ;
+422: bool printCallstack@var124 ; printCallstack@var124 =@expr1073742391 true ;
+423: bool lowMem@var125 ; lowMem@var125 =@expr1073742392 false ;
+424: bool unexpectedSignal@var126 ; unexpectedSignal@var126 =@expr1073742393 true ;
+425: bool terminate@var127 ; terminate@var127 =@expr1073742394 true ;
+426: const bool isAddressOnStack@var128 =@expr1073742395 IsAddressOnStack (@expr1073742396 info@var117 .@expr573 si_addr@var129 ) ;
+427: FILE * output@var130 ; output@var130 =@expr1073742398 CppCheckExecutor ::@expr1073742399 getExceptionOutput (@expr1073742400 ) ;
+428: switch (@expr1073742401 signo@var116 ) {
+429: case $6 :@expr578 ;
+430: fputs (@expr579 "Internal error: cppcheck received signal " , output@var130 ) ;
+431: fputs (@expr580 signame@var122 , output@var130 ) ;
+432: fputs (@expr1073742405
+433:
+434:
+435:
+436: " - out of memory or assertion?\n" ,
+437:
+438: output@var130 ) ;
+439: lowMem@var125 =@expr1073742406 true ;
+440: break ;
+441: case SIGBUS :@expr578 ;
+442: fputs (@expr579 "Internal error: cppcheck received signal " , output@var130 ) ;
+443: fputs (@expr580 signame@var122 , output@var130 ) ;
+444: switch (@expr586 info@var117 .@expr587 si_code@var131 ) {
+445: case BUS_ADRALN :@expr578 ;
+446: fputs (@expr1073742413 " - BUS_ADRALN" , output@var130 ) ;
+447: break ;
+448: case BUS_ADRERR :@expr578 ;
+449: fputs (@expr1073742415 " - BUS_ADRERR" , output@var130 ) ;
+450: break ;
+451: case BUS_OBJERR :@expr578 ;
+452: fputs (@expr1073742417 " - BUS_OBJERR" , output@var130 ) ;
+453: break ;
+454:
+|
+463:
+464: default :@expr578 ;
+465: break ;
+466: }
+467: fprintf (@expr595 output@var130 , " (at 0x%lx).\n" ,
+468: (@expr596 unsigned long ) info@var117 .@expr573 si_addr@var129 ) ;
+469: break ;
+470: case $8 :@expr578 ;
+471: fputs (@expr579 "Internal error: cppcheck received signal " , output@var130 ) ;
+472: fputs (@expr580 signame@var122 , output@var130 ) ;
+473: switch (@expr586 info@var117 .@expr587 si_code@var131 ) {
+474: case FPE_INTDIV :@expr578 ;
+475: fputs (@expr1073742428 " - FPE_INTDIV" , output@var130 ) ;
+476: break ;
+477: case FPE_INTOVF :@expr578 ;
+478: fputs (@expr1073742430 " - FPE_INTOVF" , output@var130 ) ;
+479: break ;
+480: case FPE_FLTDIV :@expr578 ;
+481: fputs (@expr1073742432 " - FPE_FLTDIV" , output@var130 ) ;
+482: break ;
+483: case FPE_FLTOVF :@expr578 ;
+484: fputs (@expr1073742434 " - FPE_FLTOVF" , output@var130 ) ;
+485: break ;
+486: case FPE_FLTUND :@expr578 ;
+487: fputs (@expr1073742436 " - FPE_FLTUND" , output@var130 ) ;
+488: break ;
+489: case FPE_FLTRES :@expr578 ;
+490: fputs (@expr1073742438 " - FPE_FLTRES" , output@var130 ) ;
+491: break ;
+492: case FPE_FLTINV :@expr578 ;
+493: fputs (@expr1073742440 " - FPE_FLTINV" , output@var130 ) ;
+494: break ;
+495: case FPE_FLTSUB :@expr578 ;
+496: fputs (@expr1073742442 " - FPE_FLTSUB" , output@var130 ) ;
+497: break ;
+498: default :@expr578 ;
+499: break ;
+500: }
+501: fprintf (@expr595 output@var130 , " (at 0x%lx).\n" ,
+502: (@expr596 unsigned long ) info@var117 .@expr573 si_addr@var129 ) ;
+503: break ;
+504: case SIGILL :@expr578 ;
+505: fputs (@expr579 "Internal error: cppcheck received signal " , output@var130 ) ;
+506: fputs (@expr580 signame@var122 , output@var130 ) ;
+507: switch (@expr586 info@var117 .@expr587 si_code@var131 ) {
+508: case ILL_ILLOPC :@expr578 ;
+509: fputs (@expr1073742453 " - ILL_ILLOPC" , output@var130 ) ;
+510: break ;
+511: case ILL_ILLOPN :@expr578 ;
+512: fputs (@expr1073742455 " - ILL_ILLOPN" , output@var130 ) ;
+513: break ;
+514: case ILL_ILLADR :@expr578 ;
+515: fputs (@expr1073742457 " - ILL_ILLADR" , output@var130 ) ;
+516: break ;
+517: case ILL_ILLTRP :@expr578 ;
+518: fputs (@expr1073742459 " - ILL_ILLTRP" , output@var130 ) ;
+519: break ;
+520: case ILL_PRVOPC :@expr578 ;
+521: fputs (@expr1073742461 " - ILL_PRVOPC" , output@var130 ) ;
+522: break ;
+523: case ILL_PRVREG :@expr578 ;
+524: fputs (@expr1073742463 " - ILL_PRVREG" , output@var130 ) ;
+525: break ;
+526: case ILL_COPROC :@expr578 ;
+527: fputs (@expr1073742465 " - ILL_COPROC" , output@var130 ) ;
+528: break ;
+529: case ILL_BADSTK :@expr578 ;
+530: fputs (@expr1073742467 " - ILL_BADSTK" , output@var130 ) ;
+531: break ;
+532: default :@expr578 ;
+533: break ;
+534: }
+535: fprintf (@expr1073742469 output@var130 , " (at 0x%lx).%s\n" ,
+536: (@expr596 unsigned long ) info@var117 .@expr573 si_addr@var129 ,
+537: (@expr648 isAddressOnStack@var128 ) ?@expr649 " Stackoverflow?" :@expr650 "" ) ;
+538: break ;
+539: case $2 :@expr578 ;
+540: unexpectedSignal@var126 =@expr1073742476 false ;
+541: fputs (@expr653 "cppcheck received signal " , output@var130 ) ;
+542: fputs (@expr580 signame@var122 , output@var130 ) ;
+543: printCallstack@var124 =@expr1073742479 true ;
+544: fputs (@expr656 ".\n" , output@var130 ) ;
+545: break ;
+546: case $11 :@expr578 ;
+547: fputs (@expr579 "Internal error: cppcheck received signal " , output@var130 ) ;
+548: fputs (@expr580 signame@var122 , output@var130 ) ;
+549: switch (@expr586 info@var117 .@expr587 si_code@var131 ) {
+550: case SEGV_MAPERR :@expr578 ;
+551: fputs (@expr1073742487 " - SEGV_MAPERR" , output@var130 ) ;
+552: break ;
+553: case SEGV_ACCERR :@expr578 ;
+554: fputs (@expr1073742489 " - SEGV_ACCERR" , output@var130 ) ;
+555: break ;
+556: default :@expr578 ;
+557: break ;
+558: }
+559: fprintf (@expr1073742491 output@var130 , " (%sat 0x%lx).%s\n" ,
+560:
+561: (@expr1073742492 type@var119 ==@expr1073742493 -1 ) ?@expr1073742494 "" :@expr1073742495
+562: (@expr1073742496 type@var119 ==@expr1073742497 0 ) ?@expr1073742498 "reading " :@expr1073742499 "writing " ,
+563: (@expr596 unsigned long ) info@var117 .@expr573 si_addr@var129 ,
+564: (@expr648 isAddressOnStack@var128 ) ?@expr649 " Stackoverflow?" :@expr650 ""
+565: ) ;
+566: break ;
+567: case SIGUSR1 :@expr578 ;
+568: fputs (@expr653 "cppcheck received signal " , output@var130 ) ;
+569: fputs (@expr580 signame@var122 , output@var130 ) ;
+570: fputs (@expr656 ".\n" , output@var130 ) ;
+571: terminate@var127 =@expr1073742509 false ;
+572: break ;
+573: default :@expr578 ;
+574: fputs (@expr579 "Internal error: cppcheck received signal " , output@var130 ) ;
+575: fputs (@expr580 signame@var122 , output@var130 ) ;
+576: fputs (@expr656 ".\n" , output@var130 ) ;
+577: break ;
+578: }
+579: if (@expr1073742514 printCallstack@var124 ) {
+580: print_stacktrace (@expr1073742515 output@var130 , true , -1 , lowMem@var125 ) ;
+581: }
+582: if (@expr1073742516 unexpectedSignal@var126 ) {
+583: fputs (@expr1073742517 "\nPlease report this to the cppcheck developers!\n" , output@var130 ) ;
+584: }
+585: fflush (@expr1073742518 output@var130 ) ;
+586:
+587: if (@expr1073742519 terminate@var127 ) {
+588:
+589: struct sigaction act@var132 ;
+590: memset (@expr1073742520 &@expr697 act@var132 , 0 , sizeof (@expr1073742522 act@var132 ) ) ;
+591: act@var132 .@expr1073742523 sa_handler@var133 =@expr1073742524 SIG_DFL@expr1073742370 ;
+592: sigaction (@expr1073742525 signo@var116 , &@expr697 act@var132 , nullptr ) ;
+593: kill (@expr1073742527 killid@var120 , signo@var116 ) ;
+594: }
+595: }
+596:
+|
+826:
+827: int CppCheckExecutor :: check_wrapper ( CppCheck & cppcheck@var134 )
+828: {
+829:
+|
+839:
+840: char stackVariable@var135 ;
+841: char * heapVariable@var136 ; heapVariable@var136 =@expr1073742530 (@expr1073742531 char *@expr1073742532 ) malloc (@expr1073742533 1 ) ;
+842: bStackBelowHeap@var112 =@expr1073742534 &@expr1073742535 stackVariable@var135 <@expr1073742536 heapVariable@var136 ;
+843: free (@expr1073742537 heapVariable@var136 ) ;
+844:
+845:
+846: stack_t segv_stack@var137 ;
+847: segv_stack@var137 .@expr1073742538 ss_sp@var138 =@expr1073742539 mytstack@var111 ;
+848: segv_stack@var137 .@expr1073742540 ss_flags@var139 =@expr1073742541 0 ;
+849: segv_stack@var137 .@expr1073742542 ss_size@var140 =@expr1073742543 MYSTACKSIZE@var110 ;
+850: sigaltstack (@expr1073742544 &@expr1073742545 segv_stack@var137 , nullptr ) ;
+851:
+852:
+853: struct sigaction act@var141 ;
+854: memset (@expr1073742546 &@expr723 act@var141 , 0 , sizeof (@expr1073742548 act@var141 ) ) ;
+855: act@var141 .@expr1073742549 sa_flags@var142 =@expr1073742550 SA_SIGINFO@expr1073742528 |@expr1073742551 SA_ONSTACK@expr1073742529 ;
+856: act@var141 .@expr1073742552 sa_sigaction@var143 =@expr1073742553 CppcheckSignalHandler ;
+857: for (@expr1073742554 std ::@expr731 map < int , std ::@expr731 string > ::@expr731 const_iterator sig@var144 =@expr1073742558 listofsignals@var115 .@expr1073742559 begin (@expr1073742560 ) ; sig@var144 !=@expr1073742561 listofsignals@var115 .@expr1073742562 end (@expr1073742563 ) ; ++@expr1073742564 sig@var144 ) {
+858: sigaction (@expr1073742565 sig@var144 .@expr1073742566 first@var145 , &@expr723 act@var141 , nullptr ) ;
+859: }
+860: return check_internal (@expr1073742568 cppcheck@var134 ) ;
+861:
+862:
+863:
+864: }
+865:
+|
+868:
+869: int CppCheckExecutor :: check_internal ( CppCheck & cppcheck@var146 )
+870: {
+871: Settings &@expr752 settings@var147 =@expr1073742577 cppcheck@var146 .@expr1073742578 settings (@expr1073742579 ) ;
+872: mSettings@var29 =@expr1073742580 &@expr1073742581 settings@var147 ;
+873: const bool std@var148 =@expr1073742582 tryLoadLibrary (@expr1073742583 settings@var147 .@expr760 library@var149 , settings@var147 .@expr761 exename@var150 , "std.cfg" ) ;
+874:
+875: for (@expr1073742586 const std ::@expr763 string &@expr752 lib@var151 :@expr1073742589 settings@var147 .@expr1073742590 libraries@var152 ) {
+876: if (@expr1073742591 !@expr1073742592 tryLoadLibrary (@expr1073742593 settings@var147 .@expr760 library@var149 , settings@var147 .@expr761 exename@var150 , lib@var151 .@expr1073742596 c_str (@expr1073742597 ) ) ) {
+877: const std ::@expr1073742598 string msg@var153 (@expr1073742599 "Failed to load the library " +@expr1073742600 lib@var151 ) ;
+878: const std ::@expr1073742601 list < ErrorMessage ::@expr763 FileLocation > callstack@var154 ;
+879: ErrorMessage errmsg@var155 (@expr1073742603 callstack@var154 , emptyString , Severity ::@expr780 information@expr745 , msg@var153 , "failedToLoadCfg" , Certainty ::@expr781 normal@expr746 ) ;
+880: reportErr (@expr1073742606 errmsg@var155 ) ;
+881: return EXIT_FAILURE ;
+882: }
+883: }
+884:
+885: if (@expr1073742607 !@expr1073742608 std@var148 ) {
+886: const std ::@expr1073742609 list < ErrorMessage ::@expr763 FileLocation > callstack@var156 ;
+887: const std ::@expr1073742611 string msg@var157 (@expr1073742612 "Failed to load std.cfg. Your Cppcheck installation is broken, please re-install." ) ;
+888:
+|
+892:
+893: const std ::@expr1073742613 string cfgfolder@var158 (@expr1073742614 Path ::@expr1073742615 fromNativeSeparators (@expr1073742616 Path ::@expr1073742617 getPathFromFilename (@expr1073742618 settings@var147 .@expr761 exename@var150 ) ) +@expr1073742620 "cfg" ) ;
+894: const std ::@expr1073742621 string details@var159 (@expr1073742622 "The Cppcheck binary was compiled without FILESDIR set. Either the std.cfg should be available in "
+895: +@expr1073742623 cfgfolder@var158 +@expr1073742624 " or the FILESDIR should be configured."
+896: ) ;
+897:
+898: ErrorMessage errmsg@var160 (@expr1073742625 callstack@var156 , emptyString , Severity ::@expr780 information@expr745 , msg@var157 +@expr1073742627 " " +@expr1073742628 details@var159 , "failedToLoadCfg" , Certainty ::@expr781 normal@expr746 ) ;
+899: reportErr (@expr1073742630 errmsg@var160 ) ;
+900: return EXIT_FAILURE ;
+901: }
+902:
+903: if (@expr1073742631 settings@var147 .@expr1073742632 reportProgress@var161 ) {
+904: mLatestProgressOutputTime@var32 =@expr1073742633 std ::@expr1073742634 time (@expr1073742635 nullptr ) ; }
+905:
+906: if (@expr1073742636 !@expr1073742637 settings@var147 .@expr814 outputFile@var162 .@expr1073742639 empty (@expr1073742640 ) ) {
+907: mErrorOutput@var34 =@expr1073742641 new std ::@expr1073742642 ofstream (@expr1073742643 settings@var147 .@expr814 outputFile@var162 ) ;
+908: }
+909:
+910: if (@expr821 settings@var147 .@expr822 xml@var163 ) {
+911: reportErr (@expr1073742647 ErrorMessage ::@expr1073742648 getXMLHeader (@expr1073742649 ) ) ;
+912: }
+913:
+914: if (@expr1073742650 !@expr1073742651 settings@var147 .@expr828 buildDir@var164 .@expr1073742653 empty (@expr1073742654 ) ) {
+915: settings@var147 .@expr1073742655 loadSummaries (@expr1073742656 ) ;
+916:
+917: std ::@expr1073742657 list < std@var148 ::@expr763 string > fileNames@var165 ;
+918: for (@expr1073742659 std ::@expr763 map < std@var148 ::@expr763 string , unsigned long > ::@expr763 const_iterator i@var166 =@expr1073742663 mFiles@var31 .@expr840 begin (@expr841 ) ; i@var166 !=@expr1073742666 mFiles@var31 .@expr843 end (@expr844 ) ; ++@expr1073742669 i@var166 ) {
+919: fileNames@var165 .@expr1073742670 emplace_back (@expr1073742671 i@var166 .@expr1073742672 first@var167 ) ; }
+920: AnalyzerInformation ::@expr1073742673 writeFilesTxt (@expr1073742674 settings@var147 .@expr828 buildDir@var164 , fileNames@var165 , settings@var147 .@expr1073742676 userDefines@var168 , settings@var147 .@expr853 project@var169 .@expr854 fileSettings@var170 ) ;
+921: }
+922:
+923: unsigned int returnValue@var171 ; returnValue@var171 =@expr1073742679 0 ;
+924: if (@expr1073742680 settings@var147 .@expr1073742681 jobs@var172 ==@expr1073742682 1 ) {
+925:
+926: settings@var147 .@expr859 jointSuppressionReport@var173 =@expr1073742684 true ;
+927:
+928: unsigned long totalfilesize@var174 ; totalfilesize@var174 =@expr1073742685 0 ;
+929: for (@expr1073742686 std ::@expr763 map < std@var148 ::@expr763 string , unsigned long > ::@expr763 const_iterator i@var175 =@expr1073742690 mFiles@var31 .@expr840 begin (@expr841 ) ; i@var175 !=@expr1073742693 mFiles@var31 .@expr843 end (@expr844 ) ; ++@expr1073742696 i@var175 ) {
+930: totalfilesize@var174 +=@expr1073742697 i@var175 .@expr1073742698 second@var176 ;
+931: }
+932:
+933: unsigned long processedsize@var177 ; processedsize@var177 =@expr1073742699 0 ;
+934: unsigned int c@var178 ; c@var178 =@expr1073742700 0 ;
+935: if (@expr1073742701 settings@var147 .@expr853 project@var169 .@expr854 fileSettings@var170 .@expr1073742704 empty (@expr1073742705 ) ) {
+936: for (@expr1073742706 std ::@expr763 map < std@var148 ::@expr763 string , unsigned long > ::@expr763 const_iterator i@var179 =@expr1073742710 mFiles@var31 .@expr840 begin (@expr841 ) ; i@var179 !=@expr1073742713 mFiles@var31 .@expr843 end (@expr844 ) ; ++@expr1073742716 i@var179 ) {
+937: if (@expr1073742717 !@expr1073742718 mSettings@var29 .@expr895 library@var236 .@expr896 markupFile (@expr1073742721 i@var179 .@expr898 first@var180 )
+938: ||@expr1073742723 !@expr1073742724 mSettings@var29 .@expr895 library@var236 .@expr902 processMarkupAfterCode (@expr1073742727 i@var179 .@expr898 first@var180 ) ) {
+939: returnValue@var171 +=@expr1073742729 cppcheck@var146 .@expr906 check (@expr1073742731 i@var179 .@expr898 first@var180 ) ;
+940: processedsize@var177 +=@expr1073742733 i@var179 .@expr1073742734 second@var181 ;
+941: if (@expr911 !@expr912 settings@var147 .@expr913 quiet@var182 ) {
+942: reportStatus (@expr914 c@var178 +@expr915 1 , mFiles@var31 .@expr916 size (@expr917 ) , processedsize@var177 , totalfilesize@var174 ) ; }
+943: c@var178 ++@expr1073742742 ;
+944: }
+945: }
+946: } else {
+947:
+948:
+949: for (@expr1073742743 const ImportProject ::@expr763 FileSettings &@expr752 fs@var183 :@expr1073742746 settings@var147 .@expr853 project@var169 .@expr854 fileSettings@var170 ) {
+950: returnValue@var171 +=@expr1073742749 cppcheck@var146 .@expr906 check (@expr1073742751 fs@var183 ) ;
+951: ++@expr1073742752 c@var178 ;
+952: if (@expr911 !@expr912 settings@var147 .@expr913 quiet@var182 ) {
+953: reportStatus (@expr1073742756 c@var178 , settings@var147 .@expr853 project@var169 .@expr854 fileSettings@var170 .@expr935 size (@expr936 ) , c@var178 , settings@var147 .@expr853 project@var169 .@expr854 fileSettings@var170 .@expr935 size (@expr936 ) ) ; }
+954: if (@expr1073742765 settings@var147 .@expr1073742766 clangTidy@var184 ) {
+955: cppcheck@var146 .@expr1073742767 analyseClangTidy (@expr1073742768 fs@var183 ) ; }
+956: }
+957: }
+958:
+959:
+960:
+961: for (@expr1073742769 std ::@expr763 map < std@var148 ::@expr763 string , unsigned long > ::@expr763 const_iterator i@var185 =@expr1073742773 mFiles@var31 .@expr840 begin (@expr841 ) ; i@var185 !=@expr1073742776 mFiles@var31 .@expr843 end (@expr844 ) ; ++@expr1073742779 i@var185 ) {
+962: if (@expr1073742780 mSettings@var29 .@expr895 library@var236 .@expr896 markupFile (@expr1073742783 i@var185 .@expr960 first@var186 ) &&@expr1073742785 mSettings@var29 .@expr895 library@var236 .@expr902 processMarkupAfterCode (@expr1073742788 i@var185 .@expr960 first@var186 ) ) {
+963: returnValue@var171 +=@expr1073742790 cppcheck@var146 .@expr906 check (@expr1073742792 i@var185 .@expr960 first@var186 ) ;
+964: processedsize@var177 +=@expr1073742794 i@var185 .@expr1073742795 second@var187 ;
+965: if (@expr911 !@expr912 settings@var147 .@expr913 quiet@var182 ) {
+966: reportStatus (@expr914 c@var178 +@expr915 1 , mFiles@var31 .@expr916 size (@expr917 ) , processedsize@var177 , totalfilesize@var174 ) ; }
+967: c@var178 ++@expr1073742803 ;
+968: }
+969: }
+970: if (@expr1073742804 cppcheck@var146 .@expr981 analyseWholeProgram (@expr1073742806 ) ) {
+971: returnValue@var171 ++@expr1073742807 ; }
+972: } else { if (@expr1073742808 !@expr1073742809 ThreadExecutor ::@expr1073742810 isEnabled (@expr1073742811 ) ) {
+973: std ::@expr1073742812 cout@expr1073742571 <<@expr1073742813 "No thread support yet implemented for this platform." <<@expr1073742814 std ::@expr1073742815 endl@expr1073742572 ;
+974: } else {
+975:
+976: ThreadExecutor executor@var188 (@expr1073742816 mFiles@var31 , settings@var147 , *@expr1073742817 this@expr1073742818 ) ;
+977: returnValue@var171 =@expr1073742819 executor@var188 .@expr1073742820 check (@expr1073742821 ) ;
+978: } }
+979:
+980: cppcheck@var146 .@expr981 analyseWholeProgram (@expr1073742823 mSettings@var29 .@expr1073742824 buildDir@var237 , mFiles@var31 ) ;
+981:
+982: if (@expr1073742825 settings@var147 .@expr1073742826 severity@var189 .@expr1073742827 isEnabled (@expr1073742828 Severity ::@expr780 information@expr745 ) ||@expr1073742830 settings@var147 .@expr1007 checkConfiguration@var190 ) {
+983: const bool enableUnusedFunctionCheck@var191 =@expr1073742832 cppcheck@var146 .@expr1073742833 isUnusedFunctionCheckEnabled (@expr1073742834 ) ;
+984:
+985: if (@expr1073742835 settings@var147 .@expr859 jointSuppressionReport@var173 ) {
+986: for (@expr1073742837 std ::@expr763 map < std@var148 ::@expr763 string , unsigned long > ::@expr763 const_iterator i@var192 =@expr1073742841 mFiles@var31 .@expr840 begin (@expr841 ) ; i@var192 !=@expr1073742844 mFiles@var31 .@expr843 end (@expr844 ) ; ++@expr1073742847 i@var192 ) {
+987: const bool err@var193 =@expr1073742848 reportUnmatchedSuppressions (@expr1073742849 settings@var147 .@expr1026 nomsg@var194 .@expr1073742851 getUnmatchedLocalSuppressions (@expr1073742852 i@var192 .@expr1073742853 first@var195 , enableUnusedFunctionCheck@var191 ) ) ;
+988: if (@expr1073742854 err@var193 &&@expr1073742855 returnValue@var171 ==@expr1032 0 ) {
+989: returnValue@var171 =@expr1073742857 settings@var147 .@expr1034 exitCode@var196 ; }
+990: }
+991: }
+992:
+993: const bool err@var197 =@expr1073742859 reportUnmatchedSuppressions (@expr1073742860 settings@var147 .@expr1026 nomsg@var194 .@expr1073742862 getUnmatchedGlobalSuppressions (@expr1073742863 enableUnusedFunctionCheck@var191 ) ) ;
+994: if (@expr1073742864 err@var197 &&@expr1073742865 returnValue@var171 ==@expr1032 0 ) {
+995: returnValue@var171 =@expr1073742867 settings@var147 .@expr1034 exitCode@var196 ; }
+996: }
+997:
+998: if (@expr1073742869 !@expr1073742870 settings@var147 .@expr1007 checkConfiguration@var190 ) {
+999: cppcheck@var146 .@expr1073742872 tooManyConfigsError (@expr1073742873 "" , 0U ) ;
+1000:
+1001: if (@expr1073742874 settings@var147 .@expr1073742875 checks@var198 .@expr1073742876 isEnabled (@expr1073742877 Checks ::@expr1073742878 missingInclude@expr1073742573 ) &&@expr1073742879 (@expr1073742880 Preprocessor ::@expr1057 missingIncludeFlag@expr750 ||@expr1073742882 Preprocessor ::@expr1073742883 missingSystemIncludeFlag@expr1073742575 ) ) {
+1002: const std ::@expr1073742884 list < ErrorMessage ::@expr763 FileLocation > callStack@var199 ;
+1003: ErrorMessage msg@var200 (@expr1073742886 callStack@var199 ,
+1004: emptyString ,
+1005: Severity ::@expr780 information@expr745 ,
+1006: "Cppcheck cannot find all the include files (use --check-config for details)\nCppcheck cannot find all the include files. Cppcheck can check the code without the include files found. But the results will probably be more accurate if all the include files are found. Please check your project's include directories and add all of them as include directories for Cppcheck. To see what files Cppcheck cannot find use --check-config."
+1007:
+|
+1010:
+1011: ,
+1012: Preprocessor ::@expr1057 missingIncludeFlag@expr750 ?@expr1073742889 "missingInclude" :@expr1073742890 "missingIncludeSystem" ,
+1013: Certainty ::@expr781 normal@expr746 ) ;
+1014: reportInfo (@expr1073742892 msg@var200 ) ;
+1015: }
+1016: }
+1017:
+1018: if (@expr821 settings@var147 .@expr822 xml@var163 ) {
+1019: reportErr (@expr1073742895 ErrorMessage ::@expr1073742896 getXMLFooter (@expr1073742897 ) ) ;
+1020: }
+1021:
+1022: mSettings@var29 =@expr1073742898 nullptr ;
+1023: if (@expr1073742899 returnValue@var171 ) {
+1024: return settings@var147 .@expr1034 exitCode@var196 ; }
+1025: return 0 ;
+1026: }
+1027:
+|
+1051:
+1052: void CppCheckExecutor :: reportErr ( const std :: string & errmsg@var201 )
+1053: {
+1054: if (@expr1073742903 mErrorOutput@var34 ) {
+1055: *@expr1073742904 mErrorOutput@var34 <<@expr1073742905 errmsg@var201 <<@expr1073742906 std ::@expr1083 endl@expr1077 ; }
+1056: else {
+1057: std ::@expr1073742908 cerr@expr1073742902 <<@expr1073742909 $(@expr1073742910 errmsg@var201 $) <<@expr1073742911 std ::@expr1083 endl@expr1077 ;
+1058: }
+1059: }
+1060:
+1061: void CppCheckExecutor :: reportOut ( const std :: string & outmsg@var202 , Color c@var203 )
+1062: {
+1063: std ::@expr1073742916 cout@expr1073742913 <<@expr1073742917 c@var203 <<@expr1073742918 $(@expr1073742919 outmsg@var202 $) <<@expr1073742920 Color ::@expr1073742921 Reset@expr1073742914 <<@expr1073742922 std ::@expr1073742923 endl@expr1073742915 ;
+1064: }
+1065:
+1066: void CppCheckExecutor :: reportProgress ( const std :: string & filename@var204 , const char stage@var205 [ ] , const unsigned long value@var206 )
+1067: {
+1068: (@expr1073742924 void ) filename@var204 ;
+1069:
+1070: if (@expr1073742925 !@expr1073742926 mLatestProgressOutputTime@var32 ) {
+1071: return ; }
+1072:
+1073:
+1074: const std ::@expr1073742927 time_t currentTime@var207 =@expr1073742928 std ::@expr1073742929 time (@expr1073742930 nullptr ) ;
+1075: if (@expr1073742931 currentTime@var207 >=@expr1073742932 (@expr1073742933 mLatestProgressOutputTime@var32 +@expr1073742934 10 ) ) {
+1076: mLatestProgressOutputTime@var32 =@expr1073742935 currentTime@var207 ;
+1077:
+1078:
+1079: std ::@expr1073742936 ostringstream ostr@var208 ;
+1080: ostr@var208 <<@expr1073742937 "progress: "
+1081: <<@expr1073742938 stage@var205
+1082: <<@expr1073742939 ' ' <<@expr1073742940 value@var206 <<@expr1073742941 '%' ;
+1083:
+1084:
+1085: reportOut (@expr1073742942 ostr@var208 .@expr1073742943 str (@expr1073742944 ) ) ;
+1086: }
+1087: }
+1088:
+1089: void CppCheckExecutor :: reportInfo ( const ErrorMessage & msg@var209 )
+1090: {
+1091: reportErr (@expr1073742945 msg@var209 ) ;
+1092: }
+1093:
+1094: void CppCheckExecutor :: reportStatus ( unsigned long fileindex@var210 , unsigned long filecount@var211 , unsigned long sizedone@var212 , unsigned long sizetotal@var213 )
+1095: {
+1096: if (@expr1073742950 filecount@var211 >@expr1073742951 1 ) {
+1097: std ::@expr1073742952 ostringstream oss@var214 ;
+1098: const long percentDone@var215 =@expr1073742953 (@expr1073742954 sizetotal@var213 >@expr1073742955 0 ) ?@expr1073742956 (@expr1073742957 static_cast < long > (@expr1073742958 static_cast < long double > (@expr1073742959 sizedone@var212 ) /@expr1073742960 sizetotal@var213 *@expr1073742961 100 ) ) :@expr1073742962 0 ;
+1099: oss@var214 <<@expr1073742963 fileindex@var210 <<@expr1073742964 '/' <<@expr1073742965 filecount@var211
+1100: <<@expr1073742966 " files checked " <<@expr1073742967 percentDone@var215
+1101: <<@expr1073742968 "% done" ;
+1102: std ::@expr1073742969 cout@expr1073742946 <<@expr1073742970 Color ::@expr1073742971 FgBlue@expr1073742947 <<@expr1073742972 oss@var214 .@expr1073742973 str (@expr1073742974 ) <<@expr1073742975 Color ::@expr1073742976 Reset@expr1073742948 <<@expr1073742977 std ::@expr1073742978 endl@expr1073742949 ;
+1103: }
+1104: }
+1105:
+1106: void CppCheckExecutor :: reportErr ( const ErrorMessage & msg@var216 )
+1107: {
+1108: if (@expr1073742980 mShowAllErrors@var35 ) {
+1109: reportOut (@expr1073742981 msg@var216 .@expr1158 toXML (@expr1159 ) ) ;
+1110: return ;
+1111: }
+1112:
+1113:
+1114: if (@expr1073742984 !@expr1073742985 mShownErrors@var30 .@expr1073742986 insert (@expr1073742987 msg@var216 .@expr1164 toString (@expr1073742989 mSettings@var29 .@expr1166 verbose@var238 ) ) .@expr1073742991 second@expr1073742979 ) {
+1115: return ; }
+1116:
+1117: if (@expr1073742992 mSettings@var29 .@expr1073742993 xml@var239 ) {
+1118: reportErr (@expr1073742994 msg@var216 .@expr1158 toXML (@expr1159 ) ) ; }
+1119: else {
+1120: reportErr (@expr1073742997 msg@var216 .@expr1164 toString (@expr1073742999 mSettings@var29 .@expr1166 verbose@var238 , mSettings@var29 .@expr1073743001 templateFormat@var240 , mSettings@var29 .@expr1073743002 templateLocation@var241 ) ) ; }
+1121: }
+1122:
+1123: void CppCheckExecutor :: setExceptionOutput ( FILE * exceptionOutput@var217 )
+1124: {
+1125: mExceptionOutput@var33 =@expr1073743003 exceptionOutput@var217 ;
+1126: }
+1127:
+1128: FILE * CppCheckExecutor :: getExceptionOutput ( )
+1129: {
+1130: return mExceptionOutput@var33 ;
+1131: }
+1132:
+1133: bool CppCheckExecutor :: tryLoadLibrary ( Library & destination@var218 , const std :: string & basepath@var219 , const char * filename@var220 )
+1134: {
+1135: const Library ::@expr1073743008 Error err@var221 =@expr1073743009 destination@var218 .@expr1073743010 load (@expr1073743011 basepath@var219 .@expr1073743012 c_str (@expr1073743013 ) , filename@var220 ) ;
+1136:
+1137: if (@expr1073743014 err@var221 .@expr1191 errorcode@var222 ==@expr1073743016 Library ::@expr1193 ErrorCode ::@expr1194 UNKNOWN_ELEMENT@expr1073743004 ) {
+1138: std ::@expr1195 cout@expr1181 <<@expr1073743020 "cppcheck: Found unknown elements in configuration file '" <<@expr1073743021 filename@var220 <<@expr1073743022 "': " <<@expr1073743023 err@var221 .@expr1200 reason@var223 <<@expr1073743025 std ::@expr1202 endl@expr1182 ; }
+1139: else { if (@expr1073743027 err@var221 .@expr1191 errorcode@var222 !=@expr1073743029 Library ::@expr1193 ErrorCode ::@expr1207 OK@expr1073743007 ) {
+1140: std ::@expr1195 cout@expr1181 <<@expr1073743033 "cppcheck: Failed to load library configuration file '" <<@expr1073743034 filename@var220 <<@expr1073743035 "'. " ;
+1141: switch (@expr1073743036 err@var221 .@expr1191 errorcode@var222 ) {
+1142: case Library ::@expr1193 ErrorCode ::@expr1207 OK :@expr1216 ;
+1143: break ;
+1144: case Library ::@expr1193 ErrorCode ::@expr1073743042 FILE_NOT_FOUND :@expr1216 ;
+1145: std ::@expr1195 cout@expr1181 <<@expr1073743045 "File not found" ;
+1146: break ;
+1147: case Library ::@expr1193 ErrorCode ::@expr1073743047 BAD_XML :@expr1216 ;
+1148: std ::@expr1195 cout@expr1181 <<@expr1073743050 "Bad XML" ;
+1149: break ;
+1150: case Library ::@expr1193 ErrorCode ::@expr1194 UNKNOWN_ELEMENT :@expr1216 ;
+1151: std ::@expr1195 cout@expr1181 <<@expr1073743055 "Unexpected element" ;
+1152: break ;
+1153: case Library ::@expr1193 ErrorCode ::@expr1073743057 MISSING_ATTRIBUTE :@expr1216 ;
+1154: std ::@expr1195 cout@expr1181 <<@expr1073743060 "Missing attribute" ;
+1155: break ;
+1156: case Library ::@expr1193 ErrorCode ::@expr1073743062 BAD_ATTRIBUTE_VALUE :@expr1216 ;
+1157: std ::@expr1195 cout@expr1181 <<@expr1073743065 "Bad attribute value" ;
+1158: break ;
+1159: case Library ::@expr1193 ErrorCode ::@expr1073743067 UNSUPPORTED_FORMAT :@expr1216 ;
+1160: std ::@expr1195 cout@expr1181 <<@expr1073743070 "File is of unsupported format version" ;
+1161: break ;
+1162: case Library ::@expr1193 ErrorCode ::@expr1073743072 DUPLICATE_PLATFORM_TYPE :@expr1216 ;
+1163: std ::@expr1195 cout@expr1181 <<@expr1073743075 "Duplicate platform type" ;
+1164: break ;
+1165: case Library ::@expr1193 ErrorCode ::@expr1073743077 PLATFORM_TYPE_REDEFINED :@expr1216 ;
+1166: std ::@expr1195 cout@expr1181 <<@expr1073743080 "Platform type redefined" ;
+1167: break ;
+1168: }
+1169: if (@expr1073743081 !@expr1073743082 err@var221 .@expr1200 reason@var223 .@expr1073743084 empty (@expr1073743085 ) ) {
+1170: std ::@expr1195 cout@expr1181 <<@expr1073743087 " '" +@expr1073743088 err@var221 .@expr1200 reason@var223 +@expr1073743090 "'" ; }
+1171: std ::@expr1195 cout@expr1181 <<@expr1073743092 std ::@expr1202 endl@expr1182 ;
+1172: return false ;
+1173: } }
+1174: return true ;
+1175: }
+1176:
+|
+1180:
+1181: bool CppCheckExecutor :: executeCommand ( std :: string exe@var224 , std :: vector < std :: string > args@var225 , const std :: string & redirect@var226 , std :: string * output_@var227 )
+1182: {
+1183: output_@var227 .@expr1073743095 clear (@expr1073743096 ) ;
+1184:
+1185: std ::@expr1073743097 string joinedArgs@var228 ;
+1186: for (@expr1073743098 const std ::@expr1275 string &@expr1276 arg@var229 :@expr1073743101 args@var225 ) {
+1187: if (@expr1073743102 !@expr1073743103 joinedArgs@var228 .@expr1073743104 empty (@expr1073743105 ) ) {
+1188: joinedArgs@var228 +=@expr1073743106 " " ; }
+1189: if (@expr1073743107 arg@var229 .@expr1073743108 find (@expr1073743109 " " ) !=@expr1073743110 std ::@expr1073743111 string ::@expr1073743112 npos@expr1073743094 ) {
+1190: joinedArgs@var228 +=@expr1073743113 '"' +@expr1073743114 arg@var229 +@expr1073743115 '"' ; }
+1191: else {
+1192: joinedArgs@var228 +=@expr1073743116 arg@var229 ; }
+1193: }
+1194:
+|
+1201:
+1202: const std ::@expr1275 string cmd@var230 =@expr1073743118 exe@var224 +@expr1073743119 " " +@expr1073743120 joinedArgs@var228 +@expr1073743121 " " +@expr1073743122 redirect@var226 ;
+1203: std ::@expr1073743123 unique_ptr < FILE , decltype (@expr1073743124 &@expr1276 pclose ) > pipe@var231 (@expr1073743126 popen (@expr1073743127 cmd@var230 .@expr1073743128 c_str (@expr1073743129 ) , "r" ) , pclose ) ;
+1204:
+1205: if (@expr1073743130 !@expr1073743131 pipe@var231 ) {
+1206: return false ; }
+1207: char buffer@var232 [@expr1073743132 1024 ] ;
+1208: while (@expr1073743133 fgets (@expr1073743134 buffer@var232 , sizeof (@expr1073743135 buffer@var232 ) , pipe@var231 .@expr1073743136 get (@expr1073743137 ) ) !=@expr1073743138 nullptr ) {
+1209: *@expr1073743139 output_@var227 +=@expr1073743140 buffer@var232 ; }
+1210: return true ;
+1211: }
+
+
+
+##Value flow
+Line 112
+  ( always {!<=-1,!>=2}
+Line 117
+  ( always {!<=-1,!>=2}
+Line 136
+  ( always {!<=-1,!>=2}
+Line 199
+  mShowAllErrors always {!<=-1,!>=2}
+Line 52
+  ( always {!<=-1,!>=2}
+Line 57
+  ( always {!<=-1,!>=2}
+Line 58
+  return always {!<=-1,!>=2}
+  mShowVersion always {!<=-1,!>=2}
+Line 64
+  ( always {!<=-1,!>=2}
+Line 65
+  return always {!<=-1,!>=2}
+  mShowErrorMessages always {!<=-1,!>=2}
+Line 78
+  ( always {!<=-1,!>=2}
+Line 79
+  return always {!<=-1,!>=2}
+  mShowHelp always {!<=-1,!>=2}
+Line 85
+  ( always {!<=-1,!>=2}
+Line 86
+  return always {!<=-1,!>=2}
+  mExitAfterPrint always {!<=-1,!>=2}
+Line 117
+  mShowHelp always {!<=-1,!>=2}
+Line 118
+  mShowVersion always {!<=-1,!>=2}
+Line 119
+  mShowErrorMessages always {!<=-1,!>=2}
+Line 120
+  mExitAfterPrint always {!<=-1,!>=2}
+Line 47
+  extra always size=0
+Line 75
+  , always {!<=-1,!>=2}
+  recursive always {!<=-1,!>=2}
+Line 81
+  ( always {!<=-1,!>=2}
+Line 87
+  ( always {!<=-1,!>=2}
+Line 45
+  ( always !<=-1
+Line 87
+  ( always {!<=-1,!>=2}
+Line 95
+  nullptr always 0
+  0 always 0
+  nullptr always 0
+  mShowAllErrors always {!<=-1,!>=2}
+  false always 0
+Line 103
+  ( always {!<=-1,!>=2}
+Line 105
+  cppcheck possible lifetime[Address]=(cppCheck)@16
+Line 106
+  ( inconclusive lifetime[SubObject]=(cppcheck->settings())
+  & {lifetime[Address]=(cppcheck->settings()),!0}
+Line 107
+  success always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  parser inconclusive lifetime[SubObject]=(cppcheck->settings())
+  ( always {!<=-1,!>=2}
+Line 109
+  success always {!<=-1,!>=2}
+Line 110
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 111
+  ! always {!<=-1,!>=2}
+Line 115
+  != always {!<=-1,!>=2}
+  0 always 0
+Line 116
+  "Cppcheck " always "Cppcheck "
+  " (" always " ("
+Line 117
+  ')' always 41
+Line 119
+  "Cppcheck " always "Cppcheck "
+Line 123
+  ( always {!<=-1,!>=2}
+Line 124
+  mShowAllErrors always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 126
+  cppcheck inconclusive lifetime[Address]=(cppCheck)@16
+Line 130
+  ( always {!<=-1,!>=2}
+Line 132
+  return always {!<=-1,!>=2}
+  true always 1
+Line 135
+  return always {!<=-1,!>=2}
+  false always 0
+Line 141
+  != always {!<=-1,!>=2}
+Line 144
+  ( always {!<=-1,!>=2}
+Line 149
+  "(information) Couldn't find path given by -I '" always "(information) Couldn't find path given by -I '"
+  '\'' always 39
+Line 156
+  warn always {!<=-1,!>=2}
+  warn always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 160
+  warn always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 164
+  warn {!<=-1,!>=2,1}
+Line 165
+  "cppcheck: filename exclusion does not apply to header (.h and .hpp) files." always "cppcheck: filename exclusion does not apply to header (.h and .hpp) files."
+Line 166
+  "cppcheck: Please use --suppress for ignoring results from the header files." always "cppcheck: Please use --suppress for ignoring results from the header files."
+Line 175
+  caseSensitive always 1
+  = always 1
+  true always 1
+Line 177
+  ! always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+Line 186
+  ! {!<=-1,!>=2,0}
+  newList possible size=0
+  ( {!<=-1,!>=2,1}
+Line 187
+  = always !size=0
+  newList always !size=0
+Line 189
+  "cppcheck: error: could not find any files matching the filter." always "cppcheck: error: could not find any files matching the filter."
+Line 190
+  return always {!<=-1,!>=2}
+  false always 0
+Line 192
+  ! {!<=-1,!>=2,0}
+  pathnames possible size=0
+  ( {!<=-1,!>=2,1}
+Line 194
+  caseSensitive always 1
+Line 197
+  ! {!<=-1,!>=2,0}
+  err possible size=0
+  ( {!<=-1,!>=2,1}
+Line 198
+  "cppcheck: " always "cppcheck: "
+  err always !size=0
+Line 203
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 204
+  "cppcheck: error: could not find or open any of the paths given." always "cppcheck: error: could not find or open any of the paths given."
+Line 205
+  ! {!<=-1,!>=2,0}
+  ignored possible size=0
+  ( {!<=-1,!>=2,1}
+Line 206
+  "cppcheck: Maybe all paths were ignored?" always "cppcheck: Maybe all paths were ignored?"
+Line 207
+  return always {!<=-1,!>=2}
+  false always 0
+Line 208
+  ! always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 210
+  = {lifetime[Iterator]=(mFiles),start=0}
+  ( {lifetime[Iterator]=(mFiles),start=0}
+  i possible {lifetime[Iterator]=(mFiles),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mFiles),end=0}
+Line 211
+  i possible lifetime[Iterator]=(mFiles)
+Line 212
+  [ always !<=-1
+  = always !<=-1
+Line 214
+  = possible size=0
+  newMap possible size=0
+Line 215
+  mFiles possible size=0
+  ( {!<=-1,!>=2,1}
+Line 216
+  "cppcheck: error: could not find any files matching the filter." always "cppcheck: error: could not find any files matching the filter."
+Line 217
+  return always {!<=-1,!>=2}
+  false always 0
+Line 222
+  return always {!<=-1,!>=2}
+  true always 1
+Line 227
+  = always 0
+  false always 0
+Line 228
+  = always 0
+  false always 0
+Line 232
+  this always !0
+  true always 1
+Line 235
+  = {&,lifetime[Address]=(settings),!0}
+  & {&,lifetime[Address]=(settings),!0}
+Line 237
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  & {lifetime[Address]=(cppCheck),!0}
+Line 238
+  = always 0
+  nullptr always 0
+Line 242
+  = always 0
+  nullptr always 0
+Line 253
+  = always 0
+  nullptr always 0
+Line 259
+  = {&,lifetime[Address]=(settings),!0}
+  & {&,lifetime[Address]=(settings),!0}
+Line 267
+  ( always !<=-1
+  & always !0
+Line 269
+  return always !<=-1
+Line 280
+  , always {!<=-1,!>=2}
+  demangling always {!<=-1,!>=2}
+  , always {!<=-1,!>=2}
+  lowMem always {!<=-1,!>=2}
+Line 346
+  ( {!<=-1,!>=2,1@15}
+  demangling {!<=-1,!>=2,1@15}
+Line 347
+  ( possible -1@15
+  maxdepth possible -1@15
+Line 348
+  ( {!<=-1,!>=2,1@15}
+  lowMem {!<=-1,!>=2,1@15}
+Line 355
+  MYSTACKSIZE always !<=-1
+  = always !<=-1
+  16 always 16
+  * always 16384
+  1024 always 1024
+Line 357
+  MYSTACKSIZE always !<=-1
+  0 always 0
+Line 358
+  bStackBelowHeap always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 365
+  ( always {!<=-1,!>=2}
+Line 367
+  nullptr always 0
+  == always {!<=-1,!>=2}
+Line 368
+  return always {!<=-1,!>=2}
+  false always 0
+Line 370
+  bStackBelowHeap always {!<=-1,!>=2}
+Line 371
+  return always {!<=-1,!>=2}
+  ptr always !0
+  < always {!<=-1,!>=2}
+  & {lifetime[Address]=(a),!0,Uninit*}
+  a always Uninit
+Line 373
+  return always {!<=-1,!>=2}
+  ptr always !0
+  > always {!<=-1,!>=2}
+  & {lifetime[Address]=(a),!0,Uninit*}
+  a always Uninit
+Line 385
+  6 always 6
+  "6" always "6"
+Line 386
+  "SIGBUS" always "SIGBUS"
+Line 387
+  8 always 8
+  "8" always "8"
+Line 388
+  "SIGILL" always "SIGILL"
+Line 389
+  2 always 2
+  "2" always "2"
+Line 390
+  "SIGQUIT" always "SIGQUIT"
+Line 391
+  11 always 11
+  "11" always "11"
+Line 392
+  "SIGSYS" always "SIGSYS"
+Line 394
+  "SIGUSR1" always "SIGUSR1"
+Line 407
+  type possible -1
+  = always -1
+  -1 always -1
+Line 420
+  = possible lifetime[Iterator]=(listofsignals)
+  ( possible lifetime[Iterator]=(listofsignals)
+  signo inconclusive {6,8,2,11}
+Line 421
+  == always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(listofsignals),end=0}
+  "unknown" always "unknown"
+  : always "unknown"
+  it always {!symbolic=(listofsignals.end()),!end=0}
+Line 422
+  printCallstack {!<=-1,!>=2,1}
+  printCallstack always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 423
+  lowMem always {!<=-1,!>=2}
+  lowMem always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 424
+  unexpectedSignal always {!<=-1,!>=2}
+  unexpectedSignal always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 425
+  terminate always {!<=-1,!>=2}
+  terminate always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 426
+  isAddressOnStack always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 429
+  6 always 6
+Line 430
+  "Internal error: cppcheck received signal " always "Internal error: cppcheck received signal "
+Line 436
+  " - out of memory or assertion?\n" always " - out of memory or assertion?\n"
+Line 439
+  lowMem always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 442
+  "Internal error: cppcheck received signal " always "Internal error: cppcheck received signal "
+Line 446
+  " - BUS_ADRALN" always " - BUS_ADRALN"
+Line 449
+  " - BUS_ADRERR" always " - BUS_ADRERR"
+Line 452
+  " - BUS_OBJERR" always " - BUS_OBJERR"
+Line 467
+  " (at 0x%lx).\n" always " (at 0x%lx).\n"
+Line 468
+  ( always !<=-1
+Line 470
+  8 always 8
+Line 471
+  "Internal error: cppcheck received signal " always "Internal error: cppcheck received signal "
+Line 475
+  " - FPE_INTDIV" always " - FPE_INTDIV"
+Line 478
+  " - FPE_INTOVF" always " - FPE_INTOVF"
+Line 481
+  " - FPE_FLTDIV" always " - FPE_FLTDIV"
+Line 484
+  " - FPE_FLTOVF" always " - FPE_FLTOVF"
+Line 487
+  " - FPE_FLTUND" always " - FPE_FLTUND"
+Line 490
+  " - FPE_FLTRES" always " - FPE_FLTRES"
+Line 493
+  " - FPE_FLTINV" always " - FPE_FLTINV"
+Line 496
+  " - FPE_FLTSUB" always " - FPE_FLTSUB"
+Line 501
+  " (at 0x%lx).\n" always " (at 0x%lx).\n"
+Line 502
+  ( always !<=-1
+Line 505
+  "Internal error: cppcheck received signal " always "Internal error: cppcheck received signal "
+Line 509
+  " - ILL_ILLOPC" always " - ILL_ILLOPC"
+Line 512
+  " - ILL_ILLOPN" always " - ILL_ILLOPN"
+Line 515
+  " - ILL_ILLADR" always " - ILL_ILLADR"
+Line 518
+  " - ILL_ILLTRP" always " - ILL_ILLTRP"
+Line 521
+  " - ILL_PRVOPC" always " - ILL_PRVOPC"
+Line 524
+  " - ILL_PRVREG" always " - ILL_PRVREG"
+Line 527
+  " - ILL_COPROC" always " - ILL_COPROC"
+Line 530
+  " - ILL_BADSTK" always " - ILL_BADSTK"
+Line 535
+  " (at 0x%lx).%s\n" always " (at 0x%lx).%s\n"
+Line 536
+  ( always !<=-1
+Line 537
+  isAddressOnStack {!<=-1,!>=2,0}
+  ? possible {" Stackoverflow?",""}
+  " Stackoverflow?" always " Stackoverflow?"
+  : always ""
+  "" always ""
+Line 539
+  2 always 2
+Line 540
+  unexpectedSignal always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 541
+  "cppcheck received signal " always "cppcheck received signal "
+Line 543
+  printCallstack always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 544
+  ".\n" always ".\n"
+Line 546
+  11 always 11
+Line 547
+  "Internal error: cppcheck received signal " always "Internal error: cppcheck received signal "
+Line 551
+  " - SEGV_MAPERR" always " - SEGV_MAPERR"
+Line 554
+  " - SEGV_ACCERR" always " - SEGV_ACCERR"
+Line 559
+  " (%sat 0x%lx).%s\n" always " (%sat 0x%lx).%s\n"
+Line 561
+  == always {!<=-1,!>=2}
+  -1 always -1
+  ? possible ""
+  "" always ""
+  : always ""
+Line 562
+  type always !-1
+  == always {!<=-1,!>=2}
+  0 always 0
+  ? possible {"reading ","writing "}
+  "reading " always "reading "
+  : always "writing "
+  "writing " always "writing "
+Line 563
+  ( always !<=-1
+Line 564
+  isAddressOnStack {!<=-1,!>=2,0}
+  ? possible {" Stackoverflow?",""}
+  " Stackoverflow?" always " Stackoverflow?"
+  : always ""
+  "" always ""
+Line 568
+  "cppcheck received signal " always "cppcheck received signal "
+Line 570
+  ".\n" always ".\n"
+Line 571
+  terminate always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 574
+  "Internal error: cppcheck received signal " always "Internal error: cppcheck received signal "
+Line 576
+  ".\n" always ".\n"
+Line 579
+  printCallstack {!<=-1,!>=2,1}
+Line 580
+  true always 1
+  -1 always -1
+  lowMem {!<=-1,!>=2,1}
+Line 582
+  unexpectedSignal {!<=-1,!>=2,0}
+Line 583
+  "\nPlease report this to the cppcheck developers!\n" always "\nPlease report this to the cppcheck developers!\n"
+Line 587
+  terminate {!<=-1,!>=2,0}
+Line 590
+  & {lifetime[Address]=(act),!0}
+  0 always 0
+  ( always !<=-1
+Line 592
+  & {lifetime[Address]=(act),!0}
+  nullptr always 0
+Line 841
+  1 always 1
+Line 842
+  bStackBelowHeap always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  & {lifetime[Address]=(stackVariable),!0,Uninit*}
+  stackVariable always Uninit
+  < always {!<=-1,!>=2}
+  heapVariable always size=1
+Line 843
+  heapVariable always size=1
+Line 848
+  = always 0
+  0 always 0
+Line 849
+  = always !<=-1
+  MYSTACKSIZE always !<=-1
+Line 850
+  & {lifetime[Address]=(segv_stack),!0}
+  nullptr always 0
+Line 854
+  & {lifetime[Address]=(act),!0}
+  0 always 0
+  ( always !<=-1
+Line 857
+  = {lifetime[Iterator]=(listofsignals),start=0}
+  ( {lifetime[Iterator]=(listofsignals),start=0}
+  sig possible {lifetime[Iterator]=(listofsignals),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(listofsignals),end=0}
+Line 858
+  sig possible lifetime[Iterator]=(listofsignals)
+  & {lifetime[Address]=(act),!0}
+  nullptr always 0
+Line 872
+  = {&,lifetime[Address]=(cppcheck.settings()),!0}
+  & {&,lifetime[Address]=(cppcheck.settings()),!0}
+Line 873
+  std always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "std.cfg" always "std.cfg"
+Line 876
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  ( {lifetime[Object]=(lib),!0}
+Line 877
+  "Failed to load the library " always "Failed to load the library "
+Line 879
+  callstack always size=0
+  "failedToLoadCfg" always "failedToLoadCfg"
+Line 885
+  ! always {!<=-1,!>=2}
+  std always {!<=-1,!>=2}
+Line 887
+  "Failed to load std.cfg. Your Cppcheck installation is broken, please re-install." always "Failed to load std.cfg. Your Cppcheck installation is broken, please re-install."
+Line 893
+  "cfg" always "cfg"
+Line 894
+  "The Cppcheck binary was compiled without FILESDIR set. Either the std.cfg should be available in " always "The Cppcheck binary was compiled without FILESDIR set. Either the std.cfg should be available in "
+Line 895
+  " or the FILESDIR should be configured." always " or the FILESDIR should be configured."
+Line 898
+  callstack always size=0
+  " " always " "
+  "failedToLoadCfg" always "failedToLoadCfg"
+Line 904
+  nullptr always 0
+Line 906
+  ! always {!<=-1,!>=2}
+Line 914
+  ! always {!<=-1,!>=2}
+Line 917
+  std always {!<=-1,!>=2}
+Line 918
+  std always {!<=-1,!>=2}
+  = {lifetime[Iterator]=(mFiles),start=0}
+  ( {lifetime[Iterator]=(mFiles),start=0}
+  i possible {lifetime[Iterator]=(mFiles),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mFiles),end=0}
+Line 919
+  i possible lifetime[Iterator]=(mFiles)
+Line 923
+  returnValue always !<=-1
+  returnValue always !<=-1
+  = always 0
+  0 always 0
+Line 924
+  == always {!<=-1,!>=2}
+  1 always 1
+Line 926
+  = always 1
+  true always 1
+Line 928
+  totalfilesize always !<=-1
+  totalfilesize always !<=-1
+  = always 0
+  0 always 0
+Line 929
+  std always {!<=-1,!>=2}
+  = {lifetime[Iterator]=(mFiles),start=0}
+  ( {lifetime[Iterator]=(mFiles),start=0}
+  i possible {lifetime[Iterator]=(mFiles),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mFiles),end=0}
+  i possible lifetime[Iterator]=(mFiles)
+Line 930
+  totalfilesize always !<=-1
+  += always !<=-1
+  i {lifetime[Iterator]=(mFiles),!symbolic=(mFiles.end()),!end=0}
+Line 933
+  processedsize always !<=-1
+  processedsize always !<=-1
+  = always 0
+  0 always 0
+Line 934
+  c always !<=-1
+  c always !<=-1
+  = always 0
+  0 always 0
+Line 936
+  std always {!<=-1,!>=2}
+  = {lifetime[Iterator]=(mFiles),start=0}
+  ( {lifetime[Iterator]=(mFiles),start=0}
+  i possible {lifetime[Iterator]=(mFiles),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mFiles),end=0}
+Line 937
+  ! always {!<=-1,!>=2}
+  i possible lifetime[Iterator]=(mFiles)
+Line 938
+  || always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+Line 939
+  returnValue always !<=-1
+  += always !<=-1
+Line 940
+  processedsize always !<=-1
+  += always !<=-1
+Line 941
+  ! always {!<=-1,!>=2}
+Line 942
+  c always !<=-1
+  + always !<=0
+  1 always 1
+  ( always !<=-1
+  processedsize always !<=-1
+  totalfilesize always !<=-1
+Line 943
+  c always !<=-1
+  ++ always !<=-1
+Line 950
+  returnValue always !<=-1
+  += always !<=-1
+Line 951
+  ++ {!<=0,1}
+  c {!<=-1,0}
+Line 952
+  ! always {!<=-1,!>=2}
+Line 953
+  c always !<=-1
+  c always !<=-1
+Line 961
+  std always {!<=-1,!>=2}
+  = {lifetime[Iterator]=(mFiles),start=0}
+  ( {lifetime[Iterator]=(mFiles),start=0}
+  i possible {lifetime[Iterator]=(mFiles),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mFiles),end=0}
+Line 962
+  i possible lifetime[Iterator]=(mFiles)
+  && always {!<=-1,!>=2}
+Line 963
+  returnValue always !<=-1
+  += always !<=-1
+Line 964
+  processedsize always !<=-1
+  += always !<=-1
+Line 965
+  ! always {!<=-1,!>=2}
+Line 966
+  c always !<=-1
+  + always !<=0
+  1 always 1
+  ( always !<=-1
+  processedsize always !<=-1
+  totalfilesize always !<=-1
+Line 967
+  c always !<=-1
+  ++ always !<=-1
+Line 971
+  returnValue always !<=-1
+  ++ always !<=-1
+Line 972
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 973
+  "No thread support yet implemented for this platform." always "No thread support yet implemented for this platform."
+Line 976
+  this always !0
+Line 977
+  returnValue always !<=-1
+  = always !<=-1
+  ( always !<=-1
+Line 982
+  || always {!<=-1,!>=2}
+Line 983
+  enableUnusedFunctionCheck always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+Line 986
+  std always {!<=-1,!>=2}
+  = {lifetime[Iterator]=(mFiles),start=0}
+  ( {lifetime[Iterator]=(mFiles),start=0}
+  i possible {lifetime[Iterator]=(mFiles),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mFiles),end=0}
+Line 987
+  err always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  i possible lifetime[Iterator]=(mFiles)
+  enableUnusedFunctionCheck always {!<=-1,!>=2}
+Line 988
+  err always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  returnValue always !<=-1
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 989
+  returnValue always !<=-1
+  = always !<=-1
+Line 993
+  err always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  enableUnusedFunctionCheck always {!<=-1,!>=2}
+Line 994
+  err always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  returnValue always !<=-1
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 995
+  returnValue always !<=-1
+  = always !<=-1
+Line 998
+  ! {!<=-1,!>=2,1}
+  . possible 0
+Line 999
+  "" always ""
+  0U always 0
+Line 1001
+  && always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 1003
+  callStack always size=0
+Line 1006
+  "Cppcheck cannot find all the include files (use --check-config for details)\nCppcheck cannot find all the include files. Cppcheck can check the code without the include files found. But the results will probably be more accurate if all the include files are found. Please check your project's include directories and add all of them as include directories for Cppcheck. To see what files Cppcheck cannot find use --check-config." always "Cppcheck cannot find all the include files (use --check-config for details)\nCppcheck cannot find all the include files. Cppcheck can check the code without the include files found. But the results will probably be more accurate if all the include files are found. Please check your project's include directories and add all of them as include directories for Cppcheck. To see what files Cppcheck cannot find use --check-config."
+Line 1012
+  ? possible {"missingInclude","missingIncludeSystem"}
+  "missingInclude" always "missingInclude"
+  : always "missingIncludeSystem"
+  "missingIncludeSystem" always "missingIncludeSystem"
+Line 1022
+  = always 0
+  nullptr always 0
+Line 1023
+  returnValue always !<=-1
+Line 1025
+  0 always 0
+Line 1055
+  mErrorOutput always !0
+Line 1066
+  , always !<=-1
+  value always !<=-1
+Line 1070
+  ! always {!<=-1,!>=2}
+Line 1074
+  nullptr always 0
+Line 1075
+  >= always {!<=-1,!>=2}
+  mLatestProgressOutputTime always !0
+  + always !10
+  10 always 10
+Line 1076
+  = {>=symbolic=(mLatestProgressOutputTime+10),!<=symbolic=(mLatestProgressOutputTime+10-1)}
+  currentTime {>=symbolic=(mLatestProgressOutputTime+10),!<=symbolic=(mLatestProgressOutputTime+10-1)}
+Line 1080
+  "progress: " always "progress: "
+Line 1082
+  ' ' always 32
+  value always !<=-1
+  '%' always 37
+Line 1094
+  fileindex always !<=-1
+  filecount always !<=-1
+  sizedone always !<=-1
+  sizetotal always !<=-1
+Line 1096
+  filecount always !<=-1
+  > always {!<=-1,!>=2}
+  1 always 1
+Line 1098
+  = possible 0
+  sizetotal always !<=-1
+  > always {!<=-1,!>=2}
+  0 always 0
+  ? possible 0
+  ( always !<=-1
+  sizedone always !<=-1
+  sizetotal {>=1,!<=0}
+  100 always 100
+  : always 0
+  0 always 0
+Line 1099
+  fileindex always !<=-1
+  '/' always 47
+  filecount always !<=1
+Line 1100
+  " files checked " always " files checked "
+  percentDone {symbolic=((sizetotal>0)?(static_cast<long>(static_cast<long double>(sizedone)/sizetotal*100)):0),0}
+Line 1101
+  "% done" always "% done"
+Line 1108
+  mShowAllErrors always {!<=-1,!>=2}
+Line 1114
+  ! always {!<=-1,!>=2}
+Line 1133
+  ( always {!<=-1,!>=2}
+Line 1135
+  ( {lifetime[Object]=(basepath),!0}
+  filename possible {"std.cfg"@4,lifetime[Object]=(lib)@5}
+Line 1137
+  == always {!<=-1,!>=2}
+Line 1138
+  "cppcheck: Found unknown elements in configuration file '" always "cppcheck: Found unknown elements in configuration file '"
+  filename inconclusive lifetime[Object]=(lib)@5
+  "': " always "': "
+Line 1139
+  != always {!<=-1,!>=2}
+Line 1140
+  "cppcheck: Failed to load library configuration file '" always "cppcheck: Failed to load library configuration file '"
+  filename inconclusive lifetime[Object]=(lib)@5
+  "'. " always "'. "
+Line 1145
+  "File not found" always "File not found"
+Line 1148
+  "Bad XML" always "Bad XML"
+Line 1151
+  "Unexpected element" always "Unexpected element"
+Line 1154
+  "Missing attribute" always "Missing attribute"
+Line 1157
+  "Bad attribute value" always "Bad attribute value"
+Line 1160
+  "File is of unsupported format version" always "File is of unsupported format version"
+Line 1163
+  "Duplicate platform type" always "Duplicate platform type"
+Line 1166
+  "Platform type redefined" always "Platform type redefined"
+Line 1169
+  ! always {!<=-1,!>=2}
+Line 1170
+  " '" always " '"
+  "'" always "'"
+Line 1172
+  return always {!<=-1,!>=2}
+  false always 0
+Line 1174
+  return always {!<=-1,!>=2}
+  true always 1
+Line 1181
+  ( always {!<=-1,!>=2}
+Line 1187
+  ! {!<=-1,!>=2,0}
+  joinedArgs possible size=0
+  ( {!<=-1,!>=2,1}
+Line 1188
+  joinedArgs always !size=0
+  " " always " "
+Line 1189
+  ( always !<=-1
+  " " always " "
+  != always {!<=-1,!>=2}
+Line 1190
+  '"' always 34
+  '"' always 34
+Line 1202
+  " " always " "
+  " " always " "
+Line 1203
+  :: possible 0
+  pipe possible 0
+  ( {lifetime[Object]=(cmd),!0}
+  "r" always "r"
+Line 1205
+  ! always {!<=-1,!>=2}
+Line 1206
+  return always {!<=-1,!>=2}
+  false always 0
+Line 1207
+  1024 always 1024
+Line 1208
+  buffer always Uninit*
+  sizeof always 1024
+  ( always 1024
+  pipe always !0
+  ( {lifetime[SubObject]=(pipe),!0,symbolic=(pipe)}
+  != always {!<=-1,!>=2}
+  nullptr always 0
+Line 1210
+  return always {!<=-1,!>=2}
+  true always 1

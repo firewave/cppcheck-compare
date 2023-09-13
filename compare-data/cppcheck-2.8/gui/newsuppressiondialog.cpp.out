@@ -1,0 +1,119 @@
+
+
+##file cppcheck-2.8/gui/newsuppressiondialog.h
+
+1:
+|
+25:
+26: class QObject ;
+27: class QWidget ;
+28: namespace Ui {
+29: class NewSuppressionDialog ;
+30: }
+31:
+32: class NewSuppressionDialog : public QDialog {
+33: Q_OBJECT
+34:
+35: public:
+36: explicit NewSuppressionDialog ( QWidget * parent@var1 = nullptr ) ;
+37: NewSuppressionDialog ( const NewSuppressionDialog & ) = delete ;
+38: ~ NewSuppressionDialog ( ) override ;
+39: NewSuppressionDialog & operator= ( const NewSuppressionDialog & ) = delete ;
+40:
+|
+44:
+45: Suppressions :: Suppression getSuppression ( ) const ;
+46:
+|
+51:
+52: void setSuppression ( const Suppressions :: Suppression & suppression@var2 ) ;
+53:
+54: private:
+55: Ui :: NewSuppressionDialog * mUI@var3 ;
+56: } ;
+
+##file cppcheck-2.8/gui/newsuppressiondialog.cpp
+
+1:
+|
+30:
+31: class QWidget ;
+32:
+33: NewSuppressionDialog :: NewSuppressionDialog ( QWidget * parent@var4 ) :
+34: QDialog ( parent@var4 ) ,
+35: mUI@var3 ( new Ui :: NewSuppressionDialog )
+36: {
+37: mUI@var3 .@expr1073741841 setupUi (@expr1073741842 this@expr1073741843 ) ;
+38:
+39: class QErrorLogger :@expr1073741844 public ErrorLogger {
+40: public:
+41: void reportOut (@expr21 const std ::@expr1073741846 string &@expr1073741847 , Color ) override { }
+42: void reportErr (@expr1073741848 const ErrorMessage & msg@var5 ) override {
+43: errorIds@var7 <<@expr1073741869 QString ::@expr1073741870 fromStdString (@expr1073741871 msg@var5 .@expr1073741872 id@var6 ) ;
+44: }
+45: QStringList errorIds@var7 ;
+46: } ;
+47:
+48: QErrorLogger errorLogger@var8 ;
+49: CppCheck cppcheck@var9 (@expr1073741853 errorLogger@var8 , false , nullptr ) ;
+50: cppcheck@var9 .@expr1073741854 getErrorMessages (@expr1073741855 ) ;
+51: errorLogger@var8 .@expr32 errorIds@var10 .@expr1073741857 sort (@expr1073741858 ) ;
+52:
+53: mUI@var3 .@expr35 mComboErrorId@var21 .@expr1073741860 addItems (@expr1073741861 errorLogger@var8 .@expr32 errorIds@var10 ) ;
+54: mUI@var3 .@expr35 mComboErrorId@var21 .@expr1073741864 setCurrentIndex (@expr1073741865 -1 ) ;
+55: mUI@var3 .@expr35 mComboErrorId@var21 .@expr1073741867 setCurrentText (@expr1073741868 "" ) ;
+56: }
+57:
+58: NewSuppressionDialog :: ~ NewSuppressionDialog ( )
+59: {
+60: delete mUI@var3 ;
+61: }
+62:
+63: Suppressions :: Suppression NewSuppressionDialog :: getSuppression ( ) const
+64: {
+65: Suppressions ::@expr1073741873 Suppression ret@var11 ;
+66: ret@var11 .@expr50 errorId@var12 =@expr1073741875 mUI@var3 .@expr1073741876 mComboErrorId@var21 .@expr1073741877 currentText (@expr1073741878 ) .@expr1073741879 toStdString (@expr1073741880 ) ;
+67: if (@expr1073741881 ret@var11 .@expr50 errorId@var12 .@expr1073741883 empty (@expr1073741884 ) ) {
+68: ret@var11 .@expr50 errorId@var12 =@expr1073741886 "*" ; }
+69: ret@var11 .@expr1073741887 fileName@var13 =@expr1073741888 mUI@var3 .@expr1073741889 mTextFileName@var22 .@expr1073741890 text (@expr1073741891 ) .@expr1073741892 toStdString (@expr1073741893 ) ;
+70: if (@expr1073741894 !@expr1073741895 mUI@var3 .@expr72 mTextLineNumber@var23 .@expr73 text (@expr74 ) .@expr1073741899 isEmpty (@expr1073741900 ) ) {
+71: ret@var11 .@expr1073741901 lineNumber@var14 =@expr1073741902 mUI@var3 .@expr72 mTextLineNumber@var23 .@expr73 text (@expr74 ) .@expr1073741906 toInt (@expr1073741907 ) ; }
+72: ret@var11 .@expr1073741908 symbolName@var15 =@expr1073741909 mUI@var3 .@expr1073741910 mTextSymbolName@var24 .@expr1073741911 text (@expr1073741912 ) .@expr1073741913 toStdString (@expr1073741914 ) ;
+73: return ret@var11 ;
+74: }
+75:
+76: void NewSuppressionDialog :: setSuppression ( const Suppressions :: Suppression & suppression@var16 )
+77: {
+78: setWindowTitle (@expr1073741915 tr (@expr1073741916 "Edit suppression" ) ) ;
+79: mUI@var3 .@expr1073741917 mComboErrorId@var21 .@expr1073741918 setCurrentText (@expr1073741919 QString ::@expr96 fromStdString (@expr1073741921 suppression@var16 .@expr1073741922 errorId@var17 ) ) ;
+80: mUI@var3 .@expr1073741923 mTextFileName@var22 .@expr1073741924 setText (@expr1073741925 QString ::@expr96 fromStdString (@expr1073741927 suppression@var16 .@expr1073741928 fileName@var18 ) ) ;
+81: mUI@var3 .@expr1073741929 mTextLineNumber@var23 .@expr1073741930 setText (@expr1073741931 suppression@var16 .@expr108 lineNumber@var19 >@expr1073741933 0 ?@expr1073741934 QString ::@expr1073741935 number (@expr1073741936 suppression@var16 .@expr108 lineNumber@var19 ) :@expr1073741938 QString (@expr1073741939 ) ) ;
+82: mUI@var3 .@expr1073741940 mTextSymbolName@var24 .@expr1073741941 setText (@expr1073741942 QString ::@expr96 fromStdString (@expr1073741944 suppression@var16 .@expr1073741945 symbolName@var20 ) ) ;
+83: }
+
+
+
+##Value flow
+Line 36
+  = always 0
+  nullptr always 0
+Line 37
+  this always !0
+Line 49
+  false always 0
+  nullptr always 0
+Line 54
+  -1 always -1
+Line 55
+  "" always ""
+Line 68
+  = always "*"
+  "*" always "*"
+Line 70
+  ! always {!<=-1,!>=2}
+Line 78
+  "Edit suppression" always "Edit suppression"
+Line 81
+  > always {!<=-1,!>=2}
+  0 always 0
+  . {>=1,!<=0}

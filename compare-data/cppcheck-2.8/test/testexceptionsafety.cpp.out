@@ -1,0 +1,1045 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741937 expected@var22 !=@expr1073741938 actual@var23 ) {
+62: std ::@expr1073741939 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741940 expected@var22 ;
+64: std ::@expr1073741941 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741942 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741943 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741944 str (@expr1073741945 ) , actualStr@var26 .@expr1073741946 str (@expr1073741947 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741948 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741949 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741950 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741951 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testexceptionsafety.cpp
+
+1:
+|
+27:
+28: class TestExceptionSafety : public TestFixture {
+29: public:
+30: TestExceptionSafety ( ) : TestFixture ( "TestExceptionSafety" ) { }
+31:
+32: private:
+33: Settings settings@var102 ;
+34:
+35: void run ( ) override {
+36: settings@var102 .@expr1073741952 severity@var103 .@expr1073741953 fill (@expr1073741954 ) ;
+37:
+38: $do ${ $if $(@expr1073741955 $prepareTest $(@expr1073741956 "destructors" $) $) ${ $setVerbose $(@expr1073741957 $false $) $; destructors $(@expr1073741958 $) $; $} $} $while $(@expr1073741959 $false $) ;
+39: $do ${ $if $(@expr1073741960 $prepareTest $(@expr1073741961 "deallocThrow1" $) $) ${ $setVerbose $(@expr1073741962 $false $) $; deallocThrow1 $(@expr1073741963 $) $; $} $} $while $(@expr1073741964 $false $) ;
+40: $do ${ $if $(@expr1073741965 $prepareTest $(@expr1073741966 "deallocThrow2" $) $) ${ $setVerbose $(@expr1073741967 $false $) $; deallocThrow2 $(@expr1073741968 $) $; $} $} $while $(@expr1073741969 $false $) ;
+41: $do ${ $if $(@expr1073741970 $prepareTest $(@expr1073741971 "deallocThrow3" $) $) ${ $setVerbose $(@expr1073741972 $false $) $; deallocThrow3 $(@expr1073741973 $) $; $} $} $while $(@expr1073741974 $false $) ;
+42: $do ${ $if $(@expr1073741975 $prepareTest $(@expr1073741976 "rethrowCopy1" $) $) ${ $setVerbose $(@expr1073741977 $false $) $; rethrowCopy1 $(@expr1073741978 $) $; $} $} $while $(@expr1073741979 $false $) ;
+43: $do ${ $if $(@expr1073741980 $prepareTest $(@expr1073741981 "rethrowCopy2" $) $) ${ $setVerbose $(@expr1073741982 $false $) $; rethrowCopy2 $(@expr1073741983 $) $; $} $} $while $(@expr1073741984 $false $) ;
+44: $do ${ $if $(@expr1073741985 $prepareTest $(@expr1073741986 "rethrowCopy3" $) $) ${ $setVerbose $(@expr1073741987 $false $) $; rethrowCopy3 $(@expr1073741988 $) $; $} $} $while $(@expr1073741989 $false $) ;
+45: $do ${ $if $(@expr1073741990 $prepareTest $(@expr1073741991 "rethrowCopy4" $) $) ${ $setVerbose $(@expr1073741992 $false $) $; rethrowCopy4 $(@expr1073741993 $) $; $} $} $while $(@expr1073741994 $false $) ;
+46: $do ${ $if $(@expr1073741995 $prepareTest $(@expr1073741996 "rethrowCopy5" $) $) ${ $setVerbose $(@expr1073741997 $false $) $; rethrowCopy5 $(@expr1073741998 $) $; $} $} $while $(@expr1073741999 $false $) ;
+47: $do ${ $if $(@expr1073742000 $prepareTest $(@expr1073742001 "catchExceptionByValue" $) $) ${ $setVerbose $(@expr1073742002 $false $) $; catchExceptionByValue $(@expr1073742003 $) $; $} $} $while $(@expr1073742004 $false $) ;
+48: $do ${ $if $(@expr1073742005 $prepareTest $(@expr1073742006 "noexceptThrow" $) $) ${ $setVerbose $(@expr1073742007 $false $) $; noexceptThrow $(@expr1073742008 $) $; $} $} $while $(@expr1073742009 $false $) ;
+49: $do ${ $if $(@expr1073742010 $prepareTest $(@expr1073742011 "nothrowThrow" $) $) ${ $setVerbose $(@expr1073742012 $false $) $; nothrowThrow $(@expr1073742013 $) $; $} $} $while $(@expr1073742014 $false $) ;
+50: $do ${ $if $(@expr1073742015 $prepareTest $(@expr1073742016 "unhandledExceptionSpecification1" $) $) ${ $setVerbose $(@expr1073742017 $false $) $; unhandledExceptionSpecification1 $(@expr1073742018 $) $; $} $} $while $(@expr1073742019 $false $) ;
+51: $do ${ $if $(@expr1073742020 $prepareTest $(@expr1073742021 "unhandledExceptionSpecification2" $) $) ${ $setVerbose $(@expr1073742022 $false $) $; unhandledExceptionSpecification2 $(@expr1073742023 $) $; $} $} $while $(@expr1073742024 $false $) ;
+52: $do ${ $if $(@expr1073742025 $prepareTest $(@expr1073742026 "nothrowAttributeThrow" $) $) ${ $setVerbose $(@expr1073742027 $false $) $; nothrowAttributeThrow $(@expr1073742028 $) $; $} $} $while $(@expr1073742029 $false $) ;
+53: $do ${ $if $(@expr1073742030 $prepareTest $(@expr1073742031 "nothrowAttributeThrow2" $) $) ${ $setVerbose $(@expr1073742032 $false $) $; nothrowAttributeThrow2 $(@expr1073742033 $) $; $} $} $while $(@expr1073742034 $false $) ;
+54: $do ${ $if $(@expr1073742035 $prepareTest $(@expr1073742036 "nothrowDeclspecThrow" $) $) ${ $setVerbose $(@expr1073742037 $false $) $; nothrowDeclspecThrow $(@expr1073742038 $) $; $} $} $while $(@expr1073742039 $false $) ;
+55: $do ${ $if $(@expr1073742040 $prepareTest $(@expr1073742041 "rethrowNoCurrentException1" $) $) ${ $setVerbose $(@expr1073742042 $false $) $; rethrowNoCurrentException1 $(@expr1073742043 $) $; $} $} $while $(@expr1073742044 $false $) ;
+56: $do ${ $if $(@expr1073742045 $prepareTest $(@expr1073742046 "rethrowNoCurrentException2" $) $) ${ $setVerbose $(@expr1073742047 $false $) $; rethrowNoCurrentException2 $(@expr1073742048 $) $; $} $} $while $(@expr1073742049 $false $) ;
+57: $do ${ $if $(@expr1073742050 $prepareTest $(@expr1073742051 "rethrowNoCurrentException3" $) $) ${ $setVerbose $(@expr1073742052 $false $) $; rethrowNoCurrentException3 $(@expr1073742053 $) $; $} $} $while $(@expr1073742054 $false $) ;
+58: }
+59:
+60:
+61: void check_ ( const char * file@var104 , int line@var105 , const char code@var106 [ ] , bool inconclusive@var107 = false ) {
+62:
+63: errout@var100 .@expr1073742056 str (@expr1073742057 "" ) ;
+64:
+65: settings@var102 .@expr1073742058 certainty@var108 .@expr1073742059 setEnabled (@expr1073742060 Certainty ::@expr1073742061 inconclusive@expr1073742055 , inconclusive@var107 ) ;
+66:
+67:
+68: Tokenizer tokenizer@var109 (@expr1073742062 &@expr239 settings@var102 , this@expr240 ) ;
+69: std ::@expr1073742065 istringstream istr@var110 (@expr1073742066 code@var106 ) ;
+70: $assert_ $(@expr1073742067 file@var104 $, line@var105 $, $(@expr1073742068 tokenizer@var109 .@expr1073742069 tokenize (@expr1073742070 istr@var110 , "test.cpp" ) $) $) ;
+71:
+72:
+73: CheckExceptionSafety checkExceptionSafety@var111 (@expr1073742071 &@expr248 tokenizer@var109 , &@expr239 settings@var102 , this@expr240 ) ;
+74: checkExceptionSafety@var111 .@expr1073742074 runChecks (@expr1073742075 &@expr248 tokenizer@var109 , &@expr239 settings@var102 , this@expr240 ) ;
+75: }
+76:
+77: void destructors ( ) {
+78: $check_ $(@expr1073742078 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 78 $, "class x {\n    ~x() {\n        throw e;\n    }\n};" $)
+79:
+80:
+81:
+82: ;
+83: $if $(@expr1073742079 $!@expr1073742080 $assertEquals $(@expr1073742081 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 83 $, "[test.cpp:3]: (warning) Class x is not safe, destructor throws exception\n" $, errout@var100 .@expr258 str (@expr259 ) $) $) { $return ; }
+84:
+85: $check_ $(@expr1073742084 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 85 $, "class x {\n    ~x();\n};\nx::~x() {\n    throw e;\n}" $)
+86:
+|
+89:
+90: ;
+91: $if $(@expr1073742085 $!@expr1073742086 $assertEquals $(@expr1073742087 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 91 $, "[test.cpp:5]: (warning) Class x is not safe, destructor throws exception\n" $, errout@var100 .@expr258 str (@expr259 ) $) $) { $return ; }
+92:
+93:
+94: $check_ $(@expr1073742090 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 94 $, "class x {\n    ~x() {\n        try {\n            throw e;\n        } catch (...) {\n        }\n    }\n}" $)
+95:
+|
+100:
+101: ;
+102: $if $(@expr1073742091 $!@expr1073742092 $assertEquals $(@expr1073742093 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 102 $, "" $, errout@var100 .@expr258 str (@expr259 ) $) $) { $return ; }
+103:
+104: $check_ $(@expr1073742096 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 104 $, "class x {\n    ~x() {\n        if(!std::uncaught_exception()) {\n            throw e;\n        }\n    }\n}" $)
+105:
+|
+109:
+110: ;
+111: $if $(@expr1073742097 $!@expr1073742098 $assertEquals $(@expr1073742099 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 111 $, "" $, errout@var100 .@expr258 str (@expr259 ) $) $) { $return ; }
+112: }
+113:
+114: void deallocThrow1 ( ) {
+115: $check_ $(@expr1073742102 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 115 $, "int * p;\nvoid f(int x) {\n    delete p;\n    if (x)\n        throw 123;\n    p = 0;\n}" $)
+116:
+|
+120:
+121: ;
+122: $if $(@expr1073742103 $!@expr1073742104 $assertEquals $(@expr1073742105 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 122 $, "[test.cpp:5]: (warning) Exception thrown in invalid state, 'p' points at deallocated memory.\n" $, errout@var100 .@expr282 str (@expr283 ) $) $) { $return ; }
+123:
+124: $check_ $(@expr1073742108 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 124 $, "void f() {\n    static int* p = foo;\n    delete p;\n    if (foo)\n        throw 1;\n    p = 0;\n}" $)
+125:
+|
+129:
+130: ;
+131: $if $(@expr1073742109 $!@expr1073742110 $assertEquals $(@expr1073742111 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 131 $, "[test.cpp:5]: (warning) Exception thrown in invalid state, 'p' points at deallocated memory.\n" $, errout@var100 .@expr282 str (@expr283 ) $) $) { $return ; }
+132: }
+133:
+134: void deallocThrow2 ( ) {
+135: $check_ $(@expr1073742114 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 135 $, "void f() {\n    int* p = 0;\n    delete p;\n    if (foo)\n        throw 1;\n    p = new int;\n}" , true $)
+136:
+|
+140:
+141: ;
+142: $if $(@expr1073742115 $!@expr1073742116 $assertEquals $(@expr1073742117 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 142 $, "" $, errout@var100 .@expr294 str (@expr295 ) $) $) { $return ; }
+143:
+144: $check_ $(@expr1073742120 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 144 $, "void f() {\n    static int* p = 0;\n    delete p;\n    reset(p);\n    throw 1;\n}" , true $)
+145:
+|
+148:
+149: ;
+150: $if $(@expr1073742121 $!@expr1073742122 $assertEquals $(@expr1073742123 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 150 $, "" $, errout@var100 .@expr294 str (@expr295 ) $) $) { $return ; }
+151: }
+152:
+153: void deallocThrow3 ( ) {
+154: $check_ $(@expr1073742126 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 154 $, "void f() {\n    static int* p = 0;\n    delete p;\n    throw 1;\n}" $)
+155:
+156:
+157:
+158: ;
+159: $if $(@expr1073742127 $!@expr1073742128 $assertEquals $(@expr1073742129 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 159 $, "" $, errout@var100 .@expr306 str (@expr307 ) $) $) { $return ; }
+160:
+161: $check_ $(@expr1073742132 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 161 $, "void f() {\n    static int* p = 0;\n    delete p;\n    throw 1;\n}" , true $)
+162:
+163:
+164:
+165: ;
+166: $if $(@expr1073742133 $!@expr1073742134 $assertEquals $(@expr1073742135 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 166 $, "[test.cpp:4]: (warning) Exception thrown in invalid state, 'p' points at deallocated memory.\n" $, errout@var100 .@expr306 str (@expr307 ) $) $) { $return ; }
+167: }
+168:
+169: void rethrowCopy1 ( ) {
+170: $check_ $(@expr1073742138 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 170 $, "void f() {\n    try\n    {\n       foo();\n    }\n    catch(const exception& err)\n    {\n        throw err;\n    }\n}" $)
+171:
+|
+178:
+179: ;
+180: $if $(@expr1073742139 $!@expr1073742140 $assertEquals $(@expr1073742141 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 180 $, "[test.cpp:8]: (style) Throwing a copy of the caught exception instead of rethrowing the original exception.\n" $, errout@var100 .@expr1073742142 str (@expr1073742143 ) $) $) { $return ; }
+181: }
+182:
+183: void rethrowCopy2 ( ) {
+184: $check_ $(@expr1073742144 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 184 $, "void f() {\n    try\n    {\n       foo();\n    }\n    catch(exception& err)\n    {\n        throw err;\n    }\n}" $)
+185:
+|
+192:
+193: ;
+194: $if $(@expr1073742145 $!@expr1073742146 $assertEquals $(@expr1073742147 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 194 $, "[test.cpp:8]: (style) Throwing a copy of the caught exception instead of rethrowing the original exception.\n" $, errout@var100 .@expr1073742148 str (@expr1073742149 ) $) $) { $return ; }
+195: }
+196:
+197: void rethrowCopy3 ( ) {
+198: $check_ $(@expr1073742150 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 198 $, "void f() {\n    try {\n       foo();\n    }\n    catch(std::runtime_error& err) {\n        throw err;\n    }\n}" $)
+199:
+|
+204:
+205: ;
+206: $if $(@expr1073742151 $!@expr1073742152 $assertEquals $(@expr1073742153 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 206 $, "[test.cpp:6]: (style) Throwing a copy of the caught exception instead of rethrowing the original exception.\n" $, errout@var100 .@expr1073742154 str (@expr1073742155 ) $) $) { $return ; }
+207: }
+208:
+209: void rethrowCopy4 ( ) {
+210: $check_ $(@expr1073742156 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 210 $, "void f() {\n    try\n    {\n       foo();\n    }\n    catch(const exception& err)\n    {\n        exception err2;\n        throw err2;\n    }\n}" $)
+211:
+|
+219:
+220: ;
+221: $if $(@expr1073742157 $!@expr1073742158 $assertEquals $(@expr1073742159 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 221 $, "" $, errout@var100 .@expr1073742160 str (@expr1073742161 ) $) $) { $return ; }
+222: }
+223:
+224: void rethrowCopy5 ( ) {
+225: $check_ $(@expr1073742162 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 225 $, "void f() {\n    try {\n       foo();\n    }\n    catch(const exception& outer) {\n        try {\n           foo(outer);\n        }\n        catch(const exception& inner) {\n            throw inner;\n        }\n    }\n}" $)
+226:
+|
+236:
+237: ;
+238: $if $(@expr1073742163 $!@expr1073742164 $assertEquals $(@expr1073742165 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 238 $, "[test.cpp:10]: (style) Throwing a copy of the caught exception instead of rethrowing the original exception.\n" $, errout@var100 .@expr342 str (@expr343 ) $) $) { $return ; }
+239:
+240: $check_ $(@expr1073742168 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 240 $, "void f() {\n    try {\n       foo();\n    }\n    catch(const exception& outer) {\n        try {\n           foo(outer);\n        }\n        catch(const exception& inner) {\n            throw outer;\n        }\n    }\n}" $)
+241:
+|
+251:
+252: ;
+253: $if $(@expr1073742169 $!@expr1073742170 $assertEquals $(@expr1073742171 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 253 $, "" $, errout@var100 .@expr342 str (@expr343 ) $) $) { $return ; }
+254: }
+255:
+256: void catchExceptionByValue ( ) {
+257: $check_ $(@expr1073742174 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 257 $, "void f() {\n    try {\n        bar();\n    }\n    catch( ::std::exception err) {\n        foo(err);\n    }\n}" $)
+258:
+|
+263:
+264: ;
+265: $if $(@expr1073742175 $!@expr1073742176 $assertEquals $(@expr1073742177 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 265 $, "[test.cpp:5]: (style) Exception should be caught by reference.\n" $, errout@var100 .@expr354 str (@expr355 ) $) $) { $return ; }
+266:
+267: $check_ $(@expr1073742180 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 267 $, "void f() {\n    try {\n        bar();\n    }\n    catch(const exception err) {\n        foo(err);\n    }\n}" $)
+268:
+|
+273:
+274: ;
+275: $if $(@expr1073742181 $!@expr1073742182 $assertEquals $(@expr1073742183 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 275 $, "[test.cpp:5]: (style) Exception should be caught by reference.\n" $, errout@var100 .@expr354 str (@expr355 ) $) $) { $return ; }
+276:
+277: $check_ $(@expr1073742186 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 277 $, "void f() {\n    try {\n        bar();\n    }\n    catch( ::std::exception& err) {\n        foo(err);\n    }\n}" $)
+278:
+|
+283:
+284: ;
+285: $if $(@expr1073742187 $!@expr1073742188 $assertEquals $(@expr1073742189 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 285 $, "" $, errout@var100 .@expr354 str (@expr355 ) $) $) { $return ; }
+286:
+287: $check_ $(@expr1073742192 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 287 $, "void f() {\n    try {\n        bar();\n    }\n    catch(exception* err) {\n        foo(err);\n    }\n}" $)
+288:
+|
+293:
+294: ;
+295: $if $(@expr1073742193 $!@expr1073742194 $assertEquals $(@expr1073742195 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 295 $, "" $, errout@var100 .@expr354 str (@expr355 ) $) $) { $return ; }
+296:
+297: $check_ $(@expr1073742198 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 297 $, "void f() {\n    try {\n        bar();\n    }\n    catch(const exception& err) {\n        foo(err);\n    }\n}" $)
+298:
+|
+303:
+304: ;
+305: $if $(@expr1073742199 $!@expr1073742200 $assertEquals $(@expr1073742201 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 305 $, "" $, errout@var100 .@expr354 str (@expr355 ) $) $) { $return ; }
+306:
+307: $check_ $(@expr1073742204 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 307 $, "void f() {\n    try {\n        bar();\n    }\n    catch(int err) {\n        foo(err);\n    }\n}" $)
+308:
+|
+313:
+314: ;
+315: $if $(@expr1073742205 $!@expr1073742206 $assertEquals $(@expr1073742207 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 315 $, "" $, errout@var100 .@expr354 str (@expr355 ) $) $) { $return ; }
+316:
+317: $check_ $(@expr1073742210 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 317 $, "void f() {\n    try {\n        bar();\n    }\n    catch(exception* const err) {\n        foo(err);\n    }\n}" $)
+318:
+|
+323:
+324: ;
+325: $if $(@expr1073742211 $!@expr1073742212 $assertEquals $(@expr1073742213 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 325 $, "" $, errout@var100 .@expr354 str (@expr355 ) $) $) { $return ; }
+326: }
+327:
+328: void noexceptThrow ( ) {
+329: $check_ $(@expr1073742216 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 329 $, "void func1() noexcept(false) { try {} catch(...) {;} throw 1; }\nvoid func2() noexcept { throw 1; }\nvoid func3() noexcept(true) { throw 1; }\nvoid func4() noexcept(false) { throw 1; }\nvoid func5() noexcept(true) { func1(); }\nvoid func6() noexcept(false) { func1(); }" $)
+330:
+|
+333:
+334: ;
+335: $if $(@expr1073742217 $!@expr1073742218 $assertEquals $(@expr1073742219 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 335 $, "[test.cpp:2]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:3]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:5]: (error) Exception thrown in function declared not to throw exceptions.\n" $, errout@var100 .@expr396 str (@expr397 ) $) $) { $return
+336:
+337: ; }
+338:
+339:
+340: $check_ $(@expr1073742222 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 340 $, "const char *func() noexcept { return 0; }\nconst char *func1() noexcept { try { throw 1; } catch(...) {} return 0; }" $)
+341: ;
+342: $if $(@expr1073742223 $!@expr1073742224 $assertEquals $(@expr1073742225 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 342 $, "" $, errout@var100 .@expr396 str (@expr397 ) $) $) { $return ; }
+343: }
+344:
+345: void nothrowThrow ( ) {
+346: $check_ $(@expr1073742228 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 346 $, "void func1() throw(int) { try {;} catch(...) { throw 1; } ; }\nvoid func2() throw() { throw 1; }\nvoid func3() throw(int) { throw 1; }\nvoid func4() throw() { func1(); }\nvoid func5() throw(int) { func1(); }" $)
+347:
+348:
+349:
+350: ;
+351: $if $(@expr1073742229 $!@expr1073742230 $assertEquals $(@expr1073742231 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 351 $, "[test.cpp:2]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:4]: (error) Exception thrown in function declared not to throw exceptions.\n" $, errout@var100 .@expr408 str (@expr409 ) $) $) { $return
+352: ; }
+353:
+354:
+355: $check_ $(@expr1073742234 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 355 $, "const char *func() throw() { return 0; }" $) ;
+356: $if $(@expr1073742235 $!@expr1073742236 $assertEquals $(@expr1073742237 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 356 $, "" $, errout@var100 .@expr408 str (@expr409 ) $) $) { $return ; }
+357: }
+358:
+359: void unhandledExceptionSpecification1 ( ) {
+360: $check_ $(@expr1073742240 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 360 $, "void myThrowingFoo() throw(MyException) {\n  throw MyException();\n}\nvoid myNonCatchingFoo() {\n  myThrowingFoo();\n}\nvoid myCatchingFoo() {\n  try {\n    myThrowingFoo();\n  } catch(MyException &) {}\n}\n" , true $)
+361:
+|
+369:
+370: ;
+371: $if $(@expr1073742241 $!@expr1073742242 $assertEquals $(@expr1073742243 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 371 $, "[test.cpp:5] -> [test.cpp:1]: (style, inconclusive) Unhandled exception specification when calling function myThrowingFoo().\n" $, errout@var100 .@expr1073742244 str (@expr1073742245 ) $) $) { $return ; }
+372: }
+373:
+374: void unhandledExceptionSpecification2 ( ) {
+375: $check_ $(@expr1073742246 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 375 $, "void f() const throw (std::runtime_error);\nint main()\n{\n    f();\n}\n" , true $)
+376:
+377:
+378:
+379: ;
+380: $if $(@expr1073742247 $!@expr1073742248 $assertEquals $(@expr1073742249 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 380 $, "" $, errout@var100 .@expr1073742250 str (@expr1073742251 ) $) $) { $return ; }
+381: }
+382:
+383: void nothrowAttributeThrow ( ) {
+384: $check_ $(@expr1073742252 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 384 $, "void func1() throw(int) { throw 1; }\nvoid func2() __attribute((nothrow)); void func2() { throw 1; }\nvoid func3() __attribute((nothrow)); void func3() { func1(); }" $)
+385:
+386: ;
+387: $if $(@expr1073742253 $!@expr1073742254 $assertEquals $(@expr1073742255 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 387 $, "[test.cpp:2]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:3]: (error) Exception thrown in function declared not to throw exceptions.\n" $, errout@var100 .@expr432 str (@expr433 ) $) $) { $return
+388: ; }
+389:
+390:
+391: $check_ $(@expr1073742258 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 391 $, "const char *func() __attribute((nothrow)); void func1() { return 0; }" $) ;
+392: $if $(@expr1073742259 $!@expr1073742260 $assertEquals $(@expr1073742261 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 392 $, "" $, errout@var100 .@expr432 str (@expr433 ) $) $) { $return ; }
+393: }
+394:
+395: void nothrowAttributeThrow2 ( ) {
+396: $check_ $(@expr1073742264 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 396 $, "class foo {\n  void copyMemberValues() throw () {\n      copyMemberValues();\n   }\n};" $)
+397:
+398:
+399:
+400: ;
+401: $if $(@expr1073742265 $!@expr1073742266 $assertEquals $(@expr1073742267 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 401 $, "" $, errout@var100 .@expr1073742268 str (@expr1073742269 ) $) $) { $return ; }
+402: }
+403:
+404: void nothrowDeclspecThrow ( ) {
+405: $check_ $(@expr1073742270 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 405 $, "void func1() throw(int) { throw 1; }\nvoid __declspec(nothrow) func2() { throw 1; }\nvoid __declspec(nothrow) func3() { func1(); }" $)
+406:
+407: ;
+408: $if $(@expr1073742271 $!@expr1073742272 $assertEquals $(@expr1073742273 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 408 $, "[test.cpp:2]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:3]: (error) Exception thrown in function declared not to throw exceptions.\n" $, errout@var100 .@expr450 str (@expr451 ) $) $) { $return
+409: ; }
+410:
+411:
+412: $check_ $(@expr1073742276 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 412 $, "const char *func() __attribute((nothrow)); void func1() { return 0; }" $) ;
+413: $if $(@expr1073742277 $!@expr1073742278 $assertEquals $(@expr1073742279 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 413 $, "" $, errout@var100 .@expr450 str (@expr451 ) $) $) { $return ; }
+414: }
+415:
+416: void rethrowNoCurrentException1 ( ) {
+417: $check_ $(@expr1073742282 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 417 $, "void func1(const bool flag) { try{ if(!flag) throw; } catch (int&) { ; } }" $) ;
+418: $if $(@expr1073742283 $!@expr1073742284 $assertEquals $(@expr1073742285 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 418 $, "[test.cpp:1]: (error) Rethrowing current exception with 'throw;', it seems there is no current exception to rethrow. If there is no current exception this calls std::terminate(). More: https://isocpp.org/wiki/faq/exceptions#throw-without-an-object\n" $, errout@var100 .@expr1073742286 str (@expr1073742287 ) $) $) { $return
+419: ; }
+420: }
+421:
+422: void rethrowNoCurrentException2 ( ) {
+423: $check_ $(@expr1073742288 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 423 $, "void func1() { try{ ; } catch (...) { ; } throw; }" $) ;
+424: $if $(@expr1073742289 $!@expr1073742290 $assertEquals $(@expr1073742291 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 424 $, "[test.cpp:1]: (error) Rethrowing current exception with 'throw;', it seems there is no current exception to rethrow. If there is no current exception this calls std::terminate(). More: https://isocpp.org/wiki/faq/exceptions#throw-without-an-object\n" $, errout@var100 .@expr1073742292 str (@expr1073742293 ) $) $) { $return
+425: ; }
+426: }
+427:
+428: void rethrowNoCurrentException3 ( ) {
+429: $check_ $(@expr1073742294 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 429 $, "void on_error() { try { throw; } catch (const int &) { ; } catch (...) { ; } }\nvoid func2() { try{ ; } catch (const int&) { throw; } ; }\nvoid func3() { throw 0; }" $)
+430:
+431: ;
+432: $if $(@expr1073742295 $!@expr1073742296 $assertEquals $(@expr1073742297 "cppcheck-2.8/test/testexceptionsafety.cpp" $, 432 $, "" $, errout@var100 .@expr1073742298 str (@expr1073742299 ) $) $) { $return ; }
+433: }
+434: } ;
+435:
+436: $namespace ${ TestExceptionSafety instance_TestExceptionSafety@var112 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@38}
+  v {!<=-1,!>=2,0@38}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 30
+  "TestExceptionSafety" always "TestExceptionSafety"
+Line 38
+  ( always {!<=-1,!>=2}
+  "destructors" always "destructors"
+  false always 0
+  false always 0
+Line 39
+  ( always {!<=-1,!>=2}
+  "deallocThrow1" always "deallocThrow1"
+  false always 0
+  false always 0
+Line 40
+  ( always {!<=-1,!>=2}
+  "deallocThrow2" always "deallocThrow2"
+  false always 0
+  false always 0
+Line 41
+  ( always {!<=-1,!>=2}
+  "deallocThrow3" always "deallocThrow3"
+  false always 0
+  false always 0
+Line 42
+  ( always {!<=-1,!>=2}
+  "rethrowCopy1" always "rethrowCopy1"
+  false always 0
+  false always 0
+Line 43
+  ( always {!<=-1,!>=2}
+  "rethrowCopy2" always "rethrowCopy2"
+  false always 0
+  false always 0
+Line 44
+  ( always {!<=-1,!>=2}
+  "rethrowCopy3" always "rethrowCopy3"
+  false always 0
+  false always 0
+Line 45
+  ( always {!<=-1,!>=2}
+  "rethrowCopy4" always "rethrowCopy4"
+  false always 0
+  false always 0
+Line 46
+  ( always {!<=-1,!>=2}
+  "rethrowCopy5" always "rethrowCopy5"
+  false always 0
+  false always 0
+Line 47
+  ( always {!<=-1,!>=2}
+  "catchExceptionByValue" always "catchExceptionByValue"
+  false always 0
+  false always 0
+Line 48
+  ( always {!<=-1,!>=2}
+  "noexceptThrow" always "noexceptThrow"
+  false always 0
+  false always 0
+Line 49
+  ( always {!<=-1,!>=2}
+  "nothrowThrow" always "nothrowThrow"
+  false always 0
+  false always 0
+Line 50
+  ( always {!<=-1,!>=2}
+  "unhandledExceptionSpecification1" always "unhandledExceptionSpecification1"
+  false always 0
+  false always 0
+Line 51
+  ( always {!<=-1,!>=2}
+  "unhandledExceptionSpecification2" always "unhandledExceptionSpecification2"
+  false always 0
+  false always 0
+Line 52
+  ( always {!<=-1,!>=2}
+  "nothrowAttributeThrow" always "nothrowAttributeThrow"
+  false always 0
+  false always 0
+Line 53
+  ( always {!<=-1,!>=2}
+  "nothrowAttributeThrow2" always "nothrowAttributeThrow2"
+  false always 0
+  false always 0
+Line 54
+  ( always {!<=-1,!>=2}
+  "nothrowDeclspecThrow" always "nothrowDeclspecThrow"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "rethrowNoCurrentException1" always "rethrowNoCurrentException1"
+  false always 0
+  false always 0
+Line 56
+  ( always {!<=-1,!>=2}
+  "rethrowNoCurrentException2" always "rethrowNoCurrentException2"
+  false always 0
+  false always 0
+Line 57
+  ( always {!<=-1,!>=2}
+  "rethrowNoCurrentException3" always "rethrowNoCurrentException3"
+  false always 0
+  false always 0
+Line 61
+  , always 0
+  inconclusive always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 63
+  "" always ""
+Line 65
+  inconclusive {!<=-1,!>=2,1@9}
+Line 68
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 69
+  code {"void on_error() { try { throw; } catch (const int &) { ; } catch (...) { ; } }\nvoid func2() { try{ ; } catch (const int&) { throw; } ; }\nvoid func3() { throw 0; }"@1,"void func1() { try{ ; } catch (...) { ; } throw; }"@2,"void func1(const bool flag) { try{ if(!flag) throw; } catch (int&) { ; } }"@3,"void func1() throw(int) { throw 1; }\nvoid __declspec(nothrow) func2() { throw 1; }\nvoid __declspec(nothrow) func3() { func1(); }"@4,"const char *func() __attribute((nothrow)); void func1() { return 0; }"@5,"class foo {\n  void copyMemberValues() throw () {\n      copyMemberValues();\n   }\n};"@6,"void func1() throw(int) { throw 1; }\nvoid func2() __attribute((nothrow)); void func2() { throw 1; }\nvoid func3() __attribute((nothrow)); void func3() { func1(); }"@7,"const char *func() __attribute((nothrow)); void func1() { return 0; }"@8,"void f() const throw (std::runtime_error);\nint main()\n{\n    f();\n}\n"@9,"void myThrowingFoo() throw(MyException) {\n  throw MyException();\n}\nvoid myNonCatchingFoo() {\n  myThrowingFoo();\n}\nvoid myCatchingFoo() {\n  try {\n    myThrowingFoo();\n  } catch(MyException &) {}\n}\n"@10}
+Line 70
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testexceptionsafety.cpp"@1,"cppcheck-2.8/test/testexceptionsafety.cpp"@2,"cppcheck-2.8/test/testexceptionsafety.cpp"@3,"cppcheck-2.8/test/testexceptionsafety.cpp"@4,"cppcheck-2.8/test/testexceptionsafety.cpp"@5,"cppcheck-2.8/test/testexceptionsafety.cpp"@6,"cppcheck-2.8/test/testexceptionsafety.cpp"@7,"cppcheck-2.8/test/testexceptionsafety.cpp"@8,"cppcheck-2.8/test/testexceptionsafety.cpp"@9,"cppcheck-2.8/test/testexceptionsafety.cpp"@10}
+  line inconclusive {429@1,423@2,417@3,405@4,412@5,396@6,384@7,391@8,375@9,360@10}
+  "test.cpp" always "test.cpp"
+Line 73
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 74
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 78
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  78 always 78
+  "class x {\n    ~x() {\n        throw e;\n    }\n};" always "class x {\n    ~x() {\n        throw e;\n    }\n};"
+Line 83
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  83 always 83
+  "[test.cpp:3]: (warning) Class x is not safe, destructor throws exception\n" always "[test.cpp:3]: (warning) Class x is not safe, destructor throws exception\n"
+Line 85
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  85 always 85
+  "class x {\n    ~x();\n};\nx::~x() {\n    throw e;\n}" always "class x {\n    ~x();\n};\nx::~x() {\n    throw e;\n}"
+Line 91
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  91 always 91
+  "[test.cpp:5]: (warning) Class x is not safe, destructor throws exception\n" always "[test.cpp:5]: (warning) Class x is not safe, destructor throws exception\n"
+Line 94
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  94 always 94
+  "class x {\n    ~x() {\n        try {\n            throw e;\n        } catch (...) {\n        }\n    }\n}" always "class x {\n    ~x() {\n        try {\n            throw e;\n        } catch (...) {\n        }\n    }\n}"
+Line 102
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  102 always 102
+  "" always ""
+Line 104
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  104 always 104
+  "class x {\n    ~x() {\n        if(!std::uncaught_exception()) {\n            throw e;\n        }\n    }\n}" always "class x {\n    ~x() {\n        if(!std::uncaught_exception()) {\n            throw e;\n        }\n    }\n}"
+Line 111
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  111 always 111
+  "" always ""
+Line 115
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  115 always 115
+  "int * p;\nvoid f(int x) {\n    delete p;\n    if (x)\n        throw 123;\n    p = 0;\n}" always "int * p;\nvoid f(int x) {\n    delete p;\n    if (x)\n        throw 123;\n    p = 0;\n}"
+Line 122
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  122 always 122
+  "[test.cpp:5]: (warning) Exception thrown in invalid state, 'p' points at deallocated memory.\n" always "[test.cpp:5]: (warning) Exception thrown in invalid state, 'p' points at deallocated memory.\n"
+Line 124
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  124 always 124
+  "void f() {\n    static int* p = foo;\n    delete p;\n    if (foo)\n        throw 1;\n    p = 0;\n}" always "void f() {\n    static int* p = foo;\n    delete p;\n    if (foo)\n        throw 1;\n    p = 0;\n}"
+Line 131
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  131 always 131
+  "[test.cpp:5]: (warning) Exception thrown in invalid state, 'p' points at deallocated memory.\n" always "[test.cpp:5]: (warning) Exception thrown in invalid state, 'p' points at deallocated memory.\n"
+Line 135
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  135 always 135
+  "void f() {\n    int* p = 0;\n    delete p;\n    if (foo)\n        throw 1;\n    p = new int;\n}" always "void f() {\n    int* p = 0;\n    delete p;\n    if (foo)\n        throw 1;\n    p = new int;\n}"
+  true always 1
+Line 142
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  142 always 142
+  "" always ""
+Line 144
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  144 always 144
+  "void f() {\n    static int* p = 0;\n    delete p;\n    reset(p);\n    throw 1;\n}" always "void f() {\n    static int* p = 0;\n    delete p;\n    reset(p);\n    throw 1;\n}"
+  true always 1
+Line 150
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  150 always 150
+  "" always ""
+Line 154
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  154 always 154
+  "void f() {\n    static int* p = 0;\n    delete p;\n    throw 1;\n}" always "void f() {\n    static int* p = 0;\n    delete p;\n    throw 1;\n}"
+Line 159
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  159 always 159
+  "" always ""
+Line 161
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  161 always 161
+  "void f() {\n    static int* p = 0;\n    delete p;\n    throw 1;\n}" always "void f() {\n    static int* p = 0;\n    delete p;\n    throw 1;\n}"
+  true always 1
+Line 166
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  166 always 166
+  "[test.cpp:4]: (warning) Exception thrown in invalid state, 'p' points at deallocated memory.\n" always "[test.cpp:4]: (warning) Exception thrown in invalid state, 'p' points at deallocated memory.\n"
+Line 170
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  170 always 170
+  "void f() {\n    try\n    {\n       foo();\n    }\n    catch(const exception& err)\n    {\n        throw err;\n    }\n}" always "void f() {\n    try\n    {\n       foo();\n    }\n    catch(const exception& err)\n    {\n        throw err;\n    }\n}"
+Line 180
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  180 always 180
+  "[test.cpp:8]: (style) Throwing a copy of the caught exception instead of rethrowing the original exception.\n" always "[test.cpp:8]: (style) Throwing a copy of the caught exception instead of rethrowing the original exception.\n"
+Line 184
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  184 always 184
+  "void f() {\n    try\n    {\n       foo();\n    }\n    catch(exception& err)\n    {\n        throw err;\n    }\n}" always "void f() {\n    try\n    {\n       foo();\n    }\n    catch(exception& err)\n    {\n        throw err;\n    }\n}"
+Line 194
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  194 always 194
+  "[test.cpp:8]: (style) Throwing a copy of the caught exception instead of rethrowing the original exception.\n" always "[test.cpp:8]: (style) Throwing a copy of the caught exception instead of rethrowing the original exception.\n"
+Line 198
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  198 always 198
+  "void f() {\n    try {\n       foo();\n    }\n    catch(std::runtime_error& err) {\n        throw err;\n    }\n}" always "void f() {\n    try {\n       foo();\n    }\n    catch(std::runtime_error& err) {\n        throw err;\n    }\n}"
+Line 206
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  206 always 206
+  "[test.cpp:6]: (style) Throwing a copy of the caught exception instead of rethrowing the original exception.\n" always "[test.cpp:6]: (style) Throwing a copy of the caught exception instead of rethrowing the original exception.\n"
+Line 210
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  210 always 210
+  "void f() {\n    try\n    {\n       foo();\n    }\n    catch(const exception& err)\n    {\n        exception err2;\n        throw err2;\n    }\n}" always "void f() {\n    try\n    {\n       foo();\n    }\n    catch(const exception& err)\n    {\n        exception err2;\n        throw err2;\n    }\n}"
+Line 221
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  221 always 221
+  "" always ""
+Line 225
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  225 always 225
+  "void f() {\n    try {\n       foo();\n    }\n    catch(const exception& outer) {\n        try {\n           foo(outer);\n        }\n        catch(const exception& inner) {\n            throw inner;\n        }\n    }\n}" always "void f() {\n    try {\n       foo();\n    }\n    catch(const exception& outer) {\n        try {\n           foo(outer);\n        }\n        catch(const exception& inner) {\n            throw inner;\n        }\n    }\n}"
+Line 238
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  238 always 238
+  "[test.cpp:10]: (style) Throwing a copy of the caught exception instead of rethrowing the original exception.\n" always "[test.cpp:10]: (style) Throwing a copy of the caught exception instead of rethrowing the original exception.\n"
+Line 240
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  240 always 240
+  "void f() {\n    try {\n       foo();\n    }\n    catch(const exception& outer) {\n        try {\n           foo(outer);\n        }\n        catch(const exception& inner) {\n            throw outer;\n        }\n    }\n}" always "void f() {\n    try {\n       foo();\n    }\n    catch(const exception& outer) {\n        try {\n           foo(outer);\n        }\n        catch(const exception& inner) {\n            throw outer;\n        }\n    }\n}"
+Line 253
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  253 always 253
+  "" always ""
+Line 257
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  257 always 257
+  "void f() {\n    try {\n        bar();\n    }\n    catch( ::std::exception err) {\n        foo(err);\n    }\n}" always "void f() {\n    try {\n        bar();\n    }\n    catch( ::std::exception err) {\n        foo(err);\n    }\n}"
+Line 265
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  265 always 265
+  "[test.cpp:5]: (style) Exception should be caught by reference.\n" always "[test.cpp:5]: (style) Exception should be caught by reference.\n"
+Line 267
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  267 always 267
+  "void f() {\n    try {\n        bar();\n    }\n    catch(const exception err) {\n        foo(err);\n    }\n}" always "void f() {\n    try {\n        bar();\n    }\n    catch(const exception err) {\n        foo(err);\n    }\n}"
+Line 275
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  275 always 275
+  "[test.cpp:5]: (style) Exception should be caught by reference.\n" always "[test.cpp:5]: (style) Exception should be caught by reference.\n"
+Line 277
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  277 always 277
+  "void f() {\n    try {\n        bar();\n    }\n    catch( ::std::exception& err) {\n        foo(err);\n    }\n}" always "void f() {\n    try {\n        bar();\n    }\n    catch( ::std::exception& err) {\n        foo(err);\n    }\n}"
+Line 285
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  285 always 285
+  "" always ""
+Line 287
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  287 always 287
+  "void f() {\n    try {\n        bar();\n    }\n    catch(exception* err) {\n        foo(err);\n    }\n}" always "void f() {\n    try {\n        bar();\n    }\n    catch(exception* err) {\n        foo(err);\n    }\n}"
+Line 295
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  295 always 295
+  "" always ""
+Line 297
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  297 always 297
+  "void f() {\n    try {\n        bar();\n    }\n    catch(const exception& err) {\n        foo(err);\n    }\n}" always "void f() {\n    try {\n        bar();\n    }\n    catch(const exception& err) {\n        foo(err);\n    }\n}"
+Line 305
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  305 always 305
+  "" always ""
+Line 307
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  307 always 307
+  "void f() {\n    try {\n        bar();\n    }\n    catch(int err) {\n        foo(err);\n    }\n}" always "void f() {\n    try {\n        bar();\n    }\n    catch(int err) {\n        foo(err);\n    }\n}"
+Line 315
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  315 always 315
+  "" always ""
+Line 317
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  317 always 317
+  "void f() {\n    try {\n        bar();\n    }\n    catch(exception* const err) {\n        foo(err);\n    }\n}" always "void f() {\n    try {\n        bar();\n    }\n    catch(exception* const err) {\n        foo(err);\n    }\n}"
+Line 325
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  325 always 325
+  "" always ""
+Line 329
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  329 always 329
+  "void func1() noexcept(false) { try {} catch(...) {;} throw 1; }\nvoid func2() noexcept { throw 1; }\nvoid func3() noexcept(true) { throw 1; }\nvoid func4() noexcept(false) { throw 1; }\nvoid func5() noexcept(true) { func1(); }\nvoid func6() noexcept(false) { func1(); }" always "void func1() noexcept(false) { try {} catch(...) {;} throw 1; }\nvoid func2() noexcept { throw 1; }\nvoid func3() noexcept(true) { throw 1; }\nvoid func4() noexcept(false) { throw 1; }\nvoid func5() noexcept(true) { func1(); }\nvoid func6() noexcept(false) { func1(); }"
+Line 335
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  335 always 335
+  "[test.cpp:2]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:3]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:5]: (error) Exception thrown in function declared not to throw exceptions.\n" always "[test.cpp:2]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:3]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:5]: (error) Exception thrown in function declared not to throw exceptions.\n"
+Line 340
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  340 always 340
+  "const char *func() noexcept { return 0; }\nconst char *func1() noexcept { try { throw 1; } catch(...) {} return 0; }" always "const char *func() noexcept { return 0; }\nconst char *func1() noexcept { try { throw 1; } catch(...) {} return 0; }"
+Line 342
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  342 always 342
+  "" always ""
+Line 346
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  346 always 346
+  "void func1() throw(int) { try {;} catch(...) { throw 1; } ; }\nvoid func2() throw() { throw 1; }\nvoid func3() throw(int) { throw 1; }\nvoid func4() throw() { func1(); }\nvoid func5() throw(int) { func1(); }" always "void func1() throw(int) { try {;} catch(...) { throw 1; } ; }\nvoid func2() throw() { throw 1; }\nvoid func3() throw(int) { throw 1; }\nvoid func4() throw() { func1(); }\nvoid func5() throw(int) { func1(); }"
+Line 351
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  351 always 351
+  "[test.cpp:2]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:4]: (error) Exception thrown in function declared not to throw exceptions.\n" always "[test.cpp:2]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:4]: (error) Exception thrown in function declared not to throw exceptions.\n"
+Line 355
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  355 always 355
+  "const char *func() throw() { return 0; }" always "const char *func() throw() { return 0; }"
+Line 356
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  356 always 356
+  "" always ""
+Line 360
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  360 always 360
+  "void myThrowingFoo() throw(MyException) {\n  throw MyException();\n}\nvoid myNonCatchingFoo() {\n  myThrowingFoo();\n}\nvoid myCatchingFoo() {\n  try {\n    myThrowingFoo();\n  } catch(MyException &) {}\n}\n" always "void myThrowingFoo() throw(MyException) {\n  throw MyException();\n}\nvoid myNonCatchingFoo() {\n  myThrowingFoo();\n}\nvoid myCatchingFoo() {\n  try {\n    myThrowingFoo();\n  } catch(MyException &) {}\n}\n"
+  true always 1
+Line 371
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  371 always 371
+  "[test.cpp:5] -> [test.cpp:1]: (style, inconclusive) Unhandled exception specification when calling function myThrowingFoo().\n" always "[test.cpp:5] -> [test.cpp:1]: (style, inconclusive) Unhandled exception specification when calling function myThrowingFoo().\n"
+Line 375
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  375 always 375
+  "void f() const throw (std::runtime_error);\nint main()\n{\n    f();\n}\n" always "void f() const throw (std::runtime_error);\nint main()\n{\n    f();\n}\n"
+  true always 1
+Line 380
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  380 always 380
+  "" always ""
+Line 384
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  384 always 384
+  "void func1() throw(int) { throw 1; }\nvoid func2() __attribute((nothrow)); void func2() { throw 1; }\nvoid func3() __attribute((nothrow)); void func3() { func1(); }" always "void func1() throw(int) { throw 1; }\nvoid func2() __attribute((nothrow)); void func2() { throw 1; }\nvoid func3() __attribute((nothrow)); void func3() { func1(); }"
+Line 387
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  387 always 387
+  "[test.cpp:2]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:3]: (error) Exception thrown in function declared not to throw exceptions.\n" always "[test.cpp:2]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:3]: (error) Exception thrown in function declared not to throw exceptions.\n"
+Line 391
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  391 always 391
+  "const char *func() __attribute((nothrow)); void func1() { return 0; }" always "const char *func() __attribute((nothrow)); void func1() { return 0; }"
+Line 392
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  392 always 392
+  "" always ""
+Line 396
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  396 always 396
+  "class foo {\n  void copyMemberValues() throw () {\n      copyMemberValues();\n   }\n};" always "class foo {\n  void copyMemberValues() throw () {\n      copyMemberValues();\n   }\n};"
+Line 401
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  401 always 401
+  "" always ""
+Line 405
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  405 always 405
+  "void func1() throw(int) { throw 1; }\nvoid __declspec(nothrow) func2() { throw 1; }\nvoid __declspec(nothrow) func3() { func1(); }" always "void func1() throw(int) { throw 1; }\nvoid __declspec(nothrow) func2() { throw 1; }\nvoid __declspec(nothrow) func3() { func1(); }"
+Line 408
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  408 always 408
+  "[test.cpp:2]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:3]: (error) Exception thrown in function declared not to throw exceptions.\n" always "[test.cpp:2]: (error) Exception thrown in function declared not to throw exceptions.\n[test.cpp:3]: (error) Exception thrown in function declared not to throw exceptions.\n"
+Line 412
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  412 always 412
+  "const char *func() __attribute((nothrow)); void func1() { return 0; }" always "const char *func() __attribute((nothrow)); void func1() { return 0; }"
+Line 413
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  413 always 413
+  "" always ""
+Line 417
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  417 always 417
+  "void func1(const bool flag) { try{ if(!flag) throw; } catch (int&) { ; } }" always "void func1(const bool flag) { try{ if(!flag) throw; } catch (int&) { ; } }"
+Line 418
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  418 always 418
+  "[test.cpp:1]: (error) Rethrowing current exception with 'throw;', it seems there is no current exception to rethrow. If there is no current exception this calls std::terminate(). More: https://isocpp.org/wiki/faq/exceptions#throw-without-an-object\n" always "[test.cpp:1]: (error) Rethrowing current exception with 'throw;', it seems there is no current exception to rethrow. If there is no current exception this calls std::terminate(). More: https://isocpp.org/wiki/faq/exceptions#throw-without-an-object\n"
+Line 423
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  423 always 423
+  "void func1() { try{ ; } catch (...) { ; } throw; }" always "void func1() { try{ ; } catch (...) { ; } throw; }"
+Line 424
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  424 always 424
+  "[test.cpp:1]: (error) Rethrowing current exception with 'throw;', it seems there is no current exception to rethrow. If there is no current exception this calls std::terminate(). More: https://isocpp.org/wiki/faq/exceptions#throw-without-an-object\n" always "[test.cpp:1]: (error) Rethrowing current exception with 'throw;', it seems there is no current exception to rethrow. If there is no current exception this calls std::terminate(). More: https://isocpp.org/wiki/faq/exceptions#throw-without-an-object\n"
+Line 429
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  429 always 429
+  "void on_error() { try { throw; } catch (const int &) { ; } catch (...) { ; } }\nvoid func2() { try{ ; } catch (const int&) { throw; } ; }\nvoid func3() { throw 0; }" always "void on_error() { try { throw; } catch (const int &) { ; } catch (...) { ; } }\nvoid func2() { try{ ; } catch (const int&) { throw; } ; }\nvoid func3() { throw 0; }"
+Line 432
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testexceptionsafety.cpp" always "cppcheck-2.8/test/testexceptionsafety.cpp"
+  432 always 432
+  "" always ""

@@ -1,0 +1,1114 @@
+
+
+##file cppcheck-2.8/lib/config.h
+
+1:
+|
+78:
+79: static const std :: string emptyString@var1 ;
+
+##file cppcheck-2.8/lib/platform.h
+
+1:
+|
+31:
+32: namespace tinyxml2 {
+33: class XMLDocument ;
+34: }
+35:
+36: namespace cppcheck {
+37:
+|
+40:
+41: class Platform {
+42: private:
+43: static long long min_value ( int bit@var2 ) {
+44: if (@expr1073741892 bit@var2 >=@expr1073741893 64 ) {
+45: return LLONG_MIN ; }
+46: return -@expr1073741894 (@expr1073741895 1LL <<@expr1073741896 (@expr1073741897 bit@var2 -@expr1073741898 1 ) ) ;
+47: }
+48:
+49: static long long max_value ( int bit@var3 ) {
+50: if (@expr1073741899 bit@var3 >=@expr1073741900 64 ) {
+51: return (@expr77 ~@expr1073741902 0ULL ) >>@expr1073741903 1 ; }
+52: return (@expr77 1LL <<@expr1073741905 (@expr77 bit@var3 -@expr1073741907 1 ) ) -@expr1073741908 1LL ;
+53: }
+54: public:
+55: Platform ( ) ;
+56: virtual ~ Platform ( ) { }
+57:
+58: bool isIntValue ( long long value@var4 ) const {
+59: return value@var4 >=@expr1073741909 min_value (@expr1073741910 int_bit@var14 ) &&@expr1073741911 value@var4 <=@expr1073741912 max_value (@expr1073741913 int_bit@var14 ) ;
+60: }
+61:
+62: bool isIntValue ( unsigned long long value@var5 ) const {
+63: unsigned long long intMax@var6 ; intMax@var6 =@expr1073741914 max_value (@expr1073741915 int_bit@var14 ) ;
+64: return value@var5 <=@expr1073741916 intMax@var6 ;
+65: }
+66:
+67: bool isLongValue ( long long value@var7 ) const {
+68: return value@var7 >=@expr1073741917 min_value (@expr1073741918 long_bit@var15 ) &&@expr1073741919 value@var7 <=@expr1073741920 max_value (@expr1073741921 long_bit@var15 ) ;
+69: }
+70:
+71: bool isLongValue ( unsigned long long value@var8 ) const {
+72: unsigned long long longMax@var9 ; longMax@var9 =@expr1073741922 max_value (@expr1073741923 long_bit@var15 ) ;
+73: return value@var8 <=@expr1073741924 longMax@var9 ;
+74: }
+75:
+76: bool isLongLongValue ( unsigned long long value@var10 ) const {
+77: unsigned long long longLongMax@var11 ; longLongMax@var11 =@expr1073741925 max_value (@expr1073741926 long_long_bit@var16 ) ;
+78: return value@var10 <=@expr1073741927 longLongMax@var11 ;
+79: }
+80:
+81: int char_bit@var12 ;
+82: int short_bit@var13 ;
+83: int int_bit@var14 ;
+84: int long_bit@var15 ;
+85: int long_long_bit@var16 ;
+86:
+87:
+88: int sizeof_bool@var17 ;
+89: int sizeof_short@var18 ;
+90: int sizeof_int@var19 ;
+91: int sizeof_long@var20 ;
+92: int sizeof_long_long@var21 ;
+93: int sizeof_float@var22 ;
+94: int sizeof_double@var23 ;
+95: int sizeof_long_double@var24 ;
+96: int sizeof_wchar_t@var25 ;
+97: int sizeof_size_t@var26 ;
+98: int sizeof_pointer@var27 ;
+99:
+100: char defaultSign@var28 ;
+101:
+102: enum PlatformType {
+103: Unspecified ,
+104: Native ,
+105: Win32A ,
+106: Win32W ,
+107: Win64 ,
+108: Unix32 ,
+109: Unix64 ,
+110: PlatformFile
+111: } ;
+112:
+113:
+114: PlatformType platformType@var29 ;
+115:
+116:
+117: bool platform ( PlatformType type@var30 ) ;
+118:
+|
+124:
+125: bool loadPlatformFile ( const char exename@var31 [ ] , const std :: string & filename@var32 ) ;
+126:
+127:
+128: bool loadFromXmlDocument ( const tinyxml2 :: XMLDocument * doc@var33 ) ;
+129:
+|
+133:
+134: bool isWindowsPlatform ( ) const {
+135: return platformType@var29 ==@expr1073741928 Win32A ||@expr1073741929
+136: platformType@var29 ==@expr1073741930 Win32W ||@expr1073741931
+137: platformType@var29 ==@expr1073741932 Win64 ;
+138: }
+139:
+140: const char * platformString ( ) const {
+141: return platformString (@expr1073741933 platformType@var29 ) ;
+142: }
+143:
+144: static const char * platformString ( PlatformType pt@var34 ) {
+145: switch (@expr1073741934 pt@var34 ) {
+146: case Unspecified :@expr111 ;
+147: return "Unspecified" ;
+148: case Native :@expr111 ;
+149: return "Native" ;
+150: case Win32A :@expr111 ;
+151: return "win32A" ;
+152: case Win32W :@expr111 ;
+153: return "win32W" ;
+154: case Win64 :@expr111 ;
+155: return "win64" ;
+156: case Unix32 :@expr111 ;
+157: return "unix32" ;
+158: case Unix64 :@expr111 ;
+159: return "unix64" ;
+160: case PlatformFile :@expr111 ;
+161: return "platformFile" ;
+162: default :@expr111 ;
+163: return "unknown" ;
+164: }
+165: }
+166:
+167: long long unsignedCharMax ( ) const {
+168: return max_value (@expr1073741944 char_bit@var12 +@expr1073741945 1 ) ;
+169: }
+170:
+171: long long signedCharMax ( ) const {
+172: return max_value (@expr1073741946 char_bit@var12 ) ;
+173: }
+174:
+175: long long signedCharMin ( ) const {
+176: return min_value (@expr1073741947 char_bit@var12 ) ;
+177: }
+178: } ;
+179:
+180: }
+
+##file cppcheck-2.8/lib/path.h
+
+1:
+|
+39:
+40: class Path {
+41: public:
+42:
+|
+46:
+47: static std :: string toNativeSeparators ( std :: string path@var35 ) ;
+48:
+|
+53:
+54: static std :: string fromNativeSeparators ( std :: string path@var36 ) ;
+55:
+|
+60:
+61: static std :: string simplifyPath ( std :: string originalPath@var37 ) ;
+62:
+|
+67:
+68: static std :: string getPathFromFilename ( const std :: string & filename@var38 ) ;
+69:
+|
+76:
+77: static bool sameFileName ( const std :: string & fname1@var39 , const std :: string & fname2@var40 ) ;
+78:
+|
+83:
+84: static std :: string removeQuotationMarks ( std :: string path@var41 ) ;
+85:
+|
+90:
+91: static std :: string getFilenameExtension ( const std :: string & path@var42 ) ;
+92:
+|
+97:
+98: static std :: string getFilenameExtensionInLowerCase ( const std :: string & path@var43 ) ;
+99:
+|
+103:
+104: static std :: string getCurrentPath ( ) ;
+105:
+|
+110:
+111: static bool isAbsolute ( const std :: string & path@var44 ) ;
+112:
+|
+118:
+119: static std :: string getRelativePath ( const std :: string & absolutePath@var45 , const std :: vector < std :: string > & basePaths@var46 ) ;
+120:
+|
+125:
+126: static std :: string getAbsoluteFilePath ( const std :: string & filePath@var47 ) ;
+127:
+|
+133:
+134: static bool acceptFile ( const std :: string & filename@var48 ) {
+135: const std ::@expr1073741948 set < std ::@expr1073741949 string > extra@var49 ;
+136: return acceptFile (@expr1073741950 filename@var48 , extra@var49 ) ;
+137: }
+138:
+|
+145:
+146: static bool acceptFile ( const std :: string & path@var50 , const std :: set < std :: string > & extra@var51 ) ;
+147:
+|
+152:
+153: static bool isC ( const std :: string & path@var52 ) ;
+154:
+|
+159:
+160: static bool isCPP ( const std :: string & path@var53 ) ;
+161:
+|
+166:
+167: static bool isHeader ( const std :: string & path@var54 ) ;
+168:
+|
+173:
+174: static std :: string stripDirectoryPart ( const std :: string & file@var55 ) ;
+175:
+|
+180:
+181: static bool fileExists ( const std :: string & file@var56 ) ;
+182: } ;
+
+##file cppcheck-2.8/lib/platform.cpp
+
+1:
+|
+29:
+30: cppcheck :: Platform :: Platform ( )
+31: {
+32:
+|
+37:
+38: platform (@expr1073741951 Native ) ;
+39:
+40: }
+41:
+42:
+43: bool cppcheck :: Platform :: platform ( cppcheck :: Platform :: PlatformType type@var57 )
+44: {
+45: switch (@expr1073741953 type@var57 ) {
+46: case Unspecified :@expr130
+47: case Native :@expr130 ;
+48: platformType@var29 =@expr1073741956 type@var57 ;
+49: sizeof_bool@var17 =@expr1073741957 sizeof (@expr1073741958 bool ) ;
+50: sizeof_short@var18 =@expr1073741959 sizeof (@expr1073741960 short ) ;
+51: sizeof_int@var19 =@expr1073741961 sizeof (@expr1073741962 int ) ;
+52: sizeof_long@var20 =@expr1073741963 sizeof (@expr1073741964 long ) ;
+53: sizeof_long_long@var21 =@expr1073741965 sizeof (@expr1073741966 long long ) ;
+54: sizeof_float@var22 =@expr1073741967 sizeof (@expr1073741968 float ) ;
+55: sizeof_double@var23 =@expr1073741969 sizeof (@expr1073741970 double ) ;
+56: sizeof_long_double@var24 =@expr1073741971 sizeof (@expr1073741972 long double ) ;
+57: sizeof_wchar_t@var25 =@expr1073741973 sizeof (@expr1073741974 wchar_t ) ;
+58: sizeof_size_t@var26 =@expr1073741975 sizeof (@expr1073741976 unsigned long ) ;
+59: sizeof_pointer@var27 =@expr1073741977 sizeof (@expr1073741978 void *@expr1073741979 ) ;
+60: if (@expr1073741980 type@var57 ==@expr1073741981 Unspecified ) {
+61: defaultSign@var28 =@expr1073741982 '\0' ;
+62: } else {
+63: defaultSign@var28 =@expr1073741983 (@expr1073741984 std ::@expr1073741985 numeric_limits < char > ::@expr1073741986 is_signed@expr1073741952 ) ?@expr1073741987 's' :@expr1073741988 'u' ;
+64: }
+65: char_bit@var12 =@expr1073741989 8 ;
+66: short_bit@var13 =@expr1073741990 char_bit@var12 *@expr167 sizeof_short@var18 ;
+67: int_bit@var14 =@expr1073741992 char_bit@var12 *@expr169 sizeof_int@var19 ;
+68: long_bit@var15 =@expr1073741994 char_bit@var12 *@expr171 sizeof_long@var20 ;
+69: long_long_bit@var16 =@expr1073741996 char_bit@var12 *@expr173 sizeof_long_long@var21 ;
+70: return true ;
+71: case Win32W :@expr130
+72: case Win32A :@expr130 ;
+73: platformType@var29 =@expr1073742000 type@var57 ;
+74: sizeof_bool@var17 =@expr1073742001 1 ;
+75: sizeof_short@var18 =@expr1073742002 2 ;
+76: sizeof_int@var19 =@expr1073742003 4 ;
+77: sizeof_long@var20 =@expr1073742004 4 ;
+78: sizeof_long_long@var21 =@expr1073742005 8 ;
+79: sizeof_float@var22 =@expr1073742006 4 ;
+80: sizeof_double@var23 =@expr1073742007 8 ;
+81: sizeof_long_double@var24 =@expr1073742008 8 ;
+82: sizeof_wchar_t@var25 =@expr1073742009 2 ;
+83: sizeof_size_t@var26 =@expr1073742010 4 ;
+84: sizeof_pointer@var27 =@expr1073742011 4 ;
+85: defaultSign@var28 =@expr1073742012 '\0' ;
+86: char_bit@var12 =@expr1073742013 8 ;
+87: short_bit@var13 =@expr1073742014 char_bit@var12 *@expr167 sizeof_short@var18 ;
+88: int_bit@var14 =@expr1073742016 char_bit@var12 *@expr169 sizeof_int@var19 ;
+89: long_bit@var15 =@expr1073742018 char_bit@var12 *@expr171 sizeof_long@var20 ;
+90: long_long_bit@var16 =@expr1073742020 char_bit@var12 *@expr173 sizeof_long_long@var21 ;
+91: return true ;
+92: case Win64 :@expr130 ;
+93: platformType@var29 =@expr1073742023 type@var57 ;
+94: sizeof_bool@var17 =@expr1073742024 1 ;
+95: sizeof_short@var18 =@expr1073742025 2 ;
+96: sizeof_int@var19 =@expr1073742026 4 ;
+97: sizeof_long@var20 =@expr1073742027 4 ;
+98: sizeof_long_long@var21 =@expr1073742028 8 ;
+99: sizeof_float@var22 =@expr1073742029 4 ;
+100: sizeof_double@var23 =@expr1073742030 8 ;
+101: sizeof_long_double@var24 =@expr1073742031 8 ;
+102: sizeof_wchar_t@var25 =@expr1073742032 2 ;
+103: sizeof_size_t@var26 =@expr1073742033 8 ;
+104: sizeof_pointer@var27 =@expr1073742034 8 ;
+105: defaultSign@var28 =@expr1073742035 '\0' ;
+106: char_bit@var12 =@expr1073742036 8 ;
+107: short_bit@var13 =@expr1073742037 char_bit@var12 *@expr167 sizeof_short@var18 ;
+108: int_bit@var14 =@expr1073742039 char_bit@var12 *@expr169 sizeof_int@var19 ;
+109: long_bit@var15 =@expr1073742041 char_bit@var12 *@expr171 sizeof_long@var20 ;
+110: long_long_bit@var16 =@expr1073742043 char_bit@var12 *@expr173 sizeof_long_long@var21 ;
+111: return true ;
+112: case Unix32 :@expr130 ;
+113: platformType@var29 =@expr1073742046 type@var57 ;
+114: sizeof_bool@var17 =@expr1073742047 1 ;
+115: sizeof_short@var18 =@expr1073742048 2 ;
+116: sizeof_int@var19 =@expr1073742049 4 ;
+117: sizeof_long@var20 =@expr1073742050 4 ;
+118: sizeof_long_long@var21 =@expr1073742051 8 ;
+119: sizeof_float@var22 =@expr1073742052 4 ;
+120: sizeof_double@var23 =@expr1073742053 8 ;
+121: sizeof_long_double@var24 =@expr1073742054 12 ;
+122: sizeof_wchar_t@var25 =@expr1073742055 4 ;
+123: sizeof_size_t@var26 =@expr1073742056 4 ;
+124: sizeof_pointer@var27 =@expr1073742057 4 ;
+125: defaultSign@var28 =@expr1073742058 '\0' ;
+126: char_bit@var12 =@expr1073742059 8 ;
+127: short_bit@var13 =@expr1073742060 char_bit@var12 *@expr167 sizeof_short@var18 ;
+128: int_bit@var14 =@expr1073742062 char_bit@var12 *@expr169 sizeof_int@var19 ;
+129: long_bit@var15 =@expr1073742064 char_bit@var12 *@expr171 sizeof_long@var20 ;
+130: long_long_bit@var16 =@expr1073742066 char_bit@var12 *@expr173 sizeof_long_long@var21 ;
+131: return true ;
+132: case Unix64 :@expr130 ;
+133: platformType@var29 =@expr1073742069 type@var57 ;
+134: sizeof_bool@var17 =@expr1073742070 1 ;
+135: sizeof_short@var18 =@expr1073742071 2 ;
+136: sizeof_int@var19 =@expr1073742072 4 ;
+137: sizeof_long@var20 =@expr1073742073 8 ;
+138: sizeof_long_long@var21 =@expr1073742074 8 ;
+139: sizeof_float@var22 =@expr1073742075 4 ;
+140: sizeof_double@var23 =@expr1073742076 8 ;
+141: sizeof_long_double@var24 =@expr1073742077 16 ;
+142: sizeof_wchar_t@var25 =@expr1073742078 4 ;
+143: sizeof_size_t@var26 =@expr1073742079 8 ;
+144: sizeof_pointer@var27 =@expr1073742080 8 ;
+145: defaultSign@var28 =@expr1073742081 '\0' ;
+146: char_bit@var12 =@expr1073742082 8 ;
+147: short_bit@var13 =@expr1073742083 char_bit@var12 *@expr167 sizeof_short@var18 ;
+148: int_bit@var14 =@expr1073742085 char_bit@var12 *@expr169 sizeof_int@var19 ;
+149: long_bit@var15 =@expr1073742087 char_bit@var12 *@expr171 sizeof_long@var20 ;
+150: long_long_bit@var16 =@expr1073742089 char_bit@var12 *@expr173 sizeof_long_long@var21 ;
+151: return true ;
+152: case PlatformFile :@expr130 ;
+153:
+154: return false ;
+155: }
+156:
+157: return false ;
+158: }
+159:
+160: bool cppcheck :: Platform :: loadPlatformFile ( const char exename@var58 [ ] , const std :: string & filename@var59 )
+161: {
+162:
+163: tinyxml2 ::@expr1073742094 XMLDocument doc@var60 ;
+164: if (@expr1073742095 doc@var60 .@expr272 LoadFile (@expr1073742097 filename@var59 .@expr1073742098 c_str (@expr1073742099 ) ) !=@expr1073742100 tinyxml2 ::@expr277 XML_SUCCESS@expr268 ) {
+165: std ::@expr1073742102 vector < std ::@expr279 string > filenames@var61 ;
+166: filenames@var61 .@expr280 push_back (@expr1073742105 filename@var59 +@expr1073742106 ".xml" ) ;
+167: if (@expr1073742107 exename@var58 &&@expr1073742108 (@expr1073742109 std ::@expr1073742110 string ::@expr1073742111 npos@expr1073742093 !=@expr1073742112 Path ::@expr289 fromNativeSeparators (@expr290 exename@var58 ) .@expr1073742115 find (@expr1073742116 '/' ) ) ) {
+168: filenames@var61 .@expr280 push_back (@expr294 Path ::@expr295 getPathFromFilename (@expr296 Path ::@expr289 fromNativeSeparators (@expr290 exename@var58 ) ) +@expr299 filename@var59 ) ;
+169: filenames@var61 .@expr280 push_back (@expr294 Path ::@expr295 getPathFromFilename (@expr296 Path ::@expr289 fromNativeSeparators (@expr290 exename@var58 ) ) +@expr299 filename@var59 ) ;
+170: filenames@var61 .@expr280 push_back (@expr1073742132 Path ::@expr295 getPathFromFilename (@expr296 Path ::@expr289 fromNativeSeparators (@expr290 exename@var58 ) ) +@expr313 "platforms/" +@expr314 filename@var59 ) ;
+171: filenames@var61 .@expr280 push_back (@expr1073742140 Path ::@expr295 getPathFromFilename (@expr296 Path ::@expr289 fromNativeSeparators (@expr290 exename@var58 ) ) +@expr313 "platforms/" +@expr314 filename@var59 +@expr1073742147 ".xml" ) ;
+172: }
+173:
+|
+179:
+180: bool success@var62 ; success@var62 =@expr1073742148 false ;
+181: for (@expr1073742149 const std ::@expr279 string &@expr1073742151 f@var63 :@expr1073742152 filenames@var61 ) {
+182: if (@expr1073742153 doc@var60 .@expr272 LoadFile (@expr1073742155 f@var63 .@expr1073742156 c_str (@expr1073742157 ) ) ==@expr1073742158 tinyxml2 ::@expr277 XML_SUCCESS@expr268 ) {
+183: success@var62 =@expr1073742160 true ;
+184: break ;
+185: }
+186: }
+187: if (@expr1073742161 !@expr1073742162 success@var62 ) {
+188: return false ; }
+189: }
+190:
+191: return loadFromXmlDocument (@expr1073742163 &@expr1073742164 doc@var60 ) ;
+192: }
+193:
+194: bool cppcheck :: Platform :: loadFromXmlDocument ( const tinyxml2 :: XMLDocument * doc@var64 )
+195: {
+196: const tinyxml2 ::@expr1073742166 XMLElement@expr1073742165 * const rootnode@var65 ; rootnode@var65 =@expr1073742167 doc@var64 .@expr1073742168 FirstChildElement (@expr1073742169 ) ;
+197:
+198: if (@expr1073742170 !@expr1073742171 rootnode@var65 ||@expr1073742172 std ::@expr349 strcmp (@expr1073742174 rootnode@var65 .@expr1073742175 Name (@expr1073742176 ) , "platform" ) !=@expr1073742177 0 ) {
+199: return false ; }
+200:
+201: for (@expr1073742178 const tinyxml2 ::@expr355 XMLElement *@expr356 node@var66 =@expr1073742181 rootnode@var65 .@expr1073742182 FirstChildElement (@expr1073742183 ) ; node@var66 ; node@var66 =@expr1073742184 node@var66 .@expr1073742185 NextSiblingElement (@expr1073742186 ) ) {
+202: if (@expr1073742187 std ::@expr349 strcmp (@expr1073742189 node@var66 .@expr366 Name (@expr367 ) , "default-sign" ) ==@expr1073742192 0 ) {
+203: defaultSign@var28 =@expr1073742193 *@expr1073742194 node@var66 .@expr371 GetText (@expr372 ) ; }
+204: else { if (@expr1073742197 std ::@expr349 strcmp (@expr1073742199 node@var66 .@expr366 Name (@expr367 ) , "char_bit" ) ==@expr1073742202 0 ) {
+205: char_bit@var12 =@expr1073742203 std ::@expr380 atoi (@expr1073742205 node@var66 .@expr371 GetText (@expr372 ) ) ; }
+206: else { if (@expr1073742208 std ::@expr349 strcmp (@expr1073742210 node@var66 .@expr366 Name (@expr367 ) , "sizeof" ) ==@expr1073742213 0 ) {
+207: for (@expr1073742214 const tinyxml2 ::@expr355 XMLElement *@expr356 sz@var67 =@expr1073742217 node@var66 .@expr1073742218 FirstChildElement (@expr1073742219 ) ; sz@var67 ; sz@var67 =@expr1073742220 sz@var67 .@expr1073742221 NextSiblingElement (@expr1073742222 ) ) {
+208: if (@expr1073742223 std ::@expr349 strcmp (@expr1073742225 sz@var67 .@expr402 Name (@expr403 ) , "short" ) ==@expr1073742228 0 ) {
+209: sizeof_short@var18 =@expr1073742229 std ::@expr380 atoi (@expr407 sz@var67 .@expr408 GetText (@expr409 ) ) ; }
+210: else { if (@expr1073742234 std ::@expr349 strcmp (@expr1073742236 sz@var67 .@expr402 Name (@expr403 ) , "bool" ) ==@expr1073742239 0 ) {
+211: sizeof_bool@var17 =@expr1073742240 std ::@expr380 atoi (@expr407 sz@var67 .@expr408 GetText (@expr409 ) ) ; }
+212: else { if (@expr1073742245 std ::@expr349 strcmp (@expr1073742247 sz@var67 .@expr402 Name (@expr403 ) , "int" ) ==@expr1073742250 0 ) {
+213: sizeof_int@var19 =@expr1073742251 std ::@expr380 atoi (@expr407 sz@var67 .@expr408 GetText (@expr409 ) ) ; }
+214: else { if (@expr1073742256 std ::@expr349 strcmp (@expr1073742258 sz@var67 .@expr402 Name (@expr403 ) , "long" ) ==@expr1073742261 0 ) {
+215: sizeof_long@var20 =@expr1073742262 std ::@expr380 atoi (@expr407 sz@var67 .@expr408 GetText (@expr409 ) ) ; }
+216: else { if (@expr1073742267 std ::@expr349 strcmp (@expr1073742269 sz@var67 .@expr402 Name (@expr403 ) , "long-long" ) ==@expr1073742272 0 ) {
+217: sizeof_long_long@var21 =@expr1073742273 std ::@expr380 atoi (@expr407 sz@var67 .@expr408 GetText (@expr409 ) ) ; }
+218: else { if (@expr1073742278 std ::@expr349 strcmp (@expr1073742280 sz@var67 .@expr402 Name (@expr403 ) , "float" ) ==@expr1073742283 0 ) {
+219: sizeof_float@var22 =@expr1073742284 std ::@expr380 atoi (@expr407 sz@var67 .@expr408 GetText (@expr409 ) ) ; }
+220: else { if (@expr1073742289 std ::@expr349 strcmp (@expr1073742291 sz@var67 .@expr402 Name (@expr403 ) , "double" ) ==@expr1073742294 0 ) {
+221: sizeof_double@var23 =@expr1073742295 std ::@expr380 atoi (@expr407 sz@var67 .@expr408 GetText (@expr409 ) ) ; }
+222: else { if (@expr1073742300 std ::@expr349 strcmp (@expr1073742302 sz@var67 .@expr402 Name (@expr403 ) , "long-double" ) ==@expr1073742305 0 ) {
+223: sizeof_long_double@var24 =@expr1073742306 std ::@expr380 atoi (@expr407 sz@var67 .@expr408 GetText (@expr409 ) ) ; }
+224: else { if (@expr1073742311 std ::@expr349 strcmp (@expr1073742313 sz@var67 .@expr402 Name (@expr403 ) , "pointer" ) ==@expr1073742316 0 ) {
+225: sizeof_pointer@var27 =@expr1073742317 std ::@expr380 atoi (@expr407 sz@var67 .@expr408 GetText (@expr409 ) ) ; }
+226: else { if (@expr1073742322 std ::@expr349 strcmp (@expr1073742324 sz@var67 .@expr402 Name (@expr403 ) , "size_t" ) ==@expr1073742327 0 ) {
+227: sizeof_size_t@var26 =@expr1073742328 std ::@expr380 atoi (@expr407 sz@var67 .@expr408 GetText (@expr409 ) ) ; }
+228: else { if (@expr1073742333 std ::@expr349 strcmp (@expr1073742335 sz@var67 .@expr402 Name (@expr403 ) , "wchar_t" ) ==@expr1073742338 0 ) {
+229: sizeof_wchar_t@var25 =@expr1073742339 std ::@expr380 atoi (@expr407 sz@var67 .@expr408 GetText (@expr409 ) ) ; } } } } } } } } } } }
+230: }
+231: } } }
+232: }
+233:
+234: short_bit@var13 =@expr1073742344 char_bit@var12 *@expr1073742345 sizeof_short@var18 ;
+235: int_bit@var14 =@expr1073742346 char_bit@var12 *@expr1073742347 sizeof_int@var19 ;
+236: long_bit@var15 =@expr1073742348 char_bit@var12 *@expr1073742349 sizeof_long@var20 ;
+237: long_long_bit@var16 =@expr1073742350 char_bit@var12 *@expr1073742351 sizeof_long_long@var21 ;
+238:
+239: platformType@var29 =@expr1073742352 PlatformFile ;
+240: return true ;
+241: }
+
+
+
+##Value flow
+Line 44
+  >= always {!<=-1,!>=2}
+  64 always 64
+Line 46
+  - possible >=-4611686018427387904
+  1LL always 1
+  << possible <=4611686018427387904
+  bit {!>=64,<=63}
+  - {!>=63,<=62}
+  1 always 1
+Line 50
+  >= always {!<=-1,!>=2}
+  64 always 64
+Line 51
+  ~ always !<=-1
+  0ULL always 0
+  >> always !<=-1
+  1 always 1
+Line 52
+  1LL always 1
+  << possible <=4611686018427387904
+  bit {!>=64,<=63}
+  - {!>=63,<=62}
+  1 always 1
+  - {<=4611686018427387903,!>=4611686018427387904}
+  1LL always 1
+Line 58
+  ( always {!<=-1,!>=2}
+Line 59
+  return always {!<=-1,!>=2}
+  >= always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  <= always {!<=-1,!>=2}
+Line 62
+  ( always {!<=-1,!>=2}
+  value always !<=-1
+Line 63
+  intMax always !<=-1
+  intMax always !<=-1
+  = always !<=-1
+Line 64
+  return always {!<=-1,!>=2}
+  value always !<=-1
+  <= always {!<=-1,!>=2}
+  intMax always !<=-1
+Line 67
+  ( always {!<=-1,!>=2}
+Line 68
+  return always {!<=-1,!>=2}
+  >= always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  <= always {!<=-1,!>=2}
+Line 71
+  ( always {!<=-1,!>=2}
+  value always !<=-1
+Line 72
+  longMax always !<=-1
+  longMax always !<=-1
+  = always !<=-1
+Line 73
+  return always {!<=-1,!>=2}
+  value always !<=-1
+  <= always {!<=-1,!>=2}
+  longMax always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  value always !<=-1
+Line 77
+  longLongMax always !<=-1
+  longLongMax always !<=-1
+  = always !<=-1
+Line 78
+  return always {!<=-1,!>=2}
+  value always !<=-1
+  <= always {!<=-1,!>=2}
+  longLongMax always !<=-1
+Line 103
+  Unspecified always 0
+Line 104
+  Native always 1
+Line 105
+  Win32A always 2
+Line 106
+  Win32W always 3
+Line 107
+  Win64 always 4
+Line 108
+  Unix32 always 5
+Line 109
+  Unix64 always 6
+Line 110
+  PlatformFile always 7
+Line 117
+  ( always {!<=-1,!>=2}
+Line 125
+  ( always {!<=-1,!>=2}
+Line 128
+  ( always {!<=-1,!>=2}
+Line 134
+  ( always {!<=-1,!>=2}
+Line 135
+  return always {!<=-1,!>=2}
+  platformType possible {3,4}
+  == {!<=-1,!>=2,0}
+  Win32A always 2
+  || always {!<=-1,!>=2}
+Line 136
+  platformType {4,!2}
+  == {!<=-1,!>=2,0}
+  Win32W always 3
+  || always {!<=-1,!>=2}
+Line 137
+  platformType always {!2,!3}
+  == always {!<=-1,!>=2}
+  Win64 always 4
+Line 146
+  Unspecified always 0
+Line 147
+  "Unspecified" always "Unspecified"
+Line 148
+  Native always 1
+Line 149
+  "Native" always "Native"
+Line 150
+  Win32A always 2
+Line 151
+  "win32A" always "win32A"
+Line 152
+  Win32W always 3
+Line 153
+  "win32W" always "win32W"
+Line 154
+  Win64 always 4
+Line 155
+  "win64" always "win64"
+Line 156
+  Unix32 always 5
+Line 157
+  "unix32" always "unix32"
+Line 158
+  Unix64 always 6
+Line 159
+  "unix64" always "unix64"
+Line 160
+  PlatformFile always 7
+Line 161
+  "platformFile" always "platformFile"
+Line 163
+  "unknown" always "unknown"
+Line 168
+  1 always 1
+Line 77
+  ( always {!<=-1,!>=2}
+Line 111
+  ( always {!<=-1,!>=2}
+Line 134
+  ( always {!<=-1,!>=2}
+Line 136
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  extra always size=0
+Line 146
+  ( always {!<=-1,!>=2}
+Line 153
+  ( always {!<=-1,!>=2}
+Line 160
+  ( always {!<=-1,!>=2}
+Line 167
+  ( always {!<=-1,!>=2}
+Line 181
+  ( always {!<=-1,!>=2}
+Line 38
+  ( always {!<=-1,!>=2}
+  Native always 1
+Line 43
+  ( always {!<=-1,!>=2}
+Line 45
+  type possible 1@2
+Line 46
+  Unspecified always 0
+Line 47
+  Native always 1
+Line 48
+  = possible 0
+  type possible 0
+Line 49
+  = always 1
+  ( always 1
+  bool always {!<=-1,!>=2}
+Line 50
+  = always 2
+  ( always 2
+Line 51
+  = always 4
+  ( always 4
+Line 52
+  = always 8
+  ( always 8
+Line 53
+  = always 8
+  ( always 8
+Line 54
+  = always 4
+  ( always 4
+Line 55
+  = always 8
+  ( always 8
+Line 56
+  = always 16
+  ( always 16
+Line 57
+  = always 4
+  ( always 4
+Line 58
+  = always 8
+  ( always 8
+  long always !<=-1
+Line 59
+  = always 8
+  ( always 8
+Line 60
+  == always {!<=-1,!>=2}
+  Unspecified always 0
+Line 61
+  = always 0
+  '\0' always 0
+Line 63
+  = possible {115,117}
+  ? possible {115,117}
+  's' always 115
+  : always 117
+  'u' always 117
+Line 65
+  = always 8
+  8 always 8
+Line 66
+  = always 16
+  char_bit always 8
+  * always 16
+  sizeof_short always 2
+Line 67
+  = always 32
+  char_bit always 8
+  * always 32
+  sizeof_int always 4
+Line 68
+  = always 64
+  char_bit always 8
+  * always 64
+  sizeof_long always 8
+Line 69
+  = always 64
+  char_bit always 8
+  * always 64
+  sizeof_long_long always 8
+Line 70
+  return always {!<=-1,!>=2}
+  true always 1
+Line 71
+  Win32W always 3
+Line 72
+  Win32A always 2
+Line 74
+  = always 1
+  1 always 1
+Line 75
+  = always 2
+  2 always 2
+Line 76
+  = always 4
+  4 always 4
+Line 77
+  = always 4
+  4 always 4
+Line 78
+  = always 8
+  8 always 8
+Line 79
+  = always 4
+  4 always 4
+Line 80
+  = always 8
+  8 always 8
+Line 81
+  = always 8
+  8 always 8
+Line 82
+  = always 2
+  2 always 2
+Line 83
+  = always 4
+  4 always 4
+Line 84
+  = always 4
+  4 always 4
+Line 85
+  = always 0
+  '\0' always 0
+Line 86
+  = always 8
+  8 always 8
+Line 87
+  = always 16
+  char_bit always 8
+  * always 16
+  sizeof_short always 2
+Line 88
+  = always 32
+  char_bit always 8
+  * always 32
+  sizeof_int always 4
+Line 89
+  = always 32
+  char_bit always 8
+  * always 32
+  sizeof_long always 4
+Line 90
+  = always 64
+  char_bit always 8
+  * always 64
+  sizeof_long_long always 8
+Line 91
+  return always {!<=-1,!>=2}
+  true always 1
+Line 92
+  Win64 always 4
+Line 94
+  = always 1
+  1 always 1
+Line 95
+  = always 2
+  2 always 2
+Line 96
+  = always 4
+  4 always 4
+Line 97
+  = always 4
+  4 always 4
+Line 98
+  = always 8
+  8 always 8
+Line 99
+  = always 4
+  4 always 4
+Line 100
+  = always 8
+  8 always 8
+Line 101
+  = always 8
+  8 always 8
+Line 102
+  = always 2
+  2 always 2
+Line 103
+  = always 8
+  8 always 8
+Line 104
+  = always 8
+  8 always 8
+Line 105
+  = always 0
+  '\0' always 0
+Line 106
+  = always 8
+  8 always 8
+Line 107
+  = always 16
+  char_bit always 8
+  * always 16
+  sizeof_short always 2
+Line 108
+  = always 32
+  char_bit always 8
+  * always 32
+  sizeof_int always 4
+Line 109
+  = always 32
+  char_bit always 8
+  * always 32
+  sizeof_long always 4
+Line 110
+  = always 64
+  char_bit always 8
+  * always 64
+  sizeof_long_long always 8
+Line 111
+  return always {!<=-1,!>=2}
+  true always 1
+Line 112
+  Unix32 always 5
+Line 114
+  = always 1
+  1 always 1
+Line 115
+  = always 2
+  2 always 2
+Line 116
+  = always 4
+  4 always 4
+Line 117
+  = always 4
+  4 always 4
+Line 118
+  = always 8
+  8 always 8
+Line 119
+  = always 4
+  4 always 4
+Line 120
+  = always 8
+  8 always 8
+Line 121
+  = always 12
+  12 always 12
+Line 122
+  = always 4
+  4 always 4
+Line 123
+  = always 4
+  4 always 4
+Line 124
+  = always 4
+  4 always 4
+Line 125
+  = always 0
+  '\0' always 0
+Line 126
+  = always 8
+  8 always 8
+Line 127
+  = always 16
+  char_bit always 8
+  * always 16
+  sizeof_short always 2
+Line 128
+  = always 32
+  char_bit always 8
+  * always 32
+  sizeof_int always 4
+Line 129
+  = always 32
+  char_bit always 8
+  * always 32
+  sizeof_long always 4
+Line 130
+  = always 64
+  char_bit always 8
+  * always 64
+  sizeof_long_long always 8
+Line 131
+  return always {!<=-1,!>=2}
+  true always 1
+Line 132
+  Unix64 always 6
+Line 134
+  = always 1
+  1 always 1
+Line 135
+  = always 2
+  2 always 2
+Line 136
+  = always 4
+  4 always 4
+Line 137
+  = always 8
+  8 always 8
+Line 138
+  = always 8
+  8 always 8
+Line 139
+  = always 4
+  4 always 4
+Line 140
+  = always 8
+  8 always 8
+Line 141
+  = always 16
+  16 always 16
+Line 142
+  = always 4
+  4 always 4
+Line 143
+  = always 8
+  8 always 8
+Line 144
+  = always 8
+  8 always 8
+Line 145
+  = always 0
+  '\0' always 0
+Line 146
+  = always 8
+  8 always 8
+Line 147
+  = always 16
+  char_bit always 8
+  * always 16
+  sizeof_short always 2
+Line 148
+  = always 32
+  char_bit always 8
+  * always 32
+  sizeof_int always 4
+Line 149
+  = always 64
+  char_bit always 8
+  * always 64
+  sizeof_long always 8
+Line 150
+  = always 64
+  char_bit always 8
+  * always 64
+  sizeof_long_long always 8
+Line 151
+  return always {!<=-1,!>=2}
+  true always 1
+Line 152
+  PlatformFile always 7
+Line 154
+  return always {!<=-1,!>=2}
+  false always 0
+Line 157
+  return always {!<=-1,!>=2}
+  false always 0
+Line 160
+  ( always {!<=-1,!>=2}
+Line 164
+  ( {lifetime[Object]=(filename),!0}
+  != always {!<=-1,!>=2}
+Line 166
+  filenames always size=0
+  ".xml" always ".xml"
+Line 167
+  && always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+  exename always !0
+  ( always !<=-1
+  '/' always 47
+Line 168
+  filenames always size=1
+  exename always !0
+Line 169
+  filenames always size=2
+  exename always !0
+Line 170
+  filenames always size=3
+  exename always !0
+  "platforms/" always "platforms/"
+Line 171
+  filenames always size=4
+  exename always !0
+  "platforms/" always "platforms/"
+  ".xml" always ".xml"
+Line 180
+  success always {!<=-1,!>=2}
+  success always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 181
+  filenames possible size=1
+Line 182
+  ( {lifetime[Object]=(f),!0}
+  == always {!<=-1,!>=2}
+Line 183
+  success always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 187
+  ! {!<=-1,!>=2,0}
+  success {!<=-1,!>=2,1}
+Line 188
+  return always {!<=-1,!>=2}
+  false always 0
+Line 191
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  & {lifetime[Address]=(doc),!0}
+Line 194
+  ( always {!<=-1,!>=2}
+Line 196
+  doc possible lifetime[Address]=(doc)@1
+Line 198
+  ! always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  rootnode always !0
+  "platform" always "platform"
+  != always {!<=-1,!>=2}
+  0 always 0
+Line 199
+  return always {!<=-1,!>=2}
+  false always 0
+Line 201
+  rootnode always !0
+Line 202
+  "default-sign" always "default-sign"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 204
+  "char_bit" always "char_bit"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 206
+  "sizeof" always "sizeof"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 208
+  "short" always "short"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 210
+  "bool" always "bool"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 212
+  "int" always "int"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 214
+  "long" always "long"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 216
+  "long-long" always "long-long"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 218
+  "float" always "float"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 220
+  "double" always "double"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 222
+  "long-double" always "long-double"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 224
+  "pointer" always "pointer"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 226
+  "size_t" always "size_t"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 228
+  "wchar_t" always "wchar_t"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 239
+  = always 7
+  PlatformFile always 7
+Line 240
+  return always {!<=-1,!>=2}
+  true always 1

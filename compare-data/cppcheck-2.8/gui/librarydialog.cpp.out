@@ -1,0 +1,700 @@
+
+
+##file cppcheck-2.8/gui/cppchecklibrarydata.h
+
+1:
+|
+25:
+26: class QIODevice ;
+27:
+28: class CppcheckLibraryData {
+29: public:
+30: CppcheckLibraryData ( ) ;
+31:
+32: struct Container {
+33: Container ( ) : access_arrayLike ( false ) , size_templateParameter ( -1 ) { }
+34:
+35: QString id ;
+36: QString inherits ;
+37: QString startPattern ;
+38: QString endPattern ;
+39: QString opLessAllowed ;
+40: QString itEndPattern ;
+41:
+42: bool access_arrayLike ;
+43: int size_templateParameter ;
+44:
+45: struct {
+46: QString templateParameter ;
+47: QString string ;
+48: } type ;
+49:
+50: struct Function {
+51: QString name ;
+52: QString yields ;
+53: QString action ;
+54: } ;
+55: QList < struct Function > accessFunctions ;
+56: QList < struct Function > otherFunctions ;
+57: QList < struct Function > sizeFunctions ;
+58: } ;
+59:
+60: struct Define {
+61: QString name ;
+62: QString value ;
+63: } ;
+64:
+65: struct Function {
+66: Function ( ) : noreturn ( Unknown ) , gccPure ( false ) , gccConst ( false ) ,
+67: leakignore ( false ) , useretval ( false ) { }
+68:
+69: QString comments ;
+70: QString name ;
+71: enum TrueFalseUnknown { False , True , Unknown } noreturn ;
+72: bool gccPure ;
+73: bool gccConst ;
+74: bool leakignore ;
+75: bool useretval ;
+76: struct ReturnValue {
+77: ReturnValue ( ) : container ( -1 ) { }
+78: QString type ;
+79: QString value ;
+80: int container ;
+81: bool empty ( ) const {
+82: return type . isNull ( ) && value . isNull ( ) && container < 0 ;
+83: }
+84: } returnValue ;
+85: struct {
+86: QString scan ;
+87: QString secure ;
+88: } formatstr ;
+89: struct Arg {
+90: Arg ( ) : nr ( 0 ) , notbool ( false ) , notnull ( false ) , notuninit ( false ) ,
+91: formatstr ( false ) , strz ( false ) { }
+92:
+93: QString name ;
+94: unsigned int nr ;
+95: static const unsigned int ANY ;
+96: static const unsigned int VARIADIC ;
+97: QString defaultValue ;
+98: bool notbool ;
+99: bool notnull ;
+100: bool notuninit ;
+101: bool formatstr ;
+102: bool strz ;
+103: QString valid ;
+104: struct MinSize {
+105: QString type ;
+106: QString arg ;
+107: QString arg2 ;
+108: } ;
+109: QList < struct MinSize > minsizes ;
+110: struct Iterator {
+111: Iterator ( ) : container ( -1 ) { }
+112: int container ;
+113: QString type ;
+114: } iterator ;
+115: } ;
+116: QList < struct Arg > args ;
+117:
+118: struct {
+119: QString severity ;
+120: QString cstd ;
+121: QString reason ;
+122: QString alternatives ;
+123: QString msg ;
+124:
+125: bool isEmpty ( ) const {
+126: return cstd . isEmpty ( ) &&
+127: severity . isEmpty ( ) &&
+128: reason . isEmpty ( ) &&
+129: alternatives . isEmpty ( ) &&
+130: msg . isEmpty ( ) ;
+131: }
+132: } warn ;
+133: } ;
+134:
+135: struct MemoryResource {
+136: QString type ;
+137: struct Alloc {
+138: Alloc ( ) :
+139: isRealloc ( false ) ,
+140: init ( false ) ,
+141: arg ( -1 ) ,
+142: reallocArg ( -1 )
+143: { }
+144:
+145: bool isRealloc ;
+146: bool init ;
+147: int arg ;
+148: int reallocArg ;
+149: QString bufferSize ;
+150: QString name ;
+151: } ;
+152: struct Dealloc {
+153: Dealloc ( ) :
+154: arg ( -1 )
+155: { }
+156:
+157: int arg ;
+158: QString name ;
+159: } ;
+160:
+161: QList < struct Alloc > alloc ;
+162: QList < struct Dealloc > dealloc ;
+163: QStringList use ;
+164: } ;
+165:
+166: struct PodType {
+167: QString name ;
+168: QString stdtype ;
+169: QString size ;
+170: QString sign ;
+171: } ;
+172:
+173: struct PlatformType {
+174: QString name ;
+175: QString value ;
+176: QStringList types ;
+177: QStringList platforms ;
+178: } ;
+179:
+180: using TypeChecks = QList < QPair < QString , QString > > ;
+181:
+182: struct Reflection {
+183: struct Call {
+184: Call ( ) :
+185: arg { -1 }
+186: { }
+187:
+188: int arg ;
+189: QString name ;
+190: } ;
+191:
+192: QList < struct Call > calls ;
+193: } ;
+194:
+195: struct Markup {
+196: struct CodeBlocks {
+197: CodeBlocks ( ) :
+198: offset { -1 }
+199: { }
+200:
+201: QStringList blocks ;
+202: int offset ;
+203: QString start ;
+204: QString end ;
+205: } ;
+206:
+207: struct Exporter {
+208: QString prefix ;
+209: QStringList prefixList ;
+210: QStringList suffixList ;
+211: } ;
+212:
+213: QString ext ;
+214: bool afterCode ;
+215: bool reportErrors ;
+216: QStringList keywords ;
+217: QStringList importer ;
+218: QList < CodeBlocks > codeBlocks ;
+219: QList < Exporter > exporter ;
+220: } ;
+221:
+222: void clear ( ) {
+223: containers . clear ( ) ;
+224: defines . clear ( ) ;
+225: undefines . clear ( ) ;
+226: functions . clear ( ) ;
+227: memoryresource . clear ( ) ;
+228: podtypes . clear ( ) ;
+229: smartPointers . clear ( ) ;
+230: typeChecks . clear ( ) ;
+231: platformTypes . clear ( ) ;
+232: reflections . clear ( ) ;
+233: markups . clear ( ) ;
+234: }
+235:
+236: void swap ( CppcheckLibraryData & other ) {
+237: containers . swap ( other . containers ) ;
+238: defines . swap ( other . defines ) ;
+239: undefines . swap ( other . undefines ) ;
+240: functions . swap ( other . functions ) ;
+241: memoryresource . swap ( other . memoryresource ) ;
+242: podtypes . swap ( other . podtypes ) ;
+243: smartPointers . swap ( other . smartPointers ) ;
+244: typeChecks . swap ( other . typeChecks ) ;
+245: platformTypes . swap ( other . platformTypes ) ;
+246: reflections . swap ( other . reflections ) ;
+247: markups . swap ( other . markups ) ;
+248: }
+249:
+250: QString open ( QIODevice & file ) ;
+251: QString toString ( ) const ;
+252:
+253: QList < struct Container > containers ;
+254: QList < struct Define > defines ;
+255: QList < struct Function > functions ;
+256: QList < struct MemoryResource > memoryresource ;
+257: QList < struct PodType > podtypes ;
+258: QList < TypeChecks > typeChecks ;
+259: QList < struct PlatformType > platformTypes ;
+260: QStringList undefines ;
+261: QStringList smartPointers ;
+262: QList < struct Reflection > reflections ;
+263: QList < struct Markup > markups ;
+264: } ;
+
+##file cppcheck-2.8/gui/librarydialog.h
+
+1:
+|
+25:
+26: class QListWidgetItem ;
+27: class QObject ;
+28: class QWidget ;
+29: namespace Ui {
+30: class LibraryDialog ;
+31: }
+32:
+33: class LibraryDialog : public QDialog {
+34: Q_OBJECT
+35:
+36: public:
+37: explicit LibraryDialog ( QWidget * parent = nullptr ) ;
+38: LibraryDialog ( const LibraryDialog & ) = delete ;
+39: ~ LibraryDialog ( ) override ;
+40: LibraryDialog & operator = ( const LibraryDialog & ) = delete ;
+41:
+42: private slots :
+43: void openCfg ( ) ;
+44: void saveCfg ( ) ;
+45: void saveCfgAs ( ) ;
+46: void addFunction ( ) ;
+47: void changeFunction ( ) ;
+48: void editArg ( ) ;
+49: void editFunctionName ( QListWidgetItem * ) ;
+50: void filterFunctions ( const QString & ) ;
+51: void selectFunction ( ) ;
+52: void sortFunctions ( bool ) ;
+53:
+54: private:
+55: Ui :: LibraryDialog * mUi ;
+56: CppcheckLibraryData mData ;
+57: QString mFileName ;
+58: bool mIgnoreChanges ;
+59:
+60: static QString getArgText ( const CppcheckLibraryData :: Function :: Arg & arg ) ;
+61: CppcheckLibraryData :: Function * currentFunction ( ) ;
+62: void updateArguments ( const CppcheckLibraryData :: Function & function ) ;
+63: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type , const QString & value ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters , bool addAllSupported = true , bool addAll = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/libraryaddfunctiondialog.h
+
+1:
+|
+23:
+24: class QObject ;
+25: class QWidget ;
+26: namespace Ui {
+27: class LibraryAddFunctionDialog ;
+28: }
+29:
+|
+33:
+34: class LibraryAddFunctionDialog : public QDialog {
+35: Q_OBJECT
+36:
+37: public:
+38: explicit LibraryAddFunctionDialog ( QWidget * parent = nullptr ) ;
+39: LibraryAddFunctionDialog ( const LibraryAddFunctionDialog & ) = delete ;
+40: ~ LibraryAddFunctionDialog ( ) override ;
+41: LibraryAddFunctionDialog & operator = ( const LibraryAddFunctionDialog & ) = delete ;
+42:
+43: QString functionName ( ) const ;
+44: int numberOfArguments ( ) const ;
+45:
+46: private:
+47: Ui :: LibraryAddFunctionDialog * mUi ;
+48: } ;
+
+##file cppcheck-2.8/gui/libraryeditargdialog.h
+
+1:
+|
+25:
+26: class QObject ;
+27: class QWidget ;
+28: namespace Ui {
+29: class LibraryEditArgDialog ;
+30: }
+31:
+32: class LibraryEditArgDialog : public QDialog {
+33: Q_OBJECT
+34:
+35: public:
+36: LibraryEditArgDialog ( QWidget * parent , const CppcheckLibraryData :: Function :: Arg & arg ) ;
+37: LibraryEditArgDialog ( const LibraryEditArgDialog & ) = delete ;
+38: ~ LibraryEditArgDialog ( ) override ;
+39: LibraryEditArgDialog & operator = ( const LibraryEditArgDialog & ) = delete ;
+40:
+41: CppcheckLibraryData :: Function :: Arg getArg ( ) const ;
+42:
+43: private slots :
+44: void minsizeChanged ( int ) ;
+45:
+46: private:
+47: Ui :: LibraryEditArgDialog * mUi ;
+48:
+49: QList < CppcheckLibraryData :: Function :: Arg :: MinSize > mMinSizes ;
+50: } ;
+
+##file cppcheck-2.8/gui/librarydialog.cpp
+
+1:
+|
+35:
+36: class QWidget ;
+37:
+38:
+39:
+40: class FunctionListItem : public QListWidgetItem {
+41: public:
+42: FunctionListItem ( QListWidget * view ,
+43: CppcheckLibraryData :: Function * function ,
+44: bool selected )
+45: : QListWidgetItem ( view ) , function ( function ) {
+46: setText ( function . name ) ;
+47: setFlags ( flags ( ) | Qt :: ItemIsEditable ) ;
+48: setSelected ( selected ) ;
+49: }
+50: CppcheckLibraryData :: Function * function ;
+51: } ;
+52:
+53: LibraryDialog :: LibraryDialog ( QWidget * parent ) :
+54: QDialog ( parent ) ,
+55: mUi ( new Ui :: LibraryDialog ) ,
+56: mIgnoreChanges ( false )
+57: {
+58: mUi . setupUi ( this ) ;
+59: mUi . buttonSave . setEnabled ( false ) ;
+60: mUi . buttonSaveAs . setEnabled ( false ) ;
+61: mUi . sortFunctions . setEnabled ( false ) ;
+62: mUi . filter . setEnabled ( false ) ;
+63: mUi . addFunction . setEnabled ( false ) ;
+64:
+65:
+66: selectFunction ( ) ;
+67: }
+68:
+69: LibraryDialog :: ~ LibraryDialog ( )
+70: {
+71: delete mUi ;
+72: }
+73:
+74: CppcheckLibraryData :: Function * LibraryDialog :: currentFunction ( )
+75: {
+76: QList < QListWidgetItem * > selitems ; selitems = mUi . functions . selectedItems ( ) ;
+77: if ( selitems . count ( ) != 1 ) {
+78: return nullptr ; }
+79: return static_cast < FunctionListItem * > ( selitems . first ( ) ) . function ;
+80: }
+81:
+82: void LibraryDialog :: openCfg ( )
+83: {
+84: const QString datadir = getDataDir ( ) ;
+85:
+86: QString selectedFilter ;
+87: const QString filter ( tr ( "Library files (*.cfg)" ) ) ;
+88: const QString selectedFile = QFileDialog :: getOpenFileName ( this ,
+89: tr ( "Open library file" ) ,
+90: datadir ,
+91: filter ,
+92: & selectedFilter ) ;
+93:
+94: if ( selectedFile . isEmpty ( ) ) {
+95: return ; }
+96:
+97: QFile file ( selectedFile ) ;
+98: if ( ! file . open ( QIODevice :: ReadOnly | QIODevice :: Text ) ) {
+99: QMessageBox msg ( QMessageBox :: Critical ,
+100: tr ( "Cppcheck" ) ,
+101: tr ( "Cannot open file %1." ) . arg ( selectedFile ) ,
+102: QMessageBox :: Ok ,
+103: this ) ;
+104: msg . exec ( ) ;
+105: return ;
+106: }
+107:
+108: CppcheckLibraryData tempdata ;
+109: const QString errmsg = tempdata . open ( file ) ;
+110: if ( ! errmsg . isNull ( ) ) {
+111: QMessageBox msg ( QMessageBox :: Critical ,
+112: tr ( "Cppcheck" ) ,
+113: tr ( "Failed to load %1. %2." ) . arg ( selectedFile ) . arg ( errmsg ) ,
+114: QMessageBox :: Ok ,
+115: this ) ;
+116: msg . exec ( ) ;
+117: return ;
+118: }
+119:
+120: mIgnoreChanges = true ;
+121: mData . swap ( tempdata ) ;
+122: mFileName = selectedFile ;
+123: mUi . buttonSave . setEnabled ( false ) ;
+124: mUi . buttonSaveAs . setEnabled ( true ) ;
+125: mUi . filter . clear ( ) ;
+126: mUi . functions . clear ( ) ;
+127: for ( CppcheckLibraryData :: Function & function : mData . functions ) {
+128: mUi . functions . addItem ( new FunctionListItem ( mUi . functions ,
+129: & function ,
+130: false ) ) ;
+131: }
+132: mUi . sortFunctions . setEnabled ( ! mData . functions . empty ( ) ) ;
+133: mUi . filter . setEnabled ( ! mData . functions . empty ( ) ) ;
+134: mUi . addFunction . setEnabled ( true ) ;
+135: mIgnoreChanges = false ;
+136: }
+137:
+138: void LibraryDialog :: saveCfg ( )
+139: {
+140: if ( mFileName . isNull ( ) ) {
+141: return ; }
+142: QFile file ( mFileName ) ;
+143: if ( file . open ( QIODevice :: WriteOnly | QIODevice :: Text ) ) {
+144: QTextStream ts ( & file ) ;
+145: ts << mData . toString ( ) << '\n' ;
+146: mUi . buttonSave . setEnabled ( false ) ;
+147: } else {
+148: QMessageBox msg ( QMessageBox :: Critical ,
+149: tr ( "Cppcheck" ) ,
+150: tr ( "Cannot save file %1." ) . arg ( mFileName ) ,
+151: QMessageBox :: Ok ,
+152: this ) ;
+153: msg . exec ( ) ;
+154: }
+155: }
+156:
+157: void LibraryDialog :: saveCfgAs ( )
+158: {
+159: const QString filter ( tr ( "Library files (*.cfg)" ) ) ;
+160: const QString path = Path :: getPathFromFilename ( mFileName . toStdString ( ) ) . c_str ( ) ;
+161: QString selectedFile ; selectedFile = QFileDialog :: getSaveFileName ( this ,
+162: tr ( "Save the library as" ) ,
+163: path ,
+164: filter ) ;
+165: if ( selectedFile . isEmpty ( ) ) {
+166: return ; }
+167:
+168: if ( ! selectedFile . endsWith ( ".cfg" , Qt :: CaseInsensitive ) ) {
+169: selectedFile += ".cfg" ; }
+170:
+171: mFileName = selectedFile ;
+172: saveCfg ( ) ;
+173: }
+174:
+175: void LibraryDialog :: addFunction ( )
+176: {
+177: LibraryAddFunctionDialog * d ; d = new LibraryAddFunctionDialog ;
+178: if ( d . exec ( ) == QDialog :: Accepted && ! d . functionName ( ) . isEmpty ( ) ) {
+179:
+180: CppcheckLibraryData :: Function f ;
+181: f . name = d . functionName ( ) ;
+182: int args ; args = d . numberOfArguments ( ) ;
+183:
+184: for ( int i = 1 ; i <= args ; i ++ ) {
+185: CppcheckLibraryData :: Function :: Arg arg ;
+186: arg . nr = i ;
+187: f . args . append ( arg ) ;
+188: }
+189: mData . functions . append ( f ) ;
+190: mUi . functions . addItem ( new FunctionListItem ( mUi . functions , & mData . functions . back ( ) , false ) ) ;
+191: mUi . buttonSave . setEnabled ( true ) ;
+192: mUi . sortFunctions . setEnabled ( ! mData . functions . empty ( ) ) ;
+193: mUi . filter . setEnabled ( ! mData . functions . empty ( ) ) ;
+194: }
+195: delete d ;
+196: }
+197:
+198: void LibraryDialog :: editFunctionName ( QListWidgetItem * item )
+199: {
+200: if ( mIgnoreChanges ) {
+201: return ; }
+202: QString functionName ; functionName = item . text ( ) ;
+203: CppcheckLibraryData :: Function * const function ; function = dynamic_cast < FunctionListItem * > ( item ) . function ;
+204: if ( functionName != function . name ) {
+205: const QRegularExpressionMatch matchRes = QRegularExpression ( "^[_a-zA-Z][_a-zA-Z0-9]*(::[_a-zA-Z][_a-zA-Z0-9]*)*(,[_a-zA-Z][_a-zA-Z0-9]*(::[_a-zA-Z][_a-zA-Z0-9]*)*)*$" ) . match ( functionName ) ;
+206: if ( matchRes . hasMatch ( ) ) {
+207: function . name = functionName ;
+208: mUi . buttonSave . setEnabled ( true ) ;
+209: } else {
+210: mIgnoreChanges = true ;
+211: item . setText ( function . name ) ;
+212: mIgnoreChanges = false ;
+213: }
+214: }
+215: }
+216:
+217: void LibraryDialog :: selectFunction ( )
+218: {
+219: const CppcheckLibraryData :: Function * const function ; function = currentFunction ( ) ;
+220:
+221: if ( function == nullptr ) {
+222: mUi . comments . clear ( ) ;
+223: mUi . comments . setEnabled ( false ) ;
+224:
+225: mUi . noreturn . setCurrentIndex ( 0 ) ;
+226: mUi . noreturn . setEnabled ( false ) ;
+227:
+228: mUi . useretval . setChecked ( false ) ;
+229: mUi . useretval . setEnabled ( false ) ;
+230:
+231: mUi . leakignore . setChecked ( false ) ;
+232: mUi . leakignore . setEnabled ( false ) ;
+233:
+234: mUi . arguments . clear ( ) ;
+235: mUi . arguments . setEnabled ( false ) ;
+236:
+237: mUi . editArgButton . setEnabled ( false ) ;
+238: return ;
+239: }
+240:
+241: mIgnoreChanges = true ;
+242: mUi . comments . setPlainText ( function . comments ) ;
+243: mUi . comments . setEnabled ( true ) ;
+244:
+245: mUi . noreturn . setCurrentIndex ( function . noreturn ) ;
+246: mUi . noreturn . setEnabled ( true ) ;
+247:
+248: mUi . useretval . setChecked ( function . useretval ) ;
+249: mUi . useretval . setEnabled ( true ) ;
+250:
+251: mUi . leakignore . setChecked ( function . leakignore ) ;
+252: mUi . leakignore . setEnabled ( true ) ;
+253:
+254: updateArguments ( * function ) ;
+255: mUi . arguments . setEnabled ( true ) ;
+256:
+257: mUi . editArgButton . setEnabled ( true ) ;
+258: mIgnoreChanges = false ;
+259: }
+260:
+261: void LibraryDialog :: sortFunctions ( bool sort )
+262: {
+263: if ( sort ) {
+264: mUi . functions . sortItems ( ) ;
+265: } else {
+266: mIgnoreChanges = true ;
+267: CppcheckLibraryData :: Function * selfunction ; selfunction = currentFunction ( ) ;
+268: mUi . functions . clear ( ) ;
+269: for ( CppcheckLibraryData :: Function & function : mData . functions ) {
+270: mUi . functions . addItem ( new FunctionListItem ( mUi . functions ,
+271: & function ,
+272: selfunction == & function ) ) ;
+273: }
+274: if ( ! mUi . filter . text ( ) . isEmpty ( ) ) {
+275: filterFunctions ( mUi . filter . text ( ) ) ; }
+276: mIgnoreChanges = false ;
+277: }
+278: }
+279:
+280: void LibraryDialog :: filterFunctions ( const QString & filter )
+281: {
+282: QList < QListWidgetItem * > allItems ; allItems = mUi . functions . findItems ( QString ( ) , Qt :: MatchContains ) ;
+283:
+284: if ( filter . isEmpty ( ) ) {
+285: for ( QListWidgetItem * item : allItems ) {
+286: item . setHidden ( false ) ;
+287: }
+288: } else {
+289: for ( QListWidgetItem * item : allItems ) {
+290: item . setHidden ( ! item . text ( ) . startsWith ( filter ) ) ;
+291: }
+292: }
+293: }
+294:
+295: void LibraryDialog :: changeFunction ( )
+296: {
+297: if ( mIgnoreChanges ) {
+298: return ; }
+299:
+300: CppcheckLibraryData :: Function * function ; function = currentFunction ( ) ;
+301: if ( ! function ) {
+302: return ; }
+303:
+304: function . comments = mUi . comments . toPlainText ( ) ;
+305: function . noreturn = ( CppcheckLibraryData :: Function :: TrueFalseUnknown ) mUi . noreturn . currentIndex ( ) ;
+306: function . useretval = mUi . useretval . isChecked ( ) ;
+307: function . leakignore = mUi . leakignore . isChecked ( ) ;
+308:
+309: mUi . buttonSave . setEnabled ( true ) ;
+310: }
+311:
+312: void LibraryDialog :: editArg ( )
+313: {
+314: CppcheckLibraryData :: Function * function ; function = currentFunction ( ) ;
+315: if ( ! function ) {
+316: return ; }
+317:
+318: if ( mUi . arguments . selectedItems ( ) . count ( ) != 1 ) {
+319: return ; }
+320: CppcheckLibraryData :: Function :: Arg & arg = function . args [ mUi . arguments . row ( mUi . arguments . selectedItems ( ) . first ( ) ) ] ;
+321:
+322: LibraryEditArgDialog d ( nullptr , arg ) ;
+323: if ( d . exec ( ) == QDialog :: Accepted ) {
+324: unsigned number ; number = arg . nr ;
+325: arg = d . getArg ( ) ;
+326: arg . nr = number ;
+327: mUi . arguments . selectedItems ( ) . first ( ) . setText ( getArgText ( arg ) ) ;
+328: }
+329: mUi . buttonSave . setEnabled ( true ) ;
+330: }
+331:
+332: QString LibraryDialog :: getArgText ( const CppcheckLibraryData :: Function :: Arg & arg )
+333: {
+334: QString s ( "arg" ) ;
+335: if ( arg . nr != CppcheckLibraryData :: Function :: Arg :: ANY ) {
+336: s += QString :: number ( arg . nr ) ; }
+337:
+338: s += "\n    not bool: " + QString ( arg . notbool ? "true" : "false" ) ;
+339: s += "\n    not null: " + QString ( arg . notnull ? "true" : "false" ) ;
+340: s += "\n    not uninit: " + QString ( arg . notuninit ? "true" : "false" ) ;
+341: s += "\n    format string: " + QString ( arg . formatstr ? "true" : "false" ) ;
+342: s += "\n    strz: " + QString ( arg . strz ? "true" : "false" ) ;
+343: s += "\n    valid: " + QString ( arg . valid . isEmpty ( ) ? "any" : arg . valid ) ;
+344: for ( const CppcheckLibraryData :: Function :: Arg :: MinSize & minsize : arg . minsizes ) {
+345: s += "\n    minsize: " + minsize . type + " " + minsize . arg + " " + minsize . arg2 ;
+346: }
+347: return s ;
+348: }
+349:
+350: void LibraryDialog :: updateArguments ( const CppcheckLibraryData :: Function & function )
+351: {
+352: mUi . arguments . clear ( ) ;
+353: for ( const CppcheckLibraryData :: Function :: Arg & arg : function . args ) {
+354: mUi . arguments . addItem ( getArgText ( arg ) ) ;
+355: }
+356: }
+
+
+
+##Value flow

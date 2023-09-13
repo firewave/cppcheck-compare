@@ -1,0 +1,208 @@
+
+
+##file cppcheck-2.8/gui/filelist.h
+
+1:
+|
+36:
+37: class FileList {
+38: public:
+39:
+|
+43:
+44: void addFile ( const QString & filepath@var1 ) ;
+45:
+|
+50:
+51: void addDirectory ( const QString & directory@var2 , bool recursive@var3 = false ) ;
+52:
+|
+56:
+57: void addPathList ( const QStringList & paths@var4 ) ;
+58:
+|
+62:
+63: QStringList getFileList ( ) const ;
+64:
+|
+68:
+69: void addExcludeList ( const QStringList & paths@var5 ) ;
+70:
+|
+74:
+75: static QStringList getDefaultFilters ( ) ;
+76:
+77: protected:
+78:
+|
+82:
+83: static bool filterMatches ( const QFileInfo & inf@var6 ) ;
+84:
+|
+91:
+92: QStringList applyExcludeList ( ) const ;
+93:
+94: private:
+95: QFileInfoList mFileList@var7 ;
+96: QStringList mExcludedPaths@var8 ;
+97: } ;
+
+##file cppcheck-2.8/gui/filelist.cpp
+
+1:
+|
+28:
+29: QStringList FileList :: getDefaultFilters ( )
+30: {
+31: QStringList extensions@var9 ;
+32: extensions@var9 <<@expr1073741862 "*.cpp" <<@expr1073741863 "*.cxx" <<@expr1073741864 "*.cc" <<@expr1073741865 "*.c" <<@expr1073741866 "*.c++" <<@expr1073741867 "*.txx" <<@expr1073741868 "*.tpp" <<@expr1073741869 "*.ipp" <<@expr1073741870 "*.ixx" ;
+33: return extensions@var9 ;
+34: }
+35:
+36: bool FileList :: filterMatches ( const QFileInfo & inf@var10 )
+37: {
+38: if (@expr1073741872 inf@var10 .@expr1073741873 isFile (@expr1073741874 ) ) {
+39: const QStringList filters@var11 =@expr1073741875 FileList ::@expr1073741876 getDefaultFilters (@expr1073741877 ) ;
+40: QString ext@var12 (@expr1073741878 "*." ) ;
+41: ext@var12 +=@expr1073741879 inf@var10 .@expr1073741880 suffix (@expr1073741881 ) ;
+42: if (@expr1073741882 filters@var11 .@expr1073741883 contains (@expr1073741884 ext@var12 , Qt ::@expr1073741885 CaseInsensitive@expr1073741871 ) ) {
+43: return true ; }
+44: }
+45: return false ;
+46: }
+47:
+48: void FileList :: addFile ( const QString & filepath@var13 )
+49: {
+50: QFileInfo inf@var14 (@expr1073741886 filepath@var13 ) ;
+51: if (@expr1073741887 filterMatches (@expr1073741888 inf@var14 ) ) {
+52: mFileList@var7 <<@expr1073741889 inf@var14 ; }
+53: }
+54:
+55: void FileList :: addDirectory ( const QString & directory@var15 , bool recursive@var16 )
+56: {
+57: QDir dir@var17 (@expr1073741894 directory@var15 ) ;
+58: dir@var17 .@expr1073741895 setSorting (@expr1073741896 QDir ::@expr1073741897 Name@expr1073741890 ) ;
+59: const QStringList filters@var18 =@expr1073741898 FileList ::@expr1073741899 getDefaultFilters (@expr1073741900 ) ;
+60: const QStringList origNameFilters@var19 =@expr1073741901 dir@var17 .@expr1073741902 nameFilters (@expr1073741903 ) ;
+61: dir@var17 .@expr80 setNameFilters (@expr1073741905 filters@var18 ) ;
+62: if (@expr1073741906 !@expr1073741907 recursive@var16 ) {
+63: dir@var17 .@expr84 setFilter (@expr85 QDir ::@expr86 Files@expr67 |@expr87 QDir ::@expr88 NoDotAndDotDot@expr68 ) ;
+64: QFileInfoList items@var20 ; items@var20 =@expr1073741913 dir@var17 .@expr90 entryInfoList (@expr91 ) ;
+65: mFileList@var7 +=@expr1073741916 items@var20 ;
+66: } else {
+67: dir@var17 .@expr84 setFilter (@expr85 QDir ::@expr86 Files@expr67 |@expr87 QDir ::@expr88 NoDotAndDotDot@expr68 ) ;
+68: QFileInfoList items@var21 ; items@var21 =@expr1073741922 dir@var17 .@expr90 entryInfoList (@expr91 ) ;
+69: mFileList@var7 +=@expr1073741925 items@var21 ;
+70:
+71: dir@var17 .@expr80 setNameFilters (@expr1073741927 origNameFilters@var19 ) ;
+72: dir@var17 .@expr84 setFilter (@expr1073741929 QDir ::@expr1073741930 Dirs@expr1073741893 |@expr1073741931 QDir ::@expr88 NoDotAndDotDot@expr68 ) ;
+73: for (@expr1073741933 const QFileInfo &@expr1073741934 item@var22 :@expr1073741935 dir@var17 .@expr90 entryInfoList (@expr91 ) ) {
+74: const QString path@var23 =@expr1073741938 item@var22 .@expr1073741939 canonicalFilePath (@expr1073741940 ) ;
+75: addDirectory (@expr1073741941 path@var23 , recursive@var16 ) ;
+76: }
+77: }
+78: }
+79:
+80: void FileList :: addPathList ( const QStringList & paths@var24 )
+81: {
+82: for (@expr1073741942 const QString &@expr1073741943 path@var25 :@expr1073741944 paths@var24 ) {
+83: QFileInfo inf@var26 (@expr1073741945 path@var25 ) ;
+84: if (@expr1073741946 inf@var26 .@expr1073741947 isFile (@expr1073741948 ) ) {
+85: addFile (@expr1073741949 path@var25 ) ; }
+86: else {
+87: addDirectory (@expr1073741950 path@var25 , true ) ; }
+88: }
+89: }
+90:
+91: QStringList FileList :: getFileList ( ) const
+92: {
+93: if (@expr1073741951 mExcludedPaths@var8 .@expr1073741952 empty (@expr1073741953 ) ) {
+94: QStringList names@var27 ;
+95: for (@expr1073741954 const QFileInfo &@expr1073741955 item@var28 :@expr1073741956 mFileList@var7 ) {
+96: QString name@var29 ; name@var29 =@expr1073741957 QDir ::@expr1073741958 fromNativeSeparators (@expr1073741959 item@var28 .@expr1073741960 filePath (@expr1073741961 ) ) ;
+97: names@var27 <<@expr1073741962 name@var29 ;
+98: }
+99: return names@var27 ;
+100: } else {
+101: return applyExcludeList (@expr1073741963 ) ;
+102: }
+103: }
+104:
+105: void FileList :: addExcludeList ( const QStringList & paths@var30 )
+106: {
+107: mExcludedPaths@var8 =@expr1073741964 paths@var30 ;
+108: }
+109:
+110: static std :: vector < std :: string > toStdStringList ( const QStringList & stringList@var31 )
+111: {
+112: std ::@expr1073741965 vector < std ::@expr1073741966 string > ret@var32 ;
+113: for (@expr1073741967 const QString &@expr1073741968 s@var33 :@expr1073741969 stringList@var31 ) {
+114: ret@var32 .@expr1073741970 push_back (@expr1073741971 s@var33 .@expr1073741972 toStdString (@expr1073741973 ) ) ;
+115: }
+116: return ret@var32 ;
+117: }
+118:
+119: QStringList FileList :: applyExcludeList ( ) const
+120: {
+121:
+122:
+123:
+124: const PathMatch pathMatch@var34 (@expr1073741974 toStdStringList (@expr1073741975 mExcludedPaths@var8 ) , false ) ;
+125:
+126:
+127: QStringList paths@var35 ;
+128: for (@expr1073741976 const QFileInfo &@expr1073741977 item@var36 :@expr1073741978 mFileList@var7 ) {
+129: QString name@var37 ; name@var37 =@expr1073741979 QDir ::@expr1073741980 fromNativeSeparators (@expr1073741981 item@var36 .@expr1073741982 canonicalFilePath (@expr1073741983 ) ) ;
+130: if (@expr1073741984 !@expr1073741985 pathMatch@var34 .@expr1073741986 match (@expr1073741987 name@var37 .@expr1073741988 toStdString (@expr1073741989 ) ) ) {
+131: paths@var35 <<@expr1073741990 name@var37 ; }
+132: }
+133: return paths@var35 ;
+134: }
+
+
+
+##Value flow
+Line 51
+  , always 0
+  = always 0
+  false always 0
+Line 83
+  ( always {!<=-1,!>=2}
+Line 32
+  "*.cpp" always "*.cpp"
+  "*.cxx" always "*.cxx"
+  "*.cc" always "*.cc"
+  "*.c" always "*.c"
+  "*.c++" always "*.c++"
+  "*.txx" always "*.txx"
+  "*.tpp" always "*.tpp"
+  "*.ipp" always "*.ipp"
+  "*.ixx" always "*.ixx"
+Line 36
+  ( always {!<=-1,!>=2}
+Line 40
+  "*." always "*."
+Line 43
+  return always {!<=-1,!>=2}
+  true always 1
+Line 45
+  return always {!<=-1,!>=2}
+  false always 0
+Line 51
+  ( always {!<=-1,!>=2}
+Line 55
+  , always {!<=-1,!>=2}
+  recursive always {!<=-1,!>=2}
+Line 62
+  ! {!<=-1,!>=2,0@4}
+  recursive {!<=-1,!>=2,1@4}
+Line 75
+  recursive {!>=2,!<=0,1@4}
+Line 87
+  true always 1
+Line 114
+  ret possible size=0
+Line 124
+  false always 0
+Line 130
+  ! always {!<=-1,!>=2}

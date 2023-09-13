@@ -1,0 +1,2730 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073742068 expected@var22 !=@expr1073742069 actual@var23 ) {
+62: std ::@expr1073742070 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073742071 expected@var22 ;
+64: std ::@expr1073742072 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073742073 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073742074 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073742075 str (@expr1073742076 ) , actualStr@var26 .@expr1073742077 str (@expr1073742078 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073742079 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073742080 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073742081 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073742082 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testutils.h
+
+1:
+|
+34:
+35: class Token ;
+36:
+37: class givenACodeSampleToTokenize {
+38: private:
+39: Tokenizer tokenizer@var102 ;
+40: static const Settings settings@var103 ;
+41:
+42: public:
+43: explicit givenACodeSampleToTokenize ( const char sample@var104 [ ] , bool createOnly@var105 = false , bool cpp@var106 = true )
+44: : tokenizer@var102 ( & settings@var103 , nullptr ) {
+45: std ::@expr1073742083 istringstream iss@var107 (@expr1073742084 sample@var104 ) ;
+46: if (@expr1073742085 createOnly@var105 ) {
+47: tokenizer@var102 .@expr1073742086 list@var108 .@expr1073742087 createTokens (@expr1073742088 iss@var107 , cpp@var106 ?@expr265 "test.cpp" :@expr266 "test.c" ) ; }
+48: else {
+49: tokenizer@var102 .@expr1073742091 tokenize (@expr1073742092 iss@var107 , cpp@var106 ?@expr265 "test.cpp" :@expr266 "test.c" ) ; }
+50: }
+51:
+52: const Token * tokens ( ) const {
+53: return tokenizer@var102 .@expr1073742095 tokens (@expr1073742096 ) ;
+54: }
+55: } ;
+56:
+57:
+58: class SimpleSuppressor : public ErrorLogger {
+59: public:
+60: SimpleSuppressor ( Settings & settings@var109 , ErrorLogger * next@var110 )
+61: : settings@var114 ( settings@var109 ) , next@var115 ( next@var110 ) { }
+62: void reportOut ( const std :: string & outmsg@var111 , Color = Color :: Reset ) override {
+63: next@var115 .@expr1073742097 reportOut (@expr1073742098 outmsg@var111 ) ;
+64: }
+65: void reportErr ( const ErrorMessage & msg@var112 ) override {
+66: if (@expr1073742099 !@expr1073742100 msg@var112 .@expr1073742101 callStack@var113 .@expr1073742102 empty (@expr1073742103 ) &&@expr1073742104 !@expr1073742105 settings@var114 .@expr1073742106 nomsg@var116 .@expr1073742107 isSuppressed (@expr1073742108 msg@var112 .@expr1073742109 toSuppressionsErrorMessage (@expr1073742110 ) ) ) {
+67: next@var115 .@expr1073742111 reportErr (@expr1073742112 msg@var112 ) ; }
+68: }
+69: private:
+70: Settings & settings@var114 ;
+71: ErrorLogger * next@var115 ;
+72: } ;
+73:
+74: class ScopedFile {
+75: public:
+76: ScopedFile ( const std :: string & name@var117 , const std :: string & content@var118 ) : mName@var120 ( name@var117 ) {
+77: std ::@expr1073742113 ofstream of@var119 (@expr1073742114 mName@var120 ) ;
+78: of@var119 <<@expr1073742115 content@var118 ;
+79: }
+80:
+81: ~ ScopedFile ( ) {
+82: remove (@expr1073742116 mName@var120 .@expr1073742117 c_str (@expr1073742118 ) ) ;
+83: }
+84: private:
+85: std :: string mName@var120 ;
+86: } ;
+
+##file cppcheck-2.8/test/testsuppressions.cpp
+
+1:
+|
+39:
+40: class TestSuppressions : public TestFixture {
+41: public:
+42: TestSuppressions ( ) : TestFixture ( "TestSuppressions" ) { }
+43:
+44: private:
+45:
+46: void run ( ) override {
+47: $do ${ $if $(@expr1073742119 $prepareTest $(@expr1073742120 "suppressionsBadId1" $) $) ${ $setVerbose $(@expr1073742121 $false $) $; suppressionsBadId1 $(@expr1073742122 $) $; $} $} $while $(@expr1073742123 $false $) ;
+48: $do ${ $if $(@expr1073742124 $prepareTest $(@expr1073742125 "suppressionsDosFormat" $) $) ${ $setVerbose $(@expr1073742126 $false $) $; suppressionsDosFormat $(@expr1073742127 $) $; $} $} $while $(@expr1073742128 $false $) ;
+49: $do ${ $if $(@expr1073742129 $prepareTest $(@expr1073742130 "suppressionsFileNameWithColon" $) $) ${ $setVerbose $(@expr1073742131 $false $) $; suppressionsFileNameWithColon $(@expr1073742132 $) $; $} $} $while $(@expr1073742133 $false $) ;
+50: $do ${ $if $(@expr1073742134 $prepareTest $(@expr1073742135 "suppressionsGlob" $) $) ${ $setVerbose $(@expr1073742136 $false $) $; suppressionsGlob $(@expr1073742137 $) $; $} $} $while $(@expr1073742138 $false $) ;
+51: $do ${ $if $(@expr1073742139 $prepareTest $(@expr1073742140 "suppressionsFileNameWithExtraPath" $) $) ${ $setVerbose $(@expr1073742141 $false $) $; suppressionsFileNameWithExtraPath $(@expr1073742142 $) $; $} $} $while $(@expr1073742143 $false $) ;
+52: $do ${ $if $(@expr1073742144 $prepareTest $(@expr1073742145 "suppressionsSettings" $) $) ${ $setVerbose $(@expr1073742146 $false $) $; suppressionsSettings $(@expr1073742147 $) $; $} $} $while $(@expr1073742148 $false $) ;
+53: $do ${ $if $(@expr1073742149 $prepareTest $(@expr1073742150 "suppressionsMultiFile" $) $) ${ $setVerbose $(@expr1073742151 $false $) $; suppressionsMultiFile $(@expr1073742152 $) $; $} $} $while $(@expr1073742153 $false $) ;
+54: $do ${ $if $(@expr1073742154 $prepareTest $(@expr1073742155 "suppressionsPathSeparator" $) $) ${ $setVerbose $(@expr1073742156 $false $) $; suppressionsPathSeparator $(@expr1073742157 $) $; $} $} $while $(@expr1073742158 $false $) ;
+55: $do ${ $if $(@expr1073742159 $prepareTest $(@expr1073742160 "suppressionsLine0" $) $) ${ $setVerbose $(@expr1073742161 $false $) $; suppressionsLine0 $(@expr1073742162 $) $; $} $} $while $(@expr1073742163 $false $) ;
+56: $do ${ $if $(@expr1073742164 $prepareTest $(@expr1073742165 "suppressionsFileComment" $) $) ${ $setVerbose $(@expr1073742166 $false $) $; suppressionsFileComment $(@expr1073742167 $) $; $} $} $while $(@expr1073742168 $false $) ;
+57:
+58: $do ${ $if $(@expr1073742169 $prepareTest $(@expr1073742170 "inlinesuppress" $) $) ${ $setVerbose $(@expr1073742171 $false $) $; inlinesuppress $(@expr1073742172 $) $; $} $} $while $(@expr1073742173 $false $) ;
+59: $do ${ $if $(@expr1073742174 $prepareTest $(@expr1073742175 "inlinesuppress_symbolname" $) $) ${ $setVerbose $(@expr1073742176 $false $) $; inlinesuppress_symbolname $(@expr1073742177 $) $; $} $} $while $(@expr1073742178 $false $) ;
+60: $do ${ $if $(@expr1073742179 $prepareTest $(@expr1073742180 "inlinesuppress_comment" $) $) ${ $setVerbose $(@expr1073742181 $false $) $; inlinesuppress_comment $(@expr1073742182 $) $; $} $} $while $(@expr1073742183 $false $) ;
+61:
+62: $do ${ $if $(@expr1073742184 $prepareTest $(@expr1073742185 "multi_inlinesuppress" $) $) ${ $setVerbose $(@expr1073742186 $false $) $; multi_inlinesuppress $(@expr1073742187 $) $; $} $} $while $(@expr1073742188 $false $) ;
+63: $do ${ $if $(@expr1073742189 $prepareTest $(@expr1073742190 "multi_inlinesuppress_comment" $) $) ${ $setVerbose $(@expr1073742191 $false $) $; multi_inlinesuppress_comment $(@expr1073742192 $) $; $} $} $while $(@expr1073742193 $false $) ;
+64:
+65: $do ${ $if $(@expr1073742194 $prepareTest $(@expr1073742195 "globalSuppressions" $) $) ${ $setVerbose $(@expr1073742196 $false $) $; globalSuppressions $(@expr1073742197 $) $; $} $} $while $(@expr1073742198 $false $) ;
+66:
+67: $do ${ $if $(@expr1073742199 $prepareTest $(@expr1073742200 "inlinesuppress_unusedFunction" $) $) ${ $setVerbose $(@expr1073742201 $false $) $; inlinesuppress_unusedFunction $(@expr1073742202 $) $; $} $} $while $(@expr1073742203 $false $) ;
+68: $do ${ $if $(@expr1073742204 $prepareTest $(@expr1073742205 "globalsuppress_unusedFunction" $) $) ${ $setVerbose $(@expr1073742206 $false $) $; globalsuppress_unusedFunction $(@expr1073742207 $) $; $} $} $while $(@expr1073742208 $false $) ;
+69: $do ${ $if $(@expr1073742209 $prepareTest $(@expr1073742210 "suppressionWithRelativePaths" $) $) ${ $setVerbose $(@expr1073742211 $false $) $; suppressionWithRelativePaths $(@expr1073742212 $) $; $} $} $while $(@expr1073742213 $false $) ;
+70: $do ${ $if $(@expr1073742214 $prepareTest $(@expr1073742215 "suppressingSyntaxErrors" $) $) ${ $setVerbose $(@expr1073742216 $false $) $; suppressingSyntaxErrors $(@expr1073742217 $) $; $} $} $while $(@expr1073742218 $false $) ;
+71: $do ${ $if $(@expr1073742219 $prepareTest $(@expr1073742220 "suppressingSyntaxErrorsInline" $) $) ${ $setVerbose $(@expr1073742221 $false $) $; suppressingSyntaxErrorsInline $(@expr1073742222 $) $; $} $} $while $(@expr1073742223 $false $) ;
+72: $do ${ $if $(@expr1073742224 $prepareTest $(@expr1073742225 "suppressingSyntaxErrorsWhileFileRead" $) $) ${ $setVerbose $(@expr1073742226 $false $) $; suppressingSyntaxErrorsWhileFileRead $(@expr1073742227 $) $; $} $} $while $(@expr1073742228 $false $) ;
+73: $do ${ $if $(@expr1073742229 $prepareTest $(@expr1073742230 "symbol" $) $) ${ $setVerbose $(@expr1073742231 $false $) $; symbol $(@expr1073742232 $) $; $} $} $while $(@expr1073742233 $false $) ;
+74:
+75: $do ${ $if $(@expr1073742234 $prepareTest $(@expr1073742235 "unusedFunction" $) $) ${ $setVerbose $(@expr1073742236 $false $) $; unusedFunction $(@expr1073742237 $) $; $} $} $while $(@expr1073742238 $false $) ;
+76:
+77: $do ${ $if $(@expr1073742239 $prepareTest $(@expr1073742240 "suppressingSyntaxErrorAndExitCode" $) $) ${ $setVerbose $(@expr1073742241 $false $) $; suppressingSyntaxErrorAndExitCode $(@expr1073742242 $) $; $} $} $while $(@expr1073742243 $false $) ;
+78: }
+79:
+80: void suppressionsBadId1 ( ) const {
+81: Suppressions suppressions@var121 ;
+82: std ::@expr1073742244 istringstream s1@var122 (@expr1073742245 "123" ) ;
+83: $if $(@expr1073742246 $!@expr1073742247 $assertEquals $(@expr1073742248 "cppcheck-2.8/test/testsuppressions.cpp" $, 83 $, "Failed to add suppression. Invalid id \"123\"" $, suppressions@var121 .@expr425 parseFile (@expr1073742250 s1@var122 ) $) $) { $return ; }
+84:
+85: std ::@expr1073742251 istringstream s2@var123 (@expr1073742252 "obsoleteFunctionsrand_r" ) ;
+86: $if $(@expr1073742253 $!@expr1073742254 $assertEquals $(@expr1073742255 "cppcheck-2.8/test/testsuppressions.cpp" $, 86 $, "" $, suppressions@var121 .@expr425 parseFile (@expr1073742257 s2@var123 ) $) $) { $return ; }
+87: }
+88:
+89: static Suppressions :: ErrorMessage errorMessage ( const std :: string & errorId@var124 ) {
+90: Suppressions ::@expr1073742259 ErrorMessage ret@var125 ;
+91: ret@var125 .@expr1073742260 errorId@var126 =@expr1073742261 errorId@var124 ;
+92: ret@var125 .@expr1073742262 hash@var127 =@expr1073742263 0 ;
+93: ret@var125 .@expr1073742264 lineNumber@var128 =@expr1073742265 0 ;
+94: ret@var125 .@expr1073742266 certainty@var129 =@expr1073742267 Certainty ::@expr1073742268 CertaintyLevel ::@expr1073742269 normal@expr1073742258 ;
+95: return ret@var125 ;
+96: }
+97:
+98: static Suppressions :: ErrorMessage errorMessage ( const std :: string & errorId@var130 , const std :: string & file@var131 , int line@var132 ) {
+99: Suppressions ::@expr1073742270 ErrorMessage ret@var133 ;
+100: ret@var133 .@expr1073742271 errorId@var134 =@expr1073742272 errorId@var130 ;
+101: ret@var133 .@expr1073742273 setFileName (@expr1073742274 file@var131 ) ;
+102: ret@var133 .@expr1073742275 lineNumber@var135 =@expr1073742276 line@var132 ;
+103: return ret@var133 ;
+104: }
+105:
+106: void suppressionsDosFormat ( ) const {
+107: Suppressions suppressions@var136 ;
+108: std ::@expr1073742277 istringstream s@var137 (@expr1073742278 "abc\r\ndef\r\n" ) ;
+109: $if $(@expr1073742279 $!@expr1073742280 $assertEquals $(@expr1073742281 "cppcheck-2.8/test/testsuppressions.cpp" $, 109 $, "" $, suppressions@var136 .@expr1073742282 parseFile (@expr1073742283 s@var137 ) $) $) { $return ; }
+110: $if $(@expr1073742284 $!@expr1073742285 $assertEquals $(@expr1073742286 "cppcheck-2.8/test/testsuppressions.cpp" $, 110 $, true $, suppressions@var136 .@expr463 isSuppressed (@expr1073742288 errorMessage (@expr1073742289 "abc" ) ) $) $) { $return ; }
+111: $if $(@expr1073742290 $!@expr1073742291 $assertEquals $(@expr1073742292 "cppcheck-2.8/test/testsuppressions.cpp" $, 111 $, true $, suppressions@var136 .@expr463 isSuppressed (@expr1073742294 errorMessage (@expr1073742295 "def" ) ) $) $) { $return ; }
+112: }
+113:
+114: void suppressionsFileNameWithColon ( ) const {
+115: Suppressions suppressions@var138 ;
+116: std ::@expr1073742296 istringstream s@var139 (@expr1073742297 "errorid:c:\\foo.cpp\nerrorid:c:\\bar.cpp:12" ) ;
+117: $if $(@expr1073742298 $!@expr1073742299 $assertEquals $(@expr1073742300 "cppcheck-2.8/test/testsuppressions.cpp" $, 117 $, "" $, suppressions@var138 .@expr1073742301 parseFile (@expr1073742302 s@var139 ) $) $) { $return ; }
+118: $if $(@expr1073742303 $!@expr1073742304 $assertEquals $(@expr1073742305 "cppcheck-2.8/test/testsuppressions.cpp" $, 118 $, true $, $(@expr1073742306 suppressions@var138 .@expr483 isSuppressed (@expr1073742308 errorMessage (@expr1073742309 "errorid" , "c:/foo.cpp" , 1111 ) ) $) $) $) { $return ; }
+119: $if $(@expr1073742310 $!@expr1073742311 $assertEquals $(@expr1073742312 "cppcheck-2.8/test/testsuppressions.cpp" $, 119 $, false $, $(@expr1073742313 suppressions@var138 .@expr483 isSuppressed (@expr1073742315 errorMessage (@expr1073742316 "errorid" , "c:/bar.cpp" , 10 ) ) $) $) $) { $return ; }
+120: $if $(@expr1073742317 $!@expr1073742318 $assertEquals $(@expr1073742319 "cppcheck-2.8/test/testsuppressions.cpp" $, 120 $, true $, $(@expr1073742320 suppressions@var138 .@expr483 isSuppressed (@expr1073742322 errorMessage (@expr1073742323 "errorid" , "c:/bar.cpp" , 12 ) ) $) $) $) { $return ; }
+121: }
+122:
+123: void suppressionsGlob ( ) const {
+124:
+125: {
+126: Suppressions suppressions@var140 ;
+127: std ::@expr1073742324 istringstream s@var141 (@expr1073742325 "errorid:**.cpp\n" ) ;
+128: $if $(@expr1073742326 $!@expr1073742327 $assertEquals $(@expr1073742328 "cppcheck-2.8/test/testsuppressions.cpp" $, 128 $, "Failed to add suppression. Invalid glob pattern '**.cpp'." $, suppressions@var140 .@expr1073742329 parseFile (@expr1073742330 s@var141 ) $) $) { $return ; }
+129: }
+130:
+131:
+132: {
+133: Suppressions suppressions@var142 ;
+134: std ::@expr1073742331 istringstream s@var143 (@expr1073742332 "errorid:x*.cpp\nerrorid:y?.cpp\nerrorid:test.c*" ) ;
+135: $if $(@expr1073742333 $!@expr1073742334 $assertEquals $(@expr1073742335 "cppcheck-2.8/test/testsuppressions.cpp" $, 135 $, "" $, suppressions@var142 .@expr1073742336 parseFile (@expr1073742337 s@var143 ) $) $) { $return ; }
+136: $if $(@expr1073742338 $!@expr1073742339 $assertEquals $(@expr1073742340 "cppcheck-2.8/test/testsuppressions.cpp" $, 136 $, true $, $(@expr1073742341 suppressions@var142 .@expr518 isSuppressed (@expr1073742343 errorMessage (@expr520 "errorid" , "xyz.cpp" , 1 ) ) $) $) $) { $return ; }
+137: $if $(@expr1073742345 $!@expr1073742346 $assertEquals $(@expr1073742347 "cppcheck-2.8/test/testsuppressions.cpp" $, 137 $, true $, $(@expr1073742348 suppressions@var142 .@expr518 isSuppressed (@expr1073742350 errorMessage (@expr1073742351 "errorid" , "xyz.cpp.cpp" , 1 ) ) $) $) $) { $return ; }
+138: $if $(@expr1073742352 $!@expr1073742353 $assertEquals $(@expr1073742354 "cppcheck-2.8/test/testsuppressions.cpp" $, 138 $, false $, $(@expr1073742355 suppressions@var142 .@expr518 isSuppressed (@expr1073742357 errorMessage (@expr534 "errorid" , "abc.cpp" , 1 ) ) $) $) $) { $return ; }
+139: $if $(@expr1073742359 $!@expr1073742360 $assertEquals $(@expr1073742361 "cppcheck-2.8/test/testsuppressions.cpp" $, 139 $, true $, $(@expr1073742362 suppressions@var142 .@expr518 isSuppressed (@expr1073742364 errorMessage (@expr1073742365 "errorid" , "ya.cpp" , 1 ) ) $) $) $) { $return ; }
+140: $if $(@expr1073742366 $!@expr1073742367 $assertEquals $(@expr1073742368 "cppcheck-2.8/test/testsuppressions.cpp" $, 140 $, false $, $(@expr1073742369 suppressions@var142 .@expr518 isSuppressed (@expr1073742371 errorMessage (@expr1073742372 "errorid" , "y.cpp" , 1 ) ) $) $) $) { $return ; }
+141: $if $(@expr1073742373 $!@expr1073742374 $assertEquals $(@expr1073742375 "cppcheck-2.8/test/testsuppressions.cpp" $, 141 $, true $, $(@expr1073742376 suppressions@var142 .@expr518 isSuppressed (@expr1073742378 errorMessage (@expr1073742379 "errorid" , "test.c" , 1 ) ) $) $) $) { $return ; }
+142: $if $(@expr1073742380 $!@expr1073742381 $assertEquals $(@expr1073742382 "cppcheck-2.8/test/testsuppressions.cpp" $, 142 $, true $, $(@expr1073742383 suppressions@var142 .@expr518 isSuppressed (@expr1073742385 errorMessage (@expr1073742386 "errorid" , "test.cpp" , 1 ) ) $) $) $) { $return ; }
+143: }
+144:
+145:
+146: {
+147: Suppressions suppressions@var144 ;
+148: std ::@expr1073742387 istringstream s@var145 (@expr1073742388 "errorid:x*.cpp\nerrorid:xyz.cpp:1\nerrorid:a*.cpp:1\nerrorid:abc.cpp:2" ) ;
+149: $if $(@expr1073742389 $!@expr1073742390 $assertEquals $(@expr1073742391 "cppcheck-2.8/test/testsuppressions.cpp" $, 149 $, "" $, suppressions@var144 .@expr1073742392 parseFile (@expr1073742393 s@var145 ) $) $) { $return ; }
+150: $if $(@expr1073742394 $!@expr1073742395 $assertEquals $(@expr1073742396 "cppcheck-2.8/test/testsuppressions.cpp" $, 150 $, true $, $(@expr1073742397 suppressions@var144 .@expr574 isSuppressed (@expr1073742399 errorMessage (@expr520 "errorid" , "xyz.cpp" , 1 ) ) $) $) $) { $return ; }
+151: $if $(@expr1073742401 $!@expr1073742402 $assertEquals $(@expr1073742403 "cppcheck-2.8/test/testsuppressions.cpp" $, 151 $, true $, $(@expr1073742404 suppressions@var144 .@expr574 isSuppressed (@expr1073742406 errorMessage (@expr1073742407 "errorid" , "xyz.cpp" , 2 ) ) $) $) $) { $return ; }
+152: $if $(@expr1073742408 $!@expr1073742409 $assertEquals $(@expr1073742410 "cppcheck-2.8/test/testsuppressions.cpp" $, 152 $, true $, $(@expr1073742411 suppressions@var144 .@expr574 isSuppressed (@expr1073742413 errorMessage (@expr534 "errorid" , "abc.cpp" , 1 ) ) $) $) $) { $return ; }
+153: $if $(@expr1073742415 $!@expr1073742416 $assertEquals $(@expr1073742417 "cppcheck-2.8/test/testsuppressions.cpp" $, 153 $, true $, $(@expr1073742418 suppressions@var144 .@expr574 isSuppressed (@expr1073742420 errorMessage (@expr1073742421 "errorid" , "abc.cpp" , 2 ) ) $) $) $) { $return ; }
+154: }
+155: }
+156:
+157: void suppressionsFileNameWithExtraPath ( ) const {
+158:
+159: Suppressions suppressions@var146 ;
+160: suppressions@var146 .@expr1073742422 addSuppressionLine (@expr1073742423 "errorid:./a.c:123" ) ;
+161: $if $(@expr1073742424 $!@expr1073742425 $assertEquals $(@expr1073742426 "cppcheck-2.8/test/testsuppressions.cpp" $, 161 $, true $, $(@expr1073742427 suppressions@var146 .@expr604 isSuppressed (@expr1073742429 errorMessage (@expr1073742430 "errorid" , "a.c" , 123 ) ) $) $) $) { $return ; }
+162: $if $(@expr1073742431 $!@expr1073742432 $assertEquals $(@expr1073742433 "cppcheck-2.8/test/testsuppressions.cpp" $, 162 $, true $, $(@expr1073742434 suppressions@var146 .@expr604 isSuppressed (@expr1073742436 errorMessage (@expr1073742437 "errorid" , "x/../a.c" , 123 ) ) $) $) $) { $return ; }
+163: }
+164:
+165: void reportSuppressions ( const Settings & settings@var147 , const std :: map < std :: string , std :: string > & files@var148 ) {
+166:
+167: const bool unusedFunctionCheck@var149 =@expr1073742438 false ;
+168:
+169: if (@expr1073742439 settings@var147 .@expr1073742440 jointSuppressionReport@var150 ) {
+170: for (@expr1073742441 std ::@expr618 map < std ::@expr618 string , std ::@expr618 string > ::@expr618 const_iterator i@var151 =@expr1073742446 files@var148 .@expr1073742447 begin (@expr1073742448 ) ; i@var151 !=@expr1073742449 files@var148 .@expr1073742450 end (@expr1073742451 ) ; ++@expr1073742452 i@var151 ) {
+171: reportUnmatchedSuppressions (@expr1073742453 settings@var147 .@expr630 nomsg@var152 .@expr1073742455 getUnmatchedLocalSuppressions (@expr1073742456 i@var151 .@expr1073742457 first@var153 , unusedFunctionCheck@var149 ) ) ;
+172: }
+173: }
+174:
+175: reportUnmatchedSuppressions (@expr1073742458 settings@var147 .@expr630 nomsg@var152 .@expr1073742460 getUnmatchedGlobalSuppressions (@expr1073742461 unusedFunctionCheck@var149 ) ) ;
+176: }
+177:
+178:
+179: unsigned int checkSuppression ( const char code@var154 [ ] , const std :: string & suppression@var155 = emptyString ) {
+180: std ::@expr1073742462 map < std ::@expr639 string , std ::@expr639 string > files@var156 ;
+181: files@var156 [@expr1073742465 "test.cpp" ] =@expr1073742466 code@var154 ;
+182:
+183: return checkSuppression (@expr1073742467 files@var156 , suppression@var155 ) ;
+184: }
+185:
+186:
+187: unsigned int checkSuppression ( std :: map < std :: string , std :: string > & files@var157 , const std :: string & suppression@var158 = emptyString ) {
+188:
+189: errout@var100 .@expr1073742469 str (@expr1073742470 "" ) ;
+190:
+191: CppCheck cppCheck@var159 (@expr1073742471 *@expr1073742472 this@expr1073742473 , true , nullptr ) ;
+192: Settings &@expr1073742474 settings@var160 =@expr1073742475 cppCheck@var159 .@expr1073742476 settings (@expr1073742477 ) ;
+193: settings@var160 .@expr654 exitCode@var161 =@expr1073742479 1 ;
+194: settings@var160 .@expr1073742480 inlineSuppressions@var162 =@expr1073742481 true ;
+195: if (@expr1073742482 suppression@var158 ==@expr1073742483 "unusedFunction" ) {
+196: settings@var160 .@expr1073742484 checks@var163 .@expr1073742485 setEnabled (@expr1073742486 Checks ::@expr1073742487 unusedFunction , true ) ; }
+197: settings@var160 .@expr1073742488 severity@var164 .@expr1073742489 enable (@expr1073742490 Severity ::@expr1073742491 information@expr1073742468 ) ;
+198: settings@var160 .@expr1073742492 jointSuppressionReport@var165 =@expr1073742493 true ;
+199: if (@expr1073742494 !@expr1073742495 suppression@var158 .@expr1073742496 empty (@expr1073742497 ) ) {
+200: std ::@expr1073742498 string r@var166 ; r@var166 =@expr1073742499 settings@var160 .@expr1073742500 nomsg@var167 .@expr1073742501 addSuppressionLine (@expr1073742502 suppression@var158 ) ;
+201: $assertEquals $(@expr1073742503 "cppcheck-2.8/test/testsuppressions.cpp" $, 201 $, "" $, r@var166 $) ;
+202: }
+203:
+204: unsigned int exitCode@var168 ; exitCode@var168 =@expr1073742504 0 ;
+205: for (@expr1073742505 std ::@expr682 map < std ::@expr682 string , std ::@expr682 string > ::@expr682 const_iterator file@var169 =@expr1073742510 files@var157 .@expr1073742511 begin (@expr1073742512 ) ; file@var169 !=@expr1073742513 files@var157 .@expr1073742514 end (@expr1073742515 ) ; ++@expr1073742516 file@var169 ) {
+206: exitCode@var168 |=@expr1073742517 cppCheck@var159 .@expr1073742518 check (@expr1073742519 file@var169 .@expr1073742520 first@var170 , file@var169 .@expr1073742521 second@var171 ) ;
+207: }
+208: if (@expr1073742522 cppCheck@var159 .@expr1073742523 analyseWholeProgram (@expr1073742524 ) ) {
+209: exitCode@var168 |=@expr1073742525 settings@var160 .@expr654 exitCode@var161 ; }
+210:
+211: reportSuppressions (@expr1073742527 settings@var160 , files@var157 ) ;
+212:
+213: return exitCode@var168 ;
+214: }
+215:
+216: unsigned int checkSuppressionThreads ( const char code@var172 [ ] , const std :: string & suppression@var173 = emptyString ) {
+217: errout@var100 .@expr1073742529 str (@expr1073742530 "" ) ;
+218: output@var101 .@expr1073742531 str (@expr1073742532 "" ) ;
+219:
+220: std ::@expr1073742533 map < std ::@expr710 string , unsigned long > files@var174 ;
+221: files@var174 [@expr1073742535 "test.cpp" ] =@expr1073742536 strlen (@expr1073742537 code@var172 ) ;
+222:
+223: Settings settings@var175 ;
+224: settings@var175 .@expr1073742538 jobs@var176 =@expr1073742539 1 ;
+225: settings@var175 .@expr1073742540 inlineSuppressions@var177 =@expr1073742541 true ;
+226: settings@var175 .@expr1073742542 severity@var178 .@expr1073742543 enable (@expr1073742544 Severity ::@expr1073742545 information@expr1073742528 ) ;
+227: if (@expr1073742546 !@expr1073742547 suppression@var173 .@expr1073742548 empty (@expr1073742549 ) ) {
+228: $assertEquals $(@expr1073742550 "cppcheck-2.8/test/testsuppressions.cpp" $, 228 $, "" $, settings@var175 .@expr1073742551 nomsg@var179 .@expr1073742552 addSuppressionLine (@expr1073742553 suppression@var173 ) $) ;
+229: }
+230: ThreadExecutor executor@var180 (@expr1073742554 files@var174 , settings@var175 , *@expr1073742555 this@expr1073742556 ) ;
+231: std ::@expr1073742557 vector < ScopedFile > scopedfiles@var181 ;
+232: scopedfiles@var181 .@expr1073742558 reserve (@expr1073742559 files@var174 .@expr1073742560 size (@expr1073742561 ) ) ;
+233: for (@expr1073742562 std ::@expr710 map < std ::@expr710 string , unsigned long > ::@expr710 const_iterator i@var182 =@expr1073742566 files@var174 .@expr743 begin (@expr744 ) ; i@var182 !=@expr1073742569 files@var174 .@expr746 end (@expr747 ) ; ++@expr1073742572 i@var182 ) {
+234: scopedfiles@var181 .@expr1073742573 emplace_back (@expr1073742574 i@var182 .@expr1073742575 first@var183 , code@var172 ) ; }
+235:
+236: const unsigned int exitCode@var184 =@expr1073742576 executor@var180 .@expr1073742577 check (@expr1073742578 ) ;
+237:
+238: std ::@expr1073742579 map < std ::@expr710 string , std ::@expr710 string > files_for_report@var185 ;
+239: for (@expr1073742582 std ::@expr710 map < std ::@expr710 string , unsigned long > ::@expr710 const_iterator file@var186 =@expr1073742586 files@var174 .@expr743 begin (@expr744 ) ; file@var186 !=@expr1073742589 files@var174 .@expr746 end (@expr747 ) ; ++@expr1073742592 file@var186 ) {
+240: files_for_report@var185 [@expr1073742593 file@var186 .@expr1073742594 first@var187 ] =@expr1073742595 "" ; }
+241:
+242: reportSuppressions (@expr1073742596 settings@var175 , files_for_report@var185 ) ;
+243:
+244: return exitCode@var184 ;
+245: }
+246:
+247: void runChecks ( unsigned int ( * check@var188 ) ( const [ ] , const std :: string & ) ) {
+248:
+249: (@expr1073742597 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742601 "void f() {\n    int a;\n    a++;\n}\n"
+250:
+251:
+252: ,
+253: "" ) ;
+254: $if $(@expr1073742602 $!@expr1073742603 $assertEquals $(@expr1073742604 "cppcheck-2.8/test/testsuppressions.cpp" $, 254 $, "[test.cpp:3]: (error) Uninitialized variable: a\n" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+255:
+256:
+257: (@expr1073742607 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742610 "void f() {\n    int a;\n    a++;\n}\n"
+258:
+259:
+260: ,
+261: "uninitvar" ) ;
+262: $if $(@expr1073742611 $!@expr1073742612 $assertEquals $(@expr1073742613 "cppcheck-2.8/test/testsuppressions.cpp" $, 262 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+263:
+264:
+265: (@expr1073742616 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742619 "void f() {\n    int a;\n    b++;\n}\n"
+266:
+267:
+268: ,
+269: "uninitvar" ) ;
+270: $if $(@expr1073742620 $!@expr1073742621 $assertEquals $(@expr1073742622 "cppcheck-2.8/test/testsuppressions.cpp" $, 270 $, "(information) Unmatched suppression: uninitvar\n" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+271:
+272:
+273: (@expr1073742625 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742628 "void f() {\n    int a;\n    a++;\n}\n"
+274:
+275:
+276: ,
+277: "uninitvar:test.cpp" ) ;
+278: $if $(@expr1073742629 $!@expr1073742630 $assertEquals $(@expr1073742631 "cppcheck-2.8/test/testsuppressions.cpp" $, 278 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+279:
+280:
+281: (@expr1073742634 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742637 "void f() {\n    int a;\n    b++;\n}\n"
+282:
+283:
+284: ,
+285: "uninitvar:test.cpp" ) ;
+286: $if $(@expr1073742638 $!@expr1073742639 $assertEquals $(@expr1073742640 "cppcheck-2.8/test/testsuppressions.cpp" $, 286 $, "[test.cpp]: (information) Unmatched suppression: uninitvar\n" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+287:
+288:
+289: (@expr1073742643 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742646 "void f() {\n    int a;\n    a++;\n}\n"
+290:
+291:
+292: ,
+293: "*:test.cpp" ) ;
+294: $if $(@expr1073742647 $!@expr1073742648 $assertEquals $(@expr1073742649 "cppcheck-2.8/test/testsuppressions.cpp" $, 294 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+295:
+296:
+297: (@expr1073742652 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742655 "void f() {\n    int a;\n    b++;\n}\n"
+298:
+299:
+300: ,
+301: "*:test.cpp" ) ;
+302: $if $(@expr1073742656 $!@expr1073742657 $assertEquals $(@expr1073742658 "cppcheck-2.8/test/testsuppressions.cpp" $, 302 $, "[test.cpp]: (information) Unmatched suppression: *\n" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+303:
+304:
+305: (@expr1073742661 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742664 "void f() {\n    int a;\n    a++;\n}\n"
+306:
+307:
+308: ,
+309: "uninitvar:test.cpp:3" ) ;
+310: $if $(@expr1073742665 $!@expr1073742666 $assertEquals $(@expr1073742667 "cppcheck-2.8/test/testsuppressions.cpp" $, 310 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+311:
+312:
+313: (@expr1073742670 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742673 "void f() {\n    int a;\n    b++;\n}\n"
+314:
+315:
+316: ,
+317: "uninitvar:test.cpp:3" ) ;
+318: $if $(@expr1073742674 $!@expr1073742675 $assertEquals $(@expr1073742676 "cppcheck-2.8/test/testsuppressions.cpp" $, 318 $, "[test.cpp:3]: (information) Unmatched suppression: uninitvar\n" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+319:
+320:
+321: (@expr1073742679 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742682 "void f() {\n    int a;\n    // cppcheck-suppress uninitvar\n    a++;\n}\n"
+322:
+323:
+324:
+325: ,
+326: "" ) ;
+327: $if $(@expr1073742683 $!@expr1073742684 $assertEquals $(@expr1073742685 "cppcheck-2.8/test/testsuppressions.cpp" $, 327 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+328:
+329:
+330: (@expr1073742688 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742691 "void f() {\n    int a;\n    // cppcheck-suppress uninitvar\n\n    a++;\n}\n"
+331:
+|
+334:
+335: ,
+336: "" ) ;
+337: $if $(@expr1073742692 $!@expr1073742693 $assertEquals $(@expr1073742694 "cppcheck-2.8/test/testsuppressions.cpp" $, 337 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+338:
+339:
+340: (@expr1073742697 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742700 "void f() {\n    int a;\n    a++;// cppcheck-suppress uninitvar\n}\n"
+341:
+342:
+343: ,
+344: "" ) ;
+345: $if $(@expr1073742701 $!@expr1073742702 $assertEquals $(@expr1073742703 "cppcheck-2.8/test/testsuppressions.cpp" $, 345 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+346:
+347:
+348: (@expr1073742706 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742709 "void f() {\n    int a;\n    /* cppcheck-suppress uninitvar */\n    a++;\n}\n"
+349:
+350:
+351:
+352: ,
+353: "" ) ;
+354: $if $(@expr1073742710 $!@expr1073742711 $assertEquals $(@expr1073742712 "cppcheck-2.8/test/testsuppressions.cpp" $, 354 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+355:
+356:
+357: (@expr1073742715 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742718 "void f() {\n    int a;\n    /* cppcheck-suppress uninitvar */\n\n    a++;\n}\n"
+358:
+|
+361:
+362: ,
+363: "" ) ;
+364: $if $(@expr1073742719 $!@expr1073742720 $assertEquals $(@expr1073742721 "cppcheck-2.8/test/testsuppressions.cpp" $, 364 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+365:
+366:
+367: (@expr1073742724 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742727 "void f() {\n    int a;\n    a++;/* cppcheck-suppress uninitvar */\n}\n"
+368:
+369:
+370: ,
+371: "" ) ;
+372: $if $(@expr1073742728 $!@expr1073742729 $assertEquals $(@expr1073742730 "cppcheck-2.8/test/testsuppressions.cpp" $, 372 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+373:
+374:
+375: (@expr1073742733 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742736 "void f() {\n    int a;\n    // cppcheck-suppress[uninitvar]\n    a++;\n}\n"
+376:
+377:
+378:
+379: ,
+380: "" ) ;
+381: $if $(@expr1073742737 $!@expr1073742738 $assertEquals $(@expr1073742739 "cppcheck-2.8/test/testsuppressions.cpp" $, 381 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+382:
+383:
+384: (@expr1073742742 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742745 "void f() {\n    int a;\n    // cppcheck-suppress[uninitvar]\n    a++;\n\n    a++;\n}\n"
+385:
+|
+389:
+390: ,
+391: "" ) ;
+392: $if $(@expr1073742746 $!@expr1073742747 $assertEquals $(@expr1073742748 "cppcheck-2.8/test/testsuppressions.cpp" $, 392 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+393:
+394:
+395: (@expr1073742751 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742754 "void f() {\n    int a;\n    a++;// cppcheck-suppress[uninitvar]\n}\n"
+396:
+397:
+398: ,
+399: "" ) ;
+400: $if $(@expr1073742755 $!@expr1073742756 $assertEquals $(@expr1073742757 "cppcheck-2.8/test/testsuppressions.cpp" $, 400 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+401:
+402:
+403: (@expr1073742760 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742763 "void f() {\n    int a;\n    /* cppcheck-suppress[uninitvar]*/\n    a++;\n}\n"
+404:
+405:
+406:
+407: ,
+408: "" ) ;
+409: $if $(@expr1073742764 $!@expr1073742765 $assertEquals $(@expr1073742766 "cppcheck-2.8/test/testsuppressions.cpp" $, 409 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+410:
+411:
+412: (@expr1073742769 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742772 "void f() {\n    int a;\n    /* cppcheck-suppress[uninitvar]*/\n\n    a++;\n}\n"
+413:
+|
+416:
+417: ,
+418: "" ) ;
+419: $if $(@expr1073742773 $!@expr1073742774 $assertEquals $(@expr1073742775 "cppcheck-2.8/test/testsuppressions.cpp" $, 419 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+420:
+421:
+422: (@expr1073742778 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742781 "void f() {\n    int a;\n    a++;/* cppcheck-suppress[uninitvar]*/\n}\n"
+423:
+424:
+425: ,
+426: "" ) ;
+427: $if $(@expr1073742782 $!@expr1073742783 $assertEquals $(@expr1073742784 "cppcheck-2.8/test/testsuppressions.cpp" $, 427 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+428:
+429:
+430: (@expr1073742787 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742790 "void f() {\n    __asm {\n        foo\n    }    int a;\n    // cppcheck-suppress uninitvar\n    a++;\n}"
+431:
+|
+436:
+437: ,
+438: "" ) ;
+439: $if $(@expr1073742791 $!@expr1073742792 $assertEquals $(@expr1073742793 "cppcheck-2.8/test/testsuppressions.cpp" $, 439 $, "" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+440:
+441:
+442: (@expr1073742796 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742799 "void f() {\n    int a;\n    // cppcheck-suppress uninitvar\n    b++;\n}\n"
+443:
+444:
+445:
+446: ,
+447: "" ) ;
+448: $if $(@expr1073742800 $!@expr1073742801 $assertEquals $(@expr1073742802 "cppcheck-2.8/test/testsuppressions.cpp" $, 448 $, "[test.cpp:4]: (information) Unmatched suppression: uninitvar\n" $, errout@var100 .@expr781 str (@expr782 ) $) $) { $return ; }
+449:
+450:
+451: $if $(@expr1073742805 $!@expr1073742806 $assertEquals $(@expr1073742807 "cppcheck-2.8/test/testsuppressions.cpp" $, 451 $, 1U $, $(@expr1073742808 (@expr1073742809 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742812 "int f() {\n  int a; return a;\n}\n" , "" ) $) $) $) { $return
+452:
+453:
+454:
+455: ; }
+456: $if $(@expr1073742813 $!@expr1073742814 $assertEquals $(@expr1073742815 "cppcheck-2.8/test/testsuppressions.cpp" $, 456 $, 0U $, $(@expr1073742816 (@expr1073742817 this@expr774 .@expr775 *@expr776 check@var188 ) (@expr1073742820 "int f() {\n  int a; return a;\n}\n" , "uninitvar" ) $) $) $) { $return
+457:
+458:
+459:
+460: ; }
+461: }
+462:
+463: void suppressionsSettings ( ) {
+464: runChecks (@expr1073742821 &@expr1073742822 TestSuppressions ::@expr1073742823 checkSuppression ) ;
+465: if (@expr1073742824 ThreadExecutor ::@expr1073742825 isEnabled (@expr1073742826 ) ) {
+466: runChecks (@expr1073742827 &@expr1073742828 TestSuppressions ::@expr1073742829 checkSuppressionThreads ) ; }
+467: }
+468:
+469: void suppressionsMultiFile ( ) {
+470: std ::@expr1073742830 map < std ::@expr1007 string , std ::@expr1007 string > files@var189 ;
+471: files@var189 [@expr1073742833 "abc.cpp" ] =@expr1073742834 "void f() {\n}\n"
+472: ;
+473: files@var189 [@expr1073742835 "xyz.cpp" ] =@expr1073742836 "void f() {\n    int a;\n    a++;\n}\n"
+474:
+475:
+476: ;
+477:
+478:
+479: checkSuppression (@expr1073742837 files@var189 , "uninitvar:xyz.cpp:3" ) ;
+480: $if $(@expr1073742838 $!@expr1073742839 $assertEquals $(@expr1073742840 "cppcheck-2.8/test/testsuppressions.cpp" $, 480 $, "" $, errout@var100 .@expr1073742841 str (@expr1073742842 ) $) $) { $return ; }
+481: }
+482:
+483: void suppressionsPathSeparator ( ) const {
+484: const Suppressions ::@expr1073742843 Suppression s1@var190 (@expr1073742844 "*" , "test/foo/*" ) ;
+485: $if $(@expr1073742845 $!@expr1073742846 $assertEquals $(@expr1073742847 "cppcheck-2.8/test/testsuppressions.cpp" $, 485 $, true $, $(@expr1073742848 s1@var190 .@expr1073742849 isSuppressed (@expr1073742850 errorMessage (@expr1073742851 "someid" , "test/foo/bar.cpp" , 142 ) ) $) $) $) { $return ; }
+486:
+487: const Suppressions ::@expr1073742852 Suppression s2@var191 (@expr1073742853 "abc" , "include/1.h" ) ;
+488: $if $(@expr1073742854 $!@expr1073742855 $assertEquals $(@expr1073742856 "cppcheck-2.8/test/testsuppressions.cpp" $, 488 $, true $, $(@expr1073742857 s2@var191 .@expr1073742858 isSuppressed (@expr1073742859 errorMessage (@expr1073742860 "abc" , "include/1.h" , 142 ) ) $) $) $) { $return ; }
+489: }
+490:
+491: void suppressionsLine0 ( ) const {
+492: Suppressions suppressions@var192 ;
+493: suppressions@var192 .@expr1073742861 addSuppressionLine (@expr1073742862 "syntaxError:*:0" ) ;
+494: $if $(@expr1073742863 $!@expr1073742864 $assertEquals $(@expr1073742865 "cppcheck-2.8/test/testsuppressions.cpp" $, 494 $, true $, $(@expr1073742866 suppressions@var192 .@expr1073742867 isSuppressed (@expr1073742868 errorMessage (@expr1073742869 "syntaxError" , "test.cpp" , 0 ) ) $) $) $) { $return ; }
+495: }
+496:
+497: void suppressionsFileComment ( ) const {
+498: std ::@expr1073742870 istringstream file1@var193 (@expr1073742871 "# comment\nabc" ) ;
+499: Suppressions suppressions1@var194 ;
+500: suppressions1@var194 .@expr1073742872 parseFile (@expr1073742873 file1@var193 ) ;
+501: $if $(@expr1073742874 $!@expr1073742875 $assertEquals $(@expr1073742876 "cppcheck-2.8/test/testsuppressions.cpp" $, 501 $, true $, $(@expr1073742877 suppressions1@var194 .@expr1073742878 isSuppressed (@expr1073742879 errorMessage (@expr1056 "abc" , "test.cpp" , 123 ) ) $) $) $) { $return ; }
+502:
+503: std ::@expr1073742881 istringstream file2@var195 (@expr1073742882 "// comment\nabc" ) ;
+504: Suppressions suppressions2@var196 ;
+505: suppressions2@var196 .@expr1073742883 parseFile (@expr1073742884 file2@var195 ) ;
+506: $if $(@expr1073742885 $!@expr1073742886 $assertEquals $(@expr1073742887 "cppcheck-2.8/test/testsuppressions.cpp" $, 506 $, true $, $(@expr1073742888 suppressions2@var196 .@expr1073742889 isSuppressed (@expr1073742890 errorMessage (@expr1056 "abc" , "test.cpp" , 123 ) ) $) $) $) { $return ; }
+507:
+508: std ::@expr1073742892 istringstream file3@var197 (@expr1073742893 "abc // comment" ) ;
+509: Suppressions suppressions3@var198 ;
+510: suppressions3@var198 .@expr1073742894 parseFile (@expr1073742895 file3@var197 ) ;
+511: $if $(@expr1073742896 $!@expr1073742897 $assertEquals $(@expr1073742898 "cppcheck-2.8/test/testsuppressions.cpp" $, 511 $, true $, $(@expr1073742899 suppressions3@var198 .@expr1073742900 isSuppressed (@expr1073742901 errorMessage (@expr1056 "abc" , "test.cpp" , 123 ) ) $) $) $) { $return ; }
+512:
+513: std ::@expr1073742903 istringstream file4@var199 (@expr1073742904 "abc\t\t # comment" ) ;
+514: Suppressions suppressions4@var200 ;
+515: suppressions4@var200 .@expr1073742905 parseFile (@expr1073742906 file4@var199 ) ;
+516: $if $(@expr1073742907 $!@expr1073742908 $assertEquals $(@expr1073742909 "cppcheck-2.8/test/testsuppressions.cpp" $, 516 $, true $, $(@expr1073742910 suppressions4@var200 .@expr1073742911 isSuppressed (@expr1073742912 errorMessage (@expr1056 "abc" , "test.cpp" , 123 ) ) $) $) $) { $return ; }
+517:
+518: std ::@expr1073742914 istringstream file5@var201 (@expr1073742915 "abc:test.cpp\t\t # comment" ) ;
+519: Suppressions suppressions5@var202 ;
+520: suppressions5@var202 .@expr1073742916 parseFile (@expr1073742917 file5@var201 ) ;
+521: $if $(@expr1073742918 $!@expr1073742919 $assertEquals $(@expr1073742920 "cppcheck-2.8/test/testsuppressions.cpp" $, 521 $, true $, $(@expr1073742921 suppressions5@var202 .@expr1073742922 isSuppressed (@expr1073742923 errorMessage (@expr1056 "abc" , "test.cpp" , 123 ) ) $) $) $) { $return ; }
+522:
+523: std ::@expr1073742925 istringstream file6@var203 (@expr1073742926 "abc:test.cpp:123\t\t # comment with . inside" ) ;
+524: Suppressions suppressions6@var204 ;
+525: suppressions6@var204 .@expr1073742927 parseFile (@expr1073742928 file6@var203 ) ;
+526: $if $(@expr1073742929 $!@expr1073742930 $assertEquals $(@expr1073742931 "cppcheck-2.8/test/testsuppressions.cpp" $, 526 $, true $, $(@expr1073742932 suppressions6@var204 .@expr1073742933 isSuppressed (@expr1073742934 errorMessage (@expr1056 "abc" , "test.cpp" , 123 ) ) $) $) $) { $return ; }
+527: }
+528:
+529: void inlinesuppress ( ) {
+530: Suppressions ::@expr1073742936 Suppression s@var205 ;
+531: std ::@expr1073742937 string msg@var206 ;
+532: $if $(@expr1073742938 $!@expr1073742939 $assertEquals $(@expr1073742940 "cppcheck-2.8/test/testsuppressions.cpp" $, 532 $, false $, $(@expr1073742941 s@var205 .@expr1118 parseComment (@expr1073742943 "/* some text */" , &@expr1120 msg@var206 ) $) $) $) { $return ; }
+533: $if $(@expr1073742945 $!@expr1073742946 $assertEquals $(@expr1073742947 "cppcheck-2.8/test/testsuppressions.cpp" $, 533 $, false $, $(@expr1073742948 s@var205 .@expr1118 parseComment (@expr1073742950 "/* cppcheck-suppress */" , &@expr1120 msg@var206 ) $) $) $) { $return ; }
+534:
+535: msg@var206 .@expr1073742952 clear (@expr1073742953 ) ;
+536: $if $(@expr1073742954 $!@expr1073742955 $assertEquals $(@expr1073742956 "cppcheck-2.8/test/testsuppressions.cpp" $, 536 $, true $, $(@expr1073742957 s@var205 .@expr1118 parseComment (@expr1073742959 "/* cppcheck-suppress id */" , &@expr1120 msg@var206 ) $) $) $) { $return ; }
+537: $if $(@expr1073742961 $!@expr1073742962 $assertEquals $(@expr1073742963 "cppcheck-2.8/test/testsuppressions.cpp" $, 537 $, "" $, msg@var206 $) $) { $return ; }
+538:
+539: $if $(@expr1073742964 $!@expr1073742965 $assertEquals $(@expr1073742966 "cppcheck-2.8/test/testsuppressions.cpp" $, 539 $, true $, $(@expr1073742967 s@var205 .@expr1118 parseComment (@expr1073742969 "/* cppcheck-suppress id some text */" , &@expr1120 msg@var206 ) $) $) $) { $return ; }
+540: $if $(@expr1073742971 $!@expr1073742972 $assertEquals $(@expr1073742973 "cppcheck-2.8/test/testsuppressions.cpp" $, 540 $, "Bad suppression attribute 'some'. You can write comments in the comment after a ; or //. Valid suppression attributes; symbolName=sym" $, msg@var206 $) $) { $return ; }
+541: }
+542:
+543: void inlinesuppress_symbolname ( ) {
+544: checkSuppression (@expr1073742974 "void f() {\n    int a;\n    /* cppcheck-suppress uninitvar symbolName=a */\n    a++;\n}\n"
+545:
+546:
+547:
+548: ,
+549: "" ) ;
+550: $if $(@expr1073742975 $!@expr1073742976 $assertEquals $(@expr1073742977 "cppcheck-2.8/test/testsuppressions.cpp" $, 550 $, "" $, errout@var100 .@expr1154 str (@expr1155 ) $) $) { $return ; }
+551:
+552: checkSuppression (@expr1073742980 "void f() {\n    int a,b;\n    /* cppcheck-suppress uninitvar symbolName=b */\n    a++; b++;\n}\n"
+553:
+554:
+555:
+556: ,
+557: "" ) ;
+558: $if $(@expr1073742981 $!@expr1073742982 $assertEquals $(@expr1073742983 "cppcheck-2.8/test/testsuppressions.cpp" $, 558 $, "[test.cpp:4]: (error) Uninitialized variable: a\n" $, errout@var100 .@expr1154 str (@expr1155 ) $) $) { $return ; }
+559: }
+560:
+561: void inlinesuppress_comment ( ) {
+562: Suppressions ::@expr1073742986 Suppression s@var207 ;
+563: std ::@expr1073742987 string errMsg@var208 ;
+564: $if $(@expr1073742988 $!@expr1073742989 $assertEquals $(@expr1073742990 "cppcheck-2.8/test/testsuppressions.cpp" $, 564 $, true $, $(@expr1073742991 s@var207 .@expr1168 parseComment (@expr1073742993 "// cppcheck-suppress abc ; some comment" , &@expr1170 errMsg@var208 ) $) $) $) { $return ; }
+565: $if $(@expr1073742995 $!@expr1073742996 $assertEquals $(@expr1073742997 "cppcheck-2.8/test/testsuppressions.cpp" $, 565 $, "" $, errMsg@var208 $) $) { $return ; }
+566: $if $(@expr1073742998 $!@expr1073742999 $assertEquals $(@expr1073743000 "cppcheck-2.8/test/testsuppressions.cpp" $, 566 $, true $, $(@expr1073743001 s@var207 .@expr1168 parseComment (@expr1073743003 "// cppcheck-suppress abc // some comment" , &@expr1170 errMsg@var208 ) $) $) $) { $return ; }
+567: $if $(@expr1073743005 $!@expr1073743006 $assertEquals $(@expr1073743007 "cppcheck-2.8/test/testsuppressions.cpp" $, 567 $, "" $, errMsg@var208 $) $) { $return ; }
+568: $if $(@expr1073743008 $!@expr1073743009 $assertEquals $(@expr1073743010 "cppcheck-2.8/test/testsuppressions.cpp" $, 568 $, true $, $(@expr1073743011 s@var207 .@expr1168 parseComment (@expr1073743013 "// cppcheck-suppress abc -- some comment" , &@expr1170 errMsg@var208 ) $) $) $) { $return ; }
+569: $if $(@expr1073743015 $!@expr1073743016 $assertEquals $(@expr1073743017 "cppcheck-2.8/test/testsuppressions.cpp" $, 569 $, "" $, errMsg@var208 $) $) { $return ; }
+570: }
+571:
+572: void multi_inlinesuppress ( ) {
+573: std ::@expr1073743022 vector < Suppressions ::@expr1073743023 Suppression > suppressions@var209 ;
+574: std ::@expr1073743024 string errMsg@var210 ;
+575:
+576: errMsg@var210 =@expr1073743025 "" ;
+577: suppressions@var209 =@expr1073743026 Suppressions ::@expr1203 parseMultiSuppressComment (@expr1073743028 "// cppcheck-suppress[errorId]" , &@expr1205 errMsg@var210 ) ;
+578: $if $(@expr1073743030 $!@expr1073743031 $assertEquals $(@expr1073743032 "cppcheck-2.8/test/testsuppressions.cpp" $, 578 $, 1 $, suppressions@var209 .@expr1209 size (@expr1210 ) $) $) { $return ; }
+579: $if $(@expr1073743035 $!@expr1073743036 $assertEquals $(@expr1073743037 "cppcheck-2.8/test/testsuppressions.cpp" $, 579 $, "errorId" $, suppressions@var209 [@expr1214 0 ] .@expr1215 errorId@expr1194 $) $) { $return ; }
+580: $if $(@expr1073743040 $!@expr1073743041 $assertEquals $(@expr1073743042 "cppcheck-2.8/test/testsuppressions.cpp" $, 580 $, "" $, suppressions@var209 [@expr1214 0 ] .@expr1220 symbolName@expr1195 $) $) { $return ; }
+581: $if $(@expr1073743045 $!@expr1073743046 $assertEquals $(@expr1073743047 "cppcheck-2.8/test/testsuppressions.cpp" $, 581 $, "" $, errMsg@var210 $) $) { $return ; }
+582:
+583: errMsg@var210 =@expr1073743048 "" ;
+584: suppressions@var209 =@expr1073743049 Suppressions ::@expr1203 parseMultiSuppressComment (@expr1073743051 "// cppcheck-suppress[errorId symbolName=arr]" , &@expr1205 errMsg@var210 ) ;
+585: $if $(@expr1073743053 $!@expr1073743054 $assertEquals $(@expr1073743055 "cppcheck-2.8/test/testsuppressions.cpp" $, 585 $, 1 $, suppressions@var209 .@expr1209 size (@expr1210 ) $) $) { $return ; }
+586: $if $(@expr1073743058 $!@expr1073743059 $assertEquals $(@expr1073743060 "cppcheck-2.8/test/testsuppressions.cpp" $, 586 $, "errorId" $, suppressions@var209 [@expr1214 0 ] .@expr1215 errorId@expr1194 $) $) { $return ; }
+587: $if $(@expr1073743063 $!@expr1073743064 $assertEquals $(@expr1073743065 "cppcheck-2.8/test/testsuppressions.cpp" $, 587 $, "arr" $, suppressions@var209 [@expr1214 0 ] .@expr1220 symbolName@expr1195 $) $) { $return ; }
+588: $if $(@expr1073743068 $!@expr1073743069 $assertEquals $(@expr1073743070 "cppcheck-2.8/test/testsuppressions.cpp" $, 588 $, "" $, errMsg@var210 $) $) { $return ; }
+589:
+590: errMsg@var210 =@expr1073743071 "" ;
+591: suppressions@var209 =@expr1073743072 Suppressions ::@expr1203 parseMultiSuppressComment (@expr1073743074 "// cppcheck-suppress[errorId symbolName=]" , &@expr1205 errMsg@var210 ) ;
+592: $if $(@expr1073743076 $!@expr1073743077 $assertEquals $(@expr1073743078 "cppcheck-2.8/test/testsuppressions.cpp" $, 592 $, 1 $, suppressions@var209 .@expr1209 size (@expr1210 ) $) $) { $return ; }
+593: $if $(@expr1073743081 $!@expr1073743082 $assertEquals $(@expr1073743083 "cppcheck-2.8/test/testsuppressions.cpp" $, 593 $, "errorId" $, suppressions@var209 [@expr1214 0 ] .@expr1215 errorId@expr1194 $) $) { $return ; }
+594: $if $(@expr1073743086 $!@expr1073743087 $assertEquals $(@expr1073743088 "cppcheck-2.8/test/testsuppressions.cpp" $, 594 $, "" $, suppressions@var209 [@expr1214 0 ] .@expr1220 symbolName@expr1195 $) $) { $return ; }
+595: $if $(@expr1073743091 $!@expr1073743092 $assertEquals $(@expr1073743093 "cppcheck-2.8/test/testsuppressions.cpp" $, 595 $, "" $, errMsg@var210 $) $) { $return ; }
+596:
+597: errMsg@var210 =@expr1073743094 "" ;
+598: suppressions@var209 =@expr1073743095 Suppressions ::@expr1203 parseMultiSuppressComment (@expr1073743097 "// cppcheck-suppress[errorId1, errorId2 symbolName=arr]" , &@expr1205 errMsg@var210 ) ;
+599: $if $(@expr1073743099 $!@expr1073743100 $assertEquals $(@expr1073743101 "cppcheck-2.8/test/testsuppressions.cpp" $, 599 $, 2 $, suppressions@var209 .@expr1209 size (@expr1210 ) $) $) { $return ; }
+600: $if $(@expr1073743104 $!@expr1073743105 $assertEquals $(@expr1073743106 "cppcheck-2.8/test/testsuppressions.cpp" $, 600 $, "errorId1" $, suppressions@var209 [@expr1214 0 ] .@expr1215 errorId@expr1194 $) $) { $return ; }
+601: $if $(@expr1073743109 $!@expr1073743110 $assertEquals $(@expr1073743111 "cppcheck-2.8/test/testsuppressions.cpp" $, 601 $, "" $, suppressions@var209 [@expr1214 0 ] .@expr1220 symbolName@expr1195 $) $) { $return ; }
+602: $if $(@expr1073743114 $!@expr1073743115 $assertEquals $(@expr1073743116 "cppcheck-2.8/test/testsuppressions.cpp" $, 602 $, "errorId2" $, suppressions@var209 [@expr1293 1 ] .@expr1073743118 errorId@expr1073743020 $) $) { $return ; }
+603: $if $(@expr1073743119 $!@expr1073743120 $assertEquals $(@expr1073743121 "cppcheck-2.8/test/testsuppressions.cpp" $, 603 $, "arr" $, suppressions@var209 [@expr1293 1 ] .@expr1073743123 symbolName@expr1073743021 $) $) { $return ; }
+604: $if $(@expr1073743124 $!@expr1073743125 $assertEquals $(@expr1073743126 "cppcheck-2.8/test/testsuppressions.cpp" $, 604 $, "" $, errMsg@var210 $) $) { $return ; }
+605:
+606: errMsg@var210 =@expr1073743127 "" ;
+607: suppressions@var209 =@expr1073743128 Suppressions ::@expr1203 parseMultiSuppressComment (@expr1073743130 "// cppcheck-suppress[]" , &@expr1205 errMsg@var210 ) ;
+608: $if $(@expr1073743132 $!@expr1073743133 $assertEquals $(@expr1073743134 "cppcheck-2.8/test/testsuppressions.cpp" $, 608 $, 0 $, suppressions@var209 .@expr1209 size (@expr1210 ) $) $) { $return ; }
+609: $if $(@expr1073743137 $!@expr1073743138 $assertEquals $(@expr1073743139 "cppcheck-2.8/test/testsuppressions.cpp" $, 609 $, true $, errMsg@var210 .@expr1316 empty (@expr1317 ) $) $) { $return ; }
+610:
+611: errMsg@var210 =@expr1073743142 "" ;
+612: suppressions@var209 =@expr1073743143 Suppressions ::@expr1203 parseMultiSuppressComment (@expr1073743145 "// cppcheck-suppress[errorId" , &@expr1205 errMsg@var210 ) ;
+613: $if $(@expr1073743147 $!@expr1073743148 $assertEquals $(@expr1073743149 "cppcheck-2.8/test/testsuppressions.cpp" $, 613 $, 0 $, suppressions@var209 .@expr1209 size (@expr1210 ) $) $) { $return ; }
+614: $if $(@expr1073743152 $!@expr1073743153 $assertEquals $(@expr1073743154 "cppcheck-2.8/test/testsuppressions.cpp" $, 614 $, false $, errMsg@var210 .@expr1316 empty (@expr1317 ) $) $) { $return ; }
+615:
+616: errMsg@var210 =@expr1073743157 "" ;
+617: suppressions@var209 =@expr1073743158 Suppressions ::@expr1203 parseMultiSuppressComment (@expr1073743160 "// cppcheck-suppress errorId" , &@expr1205 errMsg@var210 ) ;
+618: $if $(@expr1073743162 $!@expr1073743163 $assertEquals $(@expr1073743164 "cppcheck-2.8/test/testsuppressions.cpp" $, 618 $, 0 $, suppressions@var209 .@expr1209 size (@expr1210 ) $) $) { $return ; }
+619: $if $(@expr1073743167 $!@expr1073743168 $assertEquals $(@expr1073743169 "cppcheck-2.8/test/testsuppressions.cpp" $, 619 $, false $, errMsg@var210 .@expr1316 empty (@expr1317 ) $) $) { $return ; }
+620:
+621: errMsg@var210 =@expr1073743172 "" ;
+622: suppressions@var209 =@expr1073743173 Suppressions ::@expr1203 parseMultiSuppressComment (@expr1073743175 "// cppcheck-suppress[errorId1 errorId2 symbolName=arr]" , &@expr1205 errMsg@var210 ) ;
+623: $if $(@expr1073743177 $!@expr1073743178 $assertEquals $(@expr1073743179 "cppcheck-2.8/test/testsuppressions.cpp" $, 623 $, 0 $, suppressions@var209 .@expr1209 size (@expr1210 ) $) $) { $return ; }
+624: $if $(@expr1073743182 $!@expr1073743183 $assertEquals $(@expr1073743184 "cppcheck-2.8/test/testsuppressions.cpp" $, 624 $, false $, errMsg@var210 .@expr1316 empty (@expr1317 ) $) $) { $return ; }
+625:
+626: errMsg@var210 =@expr1073743187 "" ;
+627: suppressions@var209 =@expr1073743188 Suppressions ::@expr1203 parseMultiSuppressComment (@expr1073743190 "// cppcheck-suppress[errorId1, errorId2 symbol=arr]" , &@expr1205 errMsg@var210 ) ;
+628: $if $(@expr1073743192 $!@expr1073743193 $assertEquals $(@expr1073743194 "cppcheck-2.8/test/testsuppressions.cpp" $, 628 $, 0 $, suppressions@var209 .@expr1209 size (@expr1210 ) $) $) { $return ; }
+629: $if $(@expr1073743197 $!@expr1073743198 $assertEquals $(@expr1073743199 "cppcheck-2.8/test/testsuppressions.cpp" $, 629 $, false $, errMsg@var210 .@expr1316 empty (@expr1317 ) $) $) { $return ; }
+630:
+631: errMsg@var210 =@expr1073743202 "" ;
+632: suppressions@var209 =@expr1073743203 Suppressions ::@expr1203 parseMultiSuppressComment (@expr1073743205 "// cppcheck-suppress[errorId1, errorId2 symbolName]" , &@expr1205 errMsg@var210 ) ;
+633: $if $(@expr1073743207 $!@expr1073743208 $assertEquals $(@expr1073743209 "cppcheck-2.8/test/testsuppressions.cpp" $, 633 $, 0 $, suppressions@var209 .@expr1209 size (@expr1210 ) $) $) { $return ; }
+634: $if $(@expr1073743212 $!@expr1073743213 $assertEquals $(@expr1073743214 "cppcheck-2.8/test/testsuppressions.cpp" $, 634 $, false $, errMsg@var210 .@expr1316 empty (@expr1317 ) $) $) { $return ; }
+635: }
+636:
+637: void multi_inlinesuppress_comment ( ) {
+638: std ::@expr1073743217 vector < Suppressions ::@expr1073743218 Suppression > suppressions@var211 ;
+639: std ::@expr1073743219 string errMsg@var212 ;
+640:
+641: errMsg@var212 =@expr1073743220 "" ;
+642: suppressions@var211 =@expr1073743221 Suppressions ::@expr1398 parseMultiSuppressComment (@expr1073743223 "//cppcheck-suppress[errorId1, errorId2 symbolName=arr]" , &@expr1400 errMsg@var212 ) ;
+643: $if $(@expr1073743225 $!@expr1073743226 $assertEquals $(@expr1073743227 "cppcheck-2.8/test/testsuppressions.cpp" $, 643 $, 2 $, suppressions@var211 .@expr1404 size (@expr1405 ) $) $) { $return ; }
+644: $if $(@expr1073743230 $!@expr1073743231 $assertEquals $(@expr1073743232 "cppcheck-2.8/test/testsuppressions.cpp" $, 644 $, true $, errMsg@var212 .@expr1409 empty (@expr1410 ) $) $) { $return ; }
+645:
+646: errMsg@var212 =@expr1073743235 "" ;
+647: suppressions@var211 =@expr1073743236 Suppressions ::@expr1398 parseMultiSuppressComment (@expr1073743238 "//cppcheck-suppress[errorId1, errorId2 symbolName=arr] some text" , &@expr1400 errMsg@var212 ) ;
+648: $if $(@expr1073743240 $!@expr1073743241 $assertEquals $(@expr1073743242 "cppcheck-2.8/test/testsuppressions.cpp" $, 648 $, 2 $, suppressions@var211 .@expr1404 size (@expr1405 ) $) $) { $return ; }
+649: $if $(@expr1073743245 $!@expr1073743246 $assertEquals $(@expr1073743247 "cppcheck-2.8/test/testsuppressions.cpp" $, 649 $, true $, errMsg@var212 .@expr1409 empty (@expr1410 ) $) $) { $return ; }
+650:
+651: errMsg@var212 =@expr1073743250 "" ;
+652: suppressions@var211 =@expr1073743251 Suppressions ::@expr1398 parseMultiSuppressComment (@expr1073743253 "/*cppcheck-suppress[errorId1, errorId2 symbolName=arr]*/" , &@expr1400 errMsg@var212 ) ;
+653: $if $(@expr1073743255 $!@expr1073743256 $assertEquals $(@expr1073743257 "cppcheck-2.8/test/testsuppressions.cpp" $, 653 $, 2 $, suppressions@var211 .@expr1404 size (@expr1405 ) $) $) { $return ; }
+654: $if $(@expr1073743260 $!@expr1073743261 $assertEquals $(@expr1073743262 "cppcheck-2.8/test/testsuppressions.cpp" $, 654 $, true $, errMsg@var212 .@expr1409 empty (@expr1410 ) $) $) { $return ; }
+655: }
+656:
+657: void globalSuppressions ( ) {
+658: errout@var100 .@expr1441 str (@expr1073743266 "" ) ;
+659:
+660: CppCheck cppCheck@var213 (@expr1073743267 *@expr1073743268 this@expr1073743269 , false , nullptr ) ;
+661: Settings &@expr1073743270 settings@var214 =@expr1073743271 cppCheck@var213 .@expr1073743272 settings (@expr1073743273 ) ;
+662: settings@var214 .@expr1073743274 nomsg@var215 .@expr1073743275 addSuppressionLine (@expr1073743276 "uninitvar" ) ;
+663: settings@var214 .@expr1073743277 exitCode@var216 =@expr1073743278 1 ;
+664:
+665: const char code@var217 [@expr1073743279 29 ] =@expr1073743280 "int f() { int a; return a; }" ;
+666: $if $(@expr1073743281 $!@expr1073743282 $assertEquals $(@expr1073743283 "cppcheck-2.8/test/testsuppressions.cpp" $, 666 $, 0 $, $(@expr1073743284 cppCheck@var213 .@expr1073743285 check (@expr1073743286 "test.c" , code@var217 ) $) $) $) { $return ; }
+667: $if $(@expr1073743287 $!@expr1073743288 $assertEquals $(@expr1073743289 "cppcheck-2.8/test/testsuppressions.cpp" $, 667 $, "[test.c:1]: (error) Uninitialized variable: a\n" $, errout@var100 .@expr1441 str (@expr1073743291 ) $) $) { $return ; }
+668: }
+669:
+670: void inlinesuppress_unusedFunction ( ) const {
+671: Suppressions suppressions@var218 ;
+672: auto suppression@var219 ; suppression@var219 =@expr1073743292 Suppressions ::@expr1073743293 Suppression (@expr1073743294 "unusedFunction" , "test.c" , 3 ) ;
+673: suppression@var219 .@expr1073743295 checked@var220 =@expr1073743296 true ;
+674: suppressions@var218 .@expr1073743297 addSuppression (@expr1073743298 suppression@var219 ) ;
+675: $if $(@expr1073743299 $!@expr1073743300 $assertEquals $(@expr1073743301 "cppcheck-2.8/test/testsuppressions.cpp" $, 675 $, true $, $(@expr1073743302 !@expr1073743303 suppressions@var218 .@expr1480 getUnmatchedLocalSuppressions (@expr1073743305 "test.c" , true ) .@expr1073743306 empty (@expr1073743307 ) $) $) $) { $return ; }
+676: $if $(@expr1073743308 $!@expr1073743309 $assertEquals $(@expr1073743310 "cppcheck-2.8/test/testsuppressions.cpp" $, 676 $, false $, !@expr1073743311 suppressions@var218 .@expr1488 getUnmatchedGlobalSuppressions (@expr1073743313 true ) .@expr1073743314 empty (@expr1073743315 ) $) $) { $return ; }
+677: $if $(@expr1073743316 $!@expr1073743317 $assertEquals $(@expr1073743318 "cppcheck-2.8/test/testsuppressions.cpp" $, 677 $, false $, $(@expr1073743319 !@expr1073743320 suppressions@var218 .@expr1480 getUnmatchedLocalSuppressions (@expr1073743322 "test.c" , false ) .@expr1073743323 empty (@expr1073743324 ) $) $) $) { $return ; }
+678: $if $(@expr1073743325 $!@expr1073743326 $assertEquals $(@expr1073743327 "cppcheck-2.8/test/testsuppressions.cpp" $, 678 $, false $, !@expr1073743328 suppressions@var218 .@expr1488 getUnmatchedGlobalSuppressions (@expr1073743330 false ) .@expr1073743331 empty (@expr1073743332 ) $) $) { $return ; }
+679: }
+680:
+681: void globalsuppress_unusedFunction ( ) const {
+682: Suppressions suppressions@var221 ;
+683: suppressions@var221 .@expr1073743333 addSuppressionLine (@expr1073743334 "unusedFunction:*" ) ;
+684: $if $(@expr1073743335 $!@expr1073743336 $assertEquals $(@expr1073743337 "cppcheck-2.8/test/testsuppressions.cpp" $, 684 $, false $, $(@expr1073743338 !@expr1073743339 suppressions@var221 .@expr1516 getUnmatchedLocalSuppressions (@expr1073743341 "test.c" , true ) .@expr1073743342 empty (@expr1073743343 ) $) $) $) { $return ; }
+685: $if $(@expr1073743344 $!@expr1073743345 $assertEquals $(@expr1073743346 "cppcheck-2.8/test/testsuppressions.cpp" $, 685 $, true $, !@expr1073743347 suppressions@var221 .@expr1524 getUnmatchedGlobalSuppressions (@expr1073743349 true ) .@expr1073743350 empty (@expr1073743351 ) $) $) { $return ; }
+686: $if $(@expr1073743352 $!@expr1073743353 $assertEquals $(@expr1073743354 "cppcheck-2.8/test/testsuppressions.cpp" $, 686 $, false $, $(@expr1073743355 !@expr1073743356 suppressions@var221 .@expr1516 getUnmatchedLocalSuppressions (@expr1073743358 "test.c" , false ) .@expr1073743359 empty (@expr1073743360 ) $) $) $) { $return ; }
+687: $if $(@expr1073743361 $!@expr1073743362 $assertEquals $(@expr1073743363 "cppcheck-2.8/test/testsuppressions.cpp" $, 687 $, false $, !@expr1073743364 suppressions@var221 .@expr1524 getUnmatchedGlobalSuppressions (@expr1073743366 false ) .@expr1073743367 empty (@expr1073743368 ) $) $) { $return ; }
+688: }
+689:
+690: void suppressionWithRelativePaths ( ) {
+691:
+692: errout@var100 .@expr1546 str (@expr1073743371 "" ) ;
+693:
+694: CppCheck cppCheck@var222 (@expr1073743372 *@expr1073743373 this@expr1073743374 , true , nullptr ) ;
+695: Settings &@expr1073743375 settings@var223 =@expr1073743376 cppCheck@var222 .@expr1073743377 settings (@expr1073743378 ) ;
+696: settings@var223 .@expr1073743379 severity@var224 .@expr1073743380 enable (@expr1073743381 Severity ::@expr1073743382 style@expr1073743369 ) ;
+697: settings@var223 .@expr1073743383 inlineSuppressions@var225 =@expr1073743384 true ;
+698: settings@var223 .@expr1073743385 relativePaths@var226 =@expr1073743386 true ;
+699: settings@var223 .@expr1073743387 basePaths@var227 .@expr1073743388 emplace_back (@expr1073743389 "/somewhere" ) ;
+700: const char code@var228 [@expr1073743390 128 ] =@expr1073743391
+701: "struct Point\n{\n    // cppcheck-suppress unusedStructMember\n    int x;\n    // cppcheck-suppress unusedStructMember\n    int y;\n};"
+702:
+|
+706:
+707: ;
+708: cppCheck@var222 .@expr1073743392 check (@expr1073743393 "/somewhere/test.cpp" , code@var228 ) ;
+709: $if $(@expr1073743394 $!@expr1073743395 $assertEquals $(@expr1073743396 "cppcheck-2.8/test/testsuppressions.cpp" $, 709 $, "" $, errout@var100 .@expr1546 str (@expr1073743398 ) $) $) { $return ; }
+710: }
+711:
+712: void suppressingSyntaxErrors ( ) {
+713: std ::@expr1073743399 map < std ::@expr1576 string , std ::@expr1576 string > files@var229 ;
+714: files@var229 [@expr1073743402 "test.cpp" ] =@expr1073743403 "if if\n" ;
+715:
+716: checkSuppression (@expr1073743404 files@var229 , "syntaxError:test.cpp:1" ) ;
+717: $if $(@expr1073743405 $!@expr1073743406 $assertEquals $(@expr1073743407 "cppcheck-2.8/test/testsuppressions.cpp" $, 717 $, "" $, errout@var100 .@expr1073743408 str (@expr1073743409 ) $) $) { $return ; }
+718: }
+719:
+720: void suppressingSyntaxErrorsInline ( ) {
+721: std ::@expr1073743410 map < std ::@expr1587 string , std ::@expr1587 string > files@var230 ;
+722: files@var230 [@expr1073743413 "test.cpp" ] =@expr1073743414 "double result(0.0);\n_asm\n{\n   // cppcheck-suppress syntaxError\n   push  EAX               ; save EAX for callers\n   mov   EAX,Real10        ; get the address pointed to by Real10\n   fld   TBYTE PTR [EAX]   ; load an extended real (10 bytes)\n   fstp  QWORD PTR result  ; store a double (8 bytes)\n   pop   EAX               ; restore EAX\n}"
+723:
+|
+730:
+731: ;
+732: checkSuppression (@expr1073743415 files@var230 , "" ) ;
+733: $if $(@expr1073743416 $!@expr1073743417 $assertEquals $(@expr1073743418 "cppcheck-2.8/test/testsuppressions.cpp" $, 733 $, "" $, errout@var100 .@expr1073743419 str (@expr1073743420 ) $) $) { $return ; }
+734: }
+735:
+736: void suppressingSyntaxErrorsWhileFileRead ( ) {
+737: std ::@expr1073743421 map < std ::@expr1598 string , std ::@expr1598 string > files@var231 ;
+738: files@var231 [@expr1073743424 "test.cpp" ] =@expr1073743425 "CONST (genType, KS_CONST) genService[KS_CFG_NR_OF_NVM_BLOCKS] =\n{\n[!VAR \"BC\" = \"$BC + 1\"!][!//\n[!IF \"(as:modconf('Ks')[1]/KsGeneral/KsType = 'KS_CFG_TYPE_KS_MASTER') and\n      (as:modconf('Ks')[1]/KsGeneral/KsUseShe = 'true')\"!][!//\n  {\n      &varNB_GetErrorStatus,\n      &varNB_WriteBlock,\n      &varNB_ReadBlock\n  },\n[!VAR \"BC\" = \"$BC + 1\"!][!//\n[!ENDIF!][!//\n};"
+739:
+|
+749:
+750: ;
+751: checkSuppression (@expr1073743426 files@var231 , "syntaxError:test.cpp:4" ) ;
+752: $if $(@expr1073743427 $!@expr1073743428 $assertEquals $(@expr1073743429 "cppcheck-2.8/test/testsuppressions.cpp" $, 752 $, "" $, errout@var100 .@expr1073743430 str (@expr1073743431 ) $) $) { $return ; }
+753: }
+754:
+755: void symbol ( ) const {
+756: Suppressions ::@expr1073743432 Suppression s@var232 ;
+757: s@var232 .@expr1073743433 errorId@var233 =@expr1073743434 "foo" ;
+758: s@var232 .@expr1073743435 symbolName@var234 =@expr1073743436 "array*" ;
+759:
+760: Suppressions ::@expr1073743437 ErrorMessage errorMsg@var235 ;
+761: errorMsg@var235 .@expr1073743438 errorId@var236 =@expr1073743439 "foo" ;
+762: errorMsg@var235 .@expr1073743440 setFileName (@expr1073743441 "test.cpp" ) ;
+763: errorMsg@var235 .@expr1073743442 lineNumber@var237 =@expr1073743443 123 ;
+764: errorMsg@var235 .@expr1620 symbolNames@var238 =@expr1073743445 "" ;
+765: $if $(@expr1073743446 $!@expr1073743447 $assertEquals $(@expr1073743448 "cppcheck-2.8/test/testsuppressions.cpp" $, 765 $, false $, s@var232 .@expr1625 isSuppressed (@expr1626 errorMsg@var235 ) $) $) { $return ; }
+766: errorMsg@var235 .@expr1620 symbolNames@var238 =@expr1073743452 "x\n" ;
+767: $if $(@expr1073743453 $!@expr1073743454 $assertEquals $(@expr1073743455 "cppcheck-2.8/test/testsuppressions.cpp" $, 767 $, false $, s@var232 .@expr1625 isSuppressed (@expr1626 errorMsg@var235 ) $) $) { $return ; }
+768: errorMsg@var235 .@expr1620 symbolNames@var238 =@expr1073743459 "array1\n" ;
+769: $if $(@expr1073743460 $!@expr1073743461 $assertEquals $(@expr1073743462 "cppcheck-2.8/test/testsuppressions.cpp" $, 769 $, true $, s@var232 .@expr1625 isSuppressed (@expr1626 errorMsg@var235 ) $) $) { $return ; }
+770: errorMsg@var235 .@expr1620 symbolNames@var238 =@expr1073743466 "x\narray2\n" ;
+771: $if $(@expr1073743467 $!@expr1073743468 $assertEquals $(@expr1073743469 "cppcheck-2.8/test/testsuppressions.cpp" $, 771 $, true $, s@var232 .@expr1625 isSuppressed (@expr1626 errorMsg@var235 ) $) $) { $return ; }
+772: errorMsg@var235 .@expr1620 symbolNames@var238 =@expr1073743473 "array3\nx\n" ;
+773: $if $(@expr1073743474 $!@expr1073743475 $assertEquals $(@expr1073743476 "cppcheck-2.8/test/testsuppressions.cpp" $, 773 $, true $, s@var232 .@expr1625 isSuppressed (@expr1626 errorMsg@var235 ) $) $) { $return ; }
+774: }
+775:
+776: void unusedFunction ( ) {
+777: $if $(@expr1073743479 $!@expr1073743480 $assertEquals $(@expr1073743481 "cppcheck-2.8/test/testsuppressions.cpp" $, 777 $, 0 $, checkSuppression (@expr1073743482 "void f() {}" , "unusedFunction" ) $) $) { $return ; }
+778: }
+779:
+780: void suppressingSyntaxErrorAndExitCode ( ) {
+781: std ::@expr1073743483 map < std ::@expr1660 string , std ::@expr1660 string > files@var239 ;
+782: files@var239 [@expr1073743486 "test.cpp" ] =@expr1073743487 "fi if;" ;
+783:
+784: $if $(@expr1073743488 $!@expr1073743489 $assertEquals $(@expr1073743490 "cppcheck-2.8/test/testsuppressions.cpp" $, 784 $, 0 $, checkSuppression (@expr1073743491 files@var239 , "*:test.cpp" ) $) $) { $return ; }
+785: $if $(@expr1073743492 $!@expr1073743493 $assertEquals $(@expr1073743494 "cppcheck-2.8/test/testsuppressions.cpp" $, 785 $, "" $, errout@var100 .@expr1671 str (@expr1672 ) $) $) { $return ; }
+786:
+787:
+788: std ::@expr1073743497 map < std ::@expr1660 string , std ::@expr1660 string > mfiles@var240 ;
+789: mfiles@var240 [@expr1073743500 "test.cpp" ] =@expr1073743501 "fi if;" ;
+790: mfiles@var240 [@expr1073743502 "test2.cpp" ] =@expr1073743503 "fi if" ;
+791: $if $(@expr1073743504 $!@expr1073743505 $assertEquals $(@expr1073743506 "cppcheck-2.8/test/testsuppressions.cpp" $, 791 $, 1 $, checkSuppression (@expr1073743507 mfiles@var240 , "*:test.cpp" ) $) $) { $return ; }
+792: $if $(@expr1073743508 $!@expr1073743509 $assertEquals $(@expr1073743510 "cppcheck-2.8/test/testsuppressions.cpp" $, 792 $, "[test2.cpp:1]: (error) syntax error\n" $, errout@var100 .@expr1671 str (@expr1672 ) $) $) { $return ; }
+793:
+794:
+795: std ::@expr1073743513 map < std ::@expr1660 string , std ::@expr1660 string > file2@var241 ;
+796: file2@var241 [@expr1073743516 "test.cpp" ] =@expr1073743517 "fi fi\nif if;"
+797: ;
+798: $if $(@expr1073743518 $!@expr1073743519 $assertEquals $(@expr1073743520 "cppcheck-2.8/test/testsuppressions.cpp" $, 798 $, 1 $, checkSuppression (@expr1073743521 file2@var241 , "*:test.cpp:1" ) $) $) { $return ; }
+799: $if $(@expr1073743522 $!@expr1073743523 $assertEquals $(@expr1073743524 "cppcheck-2.8/test/testsuppressions.cpp" $, 799 $, "[test.cpp:2]: (error) syntax error\n" $, errout@var100 .@expr1671 str (@expr1672 ) $) $) { $return ; }
+800:
+801:
+802: std ::@expr1073743527 map < std ::@expr1660 string , std ::@expr1660 string > file3@var242 ;
+803: file3@var242 [@expr1073743530 "test.cpp" ] =@expr1073743531 "void f(int x, int y){\n    int a = x/0;\n    int b = y/0;\n}\nf(0, 1);\n"
+804:
+805:
+806:
+807: ;
+808: $if $(@expr1073743532 $!@expr1073743533 $assertEquals $(@expr1073743534 "cppcheck-2.8/test/testsuppressions.cpp" $, 808 $, 1 $, checkSuppression (@expr1073743535 file3@var242 , "zerodiv:test.cpp:3" ) $) $) { $return ; }
+809: }
+810:
+811: } ;
+812:
+813: $namespace ${ TestSuppressions instance_TestSuppressions@var243 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@44}
+  v {!<=-1,!>=2,0@44}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 43
+  createOnly always {!<=-1,!>=2}
+  = always 0
+  false always 0
+  cpp always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 44
+  & {lifetime[Address]=(settings),!0}
+  nullptr always 0
+Line 46
+  createOnly always {!<=-1,!>=2}
+Line 47
+  cpp always {!<=-1,!>=2}
+  ? possible {"test.cpp","test.c"}
+  "test.cpp" always "test.cpp"
+  : always "test.c"
+  "test.c" always "test.c"
+Line 49
+  cpp always {!<=-1,!>=2}
+  ? possible {"test.cpp","test.c"}
+  "test.cpp" always "test.cpp"
+  : always "test.c"
+  "test.c" always "test.c"
+Line 60
+  ( possible lifetime[SubObject]=(Settings&settings)
+Line 66
+  ! always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+Line 82
+  ( {lifetime[Object]=(mName),!0}
+Line 42
+  "TestSuppressions" always "TestSuppressions"
+Line 47
+  ( always {!<=-1,!>=2}
+  "suppressionsBadId1" always "suppressionsBadId1"
+  false always 0
+  false always 0
+Line 48
+  ( always {!<=-1,!>=2}
+  "suppressionsDosFormat" always "suppressionsDosFormat"
+  false always 0
+  false always 0
+Line 49
+  ( always {!<=-1,!>=2}
+  "suppressionsFileNameWithColon" always "suppressionsFileNameWithColon"
+  false always 0
+  false always 0
+Line 50
+  ( always {!<=-1,!>=2}
+  "suppressionsGlob" always "suppressionsGlob"
+  false always 0
+  false always 0
+Line 51
+  ( always {!<=-1,!>=2}
+  "suppressionsFileNameWithExtraPath" always "suppressionsFileNameWithExtraPath"
+  false always 0
+  false always 0
+Line 52
+  ( always {!<=-1,!>=2}
+  "suppressionsSettings" always "suppressionsSettings"
+  false always 0
+  false always 0
+Line 53
+  ( always {!<=-1,!>=2}
+  "suppressionsMultiFile" always "suppressionsMultiFile"
+  false always 0
+  false always 0
+Line 54
+  ( always {!<=-1,!>=2}
+  "suppressionsPathSeparator" always "suppressionsPathSeparator"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "suppressionsLine0" always "suppressionsLine0"
+  false always 0
+  false always 0
+Line 56
+  ( always {!<=-1,!>=2}
+  "suppressionsFileComment" always "suppressionsFileComment"
+  false always 0
+  false always 0
+Line 58
+  ( always {!<=-1,!>=2}
+  "inlinesuppress" always "inlinesuppress"
+  false always 0
+  false always 0
+Line 59
+  ( always {!<=-1,!>=2}
+  "inlinesuppress_symbolname" always "inlinesuppress_symbolname"
+  false always 0
+  false always 0
+Line 60
+  ( always {!<=-1,!>=2}
+  "inlinesuppress_comment" always "inlinesuppress_comment"
+  false always 0
+  false always 0
+Line 62
+  ( always {!<=-1,!>=2}
+  "multi_inlinesuppress" always "multi_inlinesuppress"
+  false always 0
+  false always 0
+Line 63
+  ( always {!<=-1,!>=2}
+  "multi_inlinesuppress_comment" always "multi_inlinesuppress_comment"
+  false always 0
+  false always 0
+Line 65
+  ( always {!<=-1,!>=2}
+  "globalSuppressions" always "globalSuppressions"
+  false always 0
+  false always 0
+Line 67
+  ( always {!<=-1,!>=2}
+  "inlinesuppress_unusedFunction" always "inlinesuppress_unusedFunction"
+  false always 0
+  false always 0
+Line 68
+  ( always {!<=-1,!>=2}
+  "globalsuppress_unusedFunction" always "globalsuppress_unusedFunction"
+  false always 0
+  false always 0
+Line 69
+  ( always {!<=-1,!>=2}
+  "suppressionWithRelativePaths" always "suppressionWithRelativePaths"
+  false always 0
+  false always 0
+Line 70
+  ( always {!<=-1,!>=2}
+  "suppressingSyntaxErrors" always "suppressingSyntaxErrors"
+  false always 0
+  false always 0
+Line 71
+  ( always {!<=-1,!>=2}
+  "suppressingSyntaxErrorsInline" always "suppressingSyntaxErrorsInline"
+  false always 0
+  false always 0
+Line 72
+  ( always {!<=-1,!>=2}
+  "suppressingSyntaxErrorsWhileFileRead" always "suppressingSyntaxErrorsWhileFileRead"
+  false always 0
+  false always 0
+Line 73
+  ( always {!<=-1,!>=2}
+  "symbol" always "symbol"
+  false always 0
+  false always 0
+Line 75
+  ( always {!<=-1,!>=2}
+  "unusedFunction" always "unusedFunction"
+  false always 0
+  false always 0
+Line 77
+  ( always {!<=-1,!>=2}
+  "suppressingSyntaxErrorAndExitCode" always "suppressingSyntaxErrorAndExitCode"
+  false always 0
+  false always 0
+Line 82
+  "123" always "123"
+Line 83
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  83 always 83
+  "Failed to add suppression. Invalid id \"123\"" always "Failed to add suppression. Invalid id \"123\""
+Line 85
+  "obsoleteFunctionsrand_r" always "obsoleteFunctionsrand_r"
+Line 86
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  86 always 86
+  "" always ""
+Line 91
+  = possible {"abc"@42,"def"@43}
+  errorId possible {"abc"@42,"def"@43}
+Line 92
+  = always 0
+  0 always 0
+Line 93
+  = always 0
+  0 always 0
+Line 100
+  = possible {"abc"@11,"abc"@12,"abc"@13,"abc"@14,"abc"@15,"abc"@16,"syntaxError"@17,"someid"@18,"abc"@19,"errorid"@26}
+  errorId possible {"abc"@11,"abc"@12,"abc"@13,"abc"@14,"abc"@15,"abc"@16,"syntaxError"@17,"someid"@18,"abc"@19,"errorid"@26}
+Line 101
+  file possible {"test.cpp"@11,"test.cpp"@12,"test.cpp"@13,"test.cpp"@14,"test.cpp"@15,"test.cpp"@16,"test.cpp"@17,"test/foo/bar.cpp"@18,"include/1.h"@19,"a.c"@26}
+Line 102
+  = inconclusive {123@11,0@17,142@18,1@28,2@36,1111@39,10@40,12@41}
+  line inconclusive {123@11,0@17,142@18,1@28,2@36,1111@39,10@40,12@41}
+Line 108
+  "abc\r\ndef\r\n" always "abc\r\ndef\r\n"
+Line 109
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  109 always 109
+  "" always ""
+Line 110
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  110 always 110
+  true always 1
+  "abc" always "abc"
+Line 111
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  111 always 111
+  true always 1
+  "def" always "def"
+Line 116
+  "errorid:c:\\foo.cpp\nerrorid:c:\\bar.cpp:12" always "errorid:c:\\foo.cpp\nerrorid:c:\\bar.cpp:12"
+Line 117
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  117 always 117
+  "" always ""
+Line 118
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  118 always 118
+  true always 1
+  "errorid" always "errorid"
+  "c:/foo.cpp" always "c:/foo.cpp"
+  1111 always 1111
+Line 119
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  119 always 119
+  false always 0
+  "errorid" always "errorid"
+  "c:/bar.cpp" always "c:/bar.cpp"
+  10 always 10
+Line 120
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  120 always 120
+  true always 1
+  "errorid" always "errorid"
+  "c:/bar.cpp" always "c:/bar.cpp"
+  12 always 12
+Line 127
+  "errorid:**.cpp\n" always "errorid:**.cpp\n"
+Line 128
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  128 always 128
+  "Failed to add suppression. Invalid glob pattern '**.cpp'." always "Failed to add suppression. Invalid glob pattern '**.cpp'."
+Line 134
+  "errorid:x*.cpp\nerrorid:y?.cpp\nerrorid:test.c*" always "errorid:x*.cpp\nerrorid:y?.cpp\nerrorid:test.c*"
+Line 135
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  135 always 135
+  "" always ""
+Line 136
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  136 always 136
+  true always 1
+  "errorid" always "errorid"
+  "xyz.cpp" always "xyz.cpp"
+  1 always 1
+Line 137
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  137 always 137
+  true always 1
+  "errorid" always "errorid"
+  "xyz.cpp.cpp" always "xyz.cpp.cpp"
+  1 always 1
+Line 138
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  138 always 138
+  false always 0
+  "errorid" always "errorid"
+  "abc.cpp" always "abc.cpp"
+  1 always 1
+Line 139
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  139 always 139
+  true always 1
+  "errorid" always "errorid"
+  "ya.cpp" always "ya.cpp"
+  1 always 1
+Line 140
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  140 always 140
+  false always 0
+  "errorid" always "errorid"
+  "y.cpp" always "y.cpp"
+  1 always 1
+Line 141
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  141 always 141
+  true always 1
+  "errorid" always "errorid"
+  "test.c" always "test.c"
+  1 always 1
+Line 142
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  142 always 142
+  true always 1
+  "errorid" always "errorid"
+  "test.cpp" always "test.cpp"
+  1 always 1
+Line 148
+  "errorid:x*.cpp\nerrorid:xyz.cpp:1\nerrorid:a*.cpp:1\nerrorid:abc.cpp:2" always "errorid:x*.cpp\nerrorid:xyz.cpp:1\nerrorid:a*.cpp:1\nerrorid:abc.cpp:2"
+Line 149
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  149 always 149
+  "" always ""
+Line 150
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  150 always 150
+  true always 1
+  "errorid" always "errorid"
+  "xyz.cpp" always "xyz.cpp"
+  1 always 1
+Line 151
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  151 always 151
+  true always 1
+  "errorid" always "errorid"
+  "xyz.cpp" always "xyz.cpp"
+  2 always 2
+Line 152
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  152 always 152
+  true always 1
+  "errorid" always "errorid"
+  "abc.cpp" always "abc.cpp"
+  1 always 1
+Line 153
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  153 always 153
+  true always 1
+  "errorid" always "errorid"
+  "abc.cpp" always "abc.cpp"
+  2 always 2
+Line 160
+  "errorid:./a.c:123" always "errorid:./a.c:123"
+Line 161
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  161 always 161
+  true always 1
+  "errorid" always "errorid"
+  "a.c" always "a.c"
+  123 always 123
+Line 162
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  162 always 162
+  true always 1
+  "errorid" always "errorid"
+  "x/../a.c" always "x/../a.c"
+  123 always 123
+Line 167
+  unusedFunctionCheck always 0
+  = always 0
+  false always 0
+Line 170
+  = {lifetime[Iterator]=(files),start=0}
+  ( {lifetime[Iterator]=(files),start=0}
+  i possible {lifetime[Iterator]=(files),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(files),end=0}
+Line 171
+  i possible lifetime[Iterator]=(files)
+  unusedFunctionCheck always 0
+Line 175
+  unusedFunctionCheck always 0
+Line 179
+  ( always !<=-1
+Line 181
+  files always size=0
+  "test.cpp" always "test.cpp"
+  = possible {"void f() {}"@5,"void f() {\n    int a;\n    /* cppcheck-suppress uninitvar symbolName=a */\n    a++;\n}\n"@9,"void f() {\n    int a,b;\n    /* cppcheck-suppress uninitvar symbolName=b */\n    a++; b++;\n}\n"@10}
+  code possible {"void f() {}"@5,"void f() {\n    int a;\n    /* cppcheck-suppress uninitvar symbolName=a */\n    a++;\n}\n"@9,"void f() {\n    int a,b;\n    /* cppcheck-suppress uninitvar symbolName=b */\n    a++; b++;\n}\n"@10}
+Line 183
+  return always !<=-1
+  ( always !<=-1
+  suppression possible {"unusedFunction"@5,""@9,""@10}
+Line 187
+  ( always !<=-1
+Line 189
+  "" always ""
+Line 191
+  this always !0
+  true always 1
+  nullptr always 0
+Line 193
+  = always 1
+  1 always 1
+Line 194
+  = always 1
+  true always 1
+Line 195
+  suppression possible {"*:test.cpp"@1,"*:test.cpp"@2,"*:test.cpp:1"@3,"zerodiv:test.cpp:3"@4,"syntaxError:test.cpp:4"@6,""@7,"syntaxError:test.cpp:1"@8,"uninitvar:xyz.cpp:3"@20,"unusedFunction"@1305,""@2329}
+  == always {!<=-1,!>=2}
+  "unusedFunction" always "unusedFunction"
+Line 196
+  true always 1
+Line 198
+  = always 1
+  true always 1
+Line 199
+  ! always {!<=-1,!>=2}
+  suppression inconclusive {"*:test.cpp"@1,"*:test.cpp"@2,"*:test.cpp:1"@3,"zerodiv:test.cpp:3"@4,"syntaxError:test.cpp:4"@6,""@7,"syntaxError:test.cpp:1"@8,"uninitvar:xyz.cpp:3"@20,"unusedFunction"@1305,""@2329}
+  ( always {!<=-1,!>=2}
+Line 200
+  suppression always !size=0
+Line 201
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  201 always 201
+  "" always ""
+Line 204
+  exitCode always !<=-1
+  exitCode always !<=-1
+  = always 0
+  0 always 0
+Line 205
+  = {lifetime[Iterator]=(files),start=0}
+  ( {lifetime[Iterator]=(files),start=0}
+  file possible {lifetime[Iterator]=(files),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(files),end=0}
+Line 206
+  exitCode always !<=-1
+  |= always !<=-1
+  file possible lifetime[Iterator]=(files)
+Line 209
+  exitCode always !<=-1
+  |= always !<=-1
+Line 213
+  return always !<=-1
+  exitCode always !<=-1
+Line 216
+  ( always !<=-1
+Line 217
+  "" always ""
+Line 218
+  "" always ""
+Line 221
+  files always size=0
+  [ always !<=-1
+  "test.cpp" always "test.cpp"
+  = always !<=-1
+  ( always !<=-1
+Line 224
+  = always 1
+  1 always 1
+Line 225
+  = always 1
+  true always 1
+Line 227
+  ! {!<=-1,!>=2,0}
+  suppression possible size=0
+  ( {!<=-1,!>=2,1}
+Line 228
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  228 always 228
+  "" always ""
+Line 230
+  this always !0
+Line 232
+  scopedfiles always size=0
+  ( always !<=-1
+Line 233
+  = {lifetime[Iterator]=(files),start=0}
+  ( {lifetime[Iterator]=(files),start=0}
+  i possible {lifetime[Iterator]=(files),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(files),end=0}
+Line 234
+  i possible lifetime[Iterator]=(files)
+Line 236
+  exitCode always !<=-1
+  = always !<=-1
+Line 239
+  = {lifetime[Iterator]=(files),start=0}
+  ( {lifetime[Iterator]=(files),start=0}
+  file possible {lifetime[Iterator]=(files),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(files),end=0}
+  file possible lifetime[Iterator]=(files)
+Line 240
+  file {lifetime[Iterator]=(files),!symbolic=(files.end()),!end=0}
+  = always ""
+  "" always ""
+Line 242
+  files_for_report possible size=0
+Line 244
+  return always !<=-1
+  exitCode always !<=-1
+Line 247
+  ( always !<=-1
+Line 249
+  this always !0
+  * always !<=-1
+  check possible {lifetime[Address]=(checkSuppression)@21,lifetime[Address]=(checkSuppressionThreads)@22}
+  "void f() {\n    int a;\n    a++;\n}\n" always "void f() {\n    int a;\n    a++;\n}\n"
+Line 252
+  , always ""
+Line 253
+  "" always ""
+Line 254
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  254 always 254
+  "[test.cpp:3]: (error) Uninitialized variable: a\n" always "[test.cpp:3]: (error) Uninitialized variable: a\n"
+Line 257
+  this always !0
+  * always !<=-1
+  check possible {lifetime[Address]=(checkSuppression)@21,lifetime[Address]=(checkSuppressionThreads)@22}
+  "void f() {\n    int a;\n    a++;\n}\n" always "void f() {\n    int a;\n    a++;\n}\n"
+Line 260
+  , always "uninitvar"
+Line 261
+  "uninitvar" always "uninitvar"
+Line 262
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  262 always 262
+  "" always ""
+Line 265
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    b++;\n}\n" always "void f() {\n    int a;\n    b++;\n}\n"
+Line 268
+  , always "uninitvar"
+Line 269
+  "uninitvar" always "uninitvar"
+Line 270
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  270 always 270
+  "(information) Unmatched suppression: uninitvar\n" always "(information) Unmatched suppression: uninitvar\n"
+Line 273
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    a++;\n}\n" always "void f() {\n    int a;\n    a++;\n}\n"
+Line 276
+  , always "uninitvar:test.cpp"
+Line 277
+  "uninitvar:test.cpp" always "uninitvar:test.cpp"
+Line 278
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  278 always 278
+  "" always ""
+Line 281
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    b++;\n}\n" always "void f() {\n    int a;\n    b++;\n}\n"
+Line 284
+  , always "uninitvar:test.cpp"
+Line 285
+  "uninitvar:test.cpp" always "uninitvar:test.cpp"
+Line 286
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  286 always 286
+  "[test.cpp]: (information) Unmatched suppression: uninitvar\n" always "[test.cpp]: (information) Unmatched suppression: uninitvar\n"
+Line 289
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    a++;\n}\n" always "void f() {\n    int a;\n    a++;\n}\n"
+Line 292
+  , always "*:test.cpp"
+Line 293
+  "*:test.cpp" always "*:test.cpp"
+Line 294
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  294 always 294
+  "" always ""
+Line 297
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    b++;\n}\n" always "void f() {\n    int a;\n    b++;\n}\n"
+Line 300
+  , always "*:test.cpp"
+Line 301
+  "*:test.cpp" always "*:test.cpp"
+Line 302
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  302 always 302
+  "[test.cpp]: (information) Unmatched suppression: *\n" always "[test.cpp]: (information) Unmatched suppression: *\n"
+Line 305
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    a++;\n}\n" always "void f() {\n    int a;\n    a++;\n}\n"
+Line 308
+  , always "uninitvar:test.cpp:3"
+Line 309
+  "uninitvar:test.cpp:3" always "uninitvar:test.cpp:3"
+Line 310
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  310 always 310
+  "" always ""
+Line 313
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    b++;\n}\n" always "void f() {\n    int a;\n    b++;\n}\n"
+Line 316
+  , always "uninitvar:test.cpp:3"
+Line 317
+  "uninitvar:test.cpp:3" always "uninitvar:test.cpp:3"
+Line 318
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  318 always 318
+  "[test.cpp:3]: (information) Unmatched suppression: uninitvar\n" always "[test.cpp:3]: (information) Unmatched suppression: uninitvar\n"
+Line 321
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    // cppcheck-suppress uninitvar\n    a++;\n}\n" always "void f() {\n    int a;\n    // cppcheck-suppress uninitvar\n    a++;\n}\n"
+Line 325
+  , always ""
+Line 326
+  "" always ""
+Line 327
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  327 always 327
+  "" always ""
+Line 330
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    // cppcheck-suppress uninitvar\n\n    a++;\n}\n" always "void f() {\n    int a;\n    // cppcheck-suppress uninitvar\n\n    a++;\n}\n"
+Line 335
+  , always ""
+Line 336
+  "" always ""
+Line 337
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  337 always 337
+  "" always ""
+Line 340
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    a++;// cppcheck-suppress uninitvar\n}\n" always "void f() {\n    int a;\n    a++;// cppcheck-suppress uninitvar\n}\n"
+Line 343
+  , always ""
+Line 344
+  "" always ""
+Line 345
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  345 always 345
+  "" always ""
+Line 348
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    /* cppcheck-suppress uninitvar */\n    a++;\n}\n" always "void f() {\n    int a;\n    /* cppcheck-suppress uninitvar */\n    a++;\n}\n"
+Line 352
+  , always ""
+Line 353
+  "" always ""
+Line 354
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  354 always 354
+  "" always ""
+Line 357
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    /* cppcheck-suppress uninitvar */\n\n    a++;\n}\n" always "void f() {\n    int a;\n    /* cppcheck-suppress uninitvar */\n\n    a++;\n}\n"
+Line 362
+  , always ""
+Line 363
+  "" always ""
+Line 364
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  364 always 364
+  "" always ""
+Line 367
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    a++;/* cppcheck-suppress uninitvar */\n}\n" always "void f() {\n    int a;\n    a++;/* cppcheck-suppress uninitvar */\n}\n"
+Line 370
+  , always ""
+Line 371
+  "" always ""
+Line 372
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  372 always 372
+  "" always ""
+Line 375
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    // cppcheck-suppress[uninitvar]\n    a++;\n}\n" always "void f() {\n    int a;\n    // cppcheck-suppress[uninitvar]\n    a++;\n}\n"
+Line 379
+  , always ""
+Line 380
+  "" always ""
+Line 381
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  381 always 381
+  "" always ""
+Line 384
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    // cppcheck-suppress[uninitvar]\n    a++;\n\n    a++;\n}\n" always "void f() {\n    int a;\n    // cppcheck-suppress[uninitvar]\n    a++;\n\n    a++;\n}\n"
+Line 390
+  , always ""
+Line 391
+  "" always ""
+Line 392
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  392 always 392
+  "" always ""
+Line 395
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    a++;// cppcheck-suppress[uninitvar]\n}\n" always "void f() {\n    int a;\n    a++;// cppcheck-suppress[uninitvar]\n}\n"
+Line 398
+  , always ""
+Line 399
+  "" always ""
+Line 400
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  400 always 400
+  "" always ""
+Line 403
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    /* cppcheck-suppress[uninitvar]*/\n    a++;\n}\n" always "void f() {\n    int a;\n    /* cppcheck-suppress[uninitvar]*/\n    a++;\n}\n"
+Line 407
+  , always ""
+Line 408
+  "" always ""
+Line 409
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  409 always 409
+  "" always ""
+Line 412
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    /* cppcheck-suppress[uninitvar]*/\n\n    a++;\n}\n" always "void f() {\n    int a;\n    /* cppcheck-suppress[uninitvar]*/\n\n    a++;\n}\n"
+Line 417
+  , always ""
+Line 418
+  "" always ""
+Line 419
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  419 always 419
+  "" always ""
+Line 422
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    a++;/* cppcheck-suppress[uninitvar]*/\n}\n" always "void f() {\n    int a;\n    a++;/* cppcheck-suppress[uninitvar]*/\n}\n"
+Line 425
+  , always ""
+Line 426
+  "" always ""
+Line 427
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  427 always 427
+  "" always ""
+Line 430
+  this always !0
+  * always !<=-1
+  "void f() {\n    __asm {\n        foo\n    }    int a;\n    // cppcheck-suppress uninitvar\n    a++;\n}" always "void f() {\n    __asm {\n        foo\n    }    int a;\n    // cppcheck-suppress uninitvar\n    a++;\n}"
+Line 437
+  , always ""
+Line 438
+  "" always ""
+Line 439
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  439 always 439
+  "" always ""
+Line 442
+  this always !0
+  * always !<=-1
+  "void f() {\n    int a;\n    // cppcheck-suppress uninitvar\n    b++;\n}\n" always "void f() {\n    int a;\n    // cppcheck-suppress uninitvar\n    b++;\n}\n"
+Line 446
+  , always ""
+Line 447
+  "" always ""
+Line 448
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  448 always 448
+  "[test.cpp:4]: (information) Unmatched suppression: uninitvar\n" always "[test.cpp:4]: (information) Unmatched suppression: uninitvar\n"
+Line 451
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  451 always 451
+  1U always 1
+  this always !0
+  * always !<=-1
+  "int f() {\n  int a; return a;\n}\n" always "int f() {\n  int a; return a;\n}\n"
+  , always ""
+  "" always ""
+Line 456
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  456 always 456
+  0U always 0
+  this always !0
+  * always !<=-1
+  "int f() {\n  int a; return a;\n}\n" always "int f() {\n  int a; return a;\n}\n"
+  , always "uninitvar"
+  "uninitvar" always "uninitvar"
+Line 464
+  & {lifetime[Address]=(checkSuppression),!0}
+Line 466
+  & {lifetime[Address]=(checkSuppressionThreads),!0}
+Line 471
+  files always size=0
+  "abc.cpp" always "abc.cpp"
+  = always "void f() {\n}\n"
+  "void f() {\n}\n" always "void f() {\n}\n"
+Line 473
+  "xyz.cpp" always "xyz.cpp"
+  = always "void f() {\n    int a;\n    a++;\n}\n"
+  "void f() {\n    int a;\n    a++;\n}\n" always "void f() {\n    int a;\n    a++;\n}\n"
+Line 479
+  ( always !<=-1
+  "uninitvar:xyz.cpp:3" always "uninitvar:xyz.cpp:3"
+Line 480
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  480 always 480
+  "" always ""
+Line 484
+  "*" always "*"
+  "test/foo/*" always "test/foo/*"
+Line 485
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  485 always 485
+  true always 1
+  "someid" always "someid"
+  "test/foo/bar.cpp" always "test/foo/bar.cpp"
+  142 always 142
+Line 487
+  "abc" always "abc"
+  "include/1.h" always "include/1.h"
+Line 488
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  488 always 488
+  true always 1
+  "abc" always "abc"
+  "include/1.h" always "include/1.h"
+  142 always 142
+Line 493
+  "syntaxError:*:0" always "syntaxError:*:0"
+Line 494
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  494 always 494
+  true always 1
+  "syntaxError" always "syntaxError"
+  "test.cpp" always "test.cpp"
+  0 always 0
+Line 498
+  "# comment\nabc" always "# comment\nabc"
+Line 501
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  501 always 501
+  true always 1
+  "abc" always "abc"
+  "test.cpp" always "test.cpp"
+  123 always 123
+Line 503
+  "// comment\nabc" always "// comment\nabc"
+Line 506
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  506 always 506
+  true always 1
+  "abc" always "abc"
+  "test.cpp" always "test.cpp"
+  123 always 123
+Line 508
+  "abc // comment" always "abc // comment"
+Line 511
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  511 always 511
+  true always 1
+  "abc" always "abc"
+  "test.cpp" always "test.cpp"
+  123 always 123
+Line 513
+  "abc\t\t # comment" always "abc\t\t # comment"
+Line 516
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  516 always 516
+  true always 1
+  "abc" always "abc"
+  "test.cpp" always "test.cpp"
+  123 always 123
+Line 518
+  "abc:test.cpp\t\t # comment" always "abc:test.cpp\t\t # comment"
+Line 521
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  521 always 521
+  true always 1
+  "abc" always "abc"
+  "test.cpp" always "test.cpp"
+  123 always 123
+Line 523
+  "abc:test.cpp:123\t\t # comment with . inside" always "abc:test.cpp:123\t\t # comment with . inside"
+Line 526
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  526 always 526
+  true always 1
+  "abc" always "abc"
+  "test.cpp" always "test.cpp"
+  123 always 123
+Line 532
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  532 always 532
+  false always 0
+  "/* some text */" always "/* some text */"
+  & {lifetime[Address]=(msg),!0}
+  msg always size=0
+Line 533
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  533 always 533
+  false always 0
+  "/* cppcheck-suppress */" always "/* cppcheck-suppress */"
+  & {lifetime[Address]=(msg),!0}
+Line 535
+  msg always NonMovedVariable
+Line 536
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  536 always 536
+  true always 1
+  "/* cppcheck-suppress id */" always "/* cppcheck-suppress id */"
+  & {lifetime[Address]=(msg),!0}
+  msg always {NonMovedVariable,size=0}
+Line 537
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  537 always 537
+  "" always ""
+Line 539
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  539 always 539
+  true always 1
+  "/* cppcheck-suppress id some text */" always "/* cppcheck-suppress id some text */"
+  & {lifetime[Address]=(msg),!0}
+Line 540
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  540 always 540
+  "Bad suppression attribute 'some'. You can write comments in the comment after a ; or //. Valid suppression attributes; symbolName=sym" always "Bad suppression attribute 'some'. You can write comments in the comment after a ; or //. Valid suppression attributes; symbolName=sym"
+Line 544
+  ( always !<=-1
+  "void f() {\n    int a;\n    /* cppcheck-suppress uninitvar symbolName=a */\n    a++;\n}\n" always "void f() {\n    int a;\n    /* cppcheck-suppress uninitvar symbolName=a */\n    a++;\n}\n"
+Line 549
+  "" always ""
+Line 550
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  550 always 550
+  "" always ""
+Line 552
+  ( always !<=-1
+  "void f() {\n    int a,b;\n    /* cppcheck-suppress uninitvar symbolName=b */\n    a++; b++;\n}\n" always "void f() {\n    int a,b;\n    /* cppcheck-suppress uninitvar symbolName=b */\n    a++; b++;\n}\n"
+Line 557
+  "" always ""
+Line 558
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  558 always 558
+  "[test.cpp:4]: (error) Uninitialized variable: a\n" always "[test.cpp:4]: (error) Uninitialized variable: a\n"
+Line 564
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  564 always 564
+  true always 1
+  "// cppcheck-suppress abc ; some comment" always "// cppcheck-suppress abc ; some comment"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always size=0
+Line 565
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  565 always 565
+  "" always ""
+Line 566
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  566 always 566
+  true always 1
+  "// cppcheck-suppress abc // some comment" always "// cppcheck-suppress abc // some comment"
+  & {lifetime[Address]=(errMsg),!0}
+Line 567
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  567 always 567
+  "" always ""
+Line 568
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  568 always 568
+  true always 1
+  "// cppcheck-suppress abc -- some comment" always "// cppcheck-suppress abc -- some comment"
+  & {lifetime[Address]=(errMsg),!0}
+Line 569
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  569 always 569
+  "" always ""
+Line 576
+  = always ""
+  "" always ""
+Line 577
+  "// cppcheck-suppress[errorId]" always "// cppcheck-suppress[errorId]"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always {"",size=0}
+Line 578
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  578 always 578
+  1 always 1
+  ( always !<=-1
+Line 579
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  579 always 579
+  "errorId" always "errorId"
+  0 always 0
+Line 580
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  580 always 580
+  "" always ""
+  0 always 0
+Line 581
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  581 always 581
+  "" always ""
+Line 583
+  = always ""
+  "" always ""
+Line 584
+  "// cppcheck-suppress[errorId symbolName=arr]" always "// cppcheck-suppress[errorId symbolName=arr]"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always {"",size=0}
+Line 585
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  585 always 585
+  1 always 1
+  ( always !<=-1
+Line 586
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  586 always 586
+  "errorId" always "errorId"
+  0 always 0
+Line 587
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  587 always 587
+  "arr" always "arr"
+  0 always 0
+Line 588
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  588 always 588
+  "" always ""
+Line 590
+  = always ""
+  "" always ""
+Line 591
+  "// cppcheck-suppress[errorId symbolName=]" always "// cppcheck-suppress[errorId symbolName=]"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always {"",size=0}
+Line 592
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  592 always 592
+  1 always 1
+  ( always !<=-1
+Line 593
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  593 always 593
+  "errorId" always "errorId"
+  0 always 0
+Line 594
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  594 always 594
+  "" always ""
+  0 always 0
+Line 595
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  595 always 595
+  "" always ""
+Line 597
+  = always ""
+  "" always ""
+Line 598
+  "// cppcheck-suppress[errorId1, errorId2 symbolName=arr]" always "// cppcheck-suppress[errorId1, errorId2 symbolName=arr]"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always {"",size=0}
+Line 599
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  599 always 599
+  2 always 2
+  ( always !<=-1
+Line 600
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  600 always 600
+  "errorId1" always "errorId1"
+  0 always 0
+Line 601
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  601 always 601
+  "" always ""
+  0 always 0
+Line 602
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  602 always 602
+  "errorId2" always "errorId2"
+  1 always 1
+Line 603
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  603 always 603
+  "arr" always "arr"
+  1 always 1
+Line 604
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  604 always 604
+  "" always ""
+Line 606
+  = always ""
+  "" always ""
+Line 607
+  "// cppcheck-suppress[]" always "// cppcheck-suppress[]"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always {"",size=0}
+Line 608
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  608 always 608
+  0 always 0
+  ( always !<=-1
+Line 609
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  609 always 609
+  true always 1
+  ( always {!<=-1,!>=2}
+Line 611
+  = always ""
+  "" always ""
+Line 612
+  "// cppcheck-suppress[errorId" always "// cppcheck-suppress[errorId"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always {"",size=0}
+Line 613
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  613 always 613
+  0 always 0
+  ( always !<=-1
+Line 614
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  614 always 614
+  false always 0
+  ( always {!<=-1,!>=2}
+Line 616
+  = always ""
+  "" always ""
+Line 617
+  "// cppcheck-suppress errorId" always "// cppcheck-suppress errorId"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always {"",size=0}
+Line 618
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  618 always 618
+  0 always 0
+  ( always !<=-1
+Line 619
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  619 always 619
+  false always 0
+  ( always {!<=-1,!>=2}
+Line 621
+  = always ""
+  "" always ""
+Line 622
+  "// cppcheck-suppress[errorId1 errorId2 symbolName=arr]" always "// cppcheck-suppress[errorId1 errorId2 symbolName=arr]"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always {"",size=0}
+Line 623
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  623 always 623
+  0 always 0
+  ( always !<=-1
+Line 624
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  624 always 624
+  false always 0
+  ( always {!<=-1,!>=2}
+Line 626
+  = always ""
+  "" always ""
+Line 627
+  "// cppcheck-suppress[errorId1, errorId2 symbol=arr]" always "// cppcheck-suppress[errorId1, errorId2 symbol=arr]"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always {"",size=0}
+Line 628
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  628 always 628
+  0 always 0
+  ( always !<=-1
+Line 629
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  629 always 629
+  false always 0
+  ( always {!<=-1,!>=2}
+Line 631
+  = always ""
+  "" always ""
+Line 632
+  "// cppcheck-suppress[errorId1, errorId2 symbolName]" always "// cppcheck-suppress[errorId1, errorId2 symbolName]"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always {"",size=0}
+Line 633
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  633 always 633
+  0 always 0
+  ( always !<=-1
+Line 634
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  634 always 634
+  false always 0
+  ( always {!<=-1,!>=2}
+Line 641
+  = always ""
+  "" always ""
+Line 642
+  "//cppcheck-suppress[errorId1, errorId2 symbolName=arr]" always "//cppcheck-suppress[errorId1, errorId2 symbolName=arr]"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always {"",size=0}
+Line 643
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  643 always 643
+  2 always 2
+  ( always !<=-1
+Line 644
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  644 always 644
+  true always 1
+  ( always {!<=-1,!>=2}
+Line 646
+  = always ""
+  "" always ""
+Line 647
+  "//cppcheck-suppress[errorId1, errorId2 symbolName=arr] some text" always "//cppcheck-suppress[errorId1, errorId2 symbolName=arr] some text"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always {"",size=0}
+Line 648
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  648 always 648
+  2 always 2
+  ( always !<=-1
+Line 649
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  649 always 649
+  true always 1
+  ( always {!<=-1,!>=2}
+Line 651
+  = always ""
+  "" always ""
+Line 652
+  "/*cppcheck-suppress[errorId1, errorId2 symbolName=arr]*/" always "/*cppcheck-suppress[errorId1, errorId2 symbolName=arr]*/"
+  & {lifetime[Address]=(errMsg),!0}
+  errMsg always {"",size=0}
+Line 653
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  653 always 653
+  2 always 2
+  ( always !<=-1
+Line 654
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  654 always 654
+  true always 1
+  ( always {!<=-1,!>=2}
+Line 658
+  "" always ""
+Line 660
+  this always !0
+  false always 0
+  nullptr always 0
+Line 662
+  "uninitvar" always "uninitvar"
+Line 663
+  = always 1
+  1 always 1
+Line 665
+  29 always 29
+  = always "int f() { int a; return a; }"
+  "int f() { int a; return a; }" always "int f() { int a; return a; }"
+Line 666
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  666 always 666
+  0 always 0
+  "test.c" always "test.c"
+  code always "int f() { int a; return a; }"
+Line 667
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  667 always 667
+  "[test.c:1]: (error) Uninitialized variable: a\n" always "[test.c:1]: (error) Uninitialized variable: a\n"
+Line 672
+  "unusedFunction" always "unusedFunction"
+  "test.c" always "test.c"
+  3 always 3
+Line 673
+  = always 1
+  true always 1
+Line 675
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  675 always 675
+  true always 1
+  ! always {!<=-1,!>=2}
+  "test.c" always "test.c"
+  true always 1
+Line 676
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  676 always 676
+  false always 0
+  ! always {!<=-1,!>=2}
+  true always 1
+Line 677
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  677 always 677
+  false always 0
+  ! always {!<=-1,!>=2}
+  "test.c" always "test.c"
+  false always 0
+Line 678
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  678 always 678
+  false always 0
+  ! always {!<=-1,!>=2}
+  false always 0
+Line 683
+  "unusedFunction:*" always "unusedFunction:*"
+Line 684
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  684 always 684
+  false always 0
+  ! always {!<=-1,!>=2}
+  "test.c" always "test.c"
+  true always 1
+Line 685
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  685 always 685
+  true always 1
+  ! always {!<=-1,!>=2}
+  true always 1
+Line 686
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  686 always 686
+  false always 0
+  ! always {!<=-1,!>=2}
+  "test.c" always "test.c"
+  false always 0
+Line 687
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  687 always 687
+  false always 0
+  ! always {!<=-1,!>=2}
+  false always 0
+Line 692
+  "" always ""
+Line 694
+  this always !0
+  true always 1
+  nullptr always 0
+Line 697
+  = always 1
+  true always 1
+Line 698
+  = always 1
+  true always 1
+Line 699
+  "/somewhere" always "/somewhere"
+Line 700
+  128 always 128
+  = always "struct Point\n{\n    // cppcheck-suppress unusedStructMember\n    int x;\n    // cppcheck-suppress unusedStructMember\n    int y;\n};"
+Line 701
+  "struct Point\n{\n    // cppcheck-suppress unusedStructMember\n    int x;\n    // cppcheck-suppress unusedStructMember\n    int y;\n};" always "struct Point\n{\n    // cppcheck-suppress unusedStructMember\n    int x;\n    // cppcheck-suppress unusedStructMember\n    int y;\n};"
+Line 708
+  "/somewhere/test.cpp" always "/somewhere/test.cpp"
+  code always "struct Point\n{\n    // cppcheck-suppress unusedStructMember\n    int x;\n    // cppcheck-suppress unusedStructMember\n    int y;\n};"
+Line 709
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  709 always 709
+  "" always ""
+Line 714
+  files always size=0
+  "test.cpp" always "test.cpp"
+  = always "if if\n"
+  "if if\n" always "if if\n"
+Line 716
+  ( always !<=-1
+  "syntaxError:test.cpp:1" always "syntaxError:test.cpp:1"
+Line 717
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  717 always 717
+  "" always ""
+Line 722
+  files always size=0
+  "test.cpp" always "test.cpp"
+  = always "double result(0.0);\n_asm\n{\n   // cppcheck-suppress syntaxError\n   push  EAX               ; save EAX for callers\n   mov   EAX,Real10        ; get the address pointed to by Real10\n   fld   TBYTE PTR [EAX]   ; load an extended real (10 bytes)\n   fstp  QWORD PTR result  ; store a double (8 bytes)\n   pop   EAX               ; restore EAX\n}"
+  "double result(0.0);\n_asm\n{\n   // cppcheck-suppress syntaxError\n   push  EAX               ; save EAX for callers\n   mov   EAX,Real10        ; get the address pointed to by Real10\n   fld   TBYTE PTR [EAX]   ; load an extended real (10 bytes)\n   fstp  QWORD PTR result  ; store a double (8 bytes)\n   pop   EAX               ; restore EAX\n}" always "double result(0.0);\n_asm\n{\n   // cppcheck-suppress syntaxError\n   push  EAX               ; save EAX for callers\n   mov   EAX,Real10        ; get the address pointed to by Real10\n   fld   TBYTE PTR [EAX]   ; load an extended real (10 bytes)\n   fstp  QWORD PTR result  ; store a double (8 bytes)\n   pop   EAX               ; restore EAX\n}"
+Line 732
+  ( always !<=-1
+  "" always ""
+Line 733
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  733 always 733
+  "" always ""
+Line 738
+  files always size=0
+  "test.cpp" always "test.cpp"
+  = always "CONST (genType, KS_CONST) genService[KS_CFG_NR_OF_NVM_BLOCKS] =\n{\n[!VAR \"BC\" = \"$BC + 1\"!][!//\n[!IF \"(as:modconf('Ks')[1]/KsGeneral/KsType = 'KS_CFG_TYPE_KS_MASTER') and\n      (as:modconf('Ks')[1]/KsGeneral/KsUseShe = 'true')\"!][!//\n  {\n      &varNB_GetErrorStatus,\n      &varNB_WriteBlock,\n      &varNB_ReadBlock\n  },\n[!VAR \"BC\" = \"$BC + 1\"!][!//\n[!ENDIF!][!//\n};"
+  "CONST (genType, KS_CONST) genService[KS_CFG_NR_OF_NVM_BLOCKS] =\n{\n[!VAR \"BC\" = \"$BC + 1\"!][!//\n[!IF \"(as:modconf('Ks')[1]/KsGeneral/KsType = 'KS_CFG_TYPE_KS_MASTER') and\n      (as:modconf('Ks')[1]/KsGeneral/KsUseShe = 'true')\"!][!//\n  {\n      &varNB_GetErrorStatus,\n      &varNB_WriteBlock,\n      &varNB_ReadBlock\n  },\n[!VAR \"BC\" = \"$BC + 1\"!][!//\n[!ENDIF!][!//\n};" always "CONST (genType, KS_CONST) genService[KS_CFG_NR_OF_NVM_BLOCKS] =\n{\n[!VAR \"BC\" = \"$BC + 1\"!][!//\n[!IF \"(as:modconf('Ks')[1]/KsGeneral/KsType = 'KS_CFG_TYPE_KS_MASTER') and\n      (as:modconf('Ks')[1]/KsGeneral/KsUseShe = 'true')\"!][!//\n  {\n      &varNB_GetErrorStatus,\n      &varNB_WriteBlock,\n      &varNB_ReadBlock\n  },\n[!VAR \"BC\" = \"$BC + 1\"!][!//\n[!ENDIF!][!//\n};"
+Line 751
+  ( always !<=-1
+  "syntaxError:test.cpp:4" always "syntaxError:test.cpp:4"
+Line 752
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  752 always 752
+  "" always ""
+Line 757
+  = always "foo"
+  "foo" always "foo"
+Line 758
+  = always "array*"
+  "array*" always "array*"
+Line 761
+  = always "foo"
+  "foo" always "foo"
+Line 762
+  "test.cpp" always "test.cpp"
+Line 763
+  = always 123
+  123 always 123
+Line 764
+  = always ""
+  "" always ""
+Line 765
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  765 always 765
+  false always 0
+Line 766
+  = always "x\n"
+  "x\n" always "x\n"
+Line 767
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  767 always 767
+  false always 0
+Line 768
+  = always "array1\n"
+  "array1\n" always "array1\n"
+Line 769
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  769 always 769
+  true always 1
+Line 770
+  = always "x\narray2\n"
+  "x\narray2\n" always "x\narray2\n"
+Line 771
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  771 always 771
+  true always 1
+Line 772
+  = always "array3\nx\n"
+  "array3\nx\n" always "array3\nx\n"
+Line 773
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  773 always 773
+  true always 1
+Line 777
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  777 always 777
+  0 always 0
+  ( always !<=-1
+  "void f() {}" always "void f() {}"
+  "unusedFunction" always "unusedFunction"
+Line 782
+  files always size=0
+  "test.cpp" always "test.cpp"
+  = always "fi if;"
+  "fi if;" always "fi if;"
+Line 784
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  784 always 784
+  0 always 0
+  ( always !<=-1
+  "*:test.cpp" always "*:test.cpp"
+Line 785
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  785 always 785
+  "" always ""
+Line 789
+  mfiles always size=0
+  "test.cpp" always "test.cpp"
+  = always "fi if;"
+  "fi if;" always "fi if;"
+Line 790
+  "test2.cpp" always "test2.cpp"
+  = always "fi if"
+  "fi if" always "fi if"
+Line 791
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  791 always 791
+  1 always 1
+  ( always !<=-1
+  "*:test.cpp" always "*:test.cpp"
+Line 792
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  792 always 792
+  "[test2.cpp:1]: (error) syntax error\n" always "[test2.cpp:1]: (error) syntax error\n"
+Line 796
+  file2 always size=0
+  "test.cpp" always "test.cpp"
+  = always "fi fi\nif if;"
+  "fi fi\nif if;" always "fi fi\nif if;"
+Line 798
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  798 always 798
+  1 always 1
+  ( always !<=-1
+  "*:test.cpp:1" always "*:test.cpp:1"
+Line 799
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  799 always 799
+  "[test.cpp:2]: (error) syntax error\n" always "[test.cpp:2]: (error) syntax error\n"
+Line 803
+  file3 always size=0
+  "test.cpp" always "test.cpp"
+  = always "void f(int x, int y){\n    int a = x/0;\n    int b = y/0;\n}\nf(0, 1);\n"
+  "void f(int x, int y){\n    int a = x/0;\n    int b = y/0;\n}\nf(0, 1);\n" always "void f(int x, int y){\n    int a = x/0;\n    int b = y/0;\n}\nf(0, 1);\n"
+Line 808
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsuppressions.cpp" always "cppcheck-2.8/test/testsuppressions.cpp"
+  808 always 808
+  1 always 1
+  ( always !<=-1
+  "zerodiv:test.cpp:3" always "zerodiv:test.cpp:3"

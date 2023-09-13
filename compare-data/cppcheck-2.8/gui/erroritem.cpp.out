@@ -1,0 +1,320 @@
+
+
+##file cppcheck-2.8/gui/erroritem.h
+
+1:
+|
+36:
+37: class GuiSeverity {
+38: public:
+39: static QString toString ( Severity :: SeverityType severity@var1 ) {
+40: return QString ::@expr1073741901 fromStdString (@expr1073741902 Severity ::@expr1073741903 toString (@expr1073741904 severity@var1 ) ) ;
+41: }
+42:
+43: static Severity :: SeverityType fromString ( const QString & severity@var2 ) {
+44: return Severity ::@expr1073741905 fromString (@expr1073741906 severity@var2 .@expr1073741907 toStdString (@expr1073741908 ) ) ;
+45: }
+46: } ;
+47:
+|
+50:
+51: class QErrorPathItem {
+52: public:
+53: QErrorPathItem ( ) : line@var5 ( 0 ) , column@var6 ( -1 ) { }
+54: explicit QErrorPathItem ( const ErrorMessage :: FileLocation & loc@var3 ) ;
+55: QString file@var4 ;
+56: int line@var5 ;
+57: int column@var6 ;
+58: QString info@var7 ;
+59: } ;
+60:
+61: bool operator== ( const QErrorPathItem & i1@var8 , const QErrorPathItem & i2@var9 ) ;
+62:
+|
+70:
+71: class ErrorItem {
+72: public:
+73: ErrorItem ( ) ;
+74: explicit ErrorItem ( const ErrorMessage & errmsg@var10 ) ;
+75:
+|
+79:
+80: QString toString ( ) const ;
+81: QString tool ( ) const ;
+82:
+83: QString file0@var11 ;
+84: QString function@var12 ;
+85: QString errorId@var13 ;
+86: Severity :: SeverityType severity@var14 ;
+87: bool incomplete@var15 ;
+88: bool inconclusive@var16 ;
+89: QString summary@var17 ;
+90: QString message@var18 ;
+91: int cwe@var19 ;
+92: unsigned long long hash@var20 ;
+93: QList < QErrorPathItem > errorPath@var21 ;
+94: QString symbolNames@var22 ;
+95:
+96:
+97: QString sinceDate@var23 ;
+98: QString tags@var24 ;
+99:
+|
+102:
+103: static bool sameCID ( const ErrorItem & errorItem1@var25 , const ErrorItem & errorItem2@var26 ) ;
+104: } ;
+105:
+|
+110:
+111: class ErrorLine {
+112: public:
+113: QString file@var27 ;
+114: int line@var28 ;
+115: QString file0@var29 ;
+116: QString errorId@var30 ;
+117: bool incomplete@var31 ;
+118: int cwe@var32 ;
+119: unsigned long long hash@var33 ;
+120: bool inconclusive@var34 ;
+121: Severity :: SeverityType severity@var35 ;
+122: QString summary@var36 ;
+123: QString message@var37 ;
+124: QString sinceDate@var38 ;
+125: QString tags@var39 ;
+126: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type@var40 ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type@var41 , const QString & value@var42 ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters@var43 , bool addAllSupported@var44 = true , bool addAll@var45 = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/erroritem.cpp
+
+1:
+|
+24:
+25: QErrorPathItem :: QErrorPathItem ( const ErrorMessage :: FileLocation & loc@var46 )
+26: : file@var4 ( QString :: fromStdString ( loc@var46 . getfile ( false ) ) )
+27: , line@var5 ( loc@var46 . line@var47 )
+28: , column@var6 ( loc@var46 . column@var48 )
+29: , info@var7 ( QString :: fromStdString ( loc@var46 . getinfo ( ) ) )
+30: { }
+31:
+32: bool operator== ( const QErrorPathItem & i1@var49 , const QErrorPathItem & i2@var50 )
+33: {
+34: return i1@var49 .@expr1073741909 file@var51 ==@expr1073741910 i2@var50 .@expr1073741911 file@var52 &&@expr1073741912 i1@var49 .@expr1073741913 column@var53 ==@expr1073741914 i2@var50 .@expr1073741915 column@var54 &&@expr1073741916 i1@var49 .@expr1073741917 line@var55 ==@expr1073741918 i2@var50 .@expr1073741919 line@var56 &&@expr1073741920 i1@var49 .@expr1073741921 info@var57 ==@expr1073741922 i2@var50 .@expr1073741923 info@var58 ;
+35: }
+36:
+37: ErrorItem :: ErrorItem ( )
+38: : severity@var14 ( Severity :: none )
+39: , incomplete@var15 ( false )
+40: , inconclusive@var16 ( false )
+41: , cwe@var19 ( -1 )
+42: , hash@var20 ( 0 )
+43: { }
+44:
+45: ErrorItem :: ErrorItem ( const ErrorMessage & errmsg@var59 )
+46: : file0@var11 ( QString :: fromStdString ( errmsg@var59 . file0@var60 ) )
+47: , function@var12 ( QString :: fromStdString ( errmsg@var59 . function@var61 ) )
+48: , errorId@var13 ( QString :: fromStdString ( errmsg@var59 . id@var62 ) )
+49: , severity@var14 ( errmsg@var59 . severity@var63 )
+50: , incomplete@var15 ( errmsg@var59 . incomplete@var64 )
+51: , inconclusive@var16 ( errmsg@var59 . certainty@var65 == Certainty :: inconclusive )
+52: , summary@var17 ( QString :: fromStdString ( errmsg@var59 . shortMessage ( ) ) )
+53: , message@var18 ( QString :: fromStdString ( errmsg@var59 . verboseMessage ( ) ) )
+54: , cwe@var19 ( errmsg@var59 . cwe@var66 . id@var67 )
+55: , hash@var20 ( errmsg@var59 . hash@var68 )
+56: , symbolNames@var22 ( QString :: fromStdString ( errmsg@var59 . symbolNames ( ) ) )
+57: {
+58: for (@expr1073741924 std ::@expr101 list < ErrorMessage ::@expr101 FileLocation > ::@expr101 const_iterator loc@var69 =@expr1073741928 errmsg@var59 .@expr105 callStack@var70 .@expr1073741930 begin (@expr1073741931 ) ;
+59: loc@var69 !=@expr1073741932 errmsg@var59 .@expr105 callStack@var70 .@expr1073741934 end (@expr1073741935 ) ;
+60: ++@expr1073741936 loc@var69 ) {
+61: errorPath@var21 <<@expr1073741937 QErrorPathItem (@expr1073741938 *@expr1073741939 loc@var69 ) ;
+62: }
+63: }
+64:
+65: QString ErrorItem :: tool ( ) const
+66: {
+67: if (@expr1073741940 errorId@var13 ==@expr1073741941 $"clang-analyzer" ) {
+68: return $"clang-analyzer" ; }
+69: if (@expr1073741942 errorId@var13 .@expr119 startsWith (@expr1073741944 $"clang-tidy" ) ) {
+70: return $"clang-tidy" ; }
+71: if (@expr1073741945 errorId@var13 .@expr119 startsWith (@expr1073741947 "clang-" ) ) {
+72: return "clang" ; }
+73: return "cppcheck" ;
+74: }
+75:
+76: QString ErrorItem :: toString ( ) const
+77: {
+78: QString str@var71 ; str@var71 =@expr1073741949 errorPath@var21 .@expr1073741950 back (@expr1073741951 ) .@expr1073741952 file@expr1073741948 +@expr1073741953 " - " +@expr1073741954 errorId@var13 +@expr1073741955 " - " ;
+79: if (@expr1073741956 inconclusive@var16 ) {
+80: str@var71 +=@expr1073741957 "inconclusive " ; }
+81: str@var71 +=@expr1073741958 GuiSeverity ::@expr1073741959 toString (@expr1073741960 severity@var14 ) +@expr1073741961 "\n" ;
+82: str@var71 +=@expr1073741962 summary@var17 +@expr1073741963 "\n" ;
+83: str@var71 +=@expr1073741964 message@var18 +@expr1073741965 "\n" ;
+84: for (@expr1073741966 const QErrorPathItem &@expr1073741967 i@var72 :@expr1073741968 errorPath@var21 ) {
+85: str@var71 +=@expr1073741969 "  " +@expr1073741970 i@var72 .@expr1073741971 file@var73 +@expr1073741972 ": " +@expr1073741973 QString ::@expr1073741974 number (@expr1073741975 i@var72 .@expr1073741976 line@var74 ) +@expr1073741977 "\n" ;
+86: }
+87: return str@var71 ;
+88: }
+89:
+90: bool ErrorItem :: sameCID ( const ErrorItem & errorItem1@var75 , const ErrorItem & errorItem2@var76 )
+91: {
+92: if (@expr1073741978 errorItem1@var75 .@expr155 hash@var77 ||@expr1073741980 errorItem2@var76 .@expr157 hash@var78 ) {
+93: return errorItem1@var75 .@expr155 hash@var77 ==@expr1073741983 errorItem2@var76 .@expr157 hash@var78 ; }
+94:
+95:
+96: return errorItem1@var75 .@expr1073741985 errorId@var79 ==@expr1073741986 errorItem2@var76 .@expr1073741987 errorId@var80 &&@expr1073741988
+97: errorItem1@var75 .@expr1073741989 errorPath@var81 ==@expr1073741990 errorItem2@var76 .@expr1073741991 errorPath@var82 &&@expr1073741992
+98: errorItem1@var75 .@expr1073741993 file0@var83 ==@expr1073741994 errorItem2@var76 .@expr1073741995 file0@var84 &&@expr1073741996
+99: errorItem1@var75 .@expr1073741997 message@var85 ==@expr1073741998 errorItem2@var76 .@expr1073741999 message@var86 &&@expr1073742000
+100: errorItem1@var75 .@expr1073742001 inconclusive@var87 ==@expr1073742002 errorItem2@var76 .@expr1073742003 inconclusive@var88 &&@expr1073742004
+101: errorItem1@var75 .@expr1073742005 severity@var89 ==@expr1073742006 errorItem2@var76 .@expr1073742007 severity@var90 ;
+102: }
+
+
+
+##Value flow
+Line 53
+  0 always 0
+  -1 always -1
+Line 61
+  ( always {!<=-1,!>=2}
+Line 87
+  incomplete always {!<=-1,!>=2}
+Line 88
+  inconclusive always {!<=-1,!>=2}
+Line 92
+  hash always !<=-1
+Line 103
+  ( always {!<=-1,!>=2}
+Line 117
+  incomplete always {!<=-1,!>=2}
+Line 119
+  hash always !<=-1
+Line 120
+  inconclusive always {!<=-1,!>=2}
+Line 148
+  addAllSupported always {!<=-1,!>=2}
+  = always 1
+  true always 1
+  , always 1
+  addAll always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 26
+  false always 0
+Line 32
+  ( always {!<=-1,!>=2}
+Line 34
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 39
+  incomplete always {!<=-1,!>=2}
+  false always 0
+Line 40
+  inconclusive always {!<=-1,!>=2}
+  false always 0
+Line 41
+  -1 always -1
+Line 42
+  hash always !<=-1
+  0 always 0
+Line 50
+  incomplete always {!<=-1,!>=2}
+Line 51
+  inconclusive always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 55
+  hash always !<=-1
+Line 59
+  != always {!<=-1,!>=2}
+Line 67
+  == always {!<=-1,!>=2}
+  "clang-analyzer" always "clang-analyzer"
+Line 68
+  "clang-analyzer" always "clang-analyzer"
+Line 69
+  "clang-tidy" always "clang-tidy"
+Line 70
+  "clang-tidy" always "clang-tidy"
+Line 71
+  "clang-" always "clang-"
+Line 72
+  "clang" always "clang"
+Line 73
+  "cppcheck" always "cppcheck"
+Line 78
+  " - " always " - "
+  " - " always " - "
+Line 79
+  inconclusive always {!<=-1,!>=2}
+Line 80
+  "inconclusive " always "inconclusive "
+Line 81
+  "\n" always "\n"
+Line 82
+  "\n" always "\n"
+Line 83
+  "\n" always "\n"
+Line 85
+  "  " always "  "
+  ": " always ": "
+  "\n" always "\n"
+Line 90
+  ( always {!<=-1,!>=2}
+Line 92
+  . always !<=-1
+  hash always !<=-1
+  || always {!<=-1,!>=2}
+  . always !<=-1
+  hash always !<=-1
+Line 93
+  return always {!<=-1,!>=2}
+  . always !<=-1
+  hash always !<=-1
+  == always {!<=-1,!>=2}
+  . always !<=-1
+  hash always !<=-1
+Line 96
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 97
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 98
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 99
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 100
+  . always {!<=-1,!>=2}
+  inconclusive always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  inconclusive always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 101
+  == always {!<=-1,!>=2}

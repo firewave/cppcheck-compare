@@ -1,0 +1,274 @@
+
+
+##file cppcheck-2.8/lib/config.h
+
+1:
+|
+78:
+79: static const std :: string emptyString@var1 ;
+
+##file cppcheck-2.8/lib/errortypes.h
+
+1:
+|
+31:
+32: class Token ;
+33:
+34:
+35: struct InternalError {
+36: enum Type { AST , SYNTAX , UNKNOWN_MACRO , INTERNAL , LIMIT , INSTANTIATION } ;
+37: InternalError ( const Token * tok@var2 , const std :: string & errorMsg@var3 , Type type@var4 = INTERNAL ) ;
+38: const Token * token@var5 ;
+39: std :: string errorMessage@var6 ;
+40: Type type@var7 ;
+41: std :: string id@var8 ;
+42: } ;
+43:
+44: class Certainty {
+45: public:
+46: enum CertaintyLevel {
+47: normal , inconclusive , safe , experimental
+48: } ;
+49: } ;
+50:
+51: class Checks {
+52: public:
+53: enum CheckList {
+54: unusedFunction , missingInclude , internalCheck
+55: } ;
+56: } ;
+57:
+58:
+59: class Severity {
+60: public:
+61:
+62:
+63:
+64: enum SeverityType {
+65:
+66:
+67:
+68: none ,
+69:
+|
+73:
+74: error ,
+75:
+|
+79:
+80: warning ,
+81:
+|
+86:
+87: style ,
+88:
+|
+92:
+93: performance ,
+94:
+|
+100:
+101: portability ,
+102:
+|
+107:
+108: information ,
+109:
+|
+112:
+113: debug
+114: } ;
+115:
+116: static std :: string toString ( SeverityType severity@var9 ) ;
+117: static SeverityType fromString ( const std :: string & severity@var10 ) ;
+118: } ;
+119:
+120: struct CWE {
+121: explicit CWE ( unsigned short cweId@var11 ) : id@var12 ( cweId@var11 ) { }
+122: unsigned short id@var12 ;
+123: } ;
+
+##file cppcheck-2.8/lib/errortypes.cpp
+
+1:
+|
+20:
+21: std :: string Severity :: toString ( Severity :: SeverityType severity@var13 )
+22: {
+23: switch (@expr1073741839 severity@var13 ) {
+24: case none :@expr16 ;
+25: return "" ;
+26: case error :@expr16 ;
+27: return "error" ;
+28: case warning :@expr16 ;
+29: return "warning" ;
+30: case style :@expr16 ;
+31: return "style" ;
+32: case performance :@expr16 ;
+33: return "performance" ;
+34: case portability :@expr16 ;
+35: return "portability" ;
+36: case information :@expr16 ;
+37: return "information" ;
+38: case debug :@expr16 ;
+39: return "debug" ;
+40: }
+41: throw InternalError (@expr1073741848 nullptr , "Unknown severity" ) ;
+42: }
+43: Severity :: SeverityType Severity :: fromString ( const std :: string & severity@var14 )
+44: {
+45: if (@expr1073741849 severity@var14 .@expr1073741850 empty (@expr1073741851 ) ) {
+46: return none ; }
+47: if (@expr1073741852 severity@var14 ==@expr1073741853 "none" ) {
+48: return none ; }
+49: if (@expr1073741854 severity@var14 ==@expr1073741855 "error" ) {
+50: return error ; }
+51: if (@expr1073741856 severity@var14 ==@expr1073741857 "warning" ) {
+52: return warning ; }
+53: if (@expr1073741858 severity@var14 ==@expr1073741859 "style" ) {
+54: return style ; }
+55: if (@expr1073741860 severity@var14 ==@expr1073741861 "performance" ) {
+56: return performance ; }
+57: if (@expr1073741862 severity@var14 ==@expr1073741863 "portability" ) {
+58: return portability ; }
+59: if (@expr1073741864 severity@var14 ==@expr1073741865 "information" ) {
+60: return information ; }
+61: if (@expr1073741866 severity@var14 ==@expr1073741867 "debug" ) {
+62: return debug ; }
+63: return none ;
+64: }
+
+
+
+##Value flow
+Line 36
+  AST always 0
+  SYNTAX always 1
+  UNKNOWN_MACRO always 2
+  INTERNAL always 3
+  LIMIT always 4
+  INSTANTIATION always 5
+Line 37
+  = always 3
+  INTERNAL always 3
+Line 47
+  normal always 0
+  inconclusive always 1
+  safe always 2
+  experimental always 3
+Line 54
+  unusedFunction always 0
+  missingInclude always 1
+  internalCheck always 2
+Line 68
+  none always 0
+Line 74
+  error always 1
+Line 80
+  warning always 2
+Line 87
+  style always 3
+Line 93
+  performance always 4
+Line 101
+  portability always 5
+Line 108
+  information always 6
+Line 113
+  debug always 7
+Line 121
+  ( possible lifetime[SubObject]=(cweId)
+  cweId always !<=-1
+  id always !<=-1
+  cweId always !<=-1
+Line 122
+  id always !<=-1
+Line 24
+  none always 0
+Line 25
+  "" always ""
+Line 26
+  error always 1
+Line 27
+  "error" always "error"
+Line 28
+  warning always 2
+Line 29
+  "warning" always "warning"
+Line 30
+  style always 3
+Line 31
+  "style" always "style"
+Line 32
+  performance always 4
+Line 33
+  "performance" always "performance"
+Line 34
+  portability always 5
+Line 35
+  "portability" always "portability"
+Line 36
+  information always 6
+Line 37
+  "information" always "information"
+Line 38
+  debug always 7
+Line 39
+  "debug" always "debug"
+Line 41
+  nullptr always 0
+  "Unknown severity" always "Unknown severity"
+Line 45
+  severity possible {size=4,size=5,size=7,size=11}
+  ( {!<=-1,!>=2,0}
+Line 46
+  none always 0
+Line 47
+  severity {size=5,size=7,size=11,!size=0}
+  == {!<=-1,!>=2,0}
+  "none" always "none"
+Line 48
+  none always 0
+Line 49
+  severity {size=7,size=5,size=11,!size=0}
+  == {!<=-1,!>=2,0}
+  "error" always "error"
+Line 50
+  error always 1
+Line 51
+  severity possible {size=5,size=11}
+  == {!<=-1,!>=2,0}
+  "warning" always "warning"
+Line 52
+  warning always 2
+Line 53
+  severity possible {size=11,size=5}
+  == {!<=-1,!>=2,0}
+  "style" always "style"
+Line 54
+  style always 3
+Line 55
+  severity possible {size=11,size=5}
+  == {!<=-1,!>=2,0}
+  "performance" always "performance"
+Line 56
+  performance always 4
+Line 57
+  severity possible {size=11,size=5}
+  == {!<=-1,!>=2,0}
+  "portability" always "portability"
+Line 58
+  portability always 5
+Line 59
+  severity possible size=5
+  == {!<=-1,!>=2,0}
+  "information" always "information"
+Line 60
+  information always 6
+Line 61
+  == always {!<=-1,!>=2}
+  "debug" always "debug"
+Line 62
+  debug always 7
+Line 63
+  none always 0

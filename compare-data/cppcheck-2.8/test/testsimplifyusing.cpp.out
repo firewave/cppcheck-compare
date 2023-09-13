@@ -1,0 +1,2275 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073742048 expected@var22 !=@expr1073742049 actual@var23 ) {
+62: std ::@expr1073742050 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073742051 expected@var22 ;
+64: std ::@expr1073742052 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073742053 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073742054 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073742055 str (@expr1073742056 ) , actualStr@var26 .@expr1073742057 str (@expr1073742058 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073742059 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073742060 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073742061 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073742062 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testsimplifyusing.cpp
+
+1:
+|
+30:
+31: class TestSimplifyUsing : public TestFixture {
+32: public:
+33: TestSimplifyUsing ( ) : TestFixture ( "TestSimplifyUsing" ) { }
+34:
+35:
+36: private:
+37: Settings settings0@var102 ;
+38: Settings settings1@var103 ;
+39: Settings settings2@var104 ;
+40:
+41: void run ( ) override {
+42: settings0@var102 .@expr1073742064 severity@var105 .@expr1073742065 enable (@expr1073742066 Severity ::@expr243 style@expr239 ) ;
+43: settings2@var104 .@expr1073742068 severity@var106 .@expr1073742069 enable (@expr1073742070 Severity ::@expr243 style@expr239 ) ;
+44:
+45:
+46: settings0@var102 .@expr1073742072 checkUnusedTemplates@var107 =@expr1073742073 true ;
+47: settings1@var103 .@expr1073742074 checkUnusedTemplates@var108 =@expr1073742075 true ;
+48: settings2@var104 .@expr1073742076 checkUnusedTemplates@var109 =@expr1073742077 true ;
+49:
+50: $do ${ $if $(@expr1073742078 $prepareTest $(@expr1073742079 "simplifyUsing1" $) $) ${ $setVerbose $(@expr1073742080 $false $) $; simplifyUsing1 $(@expr1073742081 $) $; $} $} $while $(@expr1073742082 $false $) ;
+51: $do ${ $if $(@expr1073742083 $prepareTest $(@expr1073742084 "simplifyUsing2" $) $) ${ $setVerbose $(@expr1073742085 $false $) $; simplifyUsing2 $(@expr1073742086 $) $; $} $} $while $(@expr1073742087 $false $) ;
+52: $do ${ $if $(@expr1073742088 $prepareTest $(@expr1073742089 "simplifyUsing3" $) $) ${ $setVerbose $(@expr1073742090 $false $) $; simplifyUsing3 $(@expr1073742091 $) $; $} $} $while $(@expr1073742092 $false $) ;
+53: $do ${ $if $(@expr1073742093 $prepareTest $(@expr1073742094 "simplifyUsing4" $) $) ${ $setVerbose $(@expr1073742095 $false $) $; simplifyUsing4 $(@expr1073742096 $) $; $} $} $while $(@expr1073742097 $false $) ;
+54: $do ${ $if $(@expr1073742098 $prepareTest $(@expr1073742099 "simplifyUsing5" $) $) ${ $setVerbose $(@expr1073742100 $false $) $; simplifyUsing5 $(@expr1073742101 $) $; $} $} $while $(@expr1073742102 $false $) ;
+55: $do ${ $if $(@expr1073742103 $prepareTest $(@expr1073742104 "simplifyUsing6" $) $) ${ $setVerbose $(@expr1073742105 $false $) $; simplifyUsing6 $(@expr1073742106 $) $; $} $} $while $(@expr1073742107 $false $) ;
+56: $do ${ $if $(@expr1073742108 $prepareTest $(@expr1073742109 "simplifyUsing7" $) $) ${ $setVerbose $(@expr1073742110 $false $) $; simplifyUsing7 $(@expr1073742111 $) $; $} $} $while $(@expr1073742112 $false $) ;
+57: $do ${ $if $(@expr1073742113 $prepareTest $(@expr1073742114 "simplifyUsing8" $) $) ${ $setVerbose $(@expr1073742115 $false $) $; simplifyUsing8 $(@expr1073742116 $) $; $} $} $while $(@expr1073742117 $false $) ;
+58: $do ${ $if $(@expr1073742118 $prepareTest $(@expr1073742119 "simplifyUsing9" $) $) ${ $setVerbose $(@expr1073742120 $false $) $; simplifyUsing9 $(@expr1073742121 $) $; $} $} $while $(@expr1073742122 $false $) ;
+59: $do ${ $if $(@expr1073742123 $prepareTest $(@expr1073742124 "simplifyUsing10" $) $) ${ $setVerbose $(@expr1073742125 $false $) $; simplifyUsing10 $(@expr1073742126 $) $; $} $} $while $(@expr1073742127 $false $) ;
+60: $do ${ $if $(@expr1073742128 $prepareTest $(@expr1073742129 "simplifyUsing11" $) $) ${ $setVerbose $(@expr1073742130 $false $) $; simplifyUsing11 $(@expr1073742131 $) $; $} $} $while $(@expr1073742132 $false $) ;
+61: $do ${ $if $(@expr1073742133 $prepareTest $(@expr1073742134 "simplifyUsing12" $) $) ${ $setVerbose $(@expr1073742135 $false $) $; simplifyUsing12 $(@expr1073742136 $) $; $} $} $while $(@expr1073742137 $false $) ;
+62: $do ${ $if $(@expr1073742138 $prepareTest $(@expr1073742139 "simplifyUsing13" $) $) ${ $setVerbose $(@expr1073742140 $false $) $; simplifyUsing13 $(@expr1073742141 $) $; $} $} $while $(@expr1073742142 $false $) ;
+63: $do ${ $if $(@expr1073742143 $prepareTest $(@expr1073742144 "simplifyUsing14" $) $) ${ $setVerbose $(@expr1073742145 $false $) $; simplifyUsing14 $(@expr1073742146 $) $; $} $} $while $(@expr1073742147 $false $) ;
+64: $do ${ $if $(@expr1073742148 $prepareTest $(@expr1073742149 "simplifyUsing15" $) $) ${ $setVerbose $(@expr1073742150 $false $) $; simplifyUsing15 $(@expr1073742151 $) $; $} $} $while $(@expr1073742152 $false $) ;
+65: $do ${ $if $(@expr1073742153 $prepareTest $(@expr1073742154 "simplifyUsing16" $) $) ${ $setVerbose $(@expr1073742155 $false $) $; simplifyUsing16 $(@expr1073742156 $) $; $} $} $while $(@expr1073742157 $false $) ;
+66: $do ${ $if $(@expr1073742158 $prepareTest $(@expr1073742159 "simplifyUsing17" $) $) ${ $setVerbose $(@expr1073742160 $false $) $; simplifyUsing17 $(@expr1073742161 $) $; $} $} $while $(@expr1073742162 $false $) ;
+67: $do ${ $if $(@expr1073742163 $prepareTest $(@expr1073742164 "simplifyUsing18" $) $) ${ $setVerbose $(@expr1073742165 $false $) $; simplifyUsing18 $(@expr1073742166 $) $; $} $} $while $(@expr1073742167 $false $) ;
+68: $do ${ $if $(@expr1073742168 $prepareTest $(@expr1073742169 "simplifyUsing19" $) $) ${ $setVerbose $(@expr1073742170 $false $) $; simplifyUsing19 $(@expr1073742171 $) $; $} $} $while $(@expr1073742172 $false $) ;
+69: $do ${ $if $(@expr1073742173 $prepareTest $(@expr1073742174 "simplifyUsing20" $) $) ${ $setVerbose $(@expr1073742175 $false $) $; simplifyUsing20 $(@expr1073742176 $) $; $} $} $while $(@expr1073742177 $false $) ;
+70: $do ${ $if $(@expr1073742178 $prepareTest $(@expr1073742179 "simplifyUsing21" $) $) ${ $setVerbose $(@expr1073742180 $false $) $; simplifyUsing21 $(@expr1073742181 $) $; $} $} $while $(@expr1073742182 $false $) ;
+71: $do ${ $if $(@expr1073742183 $prepareTest $(@expr1073742184 "simplifyUsing22" $) $) ${ $setVerbose $(@expr1073742185 $false $) $; simplifyUsing22 $(@expr1073742186 $) $; $} $} $while $(@expr1073742187 $false $) ;
+72: $do ${ $if $(@expr1073742188 $prepareTest $(@expr1073742189 "simplifyUsing23" $) $) ${ $setVerbose $(@expr1073742190 $false $) $; simplifyUsing23 $(@expr1073742191 $) $; $} $} $while $(@expr1073742192 $false $) ;
+73: $do ${ $if $(@expr1073742193 $prepareTest $(@expr1073742194 "simplifyUsing24" $) $) ${ $setVerbose $(@expr1073742195 $false $) $; simplifyUsing24 $(@expr1073742196 $) $; $} $} $while $(@expr1073742197 $false $) ;
+74: $do ${ $if $(@expr1073742198 $prepareTest $(@expr1073742199 "simplifyUsing25" $) $) ${ $setVerbose $(@expr1073742200 $false $) $; simplifyUsing25 $(@expr1073742201 $) $; $} $} $while $(@expr1073742202 $false $) ;
+75:
+76: $do ${ $if $(@expr1073742203 $prepareTest $(@expr1073742204 "simplifyUsing8970" $) $) ${ $setVerbose $(@expr1073742205 $false $) $; simplifyUsing8970 $(@expr1073742206 $) $; $} $} $while $(@expr1073742207 $false $) ;
+77: $do ${ $if $(@expr1073742208 $prepareTest $(@expr1073742209 "simplifyUsing8971" $) $) ${ $setVerbose $(@expr1073742210 $false $) $; simplifyUsing8971 $(@expr1073742211 $) $; $} $} $while $(@expr1073742212 $false $) ;
+78: $do ${ $if $(@expr1073742213 $prepareTest $(@expr1073742214 "simplifyUsing8976" $) $) ${ $setVerbose $(@expr1073742215 $false $) $; simplifyUsing8976 $(@expr1073742216 $) $; $} $} $while $(@expr1073742217 $false $) ;
+79: $do ${ $if $(@expr1073742218 $prepareTest $(@expr1073742219 "simplifyUsing9040" $) $) ${ $setVerbose $(@expr1073742220 $false $) $; simplifyUsing9040 $(@expr1073742221 $) $; $} $} $while $(@expr1073742222 $false $) ;
+80: $do ${ $if $(@expr1073742223 $prepareTest $(@expr1073742224 "simplifyUsing9042" $) $) ${ $setVerbose $(@expr1073742225 $false $) $; simplifyUsing9042 $(@expr1073742226 $) $; $} $} $while $(@expr1073742227 $false $) ;
+81: $do ${ $if $(@expr1073742228 $prepareTest $(@expr1073742229 "simplifyUsing9191" $) $) ${ $setVerbose $(@expr1073742230 $false $) $; simplifyUsing9191 $(@expr1073742231 $) $; $} $} $while $(@expr1073742232 $false $) ;
+82: $do ${ $if $(@expr1073742233 $prepareTest $(@expr1073742234 "simplifyUsing9381" $) $) ${ $setVerbose $(@expr1073742235 $false $) $; simplifyUsing9381 $(@expr1073742236 $) $; $} $} $while $(@expr1073742237 $false $) ;
+83: $do ${ $if $(@expr1073742238 $prepareTest $(@expr1073742239 "simplifyUsing9385" $) $) ${ $setVerbose $(@expr1073742240 $false $) $; simplifyUsing9385 $(@expr1073742241 $) $; $} $} $while $(@expr1073742242 $false $) ;
+84: $do ${ $if $(@expr1073742243 $prepareTest $(@expr1073742244 "simplifyUsing9388" $) $) ${ $setVerbose $(@expr1073742245 $false $) $; simplifyUsing9388 $(@expr1073742246 $) $; $} $} $while $(@expr1073742247 $false $) ;
+85: $do ${ $if $(@expr1073742248 $prepareTest $(@expr1073742249 "simplifyUsing9518" $) $) ${ $setVerbose $(@expr1073742250 $false $) $; simplifyUsing9518 $(@expr1073742251 $) $; $} $} $while $(@expr1073742252 $false $) ;
+86: $do ${ $if $(@expr1073742253 $prepareTest $(@expr1073742254 "simplifyUsing9757" $) $) ${ $setVerbose $(@expr1073742255 $false $) $; simplifyUsing9757 $(@expr1073742256 $) $; $} $} $while $(@expr1073742257 $false $) ;
+87: $do ${ $if $(@expr1073742258 $prepareTest $(@expr1073742259 "simplifyUsing10008" $) $) ${ $setVerbose $(@expr1073742260 $false $) $; simplifyUsing10008 $(@expr1073742261 $) $; $} $} $while $(@expr1073742262 $false $) ;
+88: $do ${ $if $(@expr1073742263 $prepareTest $(@expr1073742264 "simplifyUsing10054" $) $) ${ $setVerbose $(@expr1073742265 $false $) $; simplifyUsing10054 $(@expr1073742266 $) $; $} $} $while $(@expr1073742267 $false $) ;
+89: $do ${ $if $(@expr1073742268 $prepareTest $(@expr1073742269 "simplifyUsing10136" $) $) ${ $setVerbose $(@expr1073742270 $false $) $; simplifyUsing10136 $(@expr1073742271 $) $; $} $} $while $(@expr1073742272 $false $) ;
+90: $do ${ $if $(@expr1073742273 $prepareTest $(@expr1073742274 "simplifyUsing10171" $) $) ${ $setVerbose $(@expr1073742275 $false $) $; simplifyUsing10171 $(@expr1073742276 $) $; $} $} $while $(@expr1073742277 $false $) ;
+91: $do ${ $if $(@expr1073742278 $prepareTest $(@expr1073742279 "simplifyUsing10172" $) $) ${ $setVerbose $(@expr1073742280 $false $) $; simplifyUsing10172 $(@expr1073742281 $) $; $} $} $while $(@expr1073742282 $false $) ;
+92: $do ${ $if $(@expr1073742283 $prepareTest $(@expr1073742284 "simplifyUsing10173" $) $) ${ $setVerbose $(@expr1073742285 $false $) $; simplifyUsing10173 $(@expr1073742286 $) $; $} $} $while $(@expr1073742287 $false $) ;
+93: $do ${ $if $(@expr1073742288 $prepareTest $(@expr1073742289 "simplifyUsing10335" $) $) ${ $setVerbose $(@expr1073742290 $false $) $; simplifyUsing10335 $(@expr1073742291 $) $; $} $} $while $(@expr1073742292 $false $) ;
+94:
+95: $do ${ $if $(@expr1073742293 $prepareTest $(@expr1073742294 "scopeInfo1" $) $) ${ $setVerbose $(@expr1073742295 $false $) $; scopeInfo1 $(@expr1073742296 $) $; $} $} $while $(@expr1073742297 $false $) ;
+96: $do ${ $if $(@expr1073742298 $prepareTest $(@expr1073742299 "scopeInfo2" $) $) ${ $setVerbose $(@expr1073742300 $false $) $; scopeInfo2 $(@expr1073742301 $) $; $} $} $while $(@expr1073742302 $false $) ;
+97: }
+98:
+99:
+100: std :: string tok_ ( const char * file@var110 , int line@var111 , const char code@var112 [ ] , Settings :: PlatformType type@var113 = Settings :: Native , bool debugwarnings@var114 = true ) {
+101: errout@var100 .@expr1073742304 str (@expr1073742305 "" ) ;
+102:
+103: settings0@var102 .@expr1073742306 certainty@var115 .@expr1073742307 enable (@expr1073742308 Certainty ::@expr1073742309 inconclusive@expr1073742303 ) ;
+104: settings0@var102 .@expr1073742310 debugwarnings@var116 =@expr1073742311 debugwarnings@var114 ;
+105: settings0@var102 .@expr1073742312 platform (@expr1073742313 type@var113 ) ;
+106: Tokenizer tokenizer@var117 (@expr1073742314 &@expr1073742315 settings0@var102 , this@expr1073742316 ) ;
+107:
+108: std ::@expr1073742317 istringstream istr@var118 (@expr1073742318 code@var112 ) ;
+109: $assert_ $(@expr1073742319 file@var110 $, line@var111 $, $(@expr1073742320 tokenizer@var117 .@expr1073742321 tokenize (@expr1073742322 istr@var118 , "test.cpp" ) $) $) ;
+110:
+111: return tokenizer@var117 .@expr1073742323 tokens (@expr1073742324 ) .@expr1073742325 stringifyList (@expr1073742326 nullptr ) ;
+112: }
+113:
+114: void simplifyUsing1 ( ) {
+115: const char code@var119 [@expr1073742327 145 ] =@expr1073742328 "class A\n{\npublic:\n using duplicate = wchar_t;\n void foo() {}\n};\nusing duplicate = A;\nint main()\n{\n duplicate a;\n a.foo();\n A::duplicate c = 0;\n}"
+116:
+|
+126:
+127: ;
+128:
+129: const char expected@var120 [@expr1073742329 96 ] =@expr1073742330
+130: "class A { public: void foo ( ) { } } ; int main ( ) { A a ; a . foo ( ) ; wchar_t c ; c = 0 ; }"
+131:
+|
+140:
+141: ;
+142: $if $(@expr1073742331 $!@expr1073742332 $assertEquals $(@expr1073742333 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 142 $, expected@var120 $, $tok_ $(@expr1073742334 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 142 $, code@var119 $) $) $) { $return ; }
+143: }
+144:
+145: void simplifyUsing2 ( ) {
+146: const char code@var121 [@expr1073742335 119 ] =@expr1073742336 "class A;\nusing duplicate = A;\nclass A\n{\npublic:\nusing duplicate = wchar_t;\nduplicate foo() { wchar_t b; return b; }\n};"
+147:
+|
+152:
+153: ;
+154:
+155: const char expected@var122 [@expr1073742337 75 ] =@expr1073742338
+156: "class A ; class A { public: wchar_t foo ( ) { wchar_t b ; return b ; } } ;"
+157:
+|
+161:
+162: ;
+163: $if $(@expr1073742339 $!@expr1073742340 $assertEquals $(@expr1073742341 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 163 $, expected@var122 $, $tok_ $(@expr1073742342 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 163 $, code@var121 $) $) $) { $return ; }
+164: }
+165:
+166: void simplifyUsing3 ( ) {
+167: const char code@var123 [@expr1073742343 129 ] =@expr1073742344 "class A {};\nusing duplicate = A;\nwchar_t foo()\n{\nusing duplicate = wchar_t;\nduplicate b;\nreturn b;\n}\nint main()\n{\nduplicate b;\n}"
+168:
+|
+177:
+178: ;
+179:
+180: const char expected@var124 [@expr1073742345 80 ] =@expr1073742346
+181: "class A { } ; wchar_t foo ( ) { wchar_t b ; return b ; } int main ( ) { A b ; }"
+182:
+|
+190:
+191: ;
+192: $if $(@expr1073742347 $!@expr1073742348 $assertEquals $(@expr1073742349 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 192 $, expected@var124 $, $tok_ $(@expr1073742350 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 192 $, code@var123 $) $) $) { $return ; }
+193: }
+194:
+195: void simplifyUsing4 ( ) {
+196: const char code@var125 [@expr1073742351 117 ] =@expr1073742352 "using s32 = int;\nusing u32 = unsigned int;\nvoid f()\n{\n    s32 ivar = -2;\n    u32 uvar = 2;\n    return uvar / ivar;\n}"
+197:
+|
+202:
+203: ;
+204:
+205: const char expected@var126 [@expr1073742353 90 ] =@expr1073742354
+206: "void f ( ) { int ivar ; ivar = -2 ; unsigned int uvar ; uvar = 2 ; return uvar / ivar ; }"
+207:
+|
+210:
+211: ;
+212: $if $(@expr1073742355 $!@expr1073742356 $assertEquals $(@expr1073742357 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 212 $, expected@var126 $, $tok_ $(@expr1073742358 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 212 $, code@var125 $) $) $) { $return ; }
+213: }
+214:
+215: void simplifyUsing5 ( ) {
+216: const char code@var127 [@expr1073742359 90 ] =@expr1073742360
+217: "using YY_BUFFER_STATE = struct yy_buffer_state *;\nvoid f()\n{\n    YY_BUFFER_STATE state;\n}"
+218:
+219:
+220:
+221: ;
+222:
+223: const char expected@var128 [@expr1073742361 48 ] =@expr1073742362
+224: "void f ( ) { struct yy_buffer_state * state ; }"
+225:
+226:
+227: ;
+228:
+229: $if $(@expr1073742363 $!@expr1073742364 $assertEquals $(@expr1073742365 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 229 $, expected@var128 $, $tok_ $(@expr1073742366 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 229 $, code@var127 $) $) $) { $return ; }
+230: }
+231:
+232: void simplifyUsing6 ( ) {
+233: const char code@var129 [@expr1073742367 110 ] =@expr1073742368
+234: "namespace VL {\n    using float_t = float;\n    inline VL::float_t fast_atan2(VL::float_t y, VL::float_t x){}\n}"
+235:
+236:
+237: ;
+238:
+239: const char expected@var130 [@expr1073742369 60 ] =@expr1073742370
+240: "namespace VL { float fast_atan2 ( float y , float x ) { } }"
+241:
+242:
+243: ;
+244:
+245: $if $(@expr1073742371 $!@expr1073742372 $assertEquals $(@expr1073742373 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 245 $, expected@var130 $, $tok_ $(@expr1073742374 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 245 $, code@var129 $) $) $) { $return ; }
+246: }
+247:
+248: void simplifyUsing7 ( ) {
+249: const char code@var131 [@expr1073742375 33 ] =@expr1073742376 "using abc = int; Fred :: abc f ;"
+250: ;
+251: const char expected@var132 [@expr1073742377 16 ] =@expr1073742378 "Fred :: abc f ;" ;
+252: $if $(@expr1073742379 $!@expr1073742380 $assertEquals $(@expr1073742381 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 252 $, expected@var132 $, $tok_ $(@expr1073742382 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 252 $, code@var131 $) $) $) { $return ; }
+253: }
+254:
+255: void simplifyUsing8 ( ) {
+256: const char code@var133 [@expr1073742383 296 ] =@expr1073742384 "using INT = int;\nusing UINT = unsigned int;\nusing PINT = int *;\nusing PUINT = unsigned int *;\nusing RINT = int &;\nusing RUINT = unsigned int &;\nusing RCINT = const int &;\nusing RCUINT = const unsigned int &;\nINT ti;\nUINT tui;\nPINT tpi;\nPUINT tpui;\nRINT tri;\nRUINT trui;\nRCINT trci;\nRCUINT trcui;"
+257:
+|
+270:
+271: ;
+272:
+273: const char expected@var134 [@expr1073742385 144 ] =@expr1073742386
+274: "int ti ; unsigned int tui ; int * tpi ; unsigned int * tpui ; int & tri ; unsigned int & trui ; const int & trci ; const unsigned int & trcui ;"
+275:
+|
+280:
+281: ;
+282:
+283: $if $(@expr1073742387 $!@expr1073742388 $assertEquals $(@expr1073742389 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 283 $, expected@var134 $, $tok_ $(@expr1073742390 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 283 $, code@var133 $) $) $) { $return ; }
+284: }
+285:
+286: void simplifyUsing9 ( ) {
+287: const char code@var135 [@expr1073742391 197 ] =@expr1073742392 "using S = struct s;\nusing PS = S *;\nusing T = struct t { int a; };\nusing TP = T *;\nusing U = struct { int a; };\nusing V = U *;\nusing W = struct { int a; } *;\nS s;\nPS ps;\nT t;\nTP tp;\nU u;\nV v;\nW w;"
+288:
+|
+299:
+300: ;
+301:
+302: const char expected@var136 [@expr1073742393 184 ] =@expr1073742394
+303: "struct t { int a ; } ; struct U { int a ; } ; struct Unnamed0 { int a ; } ; struct s s ; struct s * ps ; struct t t ; struct t * tp ; struct U u ; struct U * v ; struct Unnamed0 * w ;"
+304:
+|
+311:
+312: ;
+313:
+314: $if $(@expr1073742395 $!@expr1073742396 $assertEquals $(@expr1073742397 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 314 $, expected@var136 $, $tok_ $(@expr1073742398 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 314 $, code@var135 $) $) $) { $return ; }
+315: }
+316:
+317: void simplifyUsing10 ( ) {
+318: const char code@var137 [@expr1073742399 221 ] =@expr1073742400 "using S = union s;\nusing PS = S *;\nusing T = union t { int a; float b ; };\nusing TP = T *;\nusing U = union { int a; float b; };\nusing V = U *;\nusing W = union { int a; float b; } *;\nS s;\nPS ps;\nT t;\nTP tp;\nU u;\nV v;\nW w;"
+319:
+|
+330:
+331: ;
+332:
+333: const char expected@var138 [@expr1073742401 204 ] =@expr1073742402
+334: "union t { int a ; float b ; } ; union U { int a ; float b ; } ; union Unnamed0 { int a ; float b ; } ; union s s ; union s * ps ; union t t ; union t * tp ; union U u ; union U * v ; union Unnamed0 * w ;"
+335:
+|
+342:
+343: ;
+344:
+345: $if $(@expr1073742403 $!@expr1073742404 $assertEquals $(@expr1073742405 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 345 $, expected@var138 $, $tok_ $(@expr1073742406 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 345 $, code@var137 $) $) $) { $return ; }
+346: }
+347:
+348: void simplifyUsing11 ( ) {
+349: const char code@var139 [@expr1073742407 108 ] =@expr1073742408 "using abc = enum { a = 0 , b = 1 , c = 2 };\nusing XYZ = enum xyz { x = 0 , y = 1 , z = 2 };\nabc e1;\nXYZ e2;"
+350:
+351:
+352: ;
+353:
+354: const char expected@var140 [@expr1073742409 102 ] =@expr1073742410 "enum abc { a = 0 , b = 1 , c = 2 } ; enum xyz { x = 0 , y = 1 , z = 2 } ; enum abc e1 ; enum xyz e2 ;"
+355:
+356:
+357: ;
+358:
+359: $if $(@expr1073742411 $!@expr1073742412 $assertEquals $(@expr1073742413 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 359 $, expected@var140 $, $tok_ $(@expr1073742414 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 359 $, code@var139 $) $) $) { $return ; }
+360: }
+361:
+362: void simplifyUsing12 ( ) {
+363: const char code@var141 [@expr1073742415 189 ] =@expr1073742416 "using V1 = vector<int>;\nusing V2 = std::vector<int>;\nusing V3 = std::vector<std::vector<int> >;\nusing IntListIterator = std::list<int>::iterator;\nV1 v1;\nV2 v2;\nV3 v3;\nIntListIterator iter;"
+364:
+|
+369:
+370: ;
+371:
+372: const char expected@var142 [@expr1073742417 131 ] =@expr1073742418 "vector < int > v1 ; std :: vector < int > v2 ; std :: vector < std :: vector < int > > v3 ; std :: list < int > :: iterator iter ;"
+373:
+374:
+375: ;
+376:
+377: $if $(@expr1073742419 $!@expr1073742420 $assertEquals $(@expr1073742421 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 377 $, expected@var142 $, $tok_ $(@expr1073742422 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 377 $, code@var141 $) $) $) { $return ; }
+378: }
+379:
+380: void simplifyUsing13 ( ) {
+381: const char code@var143 [@expr1073742423 112 ] =@expr1073742424 "using Func = std::pair<int(*)(void*), void*>;\nusing CallQueue = std::vector<Func>;\nint main() {\n CallQueue q;\n}"
+382:
+383:
+384:
+385: ;
+386:
+387: const char expected@var144 [@expr1073742425 85 ] =@expr1073742426 "int main ( ) { std :: vector < std :: pair < int ( * ) ( void * ) , void * > > q ; }"
+388:
+389: ;
+390:
+391: $if $(@expr1073742427 $!@expr1073742428 $assertEquals $(@expr1073742429 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 391 $, expected@var144 $, $tok_ $(@expr1073742430 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 391 $, code@var143 $) $) $) { $return ; }
+392: $if $(@expr1073742431 $!@expr1073742432 $assertEquals $(@expr1073742433 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 392 $, "" $, errout@var100 .@expr1073742434 str (@expr1073742435 ) $) $) { $return ; }
+393: }
+394:
+395: void simplifyUsing14 ( ) {
+396: const char code@var145 [@expr1073742436 224 ] =@expr1073742437 "template <typename F, unsigned int N> struct E{    using v = E<F,(N>0)?(N-1):0>;    using val = typename add<v,v>::val;    FP_M(val);};template <typename F> struct E <F,0>{    using nal = typename D<1>::val;    FP_M(val);};"
+397:
+|
+405:
+406: ;
+407:
+408: $do ${ $try ${ $tok_ $(@expr1073742438 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 408 $, code@var145 , Settings ::@expr1073742439 Native , false $) $; $} $catch $(@expr1073742440 $const InternalError $&@expr1073742441 $) ${ $} $catch $(@expr1073742442 $... $) ${ $assertThrow $(@expr1073742443 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 408 $) $; $} $} $while $(@expr1073742444 $false $) ;
+409:
+410: }
+411:
+412: void simplifyUsing15 ( ) {
+413: {
+414: const char code@var146 [@expr1073742445 34 ] =@expr1073742446 "using frame = char [10];\nframe f;"
+415: ;
+416:
+417: const char expected@var147 [@expr1073742447 16 ] =@expr1073742448 "char f [ 10 ] ;" ;
+418:
+419: $if $(@expr1073742449 $!@expr1073742450 $assertEquals $(@expr1073742451 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 419 $, expected@var147 $, $tok_ $(@expr1073742452 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 419 $, code@var146 $) $) $) { $return ; }
+420: }
+421:
+422: {
+423: const char code@var148 [@expr1073742453 43 ] =@expr1073742454 "using frame = unsigned char [10];\nframe f;"
+424: ;
+425:
+426: const char expected@var149 [@expr1073742455 25 ] =@expr1073742456 "unsigned char f [ 10 ] ;" ;
+427:
+428: $if $(@expr1073742457 $!@expr1073742458 $assertEquals $(@expr1073742459 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 428 $, expected@var149 $, $tok_ $(@expr1073742460 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 428 $, code@var148 $) $) $) { $return ; }
+429: }
+430: }
+431:
+432: void simplifyUsing16 ( ) {
+433: const char code@var150 [@expr1073742461 99 ] =@expr1073742462 "using MOT8 = char;\nusing CHFOO = MOT8 [4096];\nusing STRFOO = struct {\n   CHFOO freem;\n};\nSTRFOO s;"
+434:
+|
+437:
+438: ;
+439:
+440: const char expected@var151 [@expr1073742463 60 ] =@expr1073742464 "struct STRFOO { char freem [ 4096 ] ; } ; struct STRFOO s ;"
+441:
+442:
+443: ;
+444:
+445: $if $(@expr1073742465 $!@expr1073742466 $assertEquals $(@expr1073742467 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 445 $, expected@var151 $, $tok_ $(@expr1073742468 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 445 $, code@var150 $) $) $) { $return ; }
+446: $if $(@expr1073742469 $!@expr1073742470 $assertEquals $(@expr1073742471 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 446 $, "" $, errout@var100 .@expr1073742472 str (@expr1073742473 ) $) $) { $return ; }
+447: }
+448:
+449: void simplifyUsing17 ( ) {
+450: const char code@var152 [@expr1073742474 155 ] =@expr1073742475 "class C1 {};\nusing S1 = class S1 {};\nusing S2 = class S2 : public C1 {};\nusing S3 = class {};\nusing S4 = class : public C1 {};\nS1 s1;\nS2 s2;\nS3 s3;\nS4 s4;"
+451:
+|
+457:
+458: ;
+459:
+460: const char expected@var153 [@expr1073742476 155 ] =@expr1073742477 "class C1 { } ; class S1 { } ; class S2 : public C1 { } ; class S3 { } ; class S4 : public C1 { } ; class S1 s1 ; class S2 s2 ; class S3 s3 ; class S4 s4 ;"
+461:
+|
+467:
+468: ;
+469:
+470: $if $(@expr1073742478 $!@expr1073742479 $assertEquals $(@expr1073742480 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 470 $, expected@var153 $, $tok_ $(@expr1073742481 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 470 $, code@var152 $) $) $) { $return ; }
+471: }
+472:
+473: void simplifyUsing18 ( ) {
+474: const char code@var154 [@expr1073742482 34 ] =@expr1073742483 "{ { { using a = a; using a; } } }" ;
+475: $tok_ $(@expr1073742484 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 475 $, code@var154 $) ;
+476: }
+477:
+478: void simplifyUsing19 ( ) {
+479: const char code@var155 [@expr1073742485 105 ] =@expr1073742486 "namespace a {\nusing b = int;\nvoid foo::c() { }\nvoid foo::d() { }\nvoid foo::e() {\n   using b = float;\n}\n}"
+480:
+|
+485:
+486: ;
+487: $tok_ $(@expr1073742487 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 487 $, code@var155 $) ;
+488: }
+489:
+490: void simplifyUsing20 ( ) {
+491: const char code@var156 [@expr1073742488 1105 ] =@expr1073742489 "namespace a {\nnamespace b {\nnamespace c {\nnamespace d {\nnamespace e {\nnamespace f {\nnamespace g {\nusing Changeset = ::IAdaptionCallback::Changeset;\nusing EProperty = searches::EProperty;\nusing ChangesetValueType = Changeset::value_type;\nnamespace {\n   template <class T>\n   auto modify(std::shared_ptr<T>& p) -> boost::optional<decltype(p->modify())> {\n      return nullptr;\n   }\n   template <class T>\n   std::list<T> getValidElements() {\n      return nullptr;\n   }\n}\nstd::shared_ptr<ResourceConfiguration>\nfoo::getConfiguration() {\n   return nullptr;\n}\nvoid\nfoo::doRegister(const Input & Input) {\n   UNUSED( Input );\n}\nfoo::MicroServiceReturnValue\nfoo::post(SearchesPtr element, const Changeset& changeset)\n{\n   using EProperty = ab::ep;\n   static std::map<EProperty, std::pair<ElementPropertyHandler, CheckComponentState>> updateHandlers =\n   {\n      {EProperty::Needle, {&RSISearchesResource::updateNeedle,         &RSISearchesResource::isSearcherReady}},\n      {EProperty::SortBy, {&RSISearchesResource::updateResultsSorting, &RSISearchesResource::isSearcherReady}}\n   };\n   return nullptr;\n}\n}}}}}}}"
+492:
+|
+529:
+530: ;
+531: $tok_ $(@expr1073742490 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 531 $, code@var156 $) ;
+532: }
+533:
+534: void simplifyUsing21 ( ) {
+535: const char code@var157 [@expr1073742491 21 ] =@expr1073742492 "using a = b;\nenum {}"
+536: ;
+537: $tok_ $(@expr1073742493 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 537 $, code@var157 $) ;
+538: }
+539:
+540: void simplifyUsing22 ( ) {
+541: const char code@var158 [@expr1073742494 399 ] =@expr1073742495 "namespace aa { namespace bb { namespace cc { namespace dd { namespace ee {\nclass fff {\npublic:\n    using icmsp   = std::shared_ptr<aa::bb::ee::cm::api::icm>;\nprivate:\n    using Connection = boost::signals2::connection;\n    using ESdk = sdk::common::api::Sdk::ESdk;\n    using co = aa::bb::ee::com::api::com2;\n};\nfff::fff() : m_icm(icm) {\n    using ESdk = aa::bb::sdk::common::api::Sdk::ESdk;\n}\n}}}}}"
+542:
+|
+552:
+553: ;
+554: const char expected@var159 [@expr1073742496 153 ] =@expr1073742497 "namespace aa { namespace bb { namespace cc { namespace dd { namespace ee { class fff { public: private: } ; fff :: fff ( ) : m_icm ( icm ) { } } } } } }"
+555:
+|
+560:
+561: ;
+562: $if $(@expr1073742498 $!@expr1073742499 $assertEquals $(@expr1073742500 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 562 $, expected@var159 $, $tok_ $(@expr1073742501 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 562 $, code@var158 $) $) $) { $return ; }
+563: }
+564:
+565: void simplifyUsing23 ( ) {
+566: const char code@var160 [@expr1073742502 313 ] =@expr1073742503 "class cmcch {\npublic:\n   cmcch(icmsp const& icm, Rtnf&& rtnf = {});\nprivate:\n    using escs = aa::bb::cc::dd::ee;\nprivate:\n   icmsp m_icm;\n   mutable std::atomic<rt> m_rt;\n};\ncmcch::cmcch(cmcch::icmsp const& icm, Rtnf&& rtnf)\n   : m_icm(icm)\n   , m_rt{rt::UNKNOWN_} {\n  using escs = yy::zz::aa::bb::cc::dd::ee;\n}"
+567:
+|
+578:
+579: ;
+580: const char expected@var161 [@expr1073742504 252 ] =@expr1073742505 "class cmcch { public: cmcch ( const icmsp & icm , Rtnf && rtnf = { } ) ; private: private: icmsp m_icm ; mutable std :: atomic < rt > m_rt ; } ; cmcch :: cmcch ( const cmcch :: icmsp & icm , Rtnf && rtnf ) : m_icm ( icm ) , m_rt { rt :: UNKNOWN_ } { }"
+581:
+|
+590:
+591: ;
+592: $if $(@expr1073742506 $!@expr1073742507 $assertEquals $(@expr1073742508 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 592 $, expected@var161 $, $tok_ $(@expr1073742509 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 592 $, code@var160 $) $) $) { $return ; }
+593: }
+594:
+595: void simplifyUsing24 ( ) {
+596: const char code@var162 [@expr1073742510 58 ] =@expr1073742511 "using value_type = const ValueFlow::Value;\nvalue_type vt;"
+597: ;
+598: const char expected@var163 [@expr1073742512 30 ] =@expr1073742513 "const ValueFlow :: Value vt ;" ;
+599: $if $(@expr1073742514 $!@expr1073742515 $assertEquals $(@expr1073742516 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 599 $, expected@var163 $, $tok_ $(@expr1073742517 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 599 $, code@var162 $) $) $) { $return ; }
+600: }
+601:
+602: void simplifyUsing25 ( ) {
+603: const char code@var164 [@expr1073742518 147 ] =@expr1073742519 "struct UnusualType {\n  using T = vtkm::Id;\n  T X;\n};\nnamespace vtkm {\ntemplate <>\nstruct VecTraits<UnusualType> : VecTraits<UnusualType::T> { };\n}"
+604:
+|
+609:
+610: ;
+611: const char expected@var165 [@expr1073742520 122 ] =@expr1073742521 "struct UnusualType { vtkm :: Id X ; } ; namespace vtkm { struct VecTraits<UnusualType> : VecTraits < vtkm :: Id > { } ; }"
+612:
+|
+615:
+616: ;
+617: $if $(@expr1073742522 $!@expr1073742523 $assertEquals $(@expr1073742524 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 617 $, expected@var165 $, $tok_ $(@expr1073742525 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 617 $, code@var164 $) $) $) { $return ; }
+618: }
+619:
+620: void simplifyUsing8970 ( ) {
+621: const char code@var166 [@expr1073742526 51 ] =@expr1073742527 "using V = std::vector<int>;\nstruct A {\n    V p;\n};"
+622:
+623:
+624: ;
+625:
+626: const char expected@var167 [@expr1073742528 41 ] =@expr1073742529 "struct A { std :: vector < int > p ; } ;"
+627:
+628: ;
+629:
+630: $if $(@expr1073742530 $!@expr1073742531 $assertEquals $(@expr1073742532 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 630 $, expected@var167 $, $tok_ $(@expr1073742533 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 630 $, code@var166 $) $) $) { $return ; }
+631: }
+632:
+633: void simplifyUsing8971 ( ) {
+634: const char code@var168 [@expr1073742534 130 ] =@expr1073742535 "class A {\npublic:\n    using V = std::vector<double>;\n};\nusing V = std::vector<int>;\nclass I {\nprivate:\n    A::V v_;\n    V v2_;\n};"
+635:
+|
+642:
+643: ;
+644:
+645: const char expected@var169 [@expr1073742536 103 ] =@expr1073742537 "class A { public: } ; class I { private: std :: vector < double > v_ ; std :: vector < int > v2_ ; } ;"
+646:
+|
+651:
+652: ;
+653:
+654: $if $(@expr1073742538 $!@expr1073742539 $assertEquals $(@expr1073742540 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 654 $, expected@var169 $, $tok_ $(@expr1073742541 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 654 $, code@var168 $) $) $) { $return ; }
+655: }
+656:
+657: void simplifyUsing8976 ( ) {
+658: const char code@var170 [@expr1073742542 30 ] =@expr1073742543 "using mystring = std::string;" ;
+659:
+660: const char exp@var171 [@expr1073742544 2 ] =@expr1073742545 ";" ;
+661:
+662: $if $(@expr1073742546 $!@expr1073742547 $assertEquals $(@expr1073742548 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 662 $, exp@var171 $, $tok_ $(@expr1073742549 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 662 $, code@var170 $) $) $) { $return ; }
+663: }
+664:
+665: void simplifyUsing9040 ( ) {
+666: const char code@var172 [@expr1073742555 30 ] =@expr1073742556 "using BOOL = unsigned; int i;" ;
+667:
+668: const char exp@var173 [@expr1073742557 8 ] =@expr1073742558 "int i ;" ;
+669:
+670: $if $(@expr1073742559 $!@expr1073742560 $assertEquals $(@expr1073742561 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 670 $, exp@var173 $, $tok_ $(@expr1073742562 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 670 $, code@var172 , Settings ::@expr1073742563 Unix32@expr1073742550 $) $) $) { $return ; }
+671: $if $(@expr1073742564 $!@expr1073742565 $assertEquals $(@expr1073742566 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 671 $, exp@var173 $, $tok_ $(@expr1073742567 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 671 $, code@var172 , Settings ::@expr1073742568 Unix64@expr1073742551 $) $) $) { $return ; }
+672: $if $(@expr1073742569 $!@expr1073742570 $assertEquals $(@expr1073742571 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 672 $, exp@var173 $, $tok_ $(@expr1073742572 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 672 $, code@var172 , Settings ::@expr1073742573 Win32A@expr1073742552 $) $) $) { $return ; }
+673: $if $(@expr1073742574 $!@expr1073742575 $assertEquals $(@expr1073742576 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 673 $, exp@var173 $, $tok_ $(@expr1073742577 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 673 $, code@var172 , Settings ::@expr1073742578 Win32W@expr1073742553 $) $) $) { $return ; }
+674: $if $(@expr1073742579 $!@expr1073742580 $assertEquals $(@expr1073742581 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 674 $, exp@var173 $, $tok_ $(@expr1073742582 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 674 $, code@var172 , Settings ::@expr1073742583 Win64@expr1073742554 $) $) $) { $return ; }
+675: }
+676:
+677: void simplifyUsing9042 ( ) {
+678: const char code@var174 [@expr1073742585 114 ] =@expr1073742586 "template <class T>\nclass c {\n    int i = 0;\n    c() { i--; }\n};\ntemplate <class T>\nclass s {};\nusing BOOL = char;"
+679:
+|
+684:
+685: ;
+686:
+687: const char exp@var175 [@expr1073742587 103 ] =@expr1073742588 "template < class T > class c { int i ; i = 0 ; c ( ) { i -- ; } } ; template < class T > class s { } ;"
+688:
+|
+691:
+692: ;
+693:
+694: $if $(@expr1073742589 $!@expr1073742590 $assertEquals $(@expr1073742591 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 694 $, exp@var175 $, $tok_ $(@expr1073742592 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 694 $, code@var174 , Settings ::@expr1073742593 Win64@expr1073742584 $) $) $) { $return ; }
+695: }
+696:
+697: void simplifyUsing9191 ( ) {
+698: const char code@var176 [@expr1073742594 182 ] =@expr1073742595 "namespace NS1 {\n  namespace NS2 {\n    using _LONG = signed long long;\n  }\n}\nvoid f1() {\n  using namespace NS1;\n  NS2::_LONG A;\n}\nvoid f2() {\n  using namespace NS1::NS2;\n  _LONG A;\n}"
+699:
+|
+709:
+710: ;
+711:
+712: const char exp@var177 [@expr1073742596 125 ] =@expr1073742597 "void f1 ( ) { using namespace NS1 ; signed long long A ; } void f2 ( ) { using namespace NS1 :: NS2 ; signed long long A ; }"
+713:
+|
+718:
+719: ;
+720:
+721: $if $(@expr1073742598 $!@expr1073742599 $assertEquals $(@expr1073742600 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 721 $, exp@var177 $, $tok_ $(@expr1073742601 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 721 $, code@var176 $) $) $) { $return ; }
+722: }
+723:
+724: void simplifyUsing9381 ( ) {
+725: const char code@var178 [@expr1073742602 199 ] =@expr1073742603 "namespace ns {\n    class Result;\n    using UniqueResultPtr = std::unique_ptr<Result>;\n    class A {\n    public:\n        void func(UniqueResultPtr);\n    };\n    void A::func(UniqueResultPtr) {\n    }\n}"
+726:
+|
+733:
+734: ;
+735: const char exp@var179 [@expr1073742604 151 ] =@expr1073742605 "namespace ns { class Result ; class A { public: void func ( std :: unique_ptr < Result > ) ; } ; void A :: func ( std :: unique_ptr < Result > ) { } }"
+736:
+|
+742:
+743: ;
+744:
+745: $if $(@expr1073742606 $!@expr1073742607 $assertEquals $(@expr1073742608 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 745 $, exp@var179 $, $tok_ $(@expr1073742609 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 745 $, code@var178 $) $) $) { $return ; }
+746: }
+747:
+748: void simplifyUsing9385 ( ) {
+749: {
+750: const char code@var180 [@expr1073742610 149 ] =@expr1073742611 "class A {\npublic:\n    using Foo = int;\n    A(Foo foo);\n    ~A();\n    void func(Foo foo);\n};\nA::A(Foo) { }\nA::~A() { Foo foo; }\nvoid A::func(Foo) { }"
+751:
+|
+758:
+759: ;
+760: const char exp@var181 [@expr1073742612 145 ] =@expr1073742613 "class A { public: A ( int foo ) ; ~ A ( ) ; void func ( int foo ) ; } ; A :: A ( int ) { } A :: ~ A ( ) { int foo ; } void A :: func ( int ) { }"
+761:
+|
+767:
+768: ;
+769: $if $(@expr1073742614 $!@expr1073742615 $assertEquals $(@expr1073742616 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 769 $, exp@var181 $, $tok_ $(@expr1073742617 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 769 $, code@var180 $) $) $) { $return ; }
+770: }
+771: {
+772: const char code@var182 [@expr1073742618 196 ] =@expr1073742619 "class A {\npublic:\n    struct B {\n        using Foo = int;\n        B(Foo foo);\n        ~B();\n        void func(Foo foo);\n    };\n};\nA::B::B(Foo) { }\nA::B::~B() { Foo foo; }\nvoid A::B::func(Foo) { }"
+773:
+|
+782:
+783: ;
+784: const char exp@var183 [@expr1073742620 175 ] =@expr1073742621 "class A { public: struct B { B ( int foo ) ; ~ B ( ) ; void func ( int foo ) ; } ; } ; A :: B :: B ( int ) { } A :: B :: ~ B ( ) { int foo ; } void A :: B :: func ( int ) { }"
+785:
+|
+793:
+794: ;
+795: $if $(@expr1073742622 $!@expr1073742623 $assertEquals $(@expr1073742624 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 795 $, exp@var183 $, $tok_ $(@expr1073742625 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 795 $, code@var182 $) $) $) { $return ; }
+796: }
+797: }
+798:
+799: void simplifyUsing9388 ( ) {
+800: const char code@var184 [@expr1073742626 97 ] =@expr1073742627 "class A {\npublic:\n    using Type = int;\n    A(Type&);\n    Type& t_;\n};\nA::A(Type& t) : t_(t) { }"
+801:
+|
+805:
+806: ;
+807: const char exp@var185 [@expr1073742628 81 ] =@expr1073742629 "class A { public: A ( int & ) ; int & t_ ; } ; A :: A ( int & t ) : t_ ( t ) { }"
+808:
+|
+811:
+812: ;
+813: $if $(@expr1073742630 $!@expr1073742631 $assertEquals $(@expr1073742632 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 813 $, exp@var185 $, $tok_ $(@expr1073742633 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 813 $, code@var184 $) $) $) { $return ; }
+814: }
+815:
+816: void simplifyUsing9518 ( ) {
+817: const char code@var186 [@expr1073742634 35 ] =@expr1073742635 "namespace a {\nusing a = enum {};\n}"
+818:
+819: ;
+820: const char exp@var187 [@expr1073742636 29 ] =@expr1073742637 "namespace a { enum a { } ; }"
+821:
+822: ;
+823: $if $(@expr1073742638 $!@expr1073742639 $assertEquals $(@expr1073742640 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 823 $, exp@var187 $, $tok_ $(@expr1073742641 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 823 $, code@var186 $) $) $) { $return ; }
+824: }
+825:
+826: void simplifyUsing9757 ( ) {
+827: const char code@var188 [@expr1073742642 209 ] =@expr1073742643 "enum class Type_t { Nil = 0 };\ntemplate<Type_t type> class MappedType { };\ntemplate<> class MappedType<Type_t::Nil> { using type = void; };\nstd::string to_string (Example::Type_t type) {\n   switch (type) {}\n}"
+828:
+|
+831:
+832: ;
+833: const char exp@var189 [@expr1073742644 223 ] =@expr1073742645 "enum class Type_t { Nil = 0 } ; class MappedType<Type_t::Nil> ; template < Type_t type > class MappedType { } ; class MappedType<Type_t::Nil> { } ; std :: string to_string ( Example :: Type_t type ) { switch ( type ) { } }"
+834:
+|
+837:
+838: ;
+839: $if $(@expr1073742646 $!@expr1073742647 $assertEquals $(@expr1073742648 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 839 $, exp@var189 $, $tok_ $(@expr1073742649 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 839 $, code@var188 $) $) $) { $return ; }
+840: }
+841:
+842: void simplifyUsing10008 ( ) {
+843: const char code@var190 [@expr1073742650 122 ] =@expr1073742651 "namespace ns {\n    using ArrayType = std::vector<int>;\n}\nusing namespace ns;\nstatic void f() {\n    const ArrayType arr;\n}"
+844:
+|
+848:
+849: ;
+850: const char exp@var191 [@expr1073742652 77 ] =@expr1073742653 "using namespace ns ; static void f ( ) { const std :: vector < int > arr ; }"
+851:
+852:
+853: ;
+854: $if $(@expr1073742654 $!@expr1073742655 $assertEquals $(@expr1073742656 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 854 $, exp@var191 $, $tok_ $(@expr1073742657 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 854 $, code@var190 $) $) $) { $return ; }
+855: }
+856:
+857: void simplifyUsing10054 ( ) {
+858: {
+859:
+860: const char code@var192 [@expr1073742658 282 ] =@expr1073742659 "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nusing namespace external::ns1;\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+861:
+|
+873:
+874: ;
+875: const char exp@var193 [@expr1073742660 256 ] =@expr1073742661 "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } using namespace external :: ns1 ; namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+876:
+|
+888:
+889: ;
+890: $if $(@expr1073742662 $!@expr1073742663 $assertEquals $(@expr1073742664 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 890 $, exp@var193 $, $tok_ $(@expr1073742665 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 890 $, code@var192 $) $) $) { $return ; }
+891: $if $(@expr1073742666 $!@expr1073742667 $assertEquals $(@expr1073742668 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 891 $, "" $, errout@var100 .@expr845 str (@expr846 ) $) $) { $return ; }
+892: }
+893: {
+894:
+895: const char code@var194 [@expr1073742671 251 ] =@expr1073742672 "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+896:
+|
+907:
+908: ;
+909: const char exp@var195 [@expr1073742673 222 ] =@expr1073742674 "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+910:
+|
+921:
+922: ;
+923: $if $(@expr1073742675 $!@expr1073742676 $assertEquals $(@expr1073742677 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 923 $, exp@var195 $, $tok_ $(@expr1073742678 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 923 $, code@var194 $) $) $) { $return ; }
+924: $if $(@expr1073742679 $!@expr1073742680 $assertEquals $(@expr1073742681 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 924 $, "" $, errout@var100 .@expr845 str (@expr846 ) $) $) { $return ; }
+925: }
+926: {
+927:
+928: const char code@var196 [@expr1073742684 267 ] =@expr1073742685 "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nusing namespace external::ns1;\nnamespace ns {\n    void A::f(V) {}\n}"
+929:
+|
+941:
+942: ;
+943: const char exp@var197 [@expr1073742686 256 ] =@expr1073742687 "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } using namespace external :: ns1 ; namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+944:
+|
+956:
+957: ;
+958: $if $(@expr1073742688 $!@expr1073742689 $assertEquals $(@expr1073742690 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 958 $, exp@var197 $, $tok_ $(@expr1073742691 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 958 $, code@var196 $) $) $) { $return ; }
+959: $if $(@expr1073742692 $!@expr1073742693 $assertEquals $(@expr1073742694 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 959 $, "" $, errout@var100 .@expr845 str (@expr846 ) $) $) { $return ; }
+960: }
+961: {
+962:
+963: const char code@var198 [@expr1073742697 252 ] =@expr1073742698 "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nusing namespace external::ns1;\nnamespace ns {\n    struct A {\n        void f(V);\n    };\n}\nnamespace ns {\n    void A::f(V) {}\n}"
+964:
+|
+976:
+977: ;
+978: const char exp@var199 [@expr1073742699 256 ] =@expr1073742700 "namespace external { namespace ns1 { struct B<1> ; } } using namespace external :: ns1 ; namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+979:
+|
+991:
+992: ;
+993: $if $(@expr1073742701 $!@expr1073742702 $assertEquals $(@expr1073742703 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 993 $, exp@var199 $, $tok_ $(@expr1073742704 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 993 $, code@var198 $) $) $) { $return ; }
+994: $if $(@expr1073742705 $!@expr1073742706 $assertEquals $(@expr1073742707 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 994 $, "" $, errout@var100 .@expr845 str (@expr846 ) $) $) { $return ; }
+995: }
+996: {
+997: const char code@var200 [@expr1073742710 247 ] =@expr1073742711 "namespace external {\n    template <int size> struct B { };\n    namespace ns1 {\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+998:
+|
+1009:
+1010: ;
+1011: const char exp@var201 [@expr1073742712 183 ] =@expr1073742713 "namespace external { struct B<1> ; } namespace ns { struct A { void f ( external :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: B<1> ) { } } struct external :: B<1> { } ;"
+1012:
+|
+1021:
+1022: ;
+1023: $if $(@expr1073742714 $!@expr1073742715 $assertEquals $(@expr1073742716 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1023 $, exp@var201 $, $tok_ $(@expr1073742717 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1023 $, code@var200 $) $) $) { $return ; }
+1024: $if $(@expr1073742718 $!@expr1073742719 $assertEquals $(@expr1073742720 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1024 $, "" $, errout@var100 .@expr845 str (@expr846 ) $) $) { $return ; }
+1025: }
+1026: {
+1027: const char code@var202 [@expr1073742723 243 ] =@expr1073742724 "template <int size> struct B { };\nnamespace external {\n    namespace ns1 {\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+1028:
+|
+1039:
+1040: ;
+1041: const char exp@var203 [@expr1073742725 124 ] =@expr1073742726 "struct B<1> ; namespace ns { struct A { void f ( B<1> ) ; } ; } namespace ns { void A :: f ( B<1> ) { } } struct B<1> { } ;"
+1042:
+|
+1049:
+1050: ;
+1051: $if $(@expr1073742727 $!@expr1073742728 $assertEquals $(@expr1073742729 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1051 $, exp@var203 $, $tok_ $(@expr1073742730 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1051 $, code@var202 $) $) $) { $return ; }
+1052: $if $(@expr1073742731 $!@expr1073742732 $assertEquals $(@expr1073742733 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1052 $, "" $, errout@var100 .@expr845 str (@expr846 ) $) $) { $return ; }
+1053: }
+1054: }
+1055:
+1056: void simplifyUsing10136 ( ) {
+1057: {
+1058: const char code@var204 [@expr1073742736 215 ] =@expr1073742737 "class B {\npublic:\n    using V = std::vector<char>;\n    virtual void f(const V&) const = 0;\n};\nclass A final : public B {\npublic:\n    void f(const V&) const override;\n};\nvoid A::f(const std::vector<char>&) const { }"
+1059:
+|
+1066:
+1067: ;
+1068: const char exp@var205 [@expr1073742738 233 ] =@expr1073742739 "class B { public: virtual void f ( const std :: vector < char > & ) const = 0 ; } ; class A : public B { public: void f ( const std :: vector < char > & ) const override ; } ; void A :: f ( const std :: vector < char > & ) const { }"
+1069:
+|
+1075:
+1076: ;
+1077: $if $(@expr1073742740 $!@expr1073742741 $assertEquals $(@expr1073742742 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1077 $, exp@var205 $, $tok_ $(@expr1073742743 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1077 $, code@var204 $) $) $) { $return ; }
+1078: $if $(@expr1073742744 $!@expr1073742745 $assertEquals $(@expr1073742746 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1078 $, "" $, errout@var100 .@expr923 str (@expr924 ) $) $) { $return ; }
+1079: }
+1080: {
+1081: const char code@var206 [@expr1073742749 528 ] =@expr1073742750 "namespace NS1 {\n    class B {\n    public:\n        using V = std::vector<char>;\n        virtual void f(const V&) const = 0;\n    };\n}\nnamespace NS2 {\n    class A : public NS1::B {\n    public:\n        void f(const V&) const override;\n    };\n    namespace NS3 {\n        class C : public A {\n        public:\n            void f(const V&) const override;\n        };\n        void C::f(const V&) const { }\n    }\n    void A::f(const V&) const { }\n}\nvoid foo() {\n    NS2::A a;\n    NS2::NS3::C c;\n    NS1::B::V v;\n    a.f(v);\n    c.f(v);\n}"
+1082:
+|
+1107:
+1108: ;
+1109: const char exp@var207 [@expr1073742751 548 ] =@expr1073742752 "namespace NS1 { class B { public: virtual void f ( const std :: vector < char > & ) const = 0 ; } ; } namespace NS2 { class A : public NS1 :: B { public: void f ( const std :: vector < char > & ) const override ; } ; namespace NS3 { class C : public A { public: void f ( const std :: vector < char > & ) const override ; } ; void C :: f ( const std :: vector < char > & ) const { } } void A :: f ( const std :: vector < char > & ) const { } } void foo ( ) { NS2 :: A a ; NS2 :: NS3 :: C c ; std :: vector < char > v ; a . f ( v ) ; c . f ( v ) ; }"
+1110:
+|
+1134:
+1135: ;
+1136: $if $(@expr1073742753 $!@expr1073742754 $assertEquals $(@expr1073742755 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1136 $, exp@var207 $, $tok_ $(@expr1073742756 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1136 $, code@var206 $) $) $) { $return ; }
+1137: $if $(@expr1073742757 $!@expr1073742758 $assertEquals $(@expr1073742759 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1137 $, "" $, errout@var100 .@expr923 str (@expr924 ) $) $) { $return ; }
+1138: }
+1139: {
+1140: const char code@var208 [@expr1073742762 563 ] =@expr1073742763 "foo::ResultCodes_e\nGemImpl::setR(const ::foo::s _ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   using MLSource = foo::s::Literal;\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   M3_LOG_INFO(\"foo(\" << static_cast<int>(_ipSource) << \")\");\n   return ret;\n}\nfoo::ResultCodes_e\nGemImpl::getF(::foo::s &_ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   return ret;\n}\nfoo::ResultCodes_e\nGemImpl::setF(const ::foo::s _ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   using MLSource = foo::s::Literal;\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   return ret;\n}"
+1141:
+|
+1162:
+1163: ;
+1164: $tok_ $(@expr1073742764 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1164 $, code@var208 $) ;
+1165: }
+1166: }
+1167:
+1168: void simplifyUsing10171 ( ) {
+1169: const char code@var209 [@expr1073742765 301 ] =@expr1073742766 "namespace ns {\n    class A {\n    public:\n        using V = std::vector<unsigned char>;\n        virtual void f(const V&) const = 0;\n    };\n    class B : public A {\n    public:\n        void f(const V&) const override;\n    };\n}\nnamespace ns {\n    void B::f(const std::vector<unsigned char>&) const { }\n}"
+1170:
+|
+1181:
+1182: ;
+1183: const char exp@var210 [@expr1073742767 294 ] =@expr1073742768 "namespace ns { class A { public: virtual void f ( const std :: vector < unsigned char > & ) const = 0 ; } ; class B : public A { public: void f ( const std :: vector < unsigned char > & ) const override ; } ; } namespace ns { void B :: f ( const std :: vector < unsigned char > & ) const { } }"
+1184:
+|
+1194:
+1195: ;
+1196: $if $(@expr1073742769 $!@expr1073742770 $assertEquals $(@expr1073742771 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1196 $, exp@var210 $, $tok_ $(@expr1073742772 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1196 $, code@var209 $) $) $) { $return ; }
+1197: $if $(@expr1073742773 $!@expr1073742774 $assertEquals $(@expr1073742775 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1197 $, "" $, errout@var100 .@expr1073742776 str (@expr1073742777 ) $) $) { $return ; }
+1198: }
+1199:
+1200: void simplifyUsing10172 ( ) {
+1201: {
+1202: const char code@var211 [@expr1073742778 180 ] =@expr1073742779 "namespace ns {\n    class A {\n    public:\n        using h = std::function<void()>;\n    };\n    class B : public A {\n        void f(h);\n    };\n}\nnamespace ns {\n    void B::f(h) { }\n}"
+1203:
+|
+1212:
+1213: ;
+1214: const char exp@var212 [@expr1073742780 172 ] =@expr1073742781 "namespace ns { class A { public: } ; class B : public A { void f ( std :: function < void ( ) > ) ; } ; } namespace ns { void B :: f ( std :: function < void ( ) > ) { } }"
+1215:
+|
+1223:
+1224: ;
+1225: $if $(@expr1073742782 $!@expr1073742783 $assertEquals $(@expr1073742784 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1225 $, exp@var212 $, $tok_ $(@expr1073742785 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1225 $, code@var211 $) $) $) { $return ; }
+1226: $if $(@expr1073742786 $!@expr1073742787 $assertEquals $(@expr1073742788 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1226 $, "" $, errout@var100 .@expr965 str (@expr966 ) $) $) { $return ; }
+1227: }
+1228: {
+1229: const char code@var213 [@expr1073742791 190 ] =@expr1073742792 "namespace ns {\nnamespace external {\nclass A {\npublic: \n  using h = std::function<void()>;\n};\nclass B : public A {\n  void f(h);\n};\n}\n}\nnamespace ns {\nnamespace external {\nvoid B::f(h) {}\n}\n}"
+1230:
+|
+1243:
+1244: ;
+1245: const char exp@var214 [@expr1073742793 218 ] =@expr1073742794 "namespace ns { namespace external { class A { public: } ; class B : public A { void f ( std :: function < void ( ) > ) ; } ; } } namespace ns { namespace external { void B :: f ( std :: function < void ( ) > ) { } } }"
+1246:
+|
+1258:
+1259: ;
+1260: $if $(@expr1073742795 $!@expr1073742796 $assertEquals $(@expr1073742797 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1260 $, exp@var214 $, $tok_ $(@expr1073742798 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1260 $, code@var213 $) $) $) { $return ; }
+1261: $if $(@expr1073742799 $!@expr1073742800 $assertEquals $(@expr1073742801 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1261 $, "" $, errout@var100 .@expr965 str (@expr966 ) $) $) { $return ; }
+1262: }
+1263: }
+1264:
+1265: void simplifyUsing10173 ( ) {
+1266: {
+1267: const char code@var215 [@expr1073742804 156 ] =@expr1073742805 "std::ostream & operator<<(std::ostream &s, const Pr<st> p) {\n    return s;\n}\nvoid foo() {\n    using Pr = d::Pr<st>;\n    Pr p;\n}\nvoid bar() {\n   Pr<st> p;\n}"
+1268:
+|
+1275:
+1276: ;
+1277: const char exp@var216 [@expr1073742806 153 ] =@expr1073742807 "std :: ostream & operator<< ( std :: ostream & s , const Pr < st > p ) { return s ; } void foo ( ) { d :: Pr < st > p ; } void bar ( ) { Pr < st > p ; }"
+1278:
+|
+1284:
+1285: ;
+1286: $if $(@expr1073742808 $!@expr1073742809 $assertEquals $(@expr1073742810 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1286 $, exp@var216 $, $tok_ $(@expr1073742811 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1286 $, code@var215 $) $) $) { $return ; }
+1287: $if $(@expr1073742812 $!@expr1073742813 $assertEquals $(@expr1073742814 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1287 $, "" $, errout@var100 .@expr1073742815 str (@expr1073742816 ) $) $) { $return ; }
+1288: }
+1289: {
+1290: const char code@var217 [@expr1073742817 149 ] =@expr1073742818 "namespace defsa {\nvoid xxx::foo() {\n   using NS1 = v1::l;\n}\nvoid xxx::bar() {\n   using NS1 = v1::l;\n}\nvoid xxx::foobar() {\n   using NS1 = v1::l;\n}\n}"
+1291:
+|
+1299:
+1300: ;
+1301: const char exp@var218 [@expr1073742819 95 ] =@expr1073742820 "namespace defsa { void xxx :: foo ( ) { } void xxx :: bar ( ) { } void xxx :: foobar ( ) { } }"
+1302:
+|
+1307:
+1308: ;
+1309: $if $(@expr1073742821 $!@expr1073742822 $assertEquals $(@expr1073742823 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1309 $, exp@var218 $, $tok_ $(@expr1073742824 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1309 $, code@var217 $) $) $) { $return ; }
+1310: }
+1311: }
+1312:
+1313: void simplifyUsing10335 ( ) {
+1314: const char code@var219 [@expr1073742825 56 ] =@expr1073742826 "using uint8_t = unsigned char;\nenum E : uint8_t { E0 };"
+1315: ;
+1316: const char exp@var220 [@expr1073742827 32 ] =@expr1073742828 "enum E : unsigned char { E0 } ;" ;
+1317: $if $(@expr1073742829 $!@expr1073742830 $assertEquals $(@expr1073742831 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1317 $, exp@var220 $, $tok_ $(@expr1073742832 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1317 $, code@var219 $) $) $) { $return ; }
+1318: }
+1319:
+1320: void scopeInfo1 ( ) {
+1321: const char code@var221 [@expr1073742833 150 ] =@expr1073742834 "struct A {\n    enum class Mode { UNKNOWN, ENABLED, NONE, };\n};\n\nnamespace spdlog { class logger; }\nusing LoggerPtr = std::shared_ptr<spdlog::logger>;"
+1322:
+|
+1325:
+1326: ;
+1327: $tok_ $(@expr1073742835 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1327 $, code@var221 $) ;
+1328: $if $(@expr1073742836 $!@expr1073742837 $assertEquals $(@expr1073742838 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1328 $, "" $, errout@var100 .@expr1073742839 str (@expr1073742840 ) $) $) { $return ; }
+1329: }
+1330:
+1331: void scopeInfo2 ( ) {
+1332: const char code@var222 [@expr1073742841 138 ] =@expr1073742842 "struct A {\n    using Map = std::map<int, int>;\n    Map values;\n};\n\nstatic void getInitialProgramState(const A::Map& vars = A::Map {})\n{}\n"
+1333:
+|
+1337:
+1338: ;
+1339: $tok_ $(@expr1073742843 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1339 $, code@var222 $) ;
+1340: $if $(@expr1073742844 $!@expr1073742845 $assertEquals $(@expr1073742846 "cppcheck-2.8/test/testsimplifyusing.cpp" $, 1340 $, "" $, errout@var100 .@expr1073742847 str (@expr1073742848 ) $) $) { $return ; }
+1341: }
+1342: } ;
+1343:
+1344: $namespace ${ TestSimplifyUsing instance_TestSimplifyUsing@var223 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@61}
+  v {!<=-1,!>=2,0@61}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 33
+  "TestSimplifyUsing" always "TestSimplifyUsing"
+Line 46
+  = always 1
+  true always 1
+Line 47
+  = always 1
+  true always 1
+Line 48
+  = always 1
+  true always 1
+Line 50
+  ( always {!<=-1,!>=2}
+  "simplifyUsing1" always "simplifyUsing1"
+  false always 0
+  false always 0
+Line 51
+  ( always {!<=-1,!>=2}
+  "simplifyUsing2" always "simplifyUsing2"
+  false always 0
+  false always 0
+Line 52
+  ( always {!<=-1,!>=2}
+  "simplifyUsing3" always "simplifyUsing3"
+  false always 0
+  false always 0
+Line 53
+  ( always {!<=-1,!>=2}
+  "simplifyUsing4" always "simplifyUsing4"
+  false always 0
+  false always 0
+Line 54
+  ( always {!<=-1,!>=2}
+  "simplifyUsing5" always "simplifyUsing5"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "simplifyUsing6" always "simplifyUsing6"
+  false always 0
+  false always 0
+Line 56
+  ( always {!<=-1,!>=2}
+  "simplifyUsing7" always "simplifyUsing7"
+  false always 0
+  false always 0
+Line 57
+  ( always {!<=-1,!>=2}
+  "simplifyUsing8" always "simplifyUsing8"
+  false always 0
+  false always 0
+Line 58
+  ( always {!<=-1,!>=2}
+  "simplifyUsing9" always "simplifyUsing9"
+  false always 0
+  false always 0
+Line 59
+  ( always {!<=-1,!>=2}
+  "simplifyUsing10" always "simplifyUsing10"
+  false always 0
+  false always 0
+Line 60
+  ( always {!<=-1,!>=2}
+  "simplifyUsing11" always "simplifyUsing11"
+  false always 0
+  false always 0
+Line 61
+  ( always {!<=-1,!>=2}
+  "simplifyUsing12" always "simplifyUsing12"
+  false always 0
+  false always 0
+Line 62
+  ( always {!<=-1,!>=2}
+  "simplifyUsing13" always "simplifyUsing13"
+  false always 0
+  false always 0
+Line 63
+  ( always {!<=-1,!>=2}
+  "simplifyUsing14" always "simplifyUsing14"
+  false always 0
+  false always 0
+Line 64
+  ( always {!<=-1,!>=2}
+  "simplifyUsing15" always "simplifyUsing15"
+  false always 0
+  false always 0
+Line 65
+  ( always {!<=-1,!>=2}
+  "simplifyUsing16" always "simplifyUsing16"
+  false always 0
+  false always 0
+Line 66
+  ( always {!<=-1,!>=2}
+  "simplifyUsing17" always "simplifyUsing17"
+  false always 0
+  false always 0
+Line 67
+  ( always {!<=-1,!>=2}
+  "simplifyUsing18" always "simplifyUsing18"
+  false always 0
+  false always 0
+Line 68
+  ( always {!<=-1,!>=2}
+  "simplifyUsing19" always "simplifyUsing19"
+  false always 0
+  false always 0
+Line 69
+  ( always {!<=-1,!>=2}
+  "simplifyUsing20" always "simplifyUsing20"
+  false always 0
+  false always 0
+Line 70
+  ( always {!<=-1,!>=2}
+  "simplifyUsing21" always "simplifyUsing21"
+  false always 0
+  false always 0
+Line 71
+  ( always {!<=-1,!>=2}
+  "simplifyUsing22" always "simplifyUsing22"
+  false always 0
+  false always 0
+Line 72
+  ( always {!<=-1,!>=2}
+  "simplifyUsing23" always "simplifyUsing23"
+  false always 0
+  false always 0
+Line 73
+  ( always {!<=-1,!>=2}
+  "simplifyUsing24" always "simplifyUsing24"
+  false always 0
+  false always 0
+Line 74
+  ( always {!<=-1,!>=2}
+  "simplifyUsing25" always "simplifyUsing25"
+  false always 0
+  false always 0
+Line 76
+  ( always {!<=-1,!>=2}
+  "simplifyUsing8970" always "simplifyUsing8970"
+  false always 0
+  false always 0
+Line 77
+  ( always {!<=-1,!>=2}
+  "simplifyUsing8971" always "simplifyUsing8971"
+  false always 0
+  false always 0
+Line 78
+  ( always {!<=-1,!>=2}
+  "simplifyUsing8976" always "simplifyUsing8976"
+  false always 0
+  false always 0
+Line 79
+  ( always {!<=-1,!>=2}
+  "simplifyUsing9040" always "simplifyUsing9040"
+  false always 0
+  false always 0
+Line 80
+  ( always {!<=-1,!>=2}
+  "simplifyUsing9042" always "simplifyUsing9042"
+  false always 0
+  false always 0
+Line 81
+  ( always {!<=-1,!>=2}
+  "simplifyUsing9191" always "simplifyUsing9191"
+  false always 0
+  false always 0
+Line 82
+  ( always {!<=-1,!>=2}
+  "simplifyUsing9381" always "simplifyUsing9381"
+  false always 0
+  false always 0
+Line 83
+  ( always {!<=-1,!>=2}
+  "simplifyUsing9385" always "simplifyUsing9385"
+  false always 0
+  false always 0
+Line 84
+  ( always {!<=-1,!>=2}
+  "simplifyUsing9388" always "simplifyUsing9388"
+  false always 0
+  false always 0
+Line 85
+  ( always {!<=-1,!>=2}
+  "simplifyUsing9518" always "simplifyUsing9518"
+  false always 0
+  false always 0
+Line 86
+  ( always {!<=-1,!>=2}
+  "simplifyUsing9757" always "simplifyUsing9757"
+  false always 0
+  false always 0
+Line 87
+  ( always {!<=-1,!>=2}
+  "simplifyUsing10008" always "simplifyUsing10008"
+  false always 0
+  false always 0
+Line 88
+  ( always {!<=-1,!>=2}
+  "simplifyUsing10054" always "simplifyUsing10054"
+  false always 0
+  false always 0
+Line 89
+  ( always {!<=-1,!>=2}
+  "simplifyUsing10136" always "simplifyUsing10136"
+  false always 0
+  false always 0
+Line 90
+  ( always {!<=-1,!>=2}
+  "simplifyUsing10171" always "simplifyUsing10171"
+  false always 0
+  false always 0
+Line 91
+  ( always {!<=-1,!>=2}
+  "simplifyUsing10172" always "simplifyUsing10172"
+  false always 0
+  false always 0
+Line 92
+  ( always {!<=-1,!>=2}
+  "simplifyUsing10173" always "simplifyUsing10173"
+  false always 0
+  false always 0
+Line 93
+  ( always {!<=-1,!>=2}
+  "simplifyUsing10335" always "simplifyUsing10335"
+  false always 0
+  false always 0
+Line 95
+  ( always {!<=-1,!>=2}
+  "scopeInfo1" always "scopeInfo1"
+  false always 0
+  false always 0
+Line 96
+  ( always {!<=-1,!>=2}
+  "scopeInfo2" always "scopeInfo2"
+  false always 0
+  false always 0
+Line 100
+  , always 1
+  debugwarnings always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 101
+  "" always ""
+Line 104
+  = {!<=-1,!>=2,0@47}
+  debugwarnings {!<=-1,!>=2,0@47}
+Line 106
+  & {lifetime[Address]=(settings0),!0}
+  this always !0
+Line 108
+  code possible {"struct A {\n    using Map = std::map<int, int>;\n    Map values;\n};\n\nstatic void getInitialProgramState(const A::Map& vars = A::Map {})\n{}\n"@1,"struct A {\n    enum class Mode { UNKNOWN, ENABLED, NONE, };\n};\n\nnamespace spdlog { class logger; }\nusing LoggerPtr = std::shared_ptr<spdlog::logger>;"@2,"using uint8_t = unsigned char;\nenum E : uint8_t { E0 };"@3,"std::ostream & operator<<(std::ostream &s, const Pr<st> p) {\n    return s;\n}\nvoid foo() {\n    using Pr = d::Pr<st>;\n    Pr p;\n}\nvoid bar() {\n   Pr<st> p;\n}"@4,"namespace defsa {\nvoid xxx::foo() {\n   using NS1 = v1::l;\n}\nvoid xxx::bar() {\n   using NS1 = v1::l;\n}\nvoid xxx::foobar() {\n   using NS1 = v1::l;\n}\n}"@5,"namespace ns {\n    class A {\n    public:\n        using h = std::function<void()>;\n    };\n    class B : public A {\n        void f(h);\n    };\n}\nnamespace ns {\n    void B::f(h) { }\n}"@6,"namespace ns {\nnamespace external {\nclass A {\npublic: \n  using h = std::function<void()>;\n};\nclass B : public A {\n  void f(h);\n};\n}\n}\nnamespace ns {\nnamespace external {\nvoid B::f(h) {}\n}\n}"@7,"namespace ns {\n    class A {\n    public:\n        using V = std::vector<unsigned char>;\n        virtual void f(const V&) const = 0;\n    };\n    class B : public A {\n    public:\n        void f(const V&) const override;\n    };\n}\nnamespace ns {\n    void B::f(const std::vector<unsigned char>&) const { }\n}"@8,"class B {\npublic:\n    using V = std::vector<char>;\n    virtual void f(const V&) const = 0;\n};\nclass A final : public B {\npublic:\n    void f(const V&) const override;\n};\nvoid A::f(const std::vector<char>&) const { }"@9,"namespace NS1 {\n    class B {\n    public:\n        using V = std::vector<char>;\n        virtual void f(const V&) const = 0;\n    };\n}\nnamespace NS2 {\n    class A : public NS1::B {\n    public:\n        void f(const V&) const override;\n    };\n    namespace NS3 {\n        class C : public A {\n        public:\n            void f(const V&) const override;\n        };\n        void C::f(const V&) const { }\n    }\n    void A::f(const V&) const { }\n}\nvoid foo() {\n    NS2::A a;\n    NS2::NS3::C c;\n    NS1::B::V v;\n    a.f(v);\n    c.f(v);\n}"@10}
+Line 109
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testsimplifyusing.cpp"@1,"cppcheck-2.8/test/testsimplifyusing.cpp"@2,"cppcheck-2.8/test/testsimplifyusing.cpp"@3,"cppcheck-2.8/test/testsimplifyusing.cpp"@4,"cppcheck-2.8/test/testsimplifyusing.cpp"@5,"cppcheck-2.8/test/testsimplifyusing.cpp"@6,"cppcheck-2.8/test/testsimplifyusing.cpp"@7,"cppcheck-2.8/test/testsimplifyusing.cpp"@8,"cppcheck-2.8/test/testsimplifyusing.cpp"@9,"cppcheck-2.8/test/testsimplifyusing.cpp"@10}
+  line inconclusive {1339@1,1327@2,1317@3,1286@4,1309@5,1225@6,1260@7,1196@8,1077@9,1136@10}
+  "test.cpp" always "test.cpp"
+Line 111
+  nullptr always 0
+Line 115
+  145 always 145
+  = always "class A\n{\npublic:\n using duplicate = wchar_t;\n void foo() {}\n};\nusing duplicate = A;\nint main()\n{\n duplicate a;\n a.foo();\n A::duplicate c = 0;\n}"
+  "class A\n{\npublic:\n using duplicate = wchar_t;\n void foo() {}\n};\nusing duplicate = A;\nint main()\n{\n duplicate a;\n a.foo();\n A::duplicate c = 0;\n}" always "class A\n{\npublic:\n using duplicate = wchar_t;\n void foo() {}\n};\nusing duplicate = A;\nint main()\n{\n duplicate a;\n a.foo();\n A::duplicate c = 0;\n}"
+Line 129
+  96 always 96
+  = always "class A { public: void foo ( ) { } } ; int main ( ) { A a ; a . foo ( ) ; wchar_t c ; c = 0 ; }"
+Line 130
+  "class A { public: void foo ( ) { } } ; int main ( ) { A a ; a . foo ( ) ; wchar_t c ; c = 0 ; }" always "class A { public: void foo ( ) { } } ; int main ( ) { A a ; a . foo ( ) ; wchar_t c ; c = 0 ; }"
+Line 142
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  142 always 142
+  expected always "class A { public: void foo ( ) { } } ; int main ( ) { A a ; a . foo ( ) ; wchar_t c ; c = 0 ; }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  142 always 142
+  code always "class A\n{\npublic:\n using duplicate = wchar_t;\n void foo() {}\n};\nusing duplicate = A;\nint main()\n{\n duplicate a;\n a.foo();\n A::duplicate c = 0;\n}"
+Line 146
+  119 always 119
+  = always "class A;\nusing duplicate = A;\nclass A\n{\npublic:\nusing duplicate = wchar_t;\nduplicate foo() { wchar_t b; return b; }\n};"
+  "class A;\nusing duplicate = A;\nclass A\n{\npublic:\nusing duplicate = wchar_t;\nduplicate foo() { wchar_t b; return b; }\n};" always "class A;\nusing duplicate = A;\nclass A\n{\npublic:\nusing duplicate = wchar_t;\nduplicate foo() { wchar_t b; return b; }\n};"
+Line 155
+  75 always 75
+  = always "class A ; class A { public: wchar_t foo ( ) { wchar_t b ; return b ; } } ;"
+Line 156
+  "class A ; class A { public: wchar_t foo ( ) { wchar_t b ; return b ; } } ;" always "class A ; class A { public: wchar_t foo ( ) { wchar_t b ; return b ; } } ;"
+Line 163
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  163 always 163
+  expected always "class A ; class A { public: wchar_t foo ( ) { wchar_t b ; return b ; } } ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  163 always 163
+  code always "class A;\nusing duplicate = A;\nclass A\n{\npublic:\nusing duplicate = wchar_t;\nduplicate foo() { wchar_t b; return b; }\n};"
+Line 167
+  129 always 129
+  = always "class A {};\nusing duplicate = A;\nwchar_t foo()\n{\nusing duplicate = wchar_t;\nduplicate b;\nreturn b;\n}\nint main()\n{\nduplicate b;\n}"
+  "class A {};\nusing duplicate = A;\nwchar_t foo()\n{\nusing duplicate = wchar_t;\nduplicate b;\nreturn b;\n}\nint main()\n{\nduplicate b;\n}" always "class A {};\nusing duplicate = A;\nwchar_t foo()\n{\nusing duplicate = wchar_t;\nduplicate b;\nreturn b;\n}\nint main()\n{\nduplicate b;\n}"
+Line 180
+  80 always 80
+  = always "class A { } ; wchar_t foo ( ) { wchar_t b ; return b ; } int main ( ) { A b ; }"
+Line 181
+  "class A { } ; wchar_t foo ( ) { wchar_t b ; return b ; } int main ( ) { A b ; }" always "class A { } ; wchar_t foo ( ) { wchar_t b ; return b ; } int main ( ) { A b ; }"
+Line 192
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  192 always 192
+  expected always "class A { } ; wchar_t foo ( ) { wchar_t b ; return b ; } int main ( ) { A b ; }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  192 always 192
+  code always "class A {};\nusing duplicate = A;\nwchar_t foo()\n{\nusing duplicate = wchar_t;\nduplicate b;\nreturn b;\n}\nint main()\n{\nduplicate b;\n}"
+Line 196
+  117 always 117
+  = always "using s32 = int;\nusing u32 = unsigned int;\nvoid f()\n{\n    s32 ivar = -2;\n    u32 uvar = 2;\n    return uvar / ivar;\n}"
+  "using s32 = int;\nusing u32 = unsigned int;\nvoid f()\n{\n    s32 ivar = -2;\n    u32 uvar = 2;\n    return uvar / ivar;\n}" always "using s32 = int;\nusing u32 = unsigned int;\nvoid f()\n{\n    s32 ivar = -2;\n    u32 uvar = 2;\n    return uvar / ivar;\n}"
+Line 205
+  90 always 90
+  = always "void f ( ) { int ivar ; ivar = -2 ; unsigned int uvar ; uvar = 2 ; return uvar / ivar ; }"
+Line 206
+  "void f ( ) { int ivar ; ivar = -2 ; unsigned int uvar ; uvar = 2 ; return uvar / ivar ; }" always "void f ( ) { int ivar ; ivar = -2 ; unsigned int uvar ; uvar = 2 ; return uvar / ivar ; }"
+Line 212
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  212 always 212
+  expected always "void f ( ) { int ivar ; ivar = -2 ; unsigned int uvar ; uvar = 2 ; return uvar / ivar ; }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  212 always 212
+  code always "using s32 = int;\nusing u32 = unsigned int;\nvoid f()\n{\n    s32 ivar = -2;\n    u32 uvar = 2;\n    return uvar / ivar;\n}"
+Line 216
+  90 always 90
+  = always "using YY_BUFFER_STATE = struct yy_buffer_state *;\nvoid f()\n{\n    YY_BUFFER_STATE state;\n}"
+Line 217
+  "using YY_BUFFER_STATE = struct yy_buffer_state *;\nvoid f()\n{\n    YY_BUFFER_STATE state;\n}" always "using YY_BUFFER_STATE = struct yy_buffer_state *;\nvoid f()\n{\n    YY_BUFFER_STATE state;\n}"
+Line 223
+  48 always 48
+  = always "void f ( ) { struct yy_buffer_state * state ; }"
+Line 224
+  "void f ( ) { struct yy_buffer_state * state ; }" always "void f ( ) { struct yy_buffer_state * state ; }"
+Line 229
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  229 always 229
+  expected always "void f ( ) { struct yy_buffer_state * state ; }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  229 always 229
+  code always "using YY_BUFFER_STATE = struct yy_buffer_state *;\nvoid f()\n{\n    YY_BUFFER_STATE state;\n}"
+Line 233
+  110 always 110
+  = always "namespace VL {\n    using float_t = float;\n    inline VL::float_t fast_atan2(VL::float_t y, VL::float_t x){}\n}"
+Line 234
+  "namespace VL {\n    using float_t = float;\n    inline VL::float_t fast_atan2(VL::float_t y, VL::float_t x){}\n}" always "namespace VL {\n    using float_t = float;\n    inline VL::float_t fast_atan2(VL::float_t y, VL::float_t x){}\n}"
+Line 239
+  60 always 60
+  = always "namespace VL { float fast_atan2 ( float y , float x ) { } }"
+Line 240
+  "namespace VL { float fast_atan2 ( float y , float x ) { } }" always "namespace VL { float fast_atan2 ( float y , float x ) { } }"
+Line 245
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  245 always 245
+  expected always "namespace VL { float fast_atan2 ( float y , float x ) { } }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  245 always 245
+  code always "namespace VL {\n    using float_t = float;\n    inline VL::float_t fast_atan2(VL::float_t y, VL::float_t x){}\n}"
+Line 249
+  33 always 33
+  = always "using abc = int; Fred :: abc f ;"
+  "using abc = int; Fred :: abc f ;" always "using abc = int; Fred :: abc f ;"
+Line 251
+  16 always 16
+  = always "Fred :: abc f ;"
+  "Fred :: abc f ;" always "Fred :: abc f ;"
+Line 252
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  252 always 252
+  expected always "Fred :: abc f ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  252 always 252
+  code always "using abc = int; Fred :: abc f ;"
+Line 256
+  296 always 296
+  = always "using INT = int;\nusing UINT = unsigned int;\nusing PINT = int *;\nusing PUINT = unsigned int *;\nusing RINT = int &;\nusing RUINT = unsigned int &;\nusing RCINT = const int &;\nusing RCUINT = const unsigned int &;\nINT ti;\nUINT tui;\nPINT tpi;\nPUINT tpui;\nRINT tri;\nRUINT trui;\nRCINT trci;\nRCUINT trcui;"
+  "using INT = int;\nusing UINT = unsigned int;\nusing PINT = int *;\nusing PUINT = unsigned int *;\nusing RINT = int &;\nusing RUINT = unsigned int &;\nusing RCINT = const int &;\nusing RCUINT = const unsigned int &;\nINT ti;\nUINT tui;\nPINT tpi;\nPUINT tpui;\nRINT tri;\nRUINT trui;\nRCINT trci;\nRCUINT trcui;" always "using INT = int;\nusing UINT = unsigned int;\nusing PINT = int *;\nusing PUINT = unsigned int *;\nusing RINT = int &;\nusing RUINT = unsigned int &;\nusing RCINT = const int &;\nusing RCUINT = const unsigned int &;\nINT ti;\nUINT tui;\nPINT tpi;\nPUINT tpui;\nRINT tri;\nRUINT trui;\nRCINT trci;\nRCUINT trcui;"
+Line 273
+  144 always 144
+  = always "int ti ; unsigned int tui ; int * tpi ; unsigned int * tpui ; int & tri ; unsigned int & trui ; const int & trci ; const unsigned int & trcui ;"
+Line 274
+  "int ti ; unsigned int tui ; int * tpi ; unsigned int * tpui ; int & tri ; unsigned int & trui ; const int & trci ; const unsigned int & trcui ;" always "int ti ; unsigned int tui ; int * tpi ; unsigned int * tpui ; int & tri ; unsigned int & trui ; const int & trci ; const unsigned int & trcui ;"
+Line 283
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  283 always 283
+  expected always "int ti ; unsigned int tui ; int * tpi ; unsigned int * tpui ; int & tri ; unsigned int & trui ; const int & trci ; const unsigned int & trcui ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  283 always 283
+  code always "using INT = int;\nusing UINT = unsigned int;\nusing PINT = int *;\nusing PUINT = unsigned int *;\nusing RINT = int &;\nusing RUINT = unsigned int &;\nusing RCINT = const int &;\nusing RCUINT = const unsigned int &;\nINT ti;\nUINT tui;\nPINT tpi;\nPUINT tpui;\nRINT tri;\nRUINT trui;\nRCINT trci;\nRCUINT trcui;"
+Line 287
+  197 always 197
+  = always "using S = struct s;\nusing PS = S *;\nusing T = struct t { int a; };\nusing TP = T *;\nusing U = struct { int a; };\nusing V = U *;\nusing W = struct { int a; } *;\nS s;\nPS ps;\nT t;\nTP tp;\nU u;\nV v;\nW w;"
+  "using S = struct s;\nusing PS = S *;\nusing T = struct t { int a; };\nusing TP = T *;\nusing U = struct { int a; };\nusing V = U *;\nusing W = struct { int a; } *;\nS s;\nPS ps;\nT t;\nTP tp;\nU u;\nV v;\nW w;" always "using S = struct s;\nusing PS = S *;\nusing T = struct t { int a; };\nusing TP = T *;\nusing U = struct { int a; };\nusing V = U *;\nusing W = struct { int a; } *;\nS s;\nPS ps;\nT t;\nTP tp;\nU u;\nV v;\nW w;"
+Line 302
+  184 always 184
+  = always "struct t { int a ; } ; struct U { int a ; } ; struct Unnamed0 { int a ; } ; struct s s ; struct s * ps ; struct t t ; struct t * tp ; struct U u ; struct U * v ; struct Unnamed0 * w ;"
+Line 303
+  "struct t { int a ; } ; struct U { int a ; } ; struct Unnamed0 { int a ; } ; struct s s ; struct s * ps ; struct t t ; struct t * tp ; struct U u ; struct U * v ; struct Unnamed0 * w ;" always "struct t { int a ; } ; struct U { int a ; } ; struct Unnamed0 { int a ; } ; struct s s ; struct s * ps ; struct t t ; struct t * tp ; struct U u ; struct U * v ; struct Unnamed0 * w ;"
+Line 314
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  314 always 314
+  expected always "struct t { int a ; } ; struct U { int a ; } ; struct Unnamed0 { int a ; } ; struct s s ; struct s * ps ; struct t t ; struct t * tp ; struct U u ; struct U * v ; struct Unnamed0 * w ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  314 always 314
+  code always "using S = struct s;\nusing PS = S *;\nusing T = struct t { int a; };\nusing TP = T *;\nusing U = struct { int a; };\nusing V = U *;\nusing W = struct { int a; } *;\nS s;\nPS ps;\nT t;\nTP tp;\nU u;\nV v;\nW w;"
+Line 318
+  221 always 221
+  = always "using S = union s;\nusing PS = S *;\nusing T = union t { int a; float b ; };\nusing TP = T *;\nusing U = union { int a; float b; };\nusing V = U *;\nusing W = union { int a; float b; } *;\nS s;\nPS ps;\nT t;\nTP tp;\nU u;\nV v;\nW w;"
+  "using S = union s;\nusing PS = S *;\nusing T = union t { int a; float b ; };\nusing TP = T *;\nusing U = union { int a; float b; };\nusing V = U *;\nusing W = union { int a; float b; } *;\nS s;\nPS ps;\nT t;\nTP tp;\nU u;\nV v;\nW w;" always "using S = union s;\nusing PS = S *;\nusing T = union t { int a; float b ; };\nusing TP = T *;\nusing U = union { int a; float b; };\nusing V = U *;\nusing W = union { int a; float b; } *;\nS s;\nPS ps;\nT t;\nTP tp;\nU u;\nV v;\nW w;"
+Line 333
+  204 always 204
+  = always "union t { int a ; float b ; } ; union U { int a ; float b ; } ; union Unnamed0 { int a ; float b ; } ; union s s ; union s * ps ; union t t ; union t * tp ; union U u ; union U * v ; union Unnamed0 * w ;"
+Line 334
+  "union t { int a ; float b ; } ; union U { int a ; float b ; } ; union Unnamed0 { int a ; float b ; } ; union s s ; union s * ps ; union t t ; union t * tp ; union U u ; union U * v ; union Unnamed0 * w ;" always "union t { int a ; float b ; } ; union U { int a ; float b ; } ; union Unnamed0 { int a ; float b ; } ; union s s ; union s * ps ; union t t ; union t * tp ; union U u ; union U * v ; union Unnamed0 * w ;"
+Line 345
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  345 always 345
+  expected always "union t { int a ; float b ; } ; union U { int a ; float b ; } ; union Unnamed0 { int a ; float b ; } ; union s s ; union s * ps ; union t t ; union t * tp ; union U u ; union U * v ; union Unnamed0 * w ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  345 always 345
+  code always "using S = union s;\nusing PS = S *;\nusing T = union t { int a; float b ; };\nusing TP = T *;\nusing U = union { int a; float b; };\nusing V = U *;\nusing W = union { int a; float b; } *;\nS s;\nPS ps;\nT t;\nTP tp;\nU u;\nV v;\nW w;"
+Line 349
+  108 always 108
+  = always "using abc = enum { a = 0 , b = 1 , c = 2 };\nusing XYZ = enum xyz { x = 0 , y = 1 , z = 2 };\nabc e1;\nXYZ e2;"
+  "using abc = enum { a = 0 , b = 1 , c = 2 };\nusing XYZ = enum xyz { x = 0 , y = 1 , z = 2 };\nabc e1;\nXYZ e2;" always "using abc = enum { a = 0 , b = 1 , c = 2 };\nusing XYZ = enum xyz { x = 0 , y = 1 , z = 2 };\nabc e1;\nXYZ e2;"
+Line 354
+  102 always 102
+  = always "enum abc { a = 0 , b = 1 , c = 2 } ; enum xyz { x = 0 , y = 1 , z = 2 } ; enum abc e1 ; enum xyz e2 ;"
+  "enum abc { a = 0 , b = 1 , c = 2 } ; enum xyz { x = 0 , y = 1 , z = 2 } ; enum abc e1 ; enum xyz e2 ;" always "enum abc { a = 0 , b = 1 , c = 2 } ; enum xyz { x = 0 , y = 1 , z = 2 } ; enum abc e1 ; enum xyz e2 ;"
+Line 359
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  359 always 359
+  expected always "enum abc { a = 0 , b = 1 , c = 2 } ; enum xyz { x = 0 , y = 1 , z = 2 } ; enum abc e1 ; enum xyz e2 ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  359 always 359
+  code always "using abc = enum { a = 0 , b = 1 , c = 2 };\nusing XYZ = enum xyz { x = 0 , y = 1 , z = 2 };\nabc e1;\nXYZ e2;"
+Line 363
+  189 always 189
+  = always "using V1 = vector<int>;\nusing V2 = std::vector<int>;\nusing V3 = std::vector<std::vector<int> >;\nusing IntListIterator = std::list<int>::iterator;\nV1 v1;\nV2 v2;\nV3 v3;\nIntListIterator iter;"
+  "using V1 = vector<int>;\nusing V2 = std::vector<int>;\nusing V3 = std::vector<std::vector<int> >;\nusing IntListIterator = std::list<int>::iterator;\nV1 v1;\nV2 v2;\nV3 v3;\nIntListIterator iter;" always "using V1 = vector<int>;\nusing V2 = std::vector<int>;\nusing V3 = std::vector<std::vector<int> >;\nusing IntListIterator = std::list<int>::iterator;\nV1 v1;\nV2 v2;\nV3 v3;\nIntListIterator iter;"
+Line 372
+  131 always 131
+  = always "vector < int > v1 ; std :: vector < int > v2 ; std :: vector < std :: vector < int > > v3 ; std :: list < int > :: iterator iter ;"
+  "vector < int > v1 ; std :: vector < int > v2 ; std :: vector < std :: vector < int > > v3 ; std :: list < int > :: iterator iter ;" always "vector < int > v1 ; std :: vector < int > v2 ; std :: vector < std :: vector < int > > v3 ; std :: list < int > :: iterator iter ;"
+Line 377
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  377 always 377
+  expected always "vector < int > v1 ; std :: vector < int > v2 ; std :: vector < std :: vector < int > > v3 ; std :: list < int > :: iterator iter ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  377 always 377
+  code always "using V1 = vector<int>;\nusing V2 = std::vector<int>;\nusing V3 = std::vector<std::vector<int> >;\nusing IntListIterator = std::list<int>::iterator;\nV1 v1;\nV2 v2;\nV3 v3;\nIntListIterator iter;"
+Line 381
+  112 always 112
+  = always "using Func = std::pair<int(*)(void*), void*>;\nusing CallQueue = std::vector<Func>;\nint main() {\n CallQueue q;\n}"
+  "using Func = std::pair<int(*)(void*), void*>;\nusing CallQueue = std::vector<Func>;\nint main() {\n CallQueue q;\n}" always "using Func = std::pair<int(*)(void*), void*>;\nusing CallQueue = std::vector<Func>;\nint main() {\n CallQueue q;\n}"
+Line 387
+  85 always 85
+  = always "int main ( ) { std :: vector < std :: pair < int ( * ) ( void * ) , void * > > q ; }"
+  "int main ( ) { std :: vector < std :: pair < int ( * ) ( void * ) , void * > > q ; }" always "int main ( ) { std :: vector < std :: pair < int ( * ) ( void * ) , void * > > q ; }"
+Line 391
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  391 always 391
+  expected always "int main ( ) { std :: vector < std :: pair < int ( * ) ( void * ) , void * > > q ; }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  391 always 391
+  code always "using Func = std::pair<int(*)(void*), void*>;\nusing CallQueue = std::vector<Func>;\nint main() {\n CallQueue q;\n}"
+Line 392
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  392 always 392
+  "" always ""
+Line 396
+  224 always 224
+  = always "template <typename F, unsigned int N> struct E{    using v = E<F,(N>0)?(N-1):0>;    using val = typename add<v,v>::val;    FP_M(val);};template <typename F> struct E <F,0>{    using nal = typename D<1>::val;    FP_M(val);};"
+  "template <typename F, unsigned int N> struct E{    using v = E<F,(N>0)?(N-1):0>;    using val = typename add<v,v>::val;    FP_M(val);};template <typename F> struct E <F,0>{    using nal = typename D<1>::val;    FP_M(val);};" always "template <typename F, unsigned int N> struct E{    using v = E<F,(N>0)?(N-1):0>;    using val = typename add<v,v>::val;    FP_M(val);};template <typename F> struct E <F,0>{    using nal = typename D<1>::val;    FP_M(val);};"
+Line 408
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  408 always 408
+  code always "template <typename F, unsigned int N> struct E{    using v = E<F,(N>0)?(N-1):0>;    using val = typename add<v,v>::val;    FP_M(val);};template <typename F> struct E <F,0>{    using nal = typename D<1>::val;    FP_M(val);};"
+  false always 0
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  408 always 408
+  false always 0
+Line 414
+  34 always 34
+  = always "using frame = char [10];\nframe f;"
+  "using frame = char [10];\nframe f;" always "using frame = char [10];\nframe f;"
+Line 417
+  16 always 16
+  = always "char f [ 10 ] ;"
+  "char f [ 10 ] ;" always "char f [ 10 ] ;"
+Line 419
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  419 always 419
+  expected always "char f [ 10 ] ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  419 always 419
+  code always "using frame = char [10];\nframe f;"
+Line 423
+  43 always 43
+  = always "using frame = unsigned char [10];\nframe f;"
+  "using frame = unsigned char [10];\nframe f;" always "using frame = unsigned char [10];\nframe f;"
+Line 426
+  25 always 25
+  = always "unsigned char f [ 10 ] ;"
+  "unsigned char f [ 10 ] ;" always "unsigned char f [ 10 ] ;"
+Line 428
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  428 always 428
+  expected always "unsigned char f [ 10 ] ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  428 always 428
+  code always "using frame = unsigned char [10];\nframe f;"
+Line 433
+  99 always 99
+  = always "using MOT8 = char;\nusing CHFOO = MOT8 [4096];\nusing STRFOO = struct {\n   CHFOO freem;\n};\nSTRFOO s;"
+  "using MOT8 = char;\nusing CHFOO = MOT8 [4096];\nusing STRFOO = struct {\n   CHFOO freem;\n};\nSTRFOO s;" always "using MOT8 = char;\nusing CHFOO = MOT8 [4096];\nusing STRFOO = struct {\n   CHFOO freem;\n};\nSTRFOO s;"
+Line 440
+  60 always 60
+  = always "struct STRFOO { char freem [ 4096 ] ; } ; struct STRFOO s ;"
+  "struct STRFOO { char freem [ 4096 ] ; } ; struct STRFOO s ;" always "struct STRFOO { char freem [ 4096 ] ; } ; struct STRFOO s ;"
+Line 445
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  445 always 445
+  expected always "struct STRFOO { char freem [ 4096 ] ; } ; struct STRFOO s ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  445 always 445
+  code always "using MOT8 = char;\nusing CHFOO = MOT8 [4096];\nusing STRFOO = struct {\n   CHFOO freem;\n};\nSTRFOO s;"
+Line 446
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  446 always 446
+  "" always ""
+Line 450
+  155 always 155
+  = always "class C1 {};\nusing S1 = class S1 {};\nusing S2 = class S2 : public C1 {};\nusing S3 = class {};\nusing S4 = class : public C1 {};\nS1 s1;\nS2 s2;\nS3 s3;\nS4 s4;"
+  "class C1 {};\nusing S1 = class S1 {};\nusing S2 = class S2 : public C1 {};\nusing S3 = class {};\nusing S4 = class : public C1 {};\nS1 s1;\nS2 s2;\nS3 s3;\nS4 s4;" always "class C1 {};\nusing S1 = class S1 {};\nusing S2 = class S2 : public C1 {};\nusing S3 = class {};\nusing S4 = class : public C1 {};\nS1 s1;\nS2 s2;\nS3 s3;\nS4 s4;"
+Line 460
+  155 always 155
+  = always "class C1 { } ; class S1 { } ; class S2 : public C1 { } ; class S3 { } ; class S4 : public C1 { } ; class S1 s1 ; class S2 s2 ; class S3 s3 ; class S4 s4 ;"
+  "class C1 { } ; class S1 { } ; class S2 : public C1 { } ; class S3 { } ; class S4 : public C1 { } ; class S1 s1 ; class S2 s2 ; class S3 s3 ; class S4 s4 ;" always "class C1 { } ; class S1 { } ; class S2 : public C1 { } ; class S3 { } ; class S4 : public C1 { } ; class S1 s1 ; class S2 s2 ; class S3 s3 ; class S4 s4 ;"
+Line 470
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  470 always 470
+  expected always "class C1 { } ; class S1 { } ; class S2 : public C1 { } ; class S3 { } ; class S4 : public C1 { } ; class S1 s1 ; class S2 s2 ; class S3 s3 ; class S4 s4 ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  470 always 470
+  code always "class C1 {};\nusing S1 = class S1 {};\nusing S2 = class S2 : public C1 {};\nusing S3 = class {};\nusing S4 = class : public C1 {};\nS1 s1;\nS2 s2;\nS3 s3;\nS4 s4;"
+Line 474
+  34 always 34
+  = always "{ { { using a = a; using a; } } }"
+  "{ { { using a = a; using a; } } }" always "{ { { using a = a; using a; } } }"
+Line 475
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  475 always 475
+  code always "{ { { using a = a; using a; } } }"
+Line 479
+  105 always 105
+  = always "namespace a {\nusing b = int;\nvoid foo::c() { }\nvoid foo::d() { }\nvoid foo::e() {\n   using b = float;\n}\n}"
+  "namespace a {\nusing b = int;\nvoid foo::c() { }\nvoid foo::d() { }\nvoid foo::e() {\n   using b = float;\n}\n}" always "namespace a {\nusing b = int;\nvoid foo::c() { }\nvoid foo::d() { }\nvoid foo::e() {\n   using b = float;\n}\n}"
+Line 487
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  487 always 487
+  code always "namespace a {\nusing b = int;\nvoid foo::c() { }\nvoid foo::d() { }\nvoid foo::e() {\n   using b = float;\n}\n}"
+Line 491
+  1105 always 1105
+  = always "namespace a {\nnamespace b {\nnamespace c {\nnamespace d {\nnamespace e {\nnamespace f {\nnamespace g {\nusing Changeset = ::IAdaptionCallback::Changeset;\nusing EProperty = searches::EProperty;\nusing ChangesetValueType = Changeset::value_type;\nnamespace {\n   template <class T>\n   auto modify(std::shared_ptr<T>& p) -> boost::optional<decltype(p->modify())> {\n      return nullptr;\n   }\n   template <class T>\n   std::list<T> getValidElements() {\n      return nullptr;\n   }\n}\nstd::shared_ptr<ResourceConfiguration>\nfoo::getConfiguration() {\n   return nullptr;\n}\nvoid\nfoo::doRegister(const Input & Input) {\n   UNUSED( Input );\n}\nfoo::MicroServiceReturnValue\nfoo::post(SearchesPtr element, const Changeset& changeset)\n{\n   using EProperty = ab::ep;\n   static std::map<EProperty, std::pair<ElementPropertyHandler, CheckComponentState>> updateHandlers =\n   {\n      {EProperty::Needle, {&RSISearchesResource::updateNeedle,         &RSISearchesResource::isSearcherReady}},\n      {EProperty::SortBy, {&RSISearchesResource::updateResultsSorting, &RSISearchesResource::isSearcherReady}}\n   };\n   return nullptr;\n}\n}}}}}}}"
+  "namespace a {\nnamespace b {\nnamespace c {\nnamespace d {\nnamespace e {\nnamespace f {\nnamespace g {\nusing Changeset = ::IAdaptionCallback::Changeset;\nusing EProperty = searches::EProperty;\nusing ChangesetValueType = Changeset::value_type;\nnamespace {\n   template <class T>\n   auto modify(std::shared_ptr<T>& p) -> boost::optional<decltype(p->modify())> {\n      return nullptr;\n   }\n   template <class T>\n   std::list<T> getValidElements() {\n      return nullptr;\n   }\n}\nstd::shared_ptr<ResourceConfiguration>\nfoo::getConfiguration() {\n   return nullptr;\n}\nvoid\nfoo::doRegister(const Input & Input) {\n   UNUSED( Input );\n}\nfoo::MicroServiceReturnValue\nfoo::post(SearchesPtr element, const Changeset& changeset)\n{\n   using EProperty = ab::ep;\n   static std::map<EProperty, std::pair<ElementPropertyHandler, CheckComponentState>> updateHandlers =\n   {\n      {EProperty::Needle, {&RSISearchesResource::updateNeedle,         &RSISearchesResource::isSearcherReady}},\n      {EProperty::SortBy, {&RSISearchesResource::updateResultsSorting, &RSISearchesResource::isSearcherReady}}\n   };\n   return nullptr;\n}\n}}}}}}}" always "namespace a {\nnamespace b {\nnamespace c {\nnamespace d {\nnamespace e {\nnamespace f {\nnamespace g {\nusing Changeset = ::IAdaptionCallback::Changeset;\nusing EProperty = searches::EProperty;\nusing ChangesetValueType = Changeset::value_type;\nnamespace {\n   template <class T>\n   auto modify(std::shared_ptr<T>& p) -> boost::optional<decltype(p->modify())> {\n      return nullptr;\n   }\n   template <class T>\n   std::list<T> getValidElements() {\n      return nullptr;\n   }\n}\nstd::shared_ptr<ResourceConfiguration>\nfoo::getConfiguration() {\n   return nullptr;\n}\nvoid\nfoo::doRegister(const Input & Input) {\n   UNUSED( Input );\n}\nfoo::MicroServiceReturnValue\nfoo::post(SearchesPtr element, const Changeset& changeset)\n{\n   using EProperty = ab::ep;\n   static std::map<EProperty, std::pair<ElementPropertyHandler, CheckComponentState>> updateHandlers =\n   {\n      {EProperty::Needle, {&RSISearchesResource::updateNeedle,         &RSISearchesResource::isSearcherReady}},\n      {EProperty::SortBy, {&RSISearchesResource::updateResultsSorting, &RSISearchesResource::isSearcherReady}}\n   };\n   return nullptr;\n}\n}}}}}}}"
+Line 531
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  531 always 531
+  code always "namespace a {\nnamespace b {\nnamespace c {\nnamespace d {\nnamespace e {\nnamespace f {\nnamespace g {\nusing Changeset = ::IAdaptionCallback::Changeset;\nusing EProperty = searches::EProperty;\nusing ChangesetValueType = Changeset::value_type;\nnamespace {\n   template <class T>\n   auto modify(std::shared_ptr<T>& p) -> boost::optional<decltype(p->modify())> {\n      return nullptr;\n   }\n   template <class T>\n   std::list<T> getValidElements() {\n      return nullptr;\n   }\n}\nstd::shared_ptr<ResourceConfiguration>\nfoo::getConfiguration() {\n   return nullptr;\n}\nvoid\nfoo::doRegister(const Input & Input) {\n   UNUSED( Input );\n}\nfoo::MicroServiceReturnValue\nfoo::post(SearchesPtr element, const Changeset& changeset)\n{\n   using EProperty = ab::ep;\n   static std::map<EProperty, std::pair<ElementPropertyHandler, CheckComponentState>> updateHandlers =\n   {\n      {EProperty::Needle, {&RSISearchesResource::updateNeedle,         &RSISearchesResource::isSearcherReady}},\n      {EProperty::SortBy, {&RSISearchesResource::updateResultsSorting, &RSISearchesResource::isSearcherReady}}\n   };\n   return nullptr;\n}\n}}}}}}}"
+Line 535
+  21 always 21
+  = always "using a = b;\nenum {}"
+  "using a = b;\nenum {}" always "using a = b;\nenum {}"
+Line 537
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  537 always 537
+  code always "using a = b;\nenum {}"
+Line 541
+  399 always 399
+  = always "namespace aa { namespace bb { namespace cc { namespace dd { namespace ee {\nclass fff {\npublic:\n    using icmsp   = std::shared_ptr<aa::bb::ee::cm::api::icm>;\nprivate:\n    using Connection = boost::signals2::connection;\n    using ESdk = sdk::common::api::Sdk::ESdk;\n    using co = aa::bb::ee::com::api::com2;\n};\nfff::fff() : m_icm(icm) {\n    using ESdk = aa::bb::sdk::common::api::Sdk::ESdk;\n}\n}}}}}"
+  "namespace aa { namespace bb { namespace cc { namespace dd { namespace ee {\nclass fff {\npublic:\n    using icmsp   = std::shared_ptr<aa::bb::ee::cm::api::icm>;\nprivate:\n    using Connection = boost::signals2::connection;\n    using ESdk = sdk::common::api::Sdk::ESdk;\n    using co = aa::bb::ee::com::api::com2;\n};\nfff::fff() : m_icm(icm) {\n    using ESdk = aa::bb::sdk::common::api::Sdk::ESdk;\n}\n}}}}}" always "namespace aa { namespace bb { namespace cc { namespace dd { namespace ee {\nclass fff {\npublic:\n    using icmsp   = std::shared_ptr<aa::bb::ee::cm::api::icm>;\nprivate:\n    using Connection = boost::signals2::connection;\n    using ESdk = sdk::common::api::Sdk::ESdk;\n    using co = aa::bb::ee::com::api::com2;\n};\nfff::fff() : m_icm(icm) {\n    using ESdk = aa::bb::sdk::common::api::Sdk::ESdk;\n}\n}}}}}"
+Line 554
+  153 always 153
+  = always "namespace aa { namespace bb { namespace cc { namespace dd { namespace ee { class fff { public: private: } ; fff :: fff ( ) : m_icm ( icm ) { } } } } } }"
+  "namespace aa { namespace bb { namespace cc { namespace dd { namespace ee { class fff { public: private: } ; fff :: fff ( ) : m_icm ( icm ) { } } } } } }" always "namespace aa { namespace bb { namespace cc { namespace dd { namespace ee { class fff { public: private: } ; fff :: fff ( ) : m_icm ( icm ) { } } } } } }"
+Line 562
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  562 always 562
+  expected always "namespace aa { namespace bb { namespace cc { namespace dd { namespace ee { class fff { public: private: } ; fff :: fff ( ) : m_icm ( icm ) { } } } } } }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  562 always 562
+  code always "namespace aa { namespace bb { namespace cc { namespace dd { namespace ee {\nclass fff {\npublic:\n    using icmsp   = std::shared_ptr<aa::bb::ee::cm::api::icm>;\nprivate:\n    using Connection = boost::signals2::connection;\n    using ESdk = sdk::common::api::Sdk::ESdk;\n    using co = aa::bb::ee::com::api::com2;\n};\nfff::fff() : m_icm(icm) {\n    using ESdk = aa::bb::sdk::common::api::Sdk::ESdk;\n}\n}}}}}"
+Line 566
+  313 always 313
+  = always "class cmcch {\npublic:\n   cmcch(icmsp const& icm, Rtnf&& rtnf = {});\nprivate:\n    using escs = aa::bb::cc::dd::ee;\nprivate:\n   icmsp m_icm;\n   mutable std::atomic<rt> m_rt;\n};\ncmcch::cmcch(cmcch::icmsp const& icm, Rtnf&& rtnf)\n   : m_icm(icm)\n   , m_rt{rt::UNKNOWN_} {\n  using escs = yy::zz::aa::bb::cc::dd::ee;\n}"
+  "class cmcch {\npublic:\n   cmcch(icmsp const& icm, Rtnf&& rtnf = {});\nprivate:\n    using escs = aa::bb::cc::dd::ee;\nprivate:\n   icmsp m_icm;\n   mutable std::atomic<rt> m_rt;\n};\ncmcch::cmcch(cmcch::icmsp const& icm, Rtnf&& rtnf)\n   : m_icm(icm)\n   , m_rt{rt::UNKNOWN_} {\n  using escs = yy::zz::aa::bb::cc::dd::ee;\n}" always "class cmcch {\npublic:\n   cmcch(icmsp const& icm, Rtnf&& rtnf = {});\nprivate:\n    using escs = aa::bb::cc::dd::ee;\nprivate:\n   icmsp m_icm;\n   mutable std::atomic<rt> m_rt;\n};\ncmcch::cmcch(cmcch::icmsp const& icm, Rtnf&& rtnf)\n   : m_icm(icm)\n   , m_rt{rt::UNKNOWN_} {\n  using escs = yy::zz::aa::bb::cc::dd::ee;\n}"
+Line 580
+  252 always 252
+  = always "class cmcch { public: cmcch ( const icmsp & icm , Rtnf && rtnf = { } ) ; private: private: icmsp m_icm ; mutable std :: atomic < rt > m_rt ; } ; cmcch :: cmcch ( const cmcch :: icmsp & icm , Rtnf && rtnf ) : m_icm ( icm ) , m_rt { rt :: UNKNOWN_ } { }"
+  "class cmcch { public: cmcch ( const icmsp & icm , Rtnf && rtnf = { } ) ; private: private: icmsp m_icm ; mutable std :: atomic < rt > m_rt ; } ; cmcch :: cmcch ( const cmcch :: icmsp & icm , Rtnf && rtnf ) : m_icm ( icm ) , m_rt { rt :: UNKNOWN_ } { }" always "class cmcch { public: cmcch ( const icmsp & icm , Rtnf && rtnf = { } ) ; private: private: icmsp m_icm ; mutable std :: atomic < rt > m_rt ; } ; cmcch :: cmcch ( const cmcch :: icmsp & icm , Rtnf && rtnf ) : m_icm ( icm ) , m_rt { rt :: UNKNOWN_ } { }"
+Line 592
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  592 always 592
+  expected always "class cmcch { public: cmcch ( const icmsp & icm , Rtnf && rtnf = { } ) ; private: private: icmsp m_icm ; mutable std :: atomic < rt > m_rt ; } ; cmcch :: cmcch ( const cmcch :: icmsp & icm , Rtnf && rtnf ) : m_icm ( icm ) , m_rt { rt :: UNKNOWN_ } { }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  592 always 592
+  code always "class cmcch {\npublic:\n   cmcch(icmsp const& icm, Rtnf&& rtnf = {});\nprivate:\n    using escs = aa::bb::cc::dd::ee;\nprivate:\n   icmsp m_icm;\n   mutable std::atomic<rt> m_rt;\n};\ncmcch::cmcch(cmcch::icmsp const& icm, Rtnf&& rtnf)\n   : m_icm(icm)\n   , m_rt{rt::UNKNOWN_} {\n  using escs = yy::zz::aa::bb::cc::dd::ee;\n}"
+Line 596
+  58 always 58
+  = always "using value_type = const ValueFlow::Value;\nvalue_type vt;"
+  "using value_type = const ValueFlow::Value;\nvalue_type vt;" always "using value_type = const ValueFlow::Value;\nvalue_type vt;"
+Line 598
+  30 always 30
+  = always "const ValueFlow :: Value vt ;"
+  "const ValueFlow :: Value vt ;" always "const ValueFlow :: Value vt ;"
+Line 599
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  599 always 599
+  expected always "const ValueFlow :: Value vt ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  599 always 599
+  code always "using value_type = const ValueFlow::Value;\nvalue_type vt;"
+Line 603
+  147 always 147
+  = always "struct UnusualType {\n  using T = vtkm::Id;\n  T X;\n};\nnamespace vtkm {\ntemplate <>\nstruct VecTraits<UnusualType> : VecTraits<UnusualType::T> { };\n}"
+  "struct UnusualType {\n  using T = vtkm::Id;\n  T X;\n};\nnamespace vtkm {\ntemplate <>\nstruct VecTraits<UnusualType> : VecTraits<UnusualType::T> { };\n}" always "struct UnusualType {\n  using T = vtkm::Id;\n  T X;\n};\nnamespace vtkm {\ntemplate <>\nstruct VecTraits<UnusualType> : VecTraits<UnusualType::T> { };\n}"
+Line 611
+  122 always 122
+  = always "struct UnusualType { vtkm :: Id X ; } ; namespace vtkm { struct VecTraits<UnusualType> : VecTraits < vtkm :: Id > { } ; }"
+  "struct UnusualType { vtkm :: Id X ; } ; namespace vtkm { struct VecTraits<UnusualType> : VecTraits < vtkm :: Id > { } ; }" always "struct UnusualType { vtkm :: Id X ; } ; namespace vtkm { struct VecTraits<UnusualType> : VecTraits < vtkm :: Id > { } ; }"
+Line 617
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  617 always 617
+  expected always "struct UnusualType { vtkm :: Id X ; } ; namespace vtkm { struct VecTraits<UnusualType> : VecTraits < vtkm :: Id > { } ; }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  617 always 617
+  code always "struct UnusualType {\n  using T = vtkm::Id;\n  T X;\n};\nnamespace vtkm {\ntemplate <>\nstruct VecTraits<UnusualType> : VecTraits<UnusualType::T> { };\n}"
+Line 621
+  51 always 51
+  = always "using V = std::vector<int>;\nstruct A {\n    V p;\n};"
+  "using V = std::vector<int>;\nstruct A {\n    V p;\n};" always "using V = std::vector<int>;\nstruct A {\n    V p;\n};"
+Line 626
+  41 always 41
+  = always "struct A { std :: vector < int > p ; } ;"
+  "struct A { std :: vector < int > p ; } ;" always "struct A { std :: vector < int > p ; } ;"
+Line 630
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  630 always 630
+  expected always "struct A { std :: vector < int > p ; } ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  630 always 630
+  code always "using V = std::vector<int>;\nstruct A {\n    V p;\n};"
+Line 634
+  130 always 130
+  = always "class A {\npublic:\n    using V = std::vector<double>;\n};\nusing V = std::vector<int>;\nclass I {\nprivate:\n    A::V v_;\n    V v2_;\n};"
+  "class A {\npublic:\n    using V = std::vector<double>;\n};\nusing V = std::vector<int>;\nclass I {\nprivate:\n    A::V v_;\n    V v2_;\n};" always "class A {\npublic:\n    using V = std::vector<double>;\n};\nusing V = std::vector<int>;\nclass I {\nprivate:\n    A::V v_;\n    V v2_;\n};"
+Line 645
+  103 always 103
+  = always "class A { public: } ; class I { private: std :: vector < double > v_ ; std :: vector < int > v2_ ; } ;"
+  "class A { public: } ; class I { private: std :: vector < double > v_ ; std :: vector < int > v2_ ; } ;" always "class A { public: } ; class I { private: std :: vector < double > v_ ; std :: vector < int > v2_ ; } ;"
+Line 654
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  654 always 654
+  expected always "class A { public: } ; class I { private: std :: vector < double > v_ ; std :: vector < int > v2_ ; } ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  654 always 654
+  code always "class A {\npublic:\n    using V = std::vector<double>;\n};\nusing V = std::vector<int>;\nclass I {\nprivate:\n    A::V v_;\n    V v2_;\n};"
+Line 658
+  30 always 30
+  = always "using mystring = std::string;"
+  "using mystring = std::string;" always "using mystring = std::string;"
+Line 660
+  2 always 2
+  = always ";"
+  ";" always ";"
+Line 662
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  662 always 662
+  exp always ";"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  662 always 662
+  code always "using mystring = std::string;"
+Line 666
+  30 always 30
+  = always "using BOOL = unsigned; int i;"
+  "using BOOL = unsigned; int i;" always "using BOOL = unsigned; int i;"
+Line 668
+  8 always 8
+  = always "int i ;"
+  "int i ;" always "int i ;"
+Line 670
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  670 always 670
+  exp always "int i ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  670 always 670
+  code always "using BOOL = unsigned; int i;"
+Line 671
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  671 always 671
+  exp always "int i ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  671 always 671
+  code always "using BOOL = unsigned; int i;"
+Line 672
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  672 always 672
+  exp always "int i ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  672 always 672
+  code always "using BOOL = unsigned; int i;"
+Line 673
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  673 always 673
+  exp always "int i ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  673 always 673
+  code always "using BOOL = unsigned; int i;"
+Line 674
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  674 always 674
+  exp always "int i ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  674 always 674
+  code always "using BOOL = unsigned; int i;"
+Line 678
+  114 always 114
+  = always "template <class T>\nclass c {\n    int i = 0;\n    c() { i--; }\n};\ntemplate <class T>\nclass s {};\nusing BOOL = char;"
+  "template <class T>\nclass c {\n    int i = 0;\n    c() { i--; }\n};\ntemplate <class T>\nclass s {};\nusing BOOL = char;" always "template <class T>\nclass c {\n    int i = 0;\n    c() { i--; }\n};\ntemplate <class T>\nclass s {};\nusing BOOL = char;"
+Line 687
+  103 always 103
+  = always "template < class T > class c { int i ; i = 0 ; c ( ) { i -- ; } } ; template < class T > class s { } ;"
+  "template < class T > class c { int i ; i = 0 ; c ( ) { i -- ; } } ; template < class T > class s { } ;" always "template < class T > class c { int i ; i = 0 ; c ( ) { i -- ; } } ; template < class T > class s { } ;"
+Line 694
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  694 always 694
+  exp always "template < class T > class c { int i ; i = 0 ; c ( ) { i -- ; } } ; template < class T > class s { } ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  694 always 694
+  code always "template <class T>\nclass c {\n    int i = 0;\n    c() { i--; }\n};\ntemplate <class T>\nclass s {};\nusing BOOL = char;"
+Line 698
+  182 always 182
+  = always "namespace NS1 {\n  namespace NS2 {\n    using _LONG = signed long long;\n  }\n}\nvoid f1() {\n  using namespace NS1;\n  NS2::_LONG A;\n}\nvoid f2() {\n  using namespace NS1::NS2;\n  _LONG A;\n}"
+  "namespace NS1 {\n  namespace NS2 {\n    using _LONG = signed long long;\n  }\n}\nvoid f1() {\n  using namespace NS1;\n  NS2::_LONG A;\n}\nvoid f2() {\n  using namespace NS1::NS2;\n  _LONG A;\n}" always "namespace NS1 {\n  namespace NS2 {\n    using _LONG = signed long long;\n  }\n}\nvoid f1() {\n  using namespace NS1;\n  NS2::_LONG A;\n}\nvoid f2() {\n  using namespace NS1::NS2;\n  _LONG A;\n}"
+Line 712
+  125 always 125
+  = always "void f1 ( ) { using namespace NS1 ; signed long long A ; } void f2 ( ) { using namespace NS1 :: NS2 ; signed long long A ; }"
+  "void f1 ( ) { using namespace NS1 ; signed long long A ; } void f2 ( ) { using namespace NS1 :: NS2 ; signed long long A ; }" always "void f1 ( ) { using namespace NS1 ; signed long long A ; } void f2 ( ) { using namespace NS1 :: NS2 ; signed long long A ; }"
+Line 721
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  721 always 721
+  exp always "void f1 ( ) { using namespace NS1 ; signed long long A ; } void f2 ( ) { using namespace NS1 :: NS2 ; signed long long A ; }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  721 always 721
+  code always "namespace NS1 {\n  namespace NS2 {\n    using _LONG = signed long long;\n  }\n}\nvoid f1() {\n  using namespace NS1;\n  NS2::_LONG A;\n}\nvoid f2() {\n  using namespace NS1::NS2;\n  _LONG A;\n}"
+Line 725
+  199 always 199
+  = always "namespace ns {\n    class Result;\n    using UniqueResultPtr = std::unique_ptr<Result>;\n    class A {\n    public:\n        void func(UniqueResultPtr);\n    };\n    void A::func(UniqueResultPtr) {\n    }\n}"
+  "namespace ns {\n    class Result;\n    using UniqueResultPtr = std::unique_ptr<Result>;\n    class A {\n    public:\n        void func(UniqueResultPtr);\n    };\n    void A::func(UniqueResultPtr) {\n    }\n}" always "namespace ns {\n    class Result;\n    using UniqueResultPtr = std::unique_ptr<Result>;\n    class A {\n    public:\n        void func(UniqueResultPtr);\n    };\n    void A::func(UniqueResultPtr) {\n    }\n}"
+Line 735
+  151 always 151
+  = always "namespace ns { class Result ; class A { public: void func ( std :: unique_ptr < Result > ) ; } ; void A :: func ( std :: unique_ptr < Result > ) { } }"
+  "namespace ns { class Result ; class A { public: void func ( std :: unique_ptr < Result > ) ; } ; void A :: func ( std :: unique_ptr < Result > ) { } }" always "namespace ns { class Result ; class A { public: void func ( std :: unique_ptr < Result > ) ; } ; void A :: func ( std :: unique_ptr < Result > ) { } }"
+Line 745
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  745 always 745
+  exp always "namespace ns { class Result ; class A { public: void func ( std :: unique_ptr < Result > ) ; } ; void A :: func ( std :: unique_ptr < Result > ) { } }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  745 always 745
+  code always "namespace ns {\n    class Result;\n    using UniqueResultPtr = std::unique_ptr<Result>;\n    class A {\n    public:\n        void func(UniqueResultPtr);\n    };\n    void A::func(UniqueResultPtr) {\n    }\n}"
+Line 750
+  149 always 149
+  = always "class A {\npublic:\n    using Foo = int;\n    A(Foo foo);\n    ~A();\n    void func(Foo foo);\n};\nA::A(Foo) { }\nA::~A() { Foo foo; }\nvoid A::func(Foo) { }"
+  "class A {\npublic:\n    using Foo = int;\n    A(Foo foo);\n    ~A();\n    void func(Foo foo);\n};\nA::A(Foo) { }\nA::~A() { Foo foo; }\nvoid A::func(Foo) { }" always "class A {\npublic:\n    using Foo = int;\n    A(Foo foo);\n    ~A();\n    void func(Foo foo);\n};\nA::A(Foo) { }\nA::~A() { Foo foo; }\nvoid A::func(Foo) { }"
+Line 760
+  145 always 145
+  = always "class A { public: A ( int foo ) ; ~ A ( ) ; void func ( int foo ) ; } ; A :: A ( int ) { } A :: ~ A ( ) { int foo ; } void A :: func ( int ) { }"
+  "class A { public: A ( int foo ) ; ~ A ( ) ; void func ( int foo ) ; } ; A :: A ( int ) { } A :: ~ A ( ) { int foo ; } void A :: func ( int ) { }" always "class A { public: A ( int foo ) ; ~ A ( ) ; void func ( int foo ) ; } ; A :: A ( int ) { } A :: ~ A ( ) { int foo ; } void A :: func ( int ) { }"
+Line 769
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  769 always 769
+  exp always "class A { public: A ( int foo ) ; ~ A ( ) ; void func ( int foo ) ; } ; A :: A ( int ) { } A :: ~ A ( ) { int foo ; } void A :: func ( int ) { }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  769 always 769
+  code always "class A {\npublic:\n    using Foo = int;\n    A(Foo foo);\n    ~A();\n    void func(Foo foo);\n};\nA::A(Foo) { }\nA::~A() { Foo foo; }\nvoid A::func(Foo) { }"
+Line 772
+  196 always 196
+  = always "class A {\npublic:\n    struct B {\n        using Foo = int;\n        B(Foo foo);\n        ~B();\n        void func(Foo foo);\n    };\n};\nA::B::B(Foo) { }\nA::B::~B() { Foo foo; }\nvoid A::B::func(Foo) { }"
+  "class A {\npublic:\n    struct B {\n        using Foo = int;\n        B(Foo foo);\n        ~B();\n        void func(Foo foo);\n    };\n};\nA::B::B(Foo) { }\nA::B::~B() { Foo foo; }\nvoid A::B::func(Foo) { }" always "class A {\npublic:\n    struct B {\n        using Foo = int;\n        B(Foo foo);\n        ~B();\n        void func(Foo foo);\n    };\n};\nA::B::B(Foo) { }\nA::B::~B() { Foo foo; }\nvoid A::B::func(Foo) { }"
+Line 784
+  175 always 175
+  = always "class A { public: struct B { B ( int foo ) ; ~ B ( ) ; void func ( int foo ) ; } ; } ; A :: B :: B ( int ) { } A :: B :: ~ B ( ) { int foo ; } void A :: B :: func ( int ) { }"
+  "class A { public: struct B { B ( int foo ) ; ~ B ( ) ; void func ( int foo ) ; } ; } ; A :: B :: B ( int ) { } A :: B :: ~ B ( ) { int foo ; } void A :: B :: func ( int ) { }" always "class A { public: struct B { B ( int foo ) ; ~ B ( ) ; void func ( int foo ) ; } ; } ; A :: B :: B ( int ) { } A :: B :: ~ B ( ) { int foo ; } void A :: B :: func ( int ) { }"
+Line 795
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  795 always 795
+  exp always "class A { public: struct B { B ( int foo ) ; ~ B ( ) ; void func ( int foo ) ; } ; } ; A :: B :: B ( int ) { } A :: B :: ~ B ( ) { int foo ; } void A :: B :: func ( int ) { }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  795 always 795
+  code always "class A {\npublic:\n    struct B {\n        using Foo = int;\n        B(Foo foo);\n        ~B();\n        void func(Foo foo);\n    };\n};\nA::B::B(Foo) { }\nA::B::~B() { Foo foo; }\nvoid A::B::func(Foo) { }"
+Line 800
+  97 always 97
+  = always "class A {\npublic:\n    using Type = int;\n    A(Type&);\n    Type& t_;\n};\nA::A(Type& t) : t_(t) { }"
+  "class A {\npublic:\n    using Type = int;\n    A(Type&);\n    Type& t_;\n};\nA::A(Type& t) : t_(t) { }" always "class A {\npublic:\n    using Type = int;\n    A(Type&);\n    Type& t_;\n};\nA::A(Type& t) : t_(t) { }"
+Line 807
+  81 always 81
+  = always "class A { public: A ( int & ) ; int & t_ ; } ; A :: A ( int & t ) : t_ ( t ) { }"
+  "class A { public: A ( int & ) ; int & t_ ; } ; A :: A ( int & t ) : t_ ( t ) { }" always "class A { public: A ( int & ) ; int & t_ ; } ; A :: A ( int & t ) : t_ ( t ) { }"
+Line 813
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  813 always 813
+  exp always "class A { public: A ( int & ) ; int & t_ ; } ; A :: A ( int & t ) : t_ ( t ) { }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  813 always 813
+  code always "class A {\npublic:\n    using Type = int;\n    A(Type&);\n    Type& t_;\n};\nA::A(Type& t) : t_(t) { }"
+Line 817
+  35 always 35
+  = always "namespace a {\nusing a = enum {};\n}"
+  "namespace a {\nusing a = enum {};\n}" always "namespace a {\nusing a = enum {};\n}"
+Line 820
+  29 always 29
+  = always "namespace a { enum a { } ; }"
+  "namespace a { enum a { } ; }" always "namespace a { enum a { } ; }"
+Line 823
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  823 always 823
+  exp always "namespace a { enum a { } ; }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  823 always 823
+  code always "namespace a {\nusing a = enum {};\n}"
+Line 827
+  209 always 209
+  = always "enum class Type_t { Nil = 0 };\ntemplate<Type_t type> class MappedType { };\ntemplate<> class MappedType<Type_t::Nil> { using type = void; };\nstd::string to_string (Example::Type_t type) {\n   switch (type) {}\n}"
+  "enum class Type_t { Nil = 0 };\ntemplate<Type_t type> class MappedType { };\ntemplate<> class MappedType<Type_t::Nil> { using type = void; };\nstd::string to_string (Example::Type_t type) {\n   switch (type) {}\n}" always "enum class Type_t { Nil = 0 };\ntemplate<Type_t type> class MappedType { };\ntemplate<> class MappedType<Type_t::Nil> { using type = void; };\nstd::string to_string (Example::Type_t type) {\n   switch (type) {}\n}"
+Line 833
+  223 always 223
+  = always "enum class Type_t { Nil = 0 } ; class MappedType<Type_t::Nil> ; template < Type_t type > class MappedType { } ; class MappedType<Type_t::Nil> { } ; std :: string to_string ( Example :: Type_t type ) { switch ( type ) { } }"
+  "enum class Type_t { Nil = 0 } ; class MappedType<Type_t::Nil> ; template < Type_t type > class MappedType { } ; class MappedType<Type_t::Nil> { } ; std :: string to_string ( Example :: Type_t type ) { switch ( type ) { } }" always "enum class Type_t { Nil = 0 } ; class MappedType<Type_t::Nil> ; template < Type_t type > class MappedType { } ; class MappedType<Type_t::Nil> { } ; std :: string to_string ( Example :: Type_t type ) { switch ( type ) { } }"
+Line 839
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  839 always 839
+  exp always "enum class Type_t { Nil = 0 } ; class MappedType<Type_t::Nil> ; template < Type_t type > class MappedType { } ; class MappedType<Type_t::Nil> { } ; std :: string to_string ( Example :: Type_t type ) { switch ( type ) { } }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  839 always 839
+  code always "enum class Type_t { Nil = 0 };\ntemplate<Type_t type> class MappedType { };\ntemplate<> class MappedType<Type_t::Nil> { using type = void; };\nstd::string to_string (Example::Type_t type) {\n   switch (type) {}\n}"
+Line 843
+  122 always 122
+  = always "namespace ns {\n    using ArrayType = std::vector<int>;\n}\nusing namespace ns;\nstatic void f() {\n    const ArrayType arr;\n}"
+  "namespace ns {\n    using ArrayType = std::vector<int>;\n}\nusing namespace ns;\nstatic void f() {\n    const ArrayType arr;\n}" always "namespace ns {\n    using ArrayType = std::vector<int>;\n}\nusing namespace ns;\nstatic void f() {\n    const ArrayType arr;\n}"
+Line 850
+  77 always 77
+  = always "using namespace ns ; static void f ( ) { const std :: vector < int > arr ; }"
+  "using namespace ns ; static void f ( ) { const std :: vector < int > arr ; }" always "using namespace ns ; static void f ( ) { const std :: vector < int > arr ; }"
+Line 854
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  854 always 854
+  exp always "using namespace ns ; static void f ( ) { const std :: vector < int > arr ; }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  854 always 854
+  code always "namespace ns {\n    using ArrayType = std::vector<int>;\n}\nusing namespace ns;\nstatic void f() {\n    const ArrayType arr;\n}"
+Line 860
+  282 always 282
+  = always "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nusing namespace external::ns1;\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+  "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nusing namespace external::ns1;\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}" always "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nusing namespace external::ns1;\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+Line 875
+  256 always 256
+  = always "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } using namespace external :: ns1 ; namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+  "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } using namespace external :: ns1 ; namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;" always "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } using namespace external :: ns1 ; namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+Line 890
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  890 always 890
+  exp always "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } using namespace external :: ns1 ; namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  890 always 890
+  code always "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nusing namespace external::ns1;\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+Line 891
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  891 always 891
+  "" always ""
+Line 895
+  251 always 251
+  = always "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+  "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}" always "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+Line 909
+  222 always 222
+  = always "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+  "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;" always "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+Line 923
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  923 always 923
+  exp always "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  923 always 923
+  code always "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+Line 924
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  924 always 924
+  "" always ""
+Line 928
+  267 always 267
+  = always "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nusing namespace external::ns1;\nnamespace ns {\n    void A::f(V) {}\n}"
+  "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nusing namespace external::ns1;\nnamespace ns {\n    void A::f(V) {}\n}" always "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nusing namespace external::ns1;\nnamespace ns {\n    void A::f(V) {}\n}"
+Line 943
+  256 always 256
+  = always "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } using namespace external :: ns1 ; namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+  "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } using namespace external :: ns1 ; namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;" always "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } using namespace external :: ns1 ; namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+Line 958
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  958 always 958
+  exp always "namespace external { namespace ns1 { struct B<1> ; } } namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } using namespace external :: ns1 ; namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  958 always 958
+  code always "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nusing namespace external::ns1;\nnamespace ns {\n    void A::f(V) {}\n}"
+Line 959
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  959 always 959
+  "" always ""
+Line 963
+  252 always 252
+  = always "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nusing namespace external::ns1;\nnamespace ns {\n    struct A {\n        void f(V);\n    };\n}\nnamespace ns {\n    void A::f(V) {}\n}"
+  "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nusing namespace external::ns1;\nnamespace ns {\n    struct A {\n        void f(V);\n    };\n}\nnamespace ns {\n    void A::f(V) {}\n}" always "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nusing namespace external::ns1;\nnamespace ns {\n    struct A {\n        void f(V);\n    };\n}\nnamespace ns {\n    void A::f(V) {}\n}"
+Line 978
+  256 always 256
+  = always "namespace external { namespace ns1 { struct B<1> ; } } using namespace external :: ns1 ; namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+  "namespace external { namespace ns1 { struct B<1> ; } } using namespace external :: ns1 ; namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;" always "namespace external { namespace ns1 { struct B<1> ; } } using namespace external :: ns1 ; namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+Line 993
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  993 always 993
+  exp always "namespace external { namespace ns1 { struct B<1> ; } } using namespace external :: ns1 ; namespace ns { struct A { void f ( external :: ns1 :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: ns1 :: B<1> ) { } } struct external :: ns1 :: B<1> { } ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  993 always 993
+  code always "namespace external {\n    namespace ns1 {\n        template <int size> struct B { };\n        using V = B<sizeof(bool)>;\n    }\n}\nusing namespace external::ns1;\nnamespace ns {\n    struct A {\n        void f(V);\n    };\n}\nnamespace ns {\n    void A::f(V) {}\n}"
+Line 994
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  994 always 994
+  "" always ""
+Line 997
+  247 always 247
+  = always "namespace external {\n    template <int size> struct B { };\n    namespace ns1 {\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+  "namespace external {\n    template <int size> struct B { };\n    namespace ns1 {\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}" always "namespace external {\n    template <int size> struct B { };\n    namespace ns1 {\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+Line 1011
+  183 always 183
+  = always "namespace external { struct B<1> ; } namespace ns { struct A { void f ( external :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: B<1> ) { } } struct external :: B<1> { } ;"
+  "namespace external { struct B<1> ; } namespace ns { struct A { void f ( external :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: B<1> ) { } } struct external :: B<1> { } ;" always "namespace external { struct B<1> ; } namespace ns { struct A { void f ( external :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: B<1> ) { } } struct external :: B<1> { } ;"
+Line 1023
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1023 always 1023
+  exp always "namespace external { struct B<1> ; } namespace ns { struct A { void f ( external :: B<1> ) ; } ; } namespace ns { void A :: f ( external :: B<1> ) { } } struct external :: B<1> { } ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1023 always 1023
+  code always "namespace external {\n    template <int size> struct B { };\n    namespace ns1 {\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+Line 1024
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1024 always 1024
+  "" always ""
+Line 1027
+  243 always 243
+  = always "template <int size> struct B { };\nnamespace external {\n    namespace ns1 {\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+  "template <int size> struct B { };\nnamespace external {\n    namespace ns1 {\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}" always "template <int size> struct B { };\nnamespace external {\n    namespace ns1 {\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+Line 1041
+  124 always 124
+  = always "struct B<1> ; namespace ns { struct A { void f ( B<1> ) ; } ; } namespace ns { void A :: f ( B<1> ) { } } struct B<1> { } ;"
+  "struct B<1> ; namespace ns { struct A { void f ( B<1> ) ; } ; } namespace ns { void A :: f ( B<1> ) { } } struct B<1> { } ;" always "struct B<1> ; namespace ns { struct A { void f ( B<1> ) ; } ; } namespace ns { void A :: f ( B<1> ) { } } struct B<1> { } ;"
+Line 1051
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1051 always 1051
+  exp always "struct B<1> ; namespace ns { struct A { void f ( B<1> ) ; } ; } namespace ns { void A :: f ( B<1> ) { } } struct B<1> { } ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1051 always 1051
+  code always "template <int size> struct B { };\nnamespace external {\n    namespace ns1 {\n        using V = B<sizeof(bool)>;\n    }\n}\nnamespace ns {\n    struct A {\n        void f(external::ns1::V);\n    };\n}\nnamespace ns {\n    void A::f(external::ns1::V) {}\n}"
+Line 1052
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1052 always 1052
+  "" always ""
+Line 1058
+  215 always 215
+  = always "class B {\npublic:\n    using V = std::vector<char>;\n    virtual void f(const V&) const = 0;\n};\nclass A final : public B {\npublic:\n    void f(const V&) const override;\n};\nvoid A::f(const std::vector<char>&) const { }"
+  "class B {\npublic:\n    using V = std::vector<char>;\n    virtual void f(const V&) const = 0;\n};\nclass A final : public B {\npublic:\n    void f(const V&) const override;\n};\nvoid A::f(const std::vector<char>&) const { }" always "class B {\npublic:\n    using V = std::vector<char>;\n    virtual void f(const V&) const = 0;\n};\nclass A final : public B {\npublic:\n    void f(const V&) const override;\n};\nvoid A::f(const std::vector<char>&) const { }"
+Line 1068
+  233 always 233
+  = always "class B { public: virtual void f ( const std :: vector < char > & ) const = 0 ; } ; class A : public B { public: void f ( const std :: vector < char > & ) const override ; } ; void A :: f ( const std :: vector < char > & ) const { }"
+  "class B { public: virtual void f ( const std :: vector < char > & ) const = 0 ; } ; class A : public B { public: void f ( const std :: vector < char > & ) const override ; } ; void A :: f ( const std :: vector < char > & ) const { }" always "class B { public: virtual void f ( const std :: vector < char > & ) const = 0 ; } ; class A : public B { public: void f ( const std :: vector < char > & ) const override ; } ; void A :: f ( const std :: vector < char > & ) const { }"
+Line 1077
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1077 always 1077
+  exp always "class B { public: virtual void f ( const std :: vector < char > & ) const = 0 ; } ; class A : public B { public: void f ( const std :: vector < char > & ) const override ; } ; void A :: f ( const std :: vector < char > & ) const { }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1077 always 1077
+  code always "class B {\npublic:\n    using V = std::vector<char>;\n    virtual void f(const V&) const = 0;\n};\nclass A final : public B {\npublic:\n    void f(const V&) const override;\n};\nvoid A::f(const std::vector<char>&) const { }"
+Line 1078
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1078 always 1078
+  "" always ""
+Line 1081
+  528 always 528
+  = always "namespace NS1 {\n    class B {\n    public:\n        using V = std::vector<char>;\n        virtual void f(const V&) const = 0;\n    };\n}\nnamespace NS2 {\n    class A : public NS1::B {\n    public:\n        void f(const V&) const override;\n    };\n    namespace NS3 {\n        class C : public A {\n        public:\n            void f(const V&) const override;\n        };\n        void C::f(const V&) const { }\n    }\n    void A::f(const V&) const { }\n}\nvoid foo() {\n    NS2::A a;\n    NS2::NS3::C c;\n    NS1::B::V v;\n    a.f(v);\n    c.f(v);\n}"
+  "namespace NS1 {\n    class B {\n    public:\n        using V = std::vector<char>;\n        virtual void f(const V&) const = 0;\n    };\n}\nnamespace NS2 {\n    class A : public NS1::B {\n    public:\n        void f(const V&) const override;\n    };\n    namespace NS3 {\n        class C : public A {\n        public:\n            void f(const V&) const override;\n        };\n        void C::f(const V&) const { }\n    }\n    void A::f(const V&) const { }\n}\nvoid foo() {\n    NS2::A a;\n    NS2::NS3::C c;\n    NS1::B::V v;\n    a.f(v);\n    c.f(v);\n}" always "namespace NS1 {\n    class B {\n    public:\n        using V = std::vector<char>;\n        virtual void f(const V&) const = 0;\n    };\n}\nnamespace NS2 {\n    class A : public NS1::B {\n    public:\n        void f(const V&) const override;\n    };\n    namespace NS3 {\n        class C : public A {\n        public:\n            void f(const V&) const override;\n        };\n        void C::f(const V&) const { }\n    }\n    void A::f(const V&) const { }\n}\nvoid foo() {\n    NS2::A a;\n    NS2::NS3::C c;\n    NS1::B::V v;\n    a.f(v);\n    c.f(v);\n}"
+Line 1109
+  548 always 548
+  = always "namespace NS1 { class B { public: virtual void f ( const std :: vector < char > & ) const = 0 ; } ; } namespace NS2 { class A : public NS1 :: B { public: void f ( const std :: vector < char > & ) const override ; } ; namespace NS3 { class C : public A { public: void f ( const std :: vector < char > & ) const override ; } ; void C :: f ( const std :: vector < char > & ) const { } } void A :: f ( const std :: vector < char > & ) const { } } void foo ( ) { NS2 :: A a ; NS2 :: NS3 :: C c ; std :: vector < char > v ; a . f ( v ) ; c . f ( v ) ; }"
+  "namespace NS1 { class B { public: virtual void f ( const std :: vector < char > & ) const = 0 ; } ; } namespace NS2 { class A : public NS1 :: B { public: void f ( const std :: vector < char > & ) const override ; } ; namespace NS3 { class C : public A { public: void f ( const std :: vector < char > & ) const override ; } ; void C :: f ( const std :: vector < char > & ) const { } } void A :: f ( const std :: vector < char > & ) const { } } void foo ( ) { NS2 :: A a ; NS2 :: NS3 :: C c ; std :: vector < char > v ; a . f ( v ) ; c . f ( v ) ; }" always "namespace NS1 { class B { public: virtual void f ( const std :: vector < char > & ) const = 0 ; } ; } namespace NS2 { class A : public NS1 :: B { public: void f ( const std :: vector < char > & ) const override ; } ; namespace NS3 { class C : public A { public: void f ( const std :: vector < char > & ) const override ; } ; void C :: f ( const std :: vector < char > & ) const { } } void A :: f ( const std :: vector < char > & ) const { } } void foo ( ) { NS2 :: A a ; NS2 :: NS3 :: C c ; std :: vector < char > v ; a . f ( v ) ; c . f ( v ) ; }"
+Line 1136
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1136 always 1136
+  exp always "namespace NS1 { class B { public: virtual void f ( const std :: vector < char > & ) const = 0 ; } ; } namespace NS2 { class A : public NS1 :: B { public: void f ( const std :: vector < char > & ) const override ; } ; namespace NS3 { class C : public A { public: void f ( const std :: vector < char > & ) const override ; } ; void C :: f ( const std :: vector < char > & ) const { } } void A :: f ( const std :: vector < char > & ) const { } } void foo ( ) { NS2 :: A a ; NS2 :: NS3 :: C c ; std :: vector < char > v ; a . f ( v ) ; c . f ( v ) ; }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1136 always 1136
+  code always "namespace NS1 {\n    class B {\n    public:\n        using V = std::vector<char>;\n        virtual void f(const V&) const = 0;\n    };\n}\nnamespace NS2 {\n    class A : public NS1::B {\n    public:\n        void f(const V&) const override;\n    };\n    namespace NS3 {\n        class C : public A {\n        public:\n            void f(const V&) const override;\n        };\n        void C::f(const V&) const { }\n    }\n    void A::f(const V&) const { }\n}\nvoid foo() {\n    NS2::A a;\n    NS2::NS3::C c;\n    NS1::B::V v;\n    a.f(v);\n    c.f(v);\n}"
+Line 1137
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1137 always 1137
+  "" always ""
+Line 1140
+  563 always 563
+  = always "foo::ResultCodes_e\nGemImpl::setR(const ::foo::s _ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   using MLSource = foo::s::Literal;\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   M3_LOG_INFO(\"foo(\" << static_cast<int>(_ipSource) << \")\");\n   return ret;\n}\nfoo::ResultCodes_e\nGemImpl::getF(::foo::s &_ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   return ret;\n}\nfoo::ResultCodes_e\nGemImpl::setF(const ::foo::s _ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   using MLSource = foo::s::Literal;\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   return ret;\n}"
+  "foo::ResultCodes_e\nGemImpl::setR(const ::foo::s _ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   using MLSource = foo::s::Literal;\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   M3_LOG_INFO(\"foo(\" << static_cast<int>(_ipSource) << \")\");\n   return ret;\n}\nfoo::ResultCodes_e\nGemImpl::getF(::foo::s &_ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   return ret;\n}\nfoo::ResultCodes_e\nGemImpl::setF(const ::foo::s _ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   using MLSource = foo::s::Literal;\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   return ret;\n}" always "foo::ResultCodes_e\nGemImpl::setR(const ::foo::s _ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   using MLSource = foo::s::Literal;\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   M3_LOG_INFO(\"foo(\" << static_cast<int>(_ipSource) << \")\");\n   return ret;\n}\nfoo::ResultCodes_e\nGemImpl::getF(::foo::s &_ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   return ret;\n}\nfoo::ResultCodes_e\nGemImpl::setF(const ::foo::s _ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   using MLSource = foo::s::Literal;\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   return ret;\n}"
+Line 1164
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1164 always 1164
+  code always "foo::ResultCodes_e\nGemImpl::setR(const ::foo::s _ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   using MLSource = foo::s::Literal;\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   M3_LOG_INFO(\"foo(\" << static_cast<int>(_ipSource) << \")\");\n   return ret;\n}\nfoo::ResultCodes_e\nGemImpl::getF(::foo::s &_ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   return ret;\n}\nfoo::ResultCodes_e\nGemImpl::setF(const ::foo::s _ipSource)\n{\n   M3_LOG_EE_DEBUG();\n   using MLSource = foo::s::Literal;\n   auto ret = foo::ResultCodes_e::NO_ERROR;\n   return ret;\n}"
+Line 1169
+  301 always 301
+  = always "namespace ns {\n    class A {\n    public:\n        using V = std::vector<unsigned char>;\n        virtual void f(const V&) const = 0;\n    };\n    class B : public A {\n    public:\n        void f(const V&) const override;\n    };\n}\nnamespace ns {\n    void B::f(const std::vector<unsigned char>&) const { }\n}"
+  "namespace ns {\n    class A {\n    public:\n        using V = std::vector<unsigned char>;\n        virtual void f(const V&) const = 0;\n    };\n    class B : public A {\n    public:\n        void f(const V&) const override;\n    };\n}\nnamespace ns {\n    void B::f(const std::vector<unsigned char>&) const { }\n}" always "namespace ns {\n    class A {\n    public:\n        using V = std::vector<unsigned char>;\n        virtual void f(const V&) const = 0;\n    };\n    class B : public A {\n    public:\n        void f(const V&) const override;\n    };\n}\nnamespace ns {\n    void B::f(const std::vector<unsigned char>&) const { }\n}"
+Line 1183
+  294 always 294
+  = always "namespace ns { class A { public: virtual void f ( const std :: vector < unsigned char > & ) const = 0 ; } ; class B : public A { public: void f ( const std :: vector < unsigned char > & ) const override ; } ; } namespace ns { void B :: f ( const std :: vector < unsigned char > & ) const { } }"
+  "namespace ns { class A { public: virtual void f ( const std :: vector < unsigned char > & ) const = 0 ; } ; class B : public A { public: void f ( const std :: vector < unsigned char > & ) const override ; } ; } namespace ns { void B :: f ( const std :: vector < unsigned char > & ) const { } }" always "namespace ns { class A { public: virtual void f ( const std :: vector < unsigned char > & ) const = 0 ; } ; class B : public A { public: void f ( const std :: vector < unsigned char > & ) const override ; } ; } namespace ns { void B :: f ( const std :: vector < unsigned char > & ) const { } }"
+Line 1196
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1196 always 1196
+  exp always "namespace ns { class A { public: virtual void f ( const std :: vector < unsigned char > & ) const = 0 ; } ; class B : public A { public: void f ( const std :: vector < unsigned char > & ) const override ; } ; } namespace ns { void B :: f ( const std :: vector < unsigned char > & ) const { } }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1196 always 1196
+  code always "namespace ns {\n    class A {\n    public:\n        using V = std::vector<unsigned char>;\n        virtual void f(const V&) const = 0;\n    };\n    class B : public A {\n    public:\n        void f(const V&) const override;\n    };\n}\nnamespace ns {\n    void B::f(const std::vector<unsigned char>&) const { }\n}"
+Line 1197
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1197 always 1197
+  "" always ""
+Line 1202
+  180 always 180
+  = always "namespace ns {\n    class A {\n    public:\n        using h = std::function<void()>;\n    };\n    class B : public A {\n        void f(h);\n    };\n}\nnamespace ns {\n    void B::f(h) { }\n}"
+  "namespace ns {\n    class A {\n    public:\n        using h = std::function<void()>;\n    };\n    class B : public A {\n        void f(h);\n    };\n}\nnamespace ns {\n    void B::f(h) { }\n}" always "namespace ns {\n    class A {\n    public:\n        using h = std::function<void()>;\n    };\n    class B : public A {\n        void f(h);\n    };\n}\nnamespace ns {\n    void B::f(h) { }\n}"
+Line 1214
+  172 always 172
+  = always "namespace ns { class A { public: } ; class B : public A { void f ( std :: function < void ( ) > ) ; } ; } namespace ns { void B :: f ( std :: function < void ( ) > ) { } }"
+  "namespace ns { class A { public: } ; class B : public A { void f ( std :: function < void ( ) > ) ; } ; } namespace ns { void B :: f ( std :: function < void ( ) > ) { } }" always "namespace ns { class A { public: } ; class B : public A { void f ( std :: function < void ( ) > ) ; } ; } namespace ns { void B :: f ( std :: function < void ( ) > ) { } }"
+Line 1225
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1225 always 1225
+  exp always "namespace ns { class A { public: } ; class B : public A { void f ( std :: function < void ( ) > ) ; } ; } namespace ns { void B :: f ( std :: function < void ( ) > ) { } }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1225 always 1225
+  code always "namespace ns {\n    class A {\n    public:\n        using h = std::function<void()>;\n    };\n    class B : public A {\n        void f(h);\n    };\n}\nnamespace ns {\n    void B::f(h) { }\n}"
+Line 1226
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1226 always 1226
+  "" always ""
+Line 1229
+  190 always 190
+  = always "namespace ns {\nnamespace external {\nclass A {\npublic: \n  using h = std::function<void()>;\n};\nclass B : public A {\n  void f(h);\n};\n}\n}\nnamespace ns {\nnamespace external {\nvoid B::f(h) {}\n}\n}"
+  "namespace ns {\nnamespace external {\nclass A {\npublic: \n  using h = std::function<void()>;\n};\nclass B : public A {\n  void f(h);\n};\n}\n}\nnamespace ns {\nnamespace external {\nvoid B::f(h) {}\n}\n}" always "namespace ns {\nnamespace external {\nclass A {\npublic: \n  using h = std::function<void()>;\n};\nclass B : public A {\n  void f(h);\n};\n}\n}\nnamespace ns {\nnamespace external {\nvoid B::f(h) {}\n}\n}"
+Line 1245
+  218 always 218
+  = always "namespace ns { namespace external { class A { public: } ; class B : public A { void f ( std :: function < void ( ) > ) ; } ; } } namespace ns { namespace external { void B :: f ( std :: function < void ( ) > ) { } } }"
+  "namespace ns { namespace external { class A { public: } ; class B : public A { void f ( std :: function < void ( ) > ) ; } ; } } namespace ns { namespace external { void B :: f ( std :: function < void ( ) > ) { } } }" always "namespace ns { namespace external { class A { public: } ; class B : public A { void f ( std :: function < void ( ) > ) ; } ; } } namespace ns { namespace external { void B :: f ( std :: function < void ( ) > ) { } } }"
+Line 1260
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1260 always 1260
+  exp always "namespace ns { namespace external { class A { public: } ; class B : public A { void f ( std :: function < void ( ) > ) ; } ; } } namespace ns { namespace external { void B :: f ( std :: function < void ( ) > ) { } } }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1260 always 1260
+  code always "namespace ns {\nnamespace external {\nclass A {\npublic: \n  using h = std::function<void()>;\n};\nclass B : public A {\n  void f(h);\n};\n}\n}\nnamespace ns {\nnamespace external {\nvoid B::f(h) {}\n}\n}"
+Line 1261
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1261 always 1261
+  "" always ""
+Line 1267
+  156 always 156
+  = always "std::ostream & operator<<(std::ostream &s, const Pr<st> p) {\n    return s;\n}\nvoid foo() {\n    using Pr = d::Pr<st>;\n    Pr p;\n}\nvoid bar() {\n   Pr<st> p;\n}"
+  "std::ostream & operator<<(std::ostream &s, const Pr<st> p) {\n    return s;\n}\nvoid foo() {\n    using Pr = d::Pr<st>;\n    Pr p;\n}\nvoid bar() {\n   Pr<st> p;\n}" always "std::ostream & operator<<(std::ostream &s, const Pr<st> p) {\n    return s;\n}\nvoid foo() {\n    using Pr = d::Pr<st>;\n    Pr p;\n}\nvoid bar() {\n   Pr<st> p;\n}"
+Line 1277
+  153 always 153
+  = always "std :: ostream & operator<< ( std :: ostream & s , const Pr < st > p ) { return s ; } void foo ( ) { d :: Pr < st > p ; } void bar ( ) { Pr < st > p ; }"
+  "std :: ostream & operator<< ( std :: ostream & s , const Pr < st > p ) { return s ; } void foo ( ) { d :: Pr < st > p ; } void bar ( ) { Pr < st > p ; }" always "std :: ostream & operator<< ( std :: ostream & s , const Pr < st > p ) { return s ; } void foo ( ) { d :: Pr < st > p ; } void bar ( ) { Pr < st > p ; }"
+Line 1286
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1286 always 1286
+  exp always "std :: ostream & operator<< ( std :: ostream & s , const Pr < st > p ) { return s ; } void foo ( ) { d :: Pr < st > p ; } void bar ( ) { Pr < st > p ; }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1286 always 1286
+  code always "std::ostream & operator<<(std::ostream &s, const Pr<st> p) {\n    return s;\n}\nvoid foo() {\n    using Pr = d::Pr<st>;\n    Pr p;\n}\nvoid bar() {\n   Pr<st> p;\n}"
+Line 1287
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1287 always 1287
+  "" always ""
+Line 1290
+  149 always 149
+  = always "namespace defsa {\nvoid xxx::foo() {\n   using NS1 = v1::l;\n}\nvoid xxx::bar() {\n   using NS1 = v1::l;\n}\nvoid xxx::foobar() {\n   using NS1 = v1::l;\n}\n}"
+  "namespace defsa {\nvoid xxx::foo() {\n   using NS1 = v1::l;\n}\nvoid xxx::bar() {\n   using NS1 = v1::l;\n}\nvoid xxx::foobar() {\n   using NS1 = v1::l;\n}\n}" always "namespace defsa {\nvoid xxx::foo() {\n   using NS1 = v1::l;\n}\nvoid xxx::bar() {\n   using NS1 = v1::l;\n}\nvoid xxx::foobar() {\n   using NS1 = v1::l;\n}\n}"
+Line 1301
+  95 always 95
+  = always "namespace defsa { void xxx :: foo ( ) { } void xxx :: bar ( ) { } void xxx :: foobar ( ) { } }"
+  "namespace defsa { void xxx :: foo ( ) { } void xxx :: bar ( ) { } void xxx :: foobar ( ) { } }" always "namespace defsa { void xxx :: foo ( ) { } void xxx :: bar ( ) { } void xxx :: foobar ( ) { } }"
+Line 1309
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1309 always 1309
+  exp always "namespace defsa { void xxx :: foo ( ) { } void xxx :: bar ( ) { } void xxx :: foobar ( ) { } }"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1309 always 1309
+  code always "namespace defsa {\nvoid xxx::foo() {\n   using NS1 = v1::l;\n}\nvoid xxx::bar() {\n   using NS1 = v1::l;\n}\nvoid xxx::foobar() {\n   using NS1 = v1::l;\n}\n}"
+Line 1314
+  56 always 56
+  = always "using uint8_t = unsigned char;\nenum E : uint8_t { E0 };"
+  "using uint8_t = unsigned char;\nenum E : uint8_t { E0 };" always "using uint8_t = unsigned char;\nenum E : uint8_t { E0 };"
+Line 1316
+  32 always 32
+  = always "enum E : unsigned char { E0 } ;"
+  "enum E : unsigned char { E0 } ;" always "enum E : unsigned char { E0 } ;"
+Line 1317
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1317 always 1317
+  exp always "enum E : unsigned char { E0 } ;"
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1317 always 1317
+  code always "using uint8_t = unsigned char;\nenum E : uint8_t { E0 };"
+Line 1321
+  150 always 150
+  = always "struct A {\n    enum class Mode { UNKNOWN, ENABLED, NONE, };\n};\n\nnamespace spdlog { class logger; }\nusing LoggerPtr = std::shared_ptr<spdlog::logger>;"
+  "struct A {\n    enum class Mode { UNKNOWN, ENABLED, NONE, };\n};\n\nnamespace spdlog { class logger; }\nusing LoggerPtr = std::shared_ptr<spdlog::logger>;" always "struct A {\n    enum class Mode { UNKNOWN, ENABLED, NONE, };\n};\n\nnamespace spdlog { class logger; }\nusing LoggerPtr = std::shared_ptr<spdlog::logger>;"
+Line 1327
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1327 always 1327
+  code always "struct A {\n    enum class Mode { UNKNOWN, ENABLED, NONE, };\n};\n\nnamespace spdlog { class logger; }\nusing LoggerPtr = std::shared_ptr<spdlog::logger>;"
+Line 1328
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1328 always 1328
+  "" always ""
+Line 1332
+  138 always 138
+  = always "struct A {\n    using Map = std::map<int, int>;\n    Map values;\n};\n\nstatic void getInitialProgramState(const A::Map& vars = A::Map {})\n{}\n"
+  "struct A {\n    using Map = std::map<int, int>;\n    Map values;\n};\n\nstatic void getInitialProgramState(const A::Map& vars = A::Map {})\n{}\n" always "struct A {\n    using Map = std::map<int, int>;\n    Map values;\n};\n\nstatic void getInitialProgramState(const A::Map& vars = A::Map {})\n{}\n"
+Line 1339
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1339 always 1339
+  code always "struct A {\n    using Map = std::map<int, int>;\n    Map values;\n};\n\nstatic void getInitialProgramState(const A::Map& vars = A::Map {})\n{}\n"
+Line 1340
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsimplifyusing.cpp" always "cppcheck-2.8/test/testsimplifyusing.cpp"
+  1340 always 1340
+  "" always ""

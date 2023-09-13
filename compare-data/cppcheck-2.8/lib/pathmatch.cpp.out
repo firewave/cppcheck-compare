@@ -1,0 +1,602 @@
+
+
+##file cppcheck-2.8/lib/config.h
+
+1:
+|
+78:
+79: static const std :: string emptyString@var1 ;
+
+##file cppcheck-2.8/lib/pathmatch.h
+
+1:
+|
+32:
+33: class PathMatch {
+34: public:
+35:
+|
+41:
+42: explicit PathMatch ( const std :: vector < std :: string > & excludedPaths@var2 , bool caseSensitive@var3 = true ) ;
+43:
+|
+48:
+49: bool match ( const std :: string & path@var4 ) const ;
+50:
+51: protected:
+52:
+|
+57:
+58: static std :: string removeFilename ( const std :: string & path@var5 ) ;
+59:
+60: private:
+61: std :: vector < std :: string > mExcludedPaths@var6 ;
+62: bool mCaseSensitive@var7 ;
+63: std :: vector < std :: string > mWorkingDirectory@var8 ;
+64: } ;
+
+##file cppcheck-2.8/lib/path.h
+
+1:
+|
+39:
+40: class Path {
+41: public:
+42:
+|
+46:
+47: static std :: string toNativeSeparators ( std :: string path@var9 ) ;
+48:
+|
+53:
+54: static std :: string fromNativeSeparators ( std :: string path@var10 ) ;
+55:
+|
+60:
+61: static std :: string simplifyPath ( std :: string originalPath@var11 ) ;
+62:
+|
+67:
+68: static std :: string getPathFromFilename ( const std :: string & filename@var12 ) ;
+69:
+|
+76:
+77: static bool sameFileName ( const std :: string & fname1@var13 , const std :: string & fname2@var14 ) ;
+78:
+|
+83:
+84: static std :: string removeQuotationMarks ( std :: string path@var15 ) ;
+85:
+|
+90:
+91: static std :: string getFilenameExtension ( const std :: string & path@var16 ) ;
+92:
+|
+97:
+98: static std :: string getFilenameExtensionInLowerCase ( const std :: string & path@var17 ) ;
+99:
+|
+103:
+104: static std :: string getCurrentPath ( ) ;
+105:
+|
+110:
+111: static bool isAbsolute ( const std :: string & path@var18 ) ;
+112:
+|
+118:
+119: static std :: string getRelativePath ( const std :: string & absolutePath@var19 , const std :: vector < std :: string > & basePaths@var20 ) ;
+120:
+|
+125:
+126: static std :: string getAbsoluteFilePath ( const std :: string & filePath@var21 ) ;
+127:
+|
+133:
+134: static bool acceptFile ( const std :: string & filename@var22 ) {
+135: const std ::@expr1073741905 set < std ::@expr1073741906 string > extra@var23 ;
+136: return acceptFile (@expr1073741907 filename@var22 , extra@var23 ) ;
+137: }
+138:
+|
+145:
+146: static bool acceptFile ( const std :: string & path@var24 , const std :: set < std :: string > & extra@var25 ) ;
+147:
+|
+152:
+153: static bool isC ( const std :: string & path@var26 ) ;
+154:
+|
+159:
+160: static bool isCPP ( const std :: string & path@var27 ) ;
+161:
+|
+166:
+167: static bool isHeader ( const std :: string & path@var28 ) ;
+168:
+|
+173:
+174: static std :: string stripDirectoryPart ( const std :: string & file@var29 ) ;
+175:
+|
+180:
+181: static bool fileExists ( const std :: string & file@var30 ) ;
+182: } ;
+
+##file cppcheck-2.8/lib/utils.h
+
+1:
+|
+31:
+32: struct SelectMapKeys {
+33: template < class Pair >
+34: Pair :: first_type operator() ( const Pair & p@var31 ) const {
+35: return p@var31 .@expr1073741908 first@var32 ;
+36: }
+37: } ;
+38:
+39: struct SelectMapValues {
+40: template < class Pair >
+41: Pair :: second_type operator() ( const Pair & p@var33 ) const {
+42: return p@var33 .@expr1073741909 second@var34 ;
+43: }
+44: } ;
+45:
+46: template < class Range , class T >
+47: bool contains ( const Range & r@var35 , const T & x@var36 )
+48: {
+49: return std ::@expr1073741910 find (@expr1073741911 r@var35 .@expr1073741912 begin (@expr1073741913 ) , r@var35 .@expr90 end (@expr91 ) , x@var36 ) !=@expr1073741916 r@var35 .@expr90 end (@expr91 ) ;
+50: }
+51:
+52: template < class T >
+53: bool contains ( const std :: initializer_list < T > & r@var37 , const T & x@var38 )
+54: {
+55: return std ::@expr1073741919 find (@expr1073741920 r@var37 .@expr1073741921 begin (@expr1073741922 ) , r@var37 .@expr99 end (@expr100 ) , x@var38 ) !=@expr1073741925 r@var37 .@expr99 end (@expr100 ) ;
+56: }
+57:
+58: template < class T , class U >
+59: bool contains ( const std :: initializer_list < T > & r@var39 , const U & x@var40 )
+60: {
+61: return std ::@expr1073741928 find (@expr1073741929 r@var39 .@expr1073741930 begin (@expr1073741931 ) , r@var39 .@expr108 end (@expr109 ) , x@var40 ) !=@expr1073741934 r@var39 .@expr108 end (@expr109 ) ;
+62: }
+63:
+64:
+65: struct EnumClassHash {
+66: template < typename T >
+67: unsigned long operator() ( T t@var41 ) const
+68: {
+69: return static_cast < unsigned long > (@expr1073741937 t@var41 ) ;
+70: }
+71: } ;
+72:
+73: bool endsWith ( const std :: string & str@var42 , char c@var43 )
+74: {
+75: return !@expr1073741938 str@var42 .@expr1073741939 empty (@expr1073741940 ) &&@expr1073741941 str@var42 .@expr1073741942 back (@expr1073741943 ) ==@expr1073741944 c@var43 ;
+76: }
+77:
+78: bool endsWith ( const std :: string & str@var44 , const char end@var45 [ ] , unsigned long endlen@var46 )
+79: {
+80: return (@expr121 str@var44 .@expr122 size (@expr123 ) >=@expr1073741948 endlen@var46 ) &&@expr1073741949 (@expr121 str@var44 .@expr1073741951 compare (@expr1073741952 str@var44 .@expr122 size (@expr123 ) -@expr1073741955 endlen@var46 , endlen@var46 , end@var45 ) ==@expr1073741956 0 ) ;
+81: }
+82:
+83: template < unsigned long N >
+84: bool endsWith ( const std :: string & str@var47 , const char ( & end@var48 ) [ N ] )
+85: {
+86: return endsWith (@expr1073741958 str@var47 , end@var48 , N@expr1073741957 -@expr1073741959 1 ) ;
+87: }
+88:
+89: static bool isPrefixStringCharLiteral ( const std :: string & str@var49 , char q@var50 , const std :: string & p@var51 )
+90: {
+91: if (@expr1073741960 !@expr1073741961 endsWith (@expr1073741962 str@var49 , q@var50 ) ) {
+92: return false ; }
+93: if (@expr1073741963 (@expr1073741964 str@var49 .@expr1073741965 length (@expr1073741966 ) +@expr1073741967 1 ) >@expr1073741968 p@var51 .@expr1073741969 length (@expr1073741970 ) &&@expr1073741971 (@expr1073741972 str@var49 .@expr1073741973 compare (@expr1073741974 0 , p@var51 .@expr1073741975 size (@expr1073741976 ) +@expr1073741977 1 , p@var51 +@expr1073741978 q@var50 ) ==@expr1073741979 0 ) ) {
+94: return true ; }
+95: return false ;
+96: }
+97:
+98: static bool isStringCharLiteral ( const std :: string & str@var52 , char q@var53 )
+99: {
+100: static const std ::@expr156 vector < std ::@expr156 string > suffixes@var54 {@expr1073741982 "" , "u8" , "u" , "U" , "L" } ;
+101: for (@expr1073741983 const std ::@expr156 string &@expr1073741985 p@var55 :@expr1073741986 suffixes@var54 ) {
+102: if (@expr1073741987 isPrefixStringCharLiteral (@expr1073741988 str@var52 , q@var53 , p@var55 ) ) {
+103: return true ; }
+104: }
+105: return false ;
+106: }
+107:
+108: static bool isStringLiteral ( const std :: string & str@var56 )
+109: {
+110: return isStringCharLiteral (@expr1073741989 str@var56 , '"' ) ;
+111: }
+112:
+113: static bool isCharLiteral ( const std :: string & str@var57 )
+114: {
+115: return isStringCharLiteral (@expr1073741990 str@var57 , '\'' ) ;
+116: }
+117:
+118: static std :: string getStringCharLiteral ( const std :: string & str@var58 , char q@var59 )
+119: {
+120: const unsigned long quotePos@var60 =@expr1073741991 str@var58 .@expr1073741992 find (@expr1073741993 q@var59 ) ;
+121: return str@var58 .@expr1073741994 substr (@expr1073741995 quotePos@var60 +@expr1073741996 1U , str@var58 .@expr1073741997 size (@expr1073741998 ) -@expr1073741999 quotePos@var60 -@expr1073742000 2U ) ;
+122: }
+123:
+124: static std :: string getStringLiteral ( const std :: string & str@var61 )
+125: {
+126: if (@expr1073742001 isStringLiteral (@expr1073742002 str@var61 ) ) {
+127: return getStringCharLiteral (@expr1073742003 str@var61 , '"' ) ; }
+128: return "" ;
+129: }
+130:
+131: static std :: string getCharLiteral ( const std :: string & str@var62 )
+132: {
+133: if (@expr1073742004 isCharLiteral (@expr1073742005 str@var62 ) ) {
+134: return getStringCharLiteral (@expr1073742006 str@var62 , '\'' ) ; }
+135: return "" ;
+136: }
+137:
+138: static const char * getOrdinalText ( int i@var63 )
+139: {
+140: if (@expr1073742007 i@var63 ==@expr1073742008 1 ) {
+141: return "st" ; }
+142: if (@expr1073742009 i@var63 ==@expr1073742010 2 ) {
+143: return "nd" ; }
+144: if (@expr1073742011 i@var63 ==@expr1073742012 3 ) {
+145: return "rd" ; }
+146: return "th" ;
+147: }
+148:
+149: int caseInsensitiveStringCompare ( const std :: string & lhs@var64 , const std :: string & rhs@var65 ) ;
+150:
+151: bool isValidGlobPattern ( const std :: string & pattern@var66 ) ;
+152:
+153: bool matchglob ( const std :: string & pattern@var67 , const std :: string & name@var68 ) ;
+154:
+155: bool matchglobs ( const std :: vector < std :: string > & patterns@var69 , const std :: string & name@var70 ) ;
+156:
+157: void strTolower ( std :: string & str@var71 ) ;
+
+##file cppcheck-2.8/lib/pathmatch.cpp
+
+1:
+|
+27:
+28: PathMatch :: PathMatch ( const std :: vector < std :: string > & excludedPaths@var72 , bool caseSensitive@var73 )
+29: : mExcludedPaths@var6 ( excludedPaths@var72 ) , mCaseSensitive@var7 ( caseSensitive@var73 )
+30: {
+31: if (@expr1073742013 !@expr1073742014 mCaseSensitive@var7 ) {
+32: for (@expr1073742015 std ::@expr1073742016 string &@expr1073742017 excludedPath@var74 :@expr1073742018 mExcludedPaths@var6 ) {
+33: strTolower (@expr1073742019 excludedPath@var74 ) ; } }
+34: mWorkingDirectory@var8 .@expr1073742020 push_back (@expr1073742021 Path ::@expr1073742022 getCurrentPath (@expr1073742023 ) ) ;
+35: }
+36:
+37: bool PathMatch :: match ( const std :: string & path@var75 ) const
+38: {
+39: if (@expr1073742025 path@var75 .@expr1073742026 empty (@expr1073742027 ) ) {
+40: return false ; }
+41:
+42: for (@expr1073742028 std ::@expr205 vector < std ::@expr205 string > ::@expr205 const_iterator i@var76 =@expr1073742032 mExcludedPaths@var6 .@expr1073742033 begin (@expr1073742034 ) ; i@var76 !=@expr1073742035 mExcludedPaths@var6 .@expr1073742036 end (@expr1073742037 ) ; ++@expr1073742038 i@var76 ) {
+43: const std ::@expr1073742039 string excludedPath@var77 (@expr1073742040 (@expr1073742041 !@expr1073742042 Path ::@expr219 isAbsolute (@expr1073742044 path@var75 ) &&@expr1073742045 Path ::@expr219 isAbsolute (@expr1073742047 *@expr224 i@var76 ) ) ?@expr1073742049 Path ::@expr1073742050 getRelativePath (@expr1073742051 *@expr224 i@var76 , mWorkingDirectory@var8 ) :@expr1073742053 *@expr224 i@var76 ) ;
+44:
+45: std ::@expr1073742055 string findpath@var78 ; findpath@var78 =@expr1073742056 Path ::@expr1073742057 fromNativeSeparators (@expr1073742058 path@var75 ) ;
+46: if (@expr1073742059 !@expr1073742060 mCaseSensitive@var7 ) {
+47: strTolower (@expr1073742061 findpath@var78 ) ; }
+48:
+49:
+50: if (@expr1073742062 endsWith (@expr1073742063 excludedPath@var77 , '/' ) ) {
+51: if (@expr1073742064 !@expr1073742065 endsWith (@expr1073742066 findpath@var78 , '/' ) ) {
+52: findpath@var78 =@expr1073742067 removeFilename (@expr1073742068 findpath@var78 ) ; }
+53:
+54: if (@expr245 excludedPath@var77 .@expr246 length (@expr247 ) >@expr248 findpath@var78 .@expr249 length (@expr250 ) ) {
+55: continue ; }
+56:
+57:
+58: if (@expr1073742075 findpath@var78 .@expr252 compare (@expr1073742077 0 , excludedPath@var77 .@expr254 size (@expr255 ) , excludedPath@var77 ) ==@expr1073742080 0 ) {
+59: return true ; }
+60:
+61:
+62:
+63: if (@expr1073742081 findpath@var78 .@expr1073742082 find (@expr1073742083 "/" +@expr1073742084 excludedPath@var77 ) !=@expr1073742085 std ::@expr1073742086 string ::@expr1073742087 npos@expr1073742024 ) {
+64: return true ; }
+65: }
+66:
+67: else {
+68: if (@expr245 excludedPath@var77 .@expr246 length (@expr247 ) >@expr248 findpath@var78 .@expr249 length (@expr250 ) ) {
+69: continue ; }
+70:
+71:
+72:
+73: if (@expr1073742094 findpath@var78 .@expr252 compare (@expr1073742096 findpath@var78 .@expr273 size (@expr274 ) -@expr1073742099 excludedPath@var77 .@expr254 size (@expr255 ) , findpath@var78 .@expr273 size (@expr274 ) , excludedPath@var77 ) ==@expr1073742104 0 ) {
+74: return true ; }
+75:
+76: }
+77: }
+78: return false ;
+79: }
+80:
+81: std :: string PathMatch :: removeFilename ( const std :: string & path@var79 )
+82: {
+83: const unsigned long ind@var80 =@expr1073742105 path@var79 .@expr1073742106 find_last_of (@expr1073742107 '/' ) ;
+84: return path@var79 .@expr1073742108 substr (@expr1073742109 0 , ind@var80 +@expr1073742110 1 ) ;
+85: }
+
+
+
+##Value flow
+Line 42
+  , always 1
+  = always 1
+  true always 1
+Line 49
+  ( always {!<=-1,!>=2}
+Line 62
+  mCaseSensitive always {!<=-1,!>=2}
+Line 77
+  ( always {!<=-1,!>=2}
+Line 111
+  ( always {!<=-1,!>=2}
+Line 134
+  ( always {!<=-1,!>=2}
+Line 136
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  extra always size=0
+Line 146
+  ( always {!<=-1,!>=2}
+Line 153
+  ( always {!<=-1,!>=2}
+Line 160
+  ( always {!<=-1,!>=2}
+Line 167
+  ( always {!<=-1,!>=2}
+Line 181
+  ( always {!<=-1,!>=2}
+Line 47
+  ( always {!<=-1,!>=2}
+Line 49
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+Line 53
+  ( always {!<=-1,!>=2}
+Line 55
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+Line 59
+  ( always {!<=-1,!>=2}
+Line 61
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+Line 67
+  ( always !<=-1
+Line 69
+  return always !<=-1
+  ( always !<=-1
+Line 73
+  ( always {!<=-1,!>=2}
+Line 75
+  return always {!<=-1,!>=2}
+  ! {!<=-1,!>=2,0}
+  str possible size=0
+  ( {!<=-1,!>=2,1}
+  && always {!<=-1,!>=2}
+  str always !size=0
+  == always {!<=-1,!>=2}
+  c possible 47@1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  endlen always !<=-1
+Line 80
+  return always {!<=-1,!>=2}
+  ( always !<=-1
+  >= always {!<=-1,!>=2}
+  endlen always !<=-1
+  && always {!<=-1,!>=2}
+  ( {!<=-1,>=symbolic=(endlen),!<=symbolic=(endlen-1)}
+  - always !<=-1
+  endlen {!<=-1,<=symbolic=(str.size()),!>=symbolic=(str.size()+1)}
+  endlen {!<=-1,<=symbolic=(str.size()),!>=symbolic=(str.size()+1)}
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 84
+  ( always {!<=-1,!>=2}
+  ( always !0
+  & always !0
+Line 86
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  1 always 1
+Line 89
+  ( always {!<=-1,!>=2}
+Line 91
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  q possible {39@2058,34@2314}
+Line 92
+  return always {!<=-1,!>=2}
+  false always 0
+Line 93
+  ( always !<=-1
+  + always !<=0
+  1 always 1
+  > always {!<=-1,!>=2}
+  ( always !<=-1
+  && always {!<=-1,!>=2}
+  0 always 0
+  ( always !<=-1
+  + always !<=0
+  1 always 1
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 94
+  return always {!<=-1,!>=2}
+  true always 1
+Line 95
+  return always {!<=-1,!>=2}
+  false always 0
+Line 98
+  ( always {!<=-1,!>=2}
+Line 100
+  "" always ""
+  "u8" always "u8"
+  "u" always "u"
+  "U" always "U"
+  "L" always "L"
+Line 102
+  ( always {!<=-1,!>=2}
+  q possible {39@8,34@9}
+Line 103
+  return always {!<=-1,!>=2}
+  true always 1
+Line 105
+  return always {!<=-1,!>=2}
+  false always 0
+Line 108
+  ( always {!<=-1,!>=2}
+Line 110
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  '"' always 34
+Line 113
+  ( always {!<=-1,!>=2}
+Line 115
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  '\'' always 39
+Line 120
+  quotePos always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  q possible {39@5,34@7}
+Line 121
+  quotePos {symbolic=(str.find(q)),!<=-1}
+  + always !<=0
+  1U always 1
+  ( always !<=-1
+  - always !<=-1
+  quotePos {symbolic=(str.find(q)),!<=-1}
+  - always !<=-1
+  2U always 2
+Line 126
+  ( always {!<=-1,!>=2}
+Line 127
+  '"' always 34
+Line 128
+  "" always ""
+Line 133
+  ( always {!<=-1,!>=2}
+Line 134
+  '\'' always 39
+Line 135
+  "" always ""
+Line 140
+  i possible {2,3}
+  == {!<=-1,!>=2,0}
+  1 always 1
+Line 141
+  "st" always "st"
+Line 142
+  i {3,!1}
+  == {!<=-1,!>=2,0}
+  2 always 2
+Line 143
+  "nd" always "nd"
+Line 144
+  i always {!1,!2}
+  == always {!<=-1,!>=2}
+  3 always 3
+Line 145
+  "rd" always "rd"
+Line 146
+  "th" always "th"
+Line 151
+  ( always {!<=-1,!>=2}
+Line 153
+  ( always {!<=-1,!>=2}
+Line 155
+  ( always {!<=-1,!>=2}
+Line 28
+  caseSensitive always {!<=-1,!>=2}
+Line 29
+  mCaseSensitive {!<=-1,!>=2,0}
+  caseSensitive always {!<=-1,!>=2}
+Line 31
+  ! always {!<=-1,!>=2}
+  mCaseSensitive always {!<=-1,!>=2}
+Line 37
+  ( always {!<=-1,!>=2}
+Line 39
+  ( always {!<=-1,!>=2}
+Line 40
+  return always {!<=-1,!>=2}
+  false always 0
+Line 42
+  = {lifetime[Iterator]=(mExcludedPaths),start=0}
+  ( {lifetime[Iterator]=(mExcludedPaths),start=0}
+  i inconclusive {lifetime[Iterator]=(mExcludedPaths),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mExcludedPaths),end=0}
+  i inconclusive lifetime[Iterator]=(mExcludedPaths)
+Line 43
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  i inconclusive lifetime[Iterator]=(mExcludedPaths)
+  i inconclusive lifetime[Iterator]=(mExcludedPaths)
+  i inconclusive lifetime[Iterator]=(mExcludedPaths)
+Line 46
+  ! always {!<=-1,!>=2}
+  mCaseSensitive always {!<=-1,!>=2}
+Line 50
+  ( always {!<=-1,!>=2}
+  '/' always 47
+Line 51
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  '/' always 47
+Line 54
+  ( always !<=-1
+  > always {!<=-1,!>=2}
+  ( always !<=-1
+Line 58
+  0 always 0
+  ( always !<=-1
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 59
+  return always {!<=-1,!>=2}
+  true always 1
+Line 63
+  ( always !<=-1
+  "/" always "/"
+  != always {!<=-1,!>=2}
+Line 64
+  return always {!<=-1,!>=2}
+  true always 1
+Line 68
+  ( always !<=-1
+  > always {!<=-1,!>=2}
+  ( always !<=-1
+Line 73
+  ( always !<=-1
+  - always !<=-1
+  ( always !<=-1
+  ( always !<=-1
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 74
+  return always {!<=-1,!>=2}
+  true always 1
+Line 78
+  return always {!<=-1,!>=2}
+  false always 0
+Line 83
+  ind always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  '/' always 47
+Line 84
+  0 always 0
+  ind {symbolic=(path.find_last_of('/')),!<=-1}
+  + always !<=0
+  1 always 1

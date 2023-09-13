@@ -1,0 +1,332 @@
+
+
+##file cppcheck-2.8/gui/report.h
+
+1:
+|
+25:
+26: class ErrorItem ;
+27:
+|
+33:
+34: class Report : public QObject {
+35: public:
+36: enum Type {
+37: TXT ,
+38: XMLV2 ,
+39: CSV ,
+40: } ;
+41:
+42: explicit Report ( const QString & filename@var1 ) ;
+43: ~ Report ( ) override ;
+44:
+|
+48:
+49: virtual bool create ( ) ;
+50:
+|
+54:
+55: virtual bool open ( ) ;
+56:
+|
+59:
+60: void close ( ) ;
+61:
+|
+64:
+65: virtual void writeHeader ( ) = 0 ;
+66:
+|
+69:
+70: virtual void writeFooter ( ) = 0 ;
+71:
+|
+75:
+76: virtual void writeError ( const ErrorItem & error@var2 ) = 0 ;
+77:
+78: protected:
+79:
+|
+82:
+83: QFile * getFile ( ) ;
+84:
+85: private:
+86:
+|
+89:
+90: QString mFilename@var3 ;
+91:
+|
+94:
+95: QFile mFile@var4 ;
+96: } ;
+
+##file cppcheck-2.8/gui/txtreport.h
+
+1:
+|
+26:
+27: class ErrorItem ;
+28: class QObject ;
+29:
+|
+37:
+38: class TxtReport : public Report {
+39: Q_OBJECT
+40:
+41: public:
+42: explicit TxtReport ( const QString & filename@var5 ) ;
+43: ~ TxtReport ( ) override ;
+44:
+|
+48:
+49: virtual bool create ( ) override ;
+50:
+|
+53:
+54: virtual void writeHeader ( ) override ;
+55:
+|
+58:
+59: virtual void writeFooter ( ) override ;
+60:
+|
+64:
+65: virtual void writeError ( const ErrorItem & error@var6 ) override ;
+66:
+67: private:
+68:
+|
+71:
+72: QTextStream mTxtWriter@var7 ;
+73: } ;
+
+##file cppcheck-2.8/gui/erroritem.h
+
+1:
+|
+36:
+37: class GuiSeverity {
+38: public:
+39: static QString toString ( Severity :: SeverityType severity@var8 ) {
+40: return QString ::@expr1073741878 fromStdString (@expr1073741879 Severity ::@expr1073741880 toString (@expr1073741881 severity@var8 ) ) ;
+41: }
+42:
+43: static Severity :: SeverityType fromString ( const QString & severity@var9 ) {
+44: return Severity ::@expr1073741882 fromString (@expr1073741883 severity@var9 .@expr1073741884 toStdString (@expr1073741885 ) ) ;
+45: }
+46: } ;
+47:
+|
+50:
+51: class QErrorPathItem {
+52: public:
+53: QErrorPathItem ( ) : line@var12 ( 0 ) , column@var13 ( -1 ) { }
+54: explicit QErrorPathItem ( const ErrorMessage :: FileLocation & loc@var10 ) ;
+55: QString file@var11 ;
+56: int line@var12 ;
+57: int column@var13 ;
+58: QString info@var14 ;
+59: } ;
+60:
+61: bool operator== ( const QErrorPathItem & i1@var15 , const QErrorPathItem & i2@var16 ) ;
+62:
+|
+70:
+71: class ErrorItem {
+72: public:
+73: ErrorItem ( ) ;
+74: explicit ErrorItem ( const ErrorMessage & errmsg@var17 ) ;
+75:
+|
+79:
+80: QString toString ( ) const ;
+81: QString tool ( ) const ;
+82:
+83: QString file0@var18 ;
+84: QString function@var19 ;
+85: QString errorId@var20 ;
+86: Severity :: SeverityType severity@var21 ;
+87: bool incomplete@var22 ;
+88: bool inconclusive@var23 ;
+89: QString summary@var24 ;
+90: QString message@var25 ;
+91: int cwe@var26 ;
+92: unsigned long long hash@var27 ;
+93: QList < QErrorPathItem > errorPath@var28 ;
+94: QString symbolNames@var29 ;
+95:
+96:
+97: QString sinceDate@var30 ;
+98: QString tags@var31 ;
+99:
+|
+102:
+103: static bool sameCID ( const ErrorItem & errorItem1@var32 , const ErrorItem & errorItem2@var33 ) ;
+104: } ;
+105:
+|
+110:
+111: class ErrorLine {
+112: public:
+113: QString file@var34 ;
+114: int line@var35 ;
+115: QString file0@var36 ;
+116: QString errorId@var37 ;
+117: bool incomplete@var38 ;
+118: int cwe@var39 ;
+119: unsigned long long hash@var40 ;
+120: bool inconclusive@var41 ;
+121: Severity :: SeverityType severity@var42 ;
+122: QString summary@var43 ;
+123: QString message@var44 ;
+124: QString sinceDate@var45 ;
+125: QString tags@var46 ;
+126: } ;
+
+##file cppcheck-2.8/gui/txtreport.cpp
+
+1:
+|
+24:
+25: TxtReport :: TxtReport ( const QString & filename@var47 ) :
+26: Report ( filename@var47 )
+27: { }
+28:
+29: TxtReport :: ~ TxtReport ( )
+30: { }
+31:
+32: bool TxtReport :: create ( )
+33: {
+34: if (@expr1073741886 Report ::@expr1073741887 create (@expr1073741888 ) ) {
+35: mTxtWriter@var7 .@expr1073741889 setDevice (@expr1073741890 Report ::@expr1073741891 getFile (@expr1073741892 ) ) ;
+36: return true ;
+37: }
+38: return false ;
+39: }
+40:
+41: void TxtReport :: writeHeader ( )
+42: {
+43:
+44: }
+45:
+46: void TxtReport :: writeFooter ( )
+47: {
+48:
+49: }
+50:
+51: void TxtReport :: writeError ( const ErrorItem & error@var48 )
+52: {
+53:
+|
+57:
+58: QString line@var49 ;
+59:
+60: for (@expr1073741896 int i@var50 =@expr1073741897 0 ; i@var50 <@expr1073741898 error@var48 .@expr75 errorPath@var51 .@expr76 size (@expr77 ) ; i@var50 ++@expr1073741902 ) {
+61: const QString file@var52 =@expr1073741903 QDir ::@expr1073741904 toNativeSeparators (@expr1073741905 error@var48 .@expr75 errorPath@var51 [@expr83 i@var50 ] .@expr1073741908 file@expr1073741893 ) ;
+62: line@var49 +=@expr1073741909 QString (@expr1073741910 "[%1:%2]" ) .@expr1073741911 arg (@expr1073741912 file@var52 ) .@expr1073741913 arg (@expr1073741914 error@var48 .@expr75 errorPath@var51 [@expr83 i@var50 ] .@expr1073741917 line@expr1073741894 ) ;
+63: if (@expr1073741918 i@var50 <@expr1073741919 error@var48 .@expr75 errorPath@var51 .@expr76 size (@expr77 ) -@expr99 1 ) {
+64: line@var49 +=@expr1073741924 " -> " ;
+65: }
+66:
+67: if (@expr1073741925 i@var50 ==@expr1073741926 error@var48 .@expr75 errorPath@var51 .@expr76 size (@expr77 ) -@expr99 1 ) {
+68: line@var49 +=@expr1073741931 ": " ;
+69: }
+70: }
+71: QString temp@var53 ; temp@var53 =@expr1073741932 "(%1" ;
+72: if (@expr1073741933 error@var48 .@expr1073741934 inconclusive@var54 ) {
+73: temp@var53 +=@expr1073741935 ", " ;
+74: temp@var53 +=@expr1073741936 tr (@expr1073741937 "inconclusive" ) ;
+75: }
+76: temp@var53 +=@expr1073741938 ") " ;
+77: line@var49 +=@expr1073741939 temp@var53 .@expr1073741940 arg (@expr1073741941 GuiSeverity ::@expr1073741942 toString (@expr1073741943 error@var48 .@expr1073741944 severity@var55 ) ) ;
+78: line@var49 +=@expr1073741945 error@var48 .@expr1073741946 summary@var56 ;
+79:
+|
+82:
+83: mTxtWriter@var7 <<@expr1073741947 line@var49 <<@expr1073741948 endl@expr1073741895 ;
+84:
+85: }
+
+
+
+##Value flow
+Line 37
+  TXT always 0
+Line 38
+  XMLV2 always 1
+Line 39
+  CSV always 2
+Line 49
+  ( always {!<=-1,!>=2}
+Line 55
+  ( always {!<=-1,!>=2}
+Line 65
+  = always 0
+  0 always 0
+Line 70
+  = always 0
+  0 always 0
+Line 76
+  = always 0
+  0 always 0
+Line 49
+  ( always {!<=-1,!>=2}
+Line 53
+  0 always 0
+  -1 always -1
+Line 61
+  ( always {!<=-1,!>=2}
+Line 87
+  incomplete always {!<=-1,!>=2}
+Line 88
+  inconclusive always {!<=-1,!>=2}
+Line 92
+  hash always !<=-1
+Line 103
+  ( always {!<=-1,!>=2}
+Line 117
+  incomplete always {!<=-1,!>=2}
+Line 119
+  hash always !<=-1
+Line 120
+  inconclusive always {!<=-1,!>=2}
+Line 32
+  ( always {!<=-1,!>=2}
+Line 34
+  ( always {!<=-1,!>=2}
+Line 36
+  return always {!<=-1,!>=2}
+  true always 1
+Line 38
+  return always {!<=-1,!>=2}
+  false always 0
+Line 60
+  = always 0
+  0 always 0
+  i possible 0
+  < always {!<=-1,!>=2}
+Line 62
+  "[%1:%2]" always "[%1:%2]"
+Line 63
+  < always {!<=-1,!>=2}
+  1 always 1
+Line 64
+  " -> " always " -> "
+Line 67
+  == always {!<=-1,!>=2}
+  1 always 1
+Line 68
+  ": " always ": "
+Line 71
+  = always "(%1"
+  "(%1" always "(%1"
+Line 72
+  . always {!<=-1,!>=2}
+  inconclusive always {!<=-1,!>=2}
+Line 73
+  ", " always ", "
+Line 74
+  "inconclusive" always "inconclusive"
+Line 76
+  ") " always ") "

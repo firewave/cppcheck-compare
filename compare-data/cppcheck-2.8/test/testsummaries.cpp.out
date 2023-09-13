@@ -1,0 +1,310 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741934 expected@var22 !=@expr1073741935 actual@var23 ) {
+62: std ::@expr1073741936 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741937 expected@var22 ;
+64: std ::@expr1073741938 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741939 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741940 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741941 str (@expr1073741942 ) , actualStr@var26 .@expr1073741943 str (@expr1073741944 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741945 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741946 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741947 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741948 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testsummaries.cpp
+
+1:
+|
+28:
+29: class TestSummaries : public TestFixture {
+30: public:
+31: TestSummaries ( ) : TestFixture ( "TestSummaries" ) { }
+32:
+33: private:
+34: void run ( ) override {
+35:
+36: $do ${ $if $(@expr1073741949 $prepareTest $(@expr1073741950 "createSummaries1" $) $) ${ $setVerbose $(@expr1073741951 $false $) $; createSummaries1 $(@expr1073741952 $) $; $} $} $while $(@expr1073741953 $false $) ;
+37: $do ${ $if $(@expr1073741954 $prepareTest $(@expr1073741955 "createSummariesGlobal" $) $) ${ $setVerbose $(@expr1073741956 $false $) $; createSummariesGlobal $(@expr1073741957 $) $; $} $} $while $(@expr1073741958 $false $) ;
+38: $do ${ $if $(@expr1073741959 $prepareTest $(@expr1073741960 "createSummariesNoreturn" $) $) ${ $setVerbose $(@expr1073741961 $false $) $; createSummariesNoreturn $(@expr1073741962 $) $; $} $} $while $(@expr1073741963 $false $) ;
+39: }
+40:
+41:
+42: std :: string createSummaries_ ( const char * file@var102 , int line@var103 , const char code@var104 [ ] , const char filename@var105 [ 9 ] = "test.cpp" ) {
+43:
+44: errout@var100 .@expr1073741964 str (@expr1073741965 "" ) ;
+45:
+46:
+47: Settings settings@var106 ;
+48: Tokenizer tokenizer@var107 (@expr1073741966 &@expr1073741967 settings@var106 , this@expr1073741968 ) ;
+49: std ::@expr1073741969 istringstream istr@var108 (@expr1073741970 code@var104 ) ;
+50: $assert_ $(@expr1073741971 file@var102 $, line@var103 $, $(@expr1073741972 tokenizer@var107 .@expr1073741973 tokenize (@expr1073741974 istr@var108 , filename@var105 ) $) $) ;
+51: return Summaries ::@expr1073741975 create (@expr1073741976 &@expr1073741977 tokenizer@var107 , "" ) ;
+52: }
+53:
+54: void createSummaries1 ( ) {
+55: $if $(@expr1073741978 $!@expr1073741979 $assertEquals $(@expr1073741980 "cppcheck-2.8/test/testsummaries.cpp" $, 55 $, "foo\n" $, $createSummaries_ $(@expr1073741981 "cppcheck-2.8/test/testsummaries.cpp" $, 55 $, "void foo() {}" $) $) $) { $return ; }
+56: }
+57:
+58: void createSummariesGlobal ( ) {
+59: $if $(@expr1073741982 $!@expr1073741983 $assertEquals $(@expr1073741984 "cppcheck-2.8/test/testsummaries.cpp" $, 59 $, "foo global:[x]\n" $, $createSummaries_ $(@expr1073741985 "cppcheck-2.8/test/testsummaries.cpp" $, 59 $, "int x; void foo() { x=0; }" $) $) $) { $return ; }
+60: }
+61:
+62: void createSummariesNoreturn ( ) {
+63: $if $(@expr1073741986 $!@expr1073741987 $assertEquals $(@expr1073741988 "cppcheck-2.8/test/testsummaries.cpp" $, 63 $, "foo call:[bar] noreturn:[bar]\n" $, $createSummaries_ $(@expr1073741989 "cppcheck-2.8/test/testsummaries.cpp" $, 63 $, "void foo() { bar(); }" $) $) $) { $return ; }
+64: }
+65: } ;
+66:
+67: $namespace ${ TestSummaries instance_TestSummaries@var109 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@4}
+  v {!<=-1,!>=2,0@4}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 31
+  "TestSummaries" always "TestSummaries"
+Line 36
+  ( always {!<=-1,!>=2}
+  "createSummaries1" always "createSummaries1"
+  false always 0
+  false always 0
+Line 37
+  ( always {!<=-1,!>=2}
+  "createSummariesGlobal" always "createSummariesGlobal"
+  false always 0
+  false always 0
+Line 38
+  ( always {!<=-1,!>=2}
+  "createSummariesNoreturn" always "createSummariesNoreturn"
+  false always 0
+  false always 0
+Line 42
+  , always "test.cpp"
+  9 always 9
+  = always "test.cpp"
+  "test.cpp" always "test.cpp"
+Line 44
+  "" always ""
+Line 48
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 49
+  code possible {"void foo() { bar(); }"@1,"int x; void foo() { x=0; }"@2,"void foo() {}"@3}
+Line 50
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testsummaries.cpp"@1,"cppcheck-2.8/test/testsummaries.cpp"@2,"cppcheck-2.8/test/testsummaries.cpp"@3}
+  line inconclusive {63@1,59@2,55@3}
+Line 51
+  & {lifetime[Address]=(tokenizer),!0}
+  "" always ""
+Line 55
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsummaries.cpp" always "cppcheck-2.8/test/testsummaries.cpp"
+  55 always 55
+  "foo\n" always "foo\n"
+  "cppcheck-2.8/test/testsummaries.cpp" always "cppcheck-2.8/test/testsummaries.cpp"
+  55 always 55
+  "void foo() {}" always "void foo() {}"
+Line 59
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsummaries.cpp" always "cppcheck-2.8/test/testsummaries.cpp"
+  59 always 59
+  "foo global:[x]\n" always "foo global:[x]\n"
+  "cppcheck-2.8/test/testsummaries.cpp" always "cppcheck-2.8/test/testsummaries.cpp"
+  59 always 59
+  "int x; void foo() { x=0; }" always "int x; void foo() { x=0; }"
+Line 63
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testsummaries.cpp" always "cppcheck-2.8/test/testsummaries.cpp"
+  63 always 63
+  "foo call:[bar] noreturn:[bar]\n" always "foo call:[bar] noreturn:[bar]\n"
+  "cppcheck-2.8/test/testsummaries.cpp" always "cppcheck-2.8/test/testsummaries.cpp"
+  63 always 63
+  "void foo() { bar(); }" always "void foo() { bar(); }"

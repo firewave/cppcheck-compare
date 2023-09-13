@@ -1,0 +1,153 @@
+
+
+##file cppcheck-2.8/test/options.h
+
+1:
+|
+27:
+28: class options {
+29: public:
+30:
+31: options ( int argc@var1 , const char * const argv@var2 [ ] ) ;
+32:
+33: bool quiet ( ) const ;
+34:
+35: bool help ( ) const ;
+36:
+37: const std :: set < std :: string > & which_test ( ) const ;
+38:
+39: const std :: string & exe ( ) const ;
+40:
+41: private:
+42: options ( ) ;
+43: options ( const options & non_copy@var3 ) ;
+44: const options & operator= ( const options & non_assign@var4 ) ;
+45:
+46: private:
+47: std :: set < std :: string > mWhichTests@var5 ;
+48: const bool mQuiet@var6 ;
+49: const bool mHelp@var7 ;
+50: std :: string mExe@var8 ;
+51: } ;
+
+##file cppcheck-2.8/test/options.cpp
+
+1:
+|
+18:
+19: options :: options ( int argc@var9 , const char * const argv@var10 [ ] )
+20: : mWhichTests@var5 ( argv@var10 + 1 , argv@var10 + argc@var9 )
+21: , mQuiet@var6 ( mWhichTests@var5 . count ( "-q" ) != 0 )
+22: , mHelp@var7 ( mWhichTests@var5 . count ( "-h" ) != 0 || mWhichTests@var5 . count ( "--help" ) )
+23: , mExe@var8 ( argv@var10 [ 0 ] )
+24: {
+25: for (@expr1073741836 std ::@expr13 set < std ::@expr13 string > ::@expr13 const_iterator it@var11 =@expr1073741840 mWhichTests@var5 .@expr1073741841 begin (@expr1073741842 ) ; it@var11 !=@expr1073741843 mWhichTests@var5 .@expr1073741844 end (@expr1073741845 ) ; ) {
+26: if (@expr1073741846 !@expr1073741847 (@expr24 *@expr25 it@var11 ) .@expr1073741850 empty (@expr1073741851 ) &&@expr1073741852 (@expr1073741853 (@expr1073741854 (@expr24 *@expr25 it@var11 ) [@expr1073741857 0 ] ==@expr1073741858 '-' ) ||@expr1073741859 (@expr1073741860 (@expr24 *@expr25 it@var11 ) .@expr39 find (@expr40 "::" ) !=@expr1073741865 std ::@expr1073741866 string ::@expr1073741867 npos &&@expr1073741868 mWhichTests@var5 .@expr1073741869 count (@expr1073741870 (@expr24 *@expr25 it@var11 ) .@expr1073741873 substr (@expr1073741874 0 , (@expr24 *@expr25 it@var11 ) .@expr39 find (@expr40 "::" ) ) ) ) ) ) {
+27: it@var11 =@expr1073741879 mWhichTests@var5 .@expr1073741880 erase (@expr1073741881 it@var11 ) ; }
+28: else {
+29: ++@expr1073741882 it@var11 ; }
+30: }
+31:
+32: if (@expr1073741883 mWhichTests@var5 .@expr1073741884 empty (@expr1073741885 ) ) {
+33: mWhichTests@var5 .@expr1073741886 insert (@expr1073741887 "" ) ;
+34: }
+35: }
+36:
+37: bool options :: quiet ( ) const
+38: {
+39: return mQuiet@var6 ;
+40: }
+41:
+42: bool options :: help ( ) const
+43: {
+44: return mHelp@var7 ;
+45: }
+46:
+47: const std :: set < std :: string > & options :: which_test ( ) const
+48: {
+49: return mWhichTests@var5 ;
+50: }
+51:
+52: const std :: string & options :: exe ( ) const
+53: {
+54: return mExe@var8 ;
+55: }
+
+
+
+##Value flow
+Line 33
+  ( always {!<=-1,!>=2}
+Line 35
+  ( always {!<=-1,!>=2}
+Line 48
+  mQuiet always {!<=-1,!>=2}
+Line 49
+  mHelp always {!<=-1,!>=2}
+Line 20
+  1 always 1
+Line 21
+  mQuiet always {!<=-1,!>=2}
+  ( always !<=-1
+  "-q" always "-q"
+  != always {!<=-1,!>=2}
+  0 always 0
+Line 22
+  mHelp always {!<=-1,!>=2}
+  ( always !<=-1
+  "-h" always "-h"
+  != always {!<=-1,!>=2}
+  0 always 0
+  || always {!<=-1,!>=2}
+  ( always !<=-1
+  "--help" always "--help"
+Line 23
+  0 always 0
+Line 25
+  = {lifetime[Iterator]=(mWhichTests),start=0}
+  ( {lifetime[Iterator]=(mWhichTests),start=0}
+  it possible {lifetime[Iterator]=(mWhichTests),size=0,start=0}
+  != always {!<=-1,!>=2}
+  mWhichTests possible size=0
+  ( {lifetime[Iterator]=(mWhichTests),size=0,end=0}
+Line 26
+  ! always {!<=-1,!>=2}
+  it possible lifetime[Iterator]=(mWhichTests)
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  * always !size=0
+  it possible lifetime[Iterator]=(mWhichTests)
+  0 always 0
+  == always {!<=-1,!>=2}
+  '-' always 45
+  || always {!<=-1,!>=2}
+  * always !size=0
+  it possible lifetime[Iterator]=(mWhichTests)
+  "::" always "::"
+  != always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ( always !<=-1
+  it possible lifetime[Iterator]=(mWhichTests)
+  0 always 0
+  it possible lifetime[Iterator]=(mWhichTests)
+  ( always !symbolic=(std::string::npos)
+  "::" always "::"
+Line 27
+  it possible lifetime[Iterator]=(mWhichTests)
+Line 29
+  it possible lifetime[Iterator]=(mWhichTests)
+Line 32
+  ( always {!<=-1,!>=2}
+Line 33
+  mWhichTests always size=0
+  "" always ""
+Line 37
+  ( always {!<=-1,!>=2}
+Line 39
+  return always {!<=-1,!>=2}
+  mQuiet always {!<=-1,!>=2}
+Line 42
+  ( always {!<=-1,!>=2}
+Line 44
+  return always {!<=-1,!>=2}
+  mHelp always {!<=-1,!>=2}

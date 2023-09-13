@@ -1,0 +1,1665 @@
+
+
+##file cppcheck-2.8/gui/projectfiledialog.h
+
+1:
+|
+27:
+28: class QModelIndex ;
+29: class QObject ;
+30: class QWidget ;
+31: namespace Ui {
+32: class ProjectFile ;
+33: }
+34:
+|
+38:
+39: class ProjectFile ;
+40:
+|
+43:
+44: class ProjectFileDialog : public QDialog {
+45: Q_OBJECT
+46: public:
+47: explicit ProjectFileDialog ( ProjectFile * projectFile , QWidget * parent = nullptr ) ;
+48: ~ ProjectFileDialog ( ) override ;
+49:
+50: private:
+51: void loadFromProjectFile ( const ProjectFile * projectFile ) ;
+52: void saveToProjectFile ( ProjectFile * projectFile ) const ;
+53:
+54:
+55: void updatePathsAndDefines ( ) ;
+56:
+|
+60:
+61: QString getRootPath ( ) const ;
+62:
+63: QStringList getProjectConfigurations ( ) const ;
+64: void setProjectConfigurations ( const QStringList & configs ) ;
+65:
+66: QString getImportProject ( ) const ;
+67:
+68:
+69: QString getBuildDir ( ) const ;
+70:
+|
+74:
+75: QStringList getIncludePaths ( ) const ;
+76:
+|
+80:
+81: QStringList getDefines ( ) const ;
+82:
+|
+86:
+87: QStringList getUndefines ( ) const ;
+88:
+|
+92:
+93: QStringList getCheckPaths ( ) const ;
+94:
+|
+98:
+99: QStringList getExcludedPaths ( ) const ;
+100:
+|
+104:
+105: QStringList getLibraries ( ) const ;
+106:
+|
+110:
+111: QList < Suppressions :: Suppression > getSuppressions ( ) const {
+112: return mSuppressions ;
+113: }
+114:
+|
+118:
+119: void setRootPath ( const QString & root ) ;
+120:
+121:
+122: void setBuildDir ( const QString & buildDir ) ;
+123:
+124: void setImportProject ( const QString & importProject ) ;
+125:
+|
+129:
+130: void setIncludepaths ( const QStringList & includes ) ;
+131:
+|
+135:
+136: void setDefines ( const QStringList & defines ) ;
+137:
+|
+141:
+142: void setUndefines ( const QStringList & undefines ) ;
+143:
+|
+147:
+148: void setCheckPaths ( const QStringList & paths ) ;
+149:
+|
+153:
+154: void setExcludedPaths ( const QStringList & paths ) ;
+155:
+|
+159:
+160: void setLibraries ( const QStringList & libraries ) ;
+161:
+|
+165:
+166: void addSingleSuppression ( const Suppressions :: Suppression & suppression ) ;
+167:
+|
+171:
+172: void setSuppressions ( const QList < Suppressions :: Suppression > & suppressions ) ;
+173:
+174: protected slots :
+175:
+176:
+177: void ok ( ) ;
+178:
+|
+181:
+182: void browseBuildDir ( ) ;
+183:
+|
+186:
+187: void clearImportProject ( ) ;
+188:
+|
+191:
+192: void browseImportProject ( ) ;
+193:
+|
+196:
+197: void addCheckPath ( ) ;
+198:
+|
+201:
+202: void editCheckPath ( ) ;
+203:
+|
+206:
+207: void removeCheckPath ( ) ;
+208:
+|
+212:
+213: void addIncludeDir ( ) ;
+214:
+|
+217:
+218: void removeIncludeDir ( ) ;
+219:
+|
+222:
+223: void editIncludeDir ( ) ;
+224:
+|
+227:
+228: void addExcludePath ( ) ;
+229:
+|
+232:
+233: void addExcludeFile ( ) ;
+234:
+|
+237:
+238: void editExcludePath ( ) ;
+239:
+|
+242:
+243: void removeExcludePath ( ) ;
+244:
+|
+247:
+248: void moveIncludePathUp ( ) ;
+249:
+|
+252:
+253: void moveIncludePathDown ( ) ;
+254:
+|
+257:
+258: void addSuppression ( ) ;
+259:
+|
+262:
+263: void removeSuppression ( ) ;
+264:
+|
+267:
+268: void editSuppression ( const QModelIndex & index ) ;
+269:
+|
+272:
+273: void browseMisraFile ( ) ;
+274:
+|
+277:
+278: void checkAllVSConfigs ( ) ;
+279:
+280: protected:
+281:
+|
+284:
+285: void loadSettings ( ) ;
+286:
+|
+289:
+290: void saveSettings ( ) const ;
+291:
+|
+295:
+296: void addIncludeDir ( const QString & dir ) ;
+297:
+|
+301:
+302: void addCheckPath ( const QString & path ) ;
+303:
+|
+307:
+308: void addExcludePath ( const QString & path ) ;
+309:
+|
+315:
+316: int getSuppressionIndex ( const QString & shortText ) const ;
+317:
+318: private:
+319: QStringList getProjectConfigs ( const QString & fileName ) ;
+320:
+321: Ui :: ProjectFile * mUI ;
+322:
+|
+325:
+326: ProjectFile * mProjectFile ;
+327:
+328: QString getExistingDirectory ( const QString & caption , bool trailingSlash ) ;
+329:
+330: QList < Suppressions :: Suppression > mSuppressions ;
+331: } ;
+
+##file cppcheck-2.8/gui/checkthread.h
+
+1:
+|
+27:
+28: class QObject ;
+29: class Settings ;
+30: class ThreadResult ;
+31:
+|
+38:
+39: class CheckThread : public QThread {
+40: Q_OBJECT
+41: public:
+42: explicit CheckThread ( ThreadResult & result ) ;
+43: ~ CheckThread ( ) override ;
+44:
+|
+49:
+50: void check ( const Settings & settings ) ;
+51:
+|
+55:
+56: void analyseWholeProgram ( const QStringList & files ) ;
+57:
+58: void setAddonsAndTools ( const QStringList & addonsAndTools ) {
+59: mAddonsAndTools = addonsAndTools ;
+60: }
+61:
+62: void setClangIncludePaths ( const QStringList & s ) {
+63: mClangIncludePaths = s ;
+64: }
+65:
+66: void setSuppressions ( const QList < Suppressions :: Suppression > & s ) {
+67: mSuppressions = s ;
+68: }
+69:
+|
+73:
+74: void run ( ) override ;
+75:
+76: void stop ( ) ;
+77:
+|
+81:
+82: static QString clangCmd ( ) ;
+83:
+|
+87:
+88: static QString clangTidyCmd ( ) ;
+89:
+90: signals :
+91:
+|
+95:
+96: void done ( ) ;
+97:
+98: void fileChecked ( const QString & file ) ;
+99: protected:
+100:
+|
+107:
+108: enum State {
+109: Running ,
+110: Stopping ,
+111: Stopped ,
+112: Ready ,
+113: } ;
+114:
+|
+117:
+118: State mState ;
+119:
+120: ThreadResult & mResult ;
+121:
+122:
+123:
+124: CppCheck mCppcheck ;
+125:
+126: private:
+127: void runAddonsAndTools ( const ImportProject :: FileSettings * fileSettings , const QString & fileName ) ;
+128:
+129: void parseClangErrors ( const QString & tool , const QString & file0 , QString err ) ;
+130:
+131: bool isSuppressed ( const Suppressions :: ErrorMessage & errorMessage ) const ;
+132:
+133: QStringList mFiles ;
+134: bool mAnalyseWholeProgram ;
+135: QStringList mAddonsAndTools ;
+136: QStringList mClangIncludePaths ;
+137: QList < Suppressions :: Suppression > mSuppressions ;
+138: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type , const QString & value ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters , bool addAllSupported = true , bool addAll = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/newsuppressiondialog.h
+
+1:
+|
+25:
+26: class QObject ;
+27: class QWidget ;
+28: namespace Ui {
+29: class NewSuppressionDialog ;
+30: }
+31:
+32: class NewSuppressionDialog : public QDialog {
+33: Q_OBJECT
+34:
+35: public:
+36: explicit NewSuppressionDialog ( QWidget * parent = nullptr ) ;
+37: NewSuppressionDialog ( const NewSuppressionDialog & ) = delete ;
+38: ~ NewSuppressionDialog ( ) override ;
+39: NewSuppressionDialog & operator = ( const NewSuppressionDialog & ) = delete ;
+40:
+|
+44:
+45: Suppressions :: Suppression getSuppression ( ) const ;
+46:
+|
+51:
+52: void setSuppression ( const Suppressions :: Suppression & suppression ) ;
+53:
+54: private:
+55: Ui :: NewSuppressionDialog * mUI ;
+56: } ;
+
+##file cppcheck-2.8/gui/platforms.h
+
+1:
+|
+27:
+28: class QAction ;
+29:
+|
+35:
+36: struct Platform {
+37: QString mTitle ;
+38: Settings :: PlatformType mType ;
+39: QAction * mActMainWindow ;
+40: } ;
+41:
+|
+44:
+45: class Platforms : public QObject {
+46: Q_OBJECT
+47:
+48: public:
+49: explicit Platforms ( QObject * parent = nullptr ) ;
+50: void add ( const QString & title , Settings :: PlatformType platform ) ;
+51: int getCount ( ) const ;
+52: void init ( ) ;
+53: Platform & get ( Settings :: PlatformType platform ) ;
+54:
+55: QList < Platform > mPlatforms ;
+56: } ;
+
+##file cppcheck-2.8/gui/projectfile.h
+
+1:
+|
+31:
+32: class QXmlStreamReader ;
+33: class QXmlStreamWriter ;
+34:
+|
+43:
+44: class ProjectFile : public QObject {
+45: Q_OBJECT
+46:
+47: public:
+48: explicit ProjectFile ( QObject * parent = nullptr ) ;
+49: explicit ProjectFile ( const QString & filename , QObject * parent = nullptr ) ;
+50: ~ ProjectFile ( ) override {
+51: if ( this == mActiveProject ) { mActiveProject = nullptr ; }
+52: }
+53:
+54: static ProjectFile * getActiveProject ( ) {
+55: return mActiveProject ;
+56: }
+57: void setActiveProject ( ) {
+58: mActiveProject = this ;
+59: }
+60:
+|
+64:
+65: bool read ( const QString & filename = QString ( ) ) ;
+66:
+|
+70:
+71: QString getRootPath ( ) const {
+72: return mRootPath ;
+73: }
+74:
+75: QString getBuildDir ( ) const {
+76: return mBuildDir ;
+77: }
+78:
+79: QString getImportProject ( ) const {
+80: return mImportProject ;
+81: }
+82:
+83: bool getAnalyzeAllVsConfigs ( ) const {
+84: return mAnalyzeAllVsConfigs ;
+85: }
+86:
+87: bool getCheckHeaders ( ) const {
+88: return mCheckHeaders ;
+89: }
+90:
+91: void setCheckHeaders ( bool b ) {
+92: mCheckHeaders = b ;
+93: }
+94:
+95: bool getCheckUnusedTemplates ( ) const {
+96: return mCheckUnusedTemplates ;
+97: }
+98:
+99: void setCheckUnusedTemplates ( bool b ) {
+100: mCheckUnusedTemplates = b ;
+101: }
+102:
+|
+106:
+107: QStringList getIncludeDirs ( ) const {
+108: return ProjectFile :: fromNativeSeparators ( mIncludeDirs ) ;
+109: }
+110:
+|
+114:
+115: QStringList getDefines ( ) const {
+116: return mDefines ;
+117: }
+118:
+|
+122:
+123: QStringList getUndefines ( ) const {
+124: return mUndefines ;
+125: }
+126:
+|
+130:
+131: QStringList getCheckPaths ( ) const {
+132: return ProjectFile :: fromNativeSeparators ( mPaths ) ;
+133: }
+134:
+|
+138:
+139: QStringList getExcludedPaths ( ) const {
+140: return ProjectFile :: fromNativeSeparators ( mExcludedPaths ) ;
+141: }
+142:
+|
+146:
+147: QStringList getVsConfigurations ( ) const {
+148: return mVsConfigurations ;
+149: }
+150:
+|
+154:
+155: QStringList getLibraries ( ) const {
+156: return mLibraries ;
+157: }
+158:
+|
+162:
+163: QString getPlatform ( ) const {
+164: return mPlatform ;
+165: }
+166:
+|
+170:
+171: QList < Suppressions :: Suppression > getSuppressions ( ) const {
+172: return mSuppressions ;
+173: }
+174:
+|
+178:
+179: QStringList getAddons ( ) const {
+180: return mAddons ;
+181: }
+182:
+|
+187:
+188: static QString getAddonFilePath ( QString filesDir , const QString & addon ) ;
+189:
+|
+193:
+194: QStringList getAddonsAndTools ( ) const ;
+195:
+196: bool getClangAnalyzer ( ) const {
+197: return false ;
+198: }
+199:
+200: void setClangAnalyzer ( bool c ) {
+201: mClangAnalyzer = c ;
+202: }
+203:
+204: bool getClangTidy ( ) const {
+205: return mClangTidy ;
+206: }
+207:
+208: void setClangTidy ( bool c ) {
+209: mClangTidy = c ;
+210: }
+211:
+212: QStringList getTags ( ) const {
+213: return mTags ;
+214: }
+215:
+216: int getMaxCtuDepth ( ) const {
+217: return mMaxCtuDepth ;
+218: }
+219:
+220: void setMaxCtuDepth ( int maxCtuDepth ) {
+221: mMaxCtuDepth = maxCtuDepth ;
+222: }
+223:
+224: int getMaxTemplateRecursion ( ) const {
+225: return mMaxTemplateRecursion ;
+226: }
+227:
+228: void setMaxTemplateRecursion ( int maxTemplateRecursion ) {
+229: mMaxTemplateRecursion = maxTemplateRecursion ;
+230: }
+231:
+|
+235:
+236: QString getFilename ( ) const {
+237: return mFilename ;
+238: }
+239:
+|
+243:
+244: void setRootPath ( const QString & rootpath ) {
+245: mRootPath = rootpath ;
+246: }
+247:
+248: void setBuildDir ( const QString & buildDir ) {
+249: mBuildDir = buildDir ;
+250: }
+251:
+252: void setImportProject ( const QString & importProject ) {
+253: mImportProject = importProject ;
+254: }
+255:
+256: void setAnalyzeAllVsConfigs ( bool b ) {
+257: mAnalyzeAllVsConfigs = b ;
+258: }
+259:
+|
+263:
+264: void setIncludes ( const QStringList & includes ) ;
+265:
+|
+269:
+270: void setDefines ( const QStringList & defines ) ;
+271:
+|
+275:
+276: void setUndefines ( const QStringList & undefines ) ;
+277:
+|
+281:
+282: void setCheckPaths ( const QStringList & paths ) ;
+283:
+|
+287:
+288: void setExcludedPaths ( const QStringList & paths ) ;
+289:
+|
+293:
+294: void setLibraries ( const QStringList & libraries ) ;
+295:
+|
+299:
+300: void setPlatform ( const QString & platform ) ;
+301:
+|
+305:
+306: void setSuppressions ( const QList < Suppressions :: Suppression > & suppressions ) ;
+307:
+308:
+309: void addSuppression ( const Suppressions :: Suppression & suppression ) ;
+310:
+|
+314:
+315: void setAddons ( const QStringList & addons ) ;
+316:
+|
+319:
+320: void setVSConfigurations ( const QStringList & vsConfigs ) ;
+321:
+|
+325:
+326: void setTags ( const QStringList & tags ) {
+327: mTags = tags ;
+328: }
+329:
+330:
+331: void setWarningTags ( std :: size_t hash , const QString & tags ) ;
+332:
+333:
+334: QString getWarningTags ( std :: size_t hash ) const ;
+335:
+|
+339:
+340: bool write ( const QString & filename = QString ( ) ) ;
+341:
+|
+345:
+346: void setFilename ( const QString & filename ) {
+347: mFilename = filename ;
+348: }
+349:
+350:
+351: class SafeChecks : public Settings :: SafeChecks {
+352: public:
+353: SafeChecks ( ) : Settings :: SafeChecks ( ) { }
+354:
+355: void loadFromXml ( QXmlStreamReader & xmlReader ) ;
+356: void saveToXml ( QXmlStreamWriter & xmlWriter ) const ;
+357: } ;
+358:
+359: SafeChecks safeChecks ;
+360:
+361:
+362: QStringList getCheckUnknownFunctionReturn ( ) const {
+363: return mCheckUnknownFunctionReturn ;
+364: }
+365: void setCheckUnknownFunctionReturn ( const QStringList & s ) {
+366: mCheckUnknownFunctionReturn = s ;
+367: }
+368:
+369:
+370: bool clangParser ;
+371:
+372: protected:
+373:
+|
+377:
+378: void readRootPath ( QXmlStreamReader & reader ) ;
+379:
+380: void readBuildDir ( QXmlStreamReader & reader ) ;
+381:
+|
+385:
+386: void readImportProject ( QXmlStreamReader & reader ) ;
+387:
+388: bool readBool ( QXmlStreamReader & reader ) ;
+389:
+390: int readInt ( QXmlStreamReader & reader , int defaultValue ) ;
+391:
+|
+395:
+396: void readIncludeDirs ( QXmlStreamReader & reader ) ;
+397:
+|
+401:
+402: void readDefines ( QXmlStreamReader & reader ) ;
+403:
+|
+407:
+408: void readCheckPaths ( QXmlStreamReader & reader ) ;
+409:
+|
+413:
+414: void readExcludes ( QXmlStreamReader & reader ) ;
+415:
+|
+419:
+420: void readVsConfigurations ( QXmlStreamReader & reader ) ;
+421:
+|
+425:
+426: void readPlatform ( QXmlStreamReader & reader ) ;
+427:
+|
+431:
+432: void readSuppressions ( QXmlStreamReader & reader ) ;
+433:
+|
+437:
+438: void readTagWarnings ( QXmlStreamReader & reader , const QString & tag ) ;
+439:
+|
+445:
+446: void readStringList ( QStringList & stringlist , QXmlStreamReader & reader , const char elementname [ ] ) ;
+447:
+|
+454:
+455: static void writeStringList ( QXmlStreamWriter & xmlWriter , const QStringList & stringlist , const char startelementname [ ] , const char stringelementname [ ] ) ;
+456:
+457: private:
+458:
+459: void clear ( ) ;
+460:
+|
+463:
+464: static QStringList fromNativeSeparators ( const QStringList & paths ) ;
+465:
+|
+468:
+469: QString mFilename ;
+470:
+|
+476:
+477: QString mRootPath ;
+478:
+479:
+480: QString mBuildDir ;
+481:
+482:
+483: QString mImportProject ;
+484:
+|
+489:
+490: bool mAnalyzeAllVsConfigs ;
+491:
+492:
+493: QStringList mVsConfigurations ;
+494:
+495:
+496: bool mCheckHeaders ;
+497:
+498:
+499: bool mCheckUnusedTemplates ;
+500:
+|
+503:
+504: QStringList mIncludeDirs ;
+505:
+|
+508:
+509: QStringList mDefines ;
+510:
+|
+513:
+514: QStringList mUndefines ;
+515:
+|
+518:
+519: QStringList mPaths ;
+520:
+|
+523:
+524: QStringList mExcludedPaths ;
+525:
+|
+528:
+529: QStringList mLibraries ;
+530:
+|
+533:
+534: QString mPlatform ;
+535:
+|
+538:
+539: QList < Suppressions :: Suppression > mSuppressions ;
+540:
+|
+543:
+544: QStringList mAddons ;
+545:
+546:
+547: bool mClangAnalyzer ;
+548:
+549:
+550: bool mClangTidy ;
+551:
+|
+554:
+555: QStringList mTags ;
+556:
+|
+559:
+560: std :: map < std :: size_t , QString > mWarningTags ;
+561:
+562:
+563: int mMaxCtuDepth ;
+564:
+565:
+566: int mMaxTemplateRecursion ;
+567:
+568: QStringList mCheckUnknownFunctionReturn ;
+569:
+570: static ProjectFile * mActiveProject ;
+571: } ;
+
+##file cppcheck-2.8/gui/projectfiledialog.cpp
+
+1:
+|
+42:
+43: class QModelIndex ;
+44:
+45:
+46: static QStringList getPaths ( const QListWidget * list )
+47: {
+48: const int count = list . count ( ) ;
+49: QStringList paths ;
+50: for ( int i = 0 ; i < count ; i ++ ) {
+51: QListWidgetItem * item ; item = list . item ( i ) ;
+52: paths << QDir :: fromNativeSeparators ( item . text ( ) ) ;
+53: }
+54: return paths ;
+55: }
+56:
+57:
+58: static const cppcheck :: Platform :: PlatformType builtinPlatforms [ ] = {
+59: cppcheck :: Platform :: Native ,
+60: cppcheck :: Platform :: Win32A ,
+61: cppcheck :: Platform :: Win32W ,
+62: cppcheck :: Platform :: Win64 ,
+63: cppcheck :: Platform :: Unix32 ,
+64: cppcheck :: Platform :: Unix64
+65: } ;
+66:
+67: static const int numberOfBuiltinPlatforms = sizeof ( builtinPlatforms ) / sizeof ( builtinPlatforms [ 0 ] ) ;
+68:
+69: QStringList ProjectFileDialog :: getProjectConfigs ( const QString & fileName )
+70: {
+71: if ( ! fileName . endsWith ( ".sln" ) && ! fileName . endsWith ( ".vcxproj" ) ) {
+72: return QStringList ( ) ; }
+73: QStringList ret ;
+74: ImportProject importer ;
+75: Settings projSettings ;
+76: importer . import ( fileName . toStdString ( ) , & projSettings ) ;
+77: for ( const std :: string & cfg : importer . getVSConfigs ( ) ) {
+78: ret << QString :: fromStdString ( cfg ) ; }
+79: return ret ;
+80: }
+81:
+82: ProjectFileDialog :: ProjectFileDialog ( ProjectFile * projectFile , QWidget * parent )
+83: : QDialog ( parent )
+84: , mUI ( new Ui :: ProjectFile )
+85: , mProjectFile ( projectFile )
+86: {
+87: mUI . setupUi ( this ) ;
+88:
+89: mUI . mToolClangAnalyzer . hide ( ) ;
+90:
+91: const QFileInfo inf ( projectFile . getFilename ( ) ) ;
+92: QString filename ; filename = inf . fileName ( ) ;
+93: QString title ; title = tr ( "Project file: %1" ) . arg ( filename ) ;
+94: setWindowTitle ( title ) ;
+95: loadSettings ( ) ;
+96:
+97:
+98: const QString applicationFilePath = QCoreApplication :: applicationFilePath ( ) ;
+99: const QString appPath = QFileInfo ( applicationFilePath ) . canonicalPath ( ) ;
+100: const QString datadir = getDataDir ( ) ;
+101: QStringList searchPaths ;
+102: searchPaths << appPath << appPath + "/cfg" << inf . canonicalPath ( ) ;
+103:
+|
+106:
+107: if ( ! datadir . isEmpty ( ) ) {
+108: searchPaths << datadir << datadir + "/cfg" ; }
+109: QStringList libs ;
+110:
+111: QString stdLibraryFilename ;
+112: for ( const QString & sp : searchPaths ) {
+113: QDir dir ( sp ) ;
+114: dir . setSorting ( QDir :: Name ) ;
+115: dir . setNameFilters ( QStringList ( "*.cfg" ) ) ;
+116: dir . setFilter ( QDir :: Files | QDir :: NoDotAndDotDot ) ;
+117: for ( const QFileInfo & item : dir . entryInfoList ( ) ) {
+118: QString library ; library = item . fileName ( ) ;
+119: if ( library . compare ( "std.cfg" , Qt :: CaseInsensitive ) != 0 ) {
+120: continue ; }
+121: Library lib ;
+122: const QString fullfilename = sp + "/" + library ;
+123: const Library :: Error err = lib . load ( nullptr , fullfilename . toLatin1 ( ) ) ;
+124: if ( err . errorcode != Library :: ErrorCode :: OK ) {
+125: continue ; }
+126:
+127: stdLibraryFilename = fullfilename ;
+128: break ;
+129: }
+130: if ( ! stdLibraryFilename . isEmpty ( ) ) {
+131: break ; }
+132: }
+133:
+134: for ( const QString & sp : searchPaths ) {
+135: QDir dir ( sp ) ;
+136: dir . setSorting ( QDir :: Name ) ;
+137: dir . setNameFilters ( QStringList ( "*.cfg" ) ) ;
+138: dir . setFilter ( QDir :: Files | QDir :: NoDotAndDotDot ) ;
+139: for ( const QFileInfo & item : dir . entryInfoList ( ) ) {
+140: QString library ; library = item . fileName ( ) ;
+141: {
+142: Library lib ;
+143: const QString fullfilename = sp + "/" + library ;
+144: Library :: Error err ; err = lib . load ( nullptr , fullfilename . toLatin1 ( ) ) ;
+145: if ( err . errorcode != Library :: ErrorCode :: OK ) {
+146:
+147: lib . load ( nullptr , stdLibraryFilename . toLatin1 ( ) ) ;
+148: err = lib . load ( nullptr , fullfilename . toLatin1 ( ) ) ;
+149: }
+150: if ( err . errorcode != Library :: ErrorCode :: OK ) {
+151: continue ; }
+152: }
+153: library . chop ( 4 ) ;
+154: if ( library . compare ( "std" , Qt :: CaseInsensitive ) == 0 ) {
+155: continue ; }
+156: if ( libs . indexOf ( library ) == -1 ) {
+157: libs << library ; }
+158: }
+159: }
+160: libs . sort ( ) ;
+161: mUI . mLibraries . clear ( ) ;
+162: for ( const QString & lib : libs ) {
+163: QListWidgetItem * item ; item = new QListWidgetItem ( lib , mUI . mLibraries ) ;
+164: item . setFlags ( item . flags ( ) | Qt :: ItemIsUserCheckable ) ;
+165: item . setCheckState ( Qt :: Unchecked ) ;
+166: }
+167:
+168:
+169: Platforms platforms ;
+170: for ( cppcheck :: Platform :: PlatformType builtinPlatform : builtinPlatforms ) {
+171: mUI . mComboBoxPlatform . addItem ( platforms . get ( builtinPlatform ) . mTitle ) ; }
+172: QStringList platformFiles ;
+173: for ( QString sp : searchPaths ) {
+174: if ( sp . endsWith ( "/cfg" ) ) {
+175: sp = sp . mid ( 0 , sp . length ( ) - 3 ) + "platforms" ; }
+176: QDir dir ( sp ) ;
+177: dir . setSorting ( QDir :: Name ) ;
+178: dir . setNameFilters ( QStringList ( "*.xml" ) ) ;
+179: dir . setFilter ( QDir :: Files | QDir :: NoDotAndDotDot ) ;
+180: for ( const QFileInfo & item : dir . entryInfoList ( ) ) {
+181: const QString platformFile = item . fileName ( ) ;
+182:
+183: cppcheck :: Platform plat2 ;
+184: if ( ! plat2 . loadPlatformFile ( applicationFilePath . toStdString ( ) . c_str ( ) , platformFile . toStdString ( ) ) ) {
+185: continue ; }
+186:
+187: if ( platformFiles . indexOf ( platformFile ) == -1 ) {
+188: platformFiles << platformFile ; }
+189: }
+190: }
+191: platformFiles . sort ( ) ;
+192: mUI . mComboBoxPlatform . addItems ( platformFiles ) ;
+193:
+194: mUI . mEditTags . setValidator ( new QRegularExpressionValidator ( QRegularExpression ( "[a-zA-Z0-9 ;]*" ) , this ) ) ;
+195:
+196: const QRegularExpression undefRegExp ( "\\s*([a-zA-Z_][a-zA-Z0-9_]*[; ]*)*" ) ;
+197: mUI . mEditUndefines . setValidator ( new QRegularExpressionValidator ( undefRegExp , this ) ) ;
+198:
+199: connect ( mUI . mButtons , & QDialogButtonBox :: accepted , this , & ProjectFileDialog :: ok ) ;
+200: connect ( mUI . mBtnBrowseBuildDir , & QPushButton :: clicked , this , & ProjectFileDialog :: browseBuildDir ) ;
+201: connect ( mUI . mBtnClearImportProject , & QPushButton :: clicked , this , & ProjectFileDialog :: clearImportProject ) ;
+202: connect ( mUI . mBtnBrowseImportProject , & QPushButton :: clicked , this , & ProjectFileDialog :: browseImportProject ) ;
+203: connect ( mUI . mBtnAddCheckPath , SIGNAL ( clicked ( ) ) , this , SLOT ( addCheckPath ( ) ) ) ;
+204: connect ( mUI . mBtnEditCheckPath , & QPushButton :: clicked , this , & ProjectFileDialog :: editCheckPath ) ;
+205: connect ( mUI . mBtnRemoveCheckPath , & QPushButton :: clicked , this , & ProjectFileDialog :: removeCheckPath ) ;
+206: connect ( mUI . mBtnAddInclude , SIGNAL ( clicked ( ) ) , this , SLOT ( addIncludeDir ( ) ) ) ;
+207: connect ( mUI . mBtnEditInclude , & QPushButton :: clicked , this , & ProjectFileDialog :: editIncludeDir ) ;
+208: connect ( mUI . mBtnRemoveInclude , & QPushButton :: clicked , this , & ProjectFileDialog :: removeIncludeDir ) ;
+209: connect ( mUI . mBtnAddIgnorePath , SIGNAL ( clicked ( ) ) , this , SLOT ( addExcludePath ( ) ) ) ;
+210: connect ( mUI . mBtnAddIgnoreFile , SIGNAL ( clicked ( ) ) , this , SLOT ( addExcludeFile ( ) ) ) ;
+211: connect ( mUI . mBtnEditIgnorePath , & QPushButton :: clicked , this , & ProjectFileDialog :: editExcludePath ) ;
+212: connect ( mUI . mBtnRemoveIgnorePath , & QPushButton :: clicked , this , & ProjectFileDialog :: removeExcludePath ) ;
+213: connect ( mUI . mBtnIncludeUp , & QPushButton :: clicked , this , & ProjectFileDialog :: moveIncludePathUp ) ;
+214: connect ( mUI . mBtnIncludeDown , & QPushButton :: clicked , this , & ProjectFileDialog :: moveIncludePathDown ) ;
+215: connect ( mUI . mBtnAddSuppression , & QPushButton :: clicked , this , & ProjectFileDialog :: addSuppression ) ;
+216: connect ( mUI . mBtnRemoveSuppression , & QPushButton :: clicked , this , & ProjectFileDialog :: removeSuppression ) ;
+217: connect ( mUI . mListSuppressions , & QListWidget :: doubleClicked , this , & ProjectFileDialog :: editSuppression ) ;
+218: connect ( mUI . mBtnBrowseMisraFile , & QPushButton :: clicked , this , & ProjectFileDialog :: browseMisraFile ) ;
+219: connect ( mUI . mChkAllVsConfigs , & QCheckBox :: clicked , this , & ProjectFileDialog :: checkAllVSConfigs ) ;
+220: loadFromProjectFile ( projectFile ) ;
+221: }
+222:
+223: ProjectFileDialog :: ~ ProjectFileDialog ( )
+224: {
+225: saveSettings ( ) ;
+226: delete mUI ;
+227: }
+228:
+229: void ProjectFileDialog :: loadSettings ( )
+230: {
+231: QSettings settings ;
+232: resize ( settings . value ( $"Project dialog width" , 470 ) . toInt ( ) ,
+233: settings . value ( $"Project dialog height" , 330 ) . toInt ( ) ) ;
+234: }
+235:
+236: void ProjectFileDialog :: saveSettings ( ) const
+237: {
+238: QSettings settings ;
+239: settings . setValue ( $"Project dialog width" , size ( ) . width ( ) ) ;
+240: settings . setValue ( $"Project dialog height" , size ( ) . height ( ) ) ;
+241: }
+242:
+243: static void updateAddonCheckBox ( QCheckBox * cb , const ProjectFile * projectFile , const QString & dataDir , const QString & addon )
+244: {
+245: if ( projectFile ) {
+246: cb . setChecked ( projectFile . getAddons ( ) . contains ( addon ) ) ; }
+247: if ( ProjectFile :: getAddonFilePath ( dataDir , addon ) . isEmpty ( ) ) {
+248: cb . setEnabled ( false ) ;
+249: cb . setText ( cb . text ( ) + QObject :: tr ( " (Not found)" ) ) ;
+250: }
+251: }
+252:
+253: void ProjectFileDialog :: checkAllVSConfigs ( )
+254: {
+255: if ( mUI . mChkAllVsConfigs . isChecked ( ) ) {
+256: for ( int row = 0 ; row < mUI . mListVsConfigs . count ( ) ; ++ row ) {
+257: QListWidgetItem * item ; item = mUI . mListVsConfigs . item ( row ) ;
+258: item . setCheckState ( Qt :: Checked ) ;
+259: }
+260: }
+261: mUI . mListVsConfigs . setEnabled ( ! mUI . mChkAllVsConfigs . isChecked ( ) ) ;
+262: }
+263:
+264: void ProjectFileDialog :: loadFromProjectFile ( const ProjectFile * projectFile )
+265: {
+266: setRootPath ( projectFile . getRootPath ( ) ) ;
+267: setBuildDir ( projectFile . getBuildDir ( ) ) ;
+268: setIncludepaths ( projectFile . getIncludeDirs ( ) ) ;
+269: setDefines ( projectFile . getDefines ( ) ) ;
+270: setUndefines ( projectFile . getUndefines ( ) ) ;
+271: setCheckPaths ( projectFile . getCheckPaths ( ) ) ;
+272: setImportProject ( projectFile . getImportProject ( ) ) ;
+273: mUI . mChkAllVsConfigs . setChecked ( projectFile . getAnalyzeAllVsConfigs ( ) ) ;
+274: setProjectConfigurations ( getProjectConfigs ( mUI . mEditImportProject . text ( ) ) ) ;
+275: for ( int row = 0 ; row < mUI . mListVsConfigs . count ( ) ; ++ row ) {
+276: QListWidgetItem * item ; item = mUI . mListVsConfigs . item ( row ) ;
+277: if ( projectFile . getAnalyzeAllVsConfigs ( ) || projectFile . getVsConfigurations ( ) . contains ( item . text ( ) ) ) {
+278: item . setCheckState ( Qt :: Checked ) ; }
+279: else {
+280: item . setCheckState ( Qt :: Unchecked ) ; }
+281: }
+282: mUI . mCheckHeaders . setChecked ( projectFile . getCheckHeaders ( ) ) ;
+283: mUI . mCheckUnusedTemplates . setChecked ( projectFile . getCheckUnusedTemplates ( ) ) ;
+284: mUI . mMaxCtuDepth . setValue ( projectFile . getMaxCtuDepth ( ) ) ;
+285: mUI . mMaxTemplateRecursion . setValue ( projectFile . getMaxTemplateRecursion ( ) ) ;
+286: if ( projectFile . clangParser ) {
+287: mUI . mBtnClangParser . setChecked ( true ) ; }
+288: else {
+289: mUI . mBtnCppcheckParser . setChecked ( true ) ; }
+290: mUI . mBtnSafeClasses . setChecked ( projectFile . safeChecks . classes ) ;
+291: setExcludedPaths ( projectFile . getExcludedPaths ( ) ) ;
+292: setLibraries ( projectFile . getLibraries ( ) ) ;
+293: const QString platform = projectFile . getPlatform ( ) ;
+294: if ( platform . endsWith ( ".xml" ) ) {
+295: int i ;
+296: for ( i = numberOfBuiltinPlatforms ; i < mUI . mComboBoxPlatform . count ( ) ; ++ i ) {
+297: if ( mUI . mComboBoxPlatform . itemText ( i ) == platform ) {
+298: break ; }
+299: }
+300: if ( i < mUI . mComboBoxPlatform . count ( ) ) {
+301: mUI . mComboBoxPlatform . setCurrentIndex ( i ) ; }
+302: else {
+303: mUI . mComboBoxPlatform . addItem ( platform ) ;
+304: mUI . mComboBoxPlatform . setCurrentIndex ( i ) ;
+305: }
+306: } else {
+307: int i ;
+308: for ( i = 0 ; i < numberOfBuiltinPlatforms ; ++ i ) {
+309: const cppcheck :: Platform :: PlatformType p = builtinPlatforms [ i ] ;
+310: if ( platform == cppcheck :: Platform :: platformString ( p ) ) {
+311: break ; }
+312: }
+313: if ( i < numberOfBuiltinPlatforms ) {
+314: mUI . mComboBoxPlatform . setCurrentIndex ( i ) ; }
+315: else {
+316: mUI . mComboBoxPlatform . setCurrentIndex ( -1 ) ; }
+317: }
+318:
+319: mUI . mComboBoxPlatform . setCurrentText ( projectFile . getPlatform ( ) ) ;
+320: setSuppressions ( projectFile . getSuppressions ( ) ) ;
+321:
+|
+338:
+339: QSettings settings ;
+340: const QString dataDir = getDataDir ( ) ;
+341: updateAddonCheckBox ( mUI . mAddonThreadSafety , projectFile , dataDir , "threadsafety" ) ;
+342: updateAddonCheckBox ( mUI . mAddonY2038 , projectFile , dataDir , "y2038" ) ;
+343: updateAddonCheckBox ( mUI . mAddonMisra , projectFile , dataDir , "misra" ) ;
+344:
+345: const QString & misraFile = settings . value ( $"MISRA C 2012 file" , QString ( ) ) . toString ( ) ;
+346: mUI . mEditMisraFile . setText ( misraFile ) ;
+347: if ( ! mUI . mAddonMisra . isEnabled ( ) ) {
+348: mUI . mEditMisraFile . setEnabled ( false ) ;
+349: mUI . mBtnBrowseMisraFile . setEnabled ( false ) ;
+350: }
+351:
+352: mUI . mToolClangAnalyzer . setChecked ( projectFile . getClangAnalyzer ( ) ) ;
+353: mUI . mToolClangTidy . setChecked ( projectFile . getClangTidy ( ) ) ;
+354: if ( CheckThread :: clangTidyCmd ( ) . isEmpty ( ) ) {
+355: mUI . mToolClangTidy . setText ( tr ( "Clang-tidy (not found)" ) ) ;
+356: mUI . mToolClangTidy . setEnabled ( false ) ;
+357: }
+358: mUI . mEditTags . setText ( projectFile . getTags ( ) . join ( ';' ) ) ;
+359: updatePathsAndDefines ( ) ;
+360: }
+361:
+362: void ProjectFileDialog :: saveToProjectFile ( ProjectFile * projectFile ) const
+363: {
+364: projectFile . setRootPath ( getRootPath ( ) ) ;
+365: projectFile . setBuildDir ( getBuildDir ( ) ) ;
+366: projectFile . setImportProject ( getImportProject ( ) ) ;
+367: projectFile . setAnalyzeAllVsConfigs ( mUI . mChkAllVsConfigs . isChecked ( ) ) ;
+368: projectFile . setVSConfigurations ( getProjectConfigurations ( ) ) ;
+369: projectFile . setCheckHeaders ( mUI . mCheckHeaders . isChecked ( ) ) ;
+370: projectFile . setCheckUnusedTemplates ( mUI . mCheckUnusedTemplates . isChecked ( ) ) ;
+371: projectFile . setMaxCtuDepth ( mUI . mMaxCtuDepth . value ( ) ) ;
+372: projectFile . setMaxTemplateRecursion ( mUI . mMaxTemplateRecursion . value ( ) ) ;
+373: projectFile . setIncludes ( getIncludePaths ( ) ) ;
+374: projectFile . setDefines ( getDefines ( ) ) ;
+375: projectFile . setUndefines ( getUndefines ( ) ) ;
+376: projectFile . setCheckPaths ( getCheckPaths ( ) ) ;
+377: projectFile . setExcludedPaths ( getExcludedPaths ( ) ) ;
+378: projectFile . setLibraries ( getLibraries ( ) ) ;
+379: projectFile . clangParser = mUI . mBtnClangParser . isChecked ( ) ;
+380: projectFile . safeChecks . classes = mUI . mBtnSafeClasses . isChecked ( ) ;
+381: if ( mUI . mComboBoxPlatform . currentText ( ) . endsWith ( ".xml" ) ) {
+382: projectFile . setPlatform ( mUI . mComboBoxPlatform . currentText ( ) ) ; }
+383: else {
+384: int i ; i = mUI . mComboBoxPlatform . currentIndex ( ) ;
+385: if ( i < numberOfBuiltinPlatforms ) {
+386: projectFile . setPlatform ( cppcheck :: Platform :: platformString ( builtinPlatforms [ i ] ) ) ; }
+387: else {
+388: projectFile . setPlatform ( QString ( ) ) ; }
+389: }
+390: projectFile . setSuppressions ( getSuppressions ( ) ) ;
+391:
+|
+407:
+408: QStringList list ;
+409: if ( mUI . mAddonThreadSafety . isChecked ( ) ) {
+410: list << "threadsafety" ; }
+411: if ( mUI . mAddonY2038 . isChecked ( ) ) {
+412: list << "y2038" ; }
+413: if ( mUI . mAddonMisra . isChecked ( ) ) {
+414: list << "misra" ; }
+415: projectFile . setAddons ( list ) ;
+416: projectFile . setClangAnalyzer ( mUI . mToolClangAnalyzer . isChecked ( ) ) ;
+417: projectFile . setClangTidy ( mUI . mToolClangTidy . isChecked ( ) ) ;
+418:
+419:
+420:
+421: projectFile . setTags ( mUI . mEditTags . text ( ) . split ( ";" , QString :: SkipEmptyParts ) ) ;
+422:
+423: }
+424:
+425: void ProjectFileDialog :: ok ( )
+426: {
+427: saveToProjectFile ( mProjectFile ) ;
+428: mProjectFile . write ( ) ;
+429: accept ( ) ;
+430: }
+431:
+432: QString ProjectFileDialog :: getExistingDirectory ( const QString & caption , bool trailingSlash )
+433: {
+434: const QFileInfo inf ( mProjectFile . getFilename ( ) ) ;
+435: const QString rootpath = inf . absolutePath ( ) ;
+436: QString selectedDir ; selectedDir = QFileDialog :: getExistingDirectory ( this ,
+437: caption ,
+438: rootpath ) ;
+439:
+440: if ( selectedDir . isEmpty ( ) ) {
+441: return QString ( ) ; }
+442:
+443:
+444:
+445: const QDir dir ( rootpath ) ;
+446: const QString relpath ( dir . relativeFilePath ( selectedDir ) ) ;
+447: if ( ! relpath . startsWith ( "../.." ) ) {
+448: selectedDir = relpath ; }
+449:
+450:
+451: if ( trailingSlash && ! selectedDir . endsWith ( '/' ) ) {
+452: selectedDir += '/' ; }
+453:
+454: return selectedDir ;
+455: }
+456:
+457: void ProjectFileDialog :: browseBuildDir ( )
+458: {
+459: const QString dir ( getExistingDirectory ( tr ( "Select Cppcheck build dir" ) , false ) ) ;
+460: if ( ! dir . isEmpty ( ) ) {
+461: mUI . mEditBuildDir . setText ( dir ) ; }
+462: }
+463:
+464: void ProjectFileDialog :: updatePathsAndDefines ( )
+465: {
+466: const QString & fileName = mUI . mEditImportProject . text ( ) ;
+467: bool importProject ; importProject = ! fileName . isEmpty ( ) ;
+468: bool hasConfigs ; hasConfigs = fileName . endsWith ( ".sln" ) || fileName . endsWith ( ".vcxproj" ) ;
+469: mUI . mBtnClearImportProject . setEnabled ( importProject ) ;
+470: mUI . mListCheckPaths . setEnabled ( ! importProject ) ;
+471: mUI . mListIncludeDirs . setEnabled ( ! importProject ) ;
+472: mUI . mBtnAddCheckPath . setEnabled ( ! importProject ) ;
+473: mUI . mBtnEditCheckPath . setEnabled ( ! importProject ) ;
+474: mUI . mBtnRemoveCheckPath . setEnabled ( ! importProject ) ;
+475: mUI . mEditDefines . setEnabled ( ! importProject ) ;
+476: mUI . mEditUndefines . setEnabled ( ! importProject ) ;
+477: mUI . mBtnAddInclude . setEnabled ( ! importProject ) ;
+478: mUI . mBtnEditInclude . setEnabled ( ! importProject ) ;
+479: mUI . mBtnRemoveInclude . setEnabled ( ! importProject ) ;
+480: mUI . mBtnIncludeUp . setEnabled ( ! importProject ) ;
+481: mUI . mBtnIncludeDown . setEnabled ( ! importProject ) ;
+482: mUI . mChkAllVsConfigs . setEnabled ( hasConfigs ) ;
+483: mUI . mListVsConfigs . setEnabled ( hasConfigs && ! mUI . mChkAllVsConfigs . isChecked ( ) ) ;
+484: if ( ! hasConfigs ) {
+485: mUI . mListVsConfigs . clear ( ) ; }
+486: }
+487:
+488: void ProjectFileDialog :: clearImportProject ( )
+489: {
+490: mUI . mEditImportProject . clear ( ) ;
+491: updatePathsAndDefines ( ) ;
+492: }
+493:
+494: void ProjectFileDialog :: browseImportProject ( )
+495: {
+496: const QFileInfo inf ( mProjectFile . getFilename ( ) ) ;
+497: const QDir & dir = inf . absoluteDir ( ) ;
+498: QMap < QString , QString > filters ;
+499: filters [ tr ( "Visual Studio" ) ] = "*.sln *.vcxproj" ;
+500: filters [ tr ( "Compile database" ) ] = "compile_commands.json" ;
+501: filters [ tr ( "Borland C++ Builder 6" ) ] = "*.bpr" ;
+502: QString fileName ; fileName = QFileDialog :: getOpenFileName ( this , tr ( "Import Project" ) ,
+503: dir . canonicalPath ( ) ,
+504: toFilterString ( filters ) ) ;
+505: if ( ! fileName . isEmpty ( ) ) {
+506: mUI . mEditImportProject . setText ( dir . relativeFilePath ( fileName ) ) ;
+507: updatePathsAndDefines ( ) ;
+508: setProjectConfigurations ( getProjectConfigs ( fileName ) ) ;
+509: for ( int row = 0 ; row < mUI . mListVsConfigs . count ( ) ; ++ row ) {
+510: QListWidgetItem * item ; item = mUI . mListVsConfigs . item ( row ) ;
+511: item . setCheckState ( Qt :: Checked ) ;
+512: }
+513: }
+514: }
+515:
+516: QStringList ProjectFileDialog :: getProjectConfigurations ( ) const
+517: {
+518: QStringList configs ;
+519: for ( int row = 0 ; row < mUI . mListVsConfigs . count ( ) ; ++ row ) {
+520: QListWidgetItem * item ; item = mUI . mListVsConfigs . item ( row ) ;
+521: if ( item . checkState ( ) == Qt :: Checked ) {
+522: configs << item . text ( ) ; }
+523: }
+524: return configs ;
+525: }
+526:
+527: void ProjectFileDialog :: setProjectConfigurations ( const QStringList & configs )
+528: {
+529: mUI . mListVsConfigs . clear ( ) ;
+530: mUI . mListVsConfigs . setEnabled ( ! configs . isEmpty ( ) && ! mUI . mChkAllVsConfigs . isChecked ( ) ) ;
+531: for ( const QString & cfg : configs ) {
+532: QListWidgetItem * item ; item = new QListWidgetItem ( cfg , mUI . mListVsConfigs ) ;
+533: item . setFlags ( item . flags ( ) | Qt :: ItemIsUserCheckable ) ;
+534: item . setCheckState ( Qt :: Unchecked ) ;
+535: }
+536: }
+537:
+538: QString ProjectFileDialog :: getImportProject ( ) const
+539: {
+540: return mUI . mEditImportProject . text ( ) ;
+541: }
+542:
+543: void ProjectFileDialog :: addIncludeDir ( const QString & dir )
+544: {
+545: if ( dir . isNull ( ) || dir . isEmpty ( ) ) {
+546: return ; }
+547:
+548: const QString newdir = QDir :: toNativeSeparators ( dir ) ;
+549: QListWidgetItem * item ; item = new QListWidgetItem ( newdir ) ;
+550: item . setFlags ( item . flags ( ) | Qt :: ItemIsEditable ) ;
+551: mUI . mListIncludeDirs . addItem ( item ) ;
+552: }
+553:
+554: void ProjectFileDialog :: addCheckPath ( const QString & path )
+555: {
+556: if ( path . isNull ( ) || path . isEmpty ( ) ) {
+557: return ; }
+558:
+559: const QString newpath = QDir :: toNativeSeparators ( path ) ;
+560: QListWidgetItem * item ; item = new QListWidgetItem ( newpath ) ;
+561: item . setFlags ( item . flags ( ) | Qt :: ItemIsEditable ) ;
+562: mUI . mListCheckPaths . addItem ( item ) ;
+563: }
+564:
+565: void ProjectFileDialog :: addExcludePath ( const QString & path )
+566: {
+567: if ( path . isNull ( ) || path . isEmpty ( ) ) {
+568: return ; }
+569:
+570: const QString newpath = QDir :: toNativeSeparators ( path ) ;
+571: QListWidgetItem * item ; item = new QListWidgetItem ( newpath ) ;
+572: item . setFlags ( item . flags ( ) | Qt :: ItemIsEditable ) ;
+573: mUI . mListExcludedPaths . addItem ( item ) ;
+574: }
+575:
+576: QString ProjectFileDialog :: getRootPath ( ) const
+577: {
+578: QString root ; root = mUI . mEditProjectRoot . text ( ) ;
+579: root = root . trimmed ( ) ;
+580: root = QDir :: fromNativeSeparators ( root ) ;
+581: return root ;
+582: }
+583:
+584: QString ProjectFileDialog :: getBuildDir ( ) const
+585: {
+586: return mUI . mEditBuildDir . text ( ) ;
+587: }
+588:
+589: QStringList ProjectFileDialog :: getIncludePaths ( ) const
+590: {
+591: return getPaths ( mUI . mListIncludeDirs ) ;
+592: }
+593:
+594: QStringList ProjectFileDialog :: getDefines ( ) const
+595: {
+596:
+597:
+598:
+599: return mUI . mEditDefines . text ( ) . trimmed ( ) . split ( QRegularExpression ( "\\s*;\\s*" ) , QString :: SkipEmptyParts ) ;
+600:
+601: }
+602:
+603: QStringList ProjectFileDialog :: getUndefines ( ) const
+604: {
+605: const QString undefine = mUI . mEditUndefines . text ( ) . trimmed ( ) ;
+606:
+607:
+608:
+609: QStringList undefines ; undefines = undefine . split ( QRegularExpression ( "\\s*;\\s*" ) , QString :: SkipEmptyParts ) ;
+610:
+611: undefines . removeDuplicates ( ) ;
+612: return undefines ;
+613: }
+614:
+615: QStringList ProjectFileDialog :: getCheckPaths ( ) const
+616: {
+617: return getPaths ( mUI . mListCheckPaths ) ;
+618: }
+619:
+620: QStringList ProjectFileDialog :: getExcludedPaths ( ) const
+621: {
+622: return getPaths ( mUI . mListExcludedPaths ) ;
+623: }
+624:
+625: QStringList ProjectFileDialog :: getLibraries ( ) const
+626: {
+627: QStringList libraries ;
+628: for ( int row = 0 ; row < mUI . mLibraries . count ( ) ; ++ row ) {
+629: QListWidgetItem * item ; item = mUI . mLibraries . item ( row ) ;
+630: if ( item . checkState ( ) == Qt :: Checked ) {
+631: libraries << item . text ( ) ; }
+632: }
+633: return libraries ;
+634: }
+635:
+636: void ProjectFileDialog :: setRootPath ( const QString & root )
+637: {
+638: mUI . mEditProjectRoot . setText ( QDir :: toNativeSeparators ( root ) ) ;
+639: }
+640:
+641: void ProjectFileDialog :: setBuildDir ( const QString & buildDir )
+642: {
+643: mUI . mEditBuildDir . setText ( buildDir ) ;
+644: }
+645:
+646: void ProjectFileDialog :: setImportProject ( const QString & importProject )
+647: {
+648: mUI . mEditImportProject . setText ( importProject ) ;
+649: }
+650:
+651: void ProjectFileDialog :: setIncludepaths ( const QStringList & includes )
+652: {
+653: for ( const QString & dir : includes ) {
+654: addIncludeDir ( dir ) ;
+655: }
+656: }
+657:
+658: void ProjectFileDialog :: setDefines ( const QStringList & defines )
+659: {
+660: mUI . mEditDefines . setText ( defines . join ( ";" ) ) ;
+661: }
+662:
+663: void ProjectFileDialog :: setUndefines ( const QStringList & undefines )
+664: {
+665: mUI . mEditUndefines . setText ( undefines . join ( ";" ) ) ;
+666: }
+667:
+668: void ProjectFileDialog :: setCheckPaths ( const QStringList & paths )
+669: {
+670: for ( const QString & path : paths ) {
+671: addCheckPath ( path ) ;
+672: }
+673: }
+674:
+675: void ProjectFileDialog :: setExcludedPaths ( const QStringList & paths )
+676: {
+677: for ( const QString & path : paths ) {
+678: addExcludePath ( path ) ;
+679: }
+680: }
+681:
+682: void ProjectFileDialog :: setLibraries ( const QStringList & libraries )
+683: {
+684: for ( int row = 0 ; row < mUI . mLibraries . count ( ) ; ++ row ) {
+685: QListWidgetItem * item ; item = mUI . mLibraries . item ( row ) ;
+686: item . setCheckState ( libraries . contains ( item . text ( ) ) ? Qt :: Checked : Qt :: Unchecked ) ;
+687: }
+688: }
+689:
+690: void ProjectFileDialog :: addSingleSuppression ( const Suppressions :: Suppression & suppression )
+691: {
+692: QString suppression_name ;
+693: static char sep = QDir :: separator ( ) . toLatin1 ( ) ;
+694: bool found_relative ; found_relative = false ;
+695:
+696:
+697: if ( ( suppression . fileName . find ( "*" ) == std :: string :: npos ) &&
+698: ( suppression . fileName . find ( sep ) == std :: string :: npos ) ) {
+699: QFileInfo inf ( mProjectFile . getFilename ( ) ) ;
+700: QString rootpath ; rootpath = inf . absolutePath ( ) ;
+701: if ( QFile :: exists ( QString { "%1%2%3" } . arg ( rootpath ,
+702: QDir :: separator ( ) ,
+703: QString :: fromStdString ( suppression . fileName ) ) ) ) {
+704: Suppressions :: Suppression sup ; sup = suppression ;
+705: sup . fileName = rootpath . toLatin1 ( ) . constData ( ) ;
+706: sup . fileName += sep ;
+707: sup . fileName += suppression . fileName ;
+708: mSuppressions += sup ;
+709: suppression_name = QString :: fromStdString ( sup . getText ( ) ) ;
+710: found_relative = true ;
+711: }
+712: }
+713:
+714: if ( ! found_relative ) {
+715: mSuppressions += suppression ;
+716: suppression_name = QString :: fromStdString ( suppression . getText ( ) ) ;
+717: }
+718:
+719: mUI . mListSuppressions . addItem ( suppression_name ) ;
+720: }
+721:
+722: void ProjectFileDialog :: setSuppressions ( const QList < Suppressions :: Suppression > & suppressions )
+723: {
+724: mUI . mListSuppressions . clear ( ) ;
+725: QList < Suppressions :: Suppression > new_suppressions ; new_suppressions = suppressions ;
+726: mSuppressions . clear ( ) ;
+727: for ( const Suppressions :: Suppression & suppression : new_suppressions ) {
+728: addSingleSuppression ( suppression ) ;
+729: }
+730: mUI . mListSuppressions . sortItems ( ) ;
+731: }
+732:
+733: void ProjectFileDialog :: addCheckPath ( )
+734: {
+735: QString dir ; dir = getExistingDirectory ( tr ( "Select a directory to check" ) , false ) ;
+736: if ( ! dir . isEmpty ( ) ) {
+737: addCheckPath ( dir ) ; }
+738: }
+739:
+740: void ProjectFileDialog :: editCheckPath ( )
+741: {
+742: QListWidgetItem * item ; item = mUI . mListCheckPaths . currentItem ( ) ;
+743: mUI . mListCheckPaths . editItem ( item ) ;
+744: }
+745:
+746: void ProjectFileDialog :: removeCheckPath ( )
+747: {
+748: const int row = mUI . mListCheckPaths . currentRow ( ) ;
+749: QListWidgetItem * item ; item = mUI . mListCheckPaths . takeItem ( row ) ;
+750: delete item ;
+751: }
+752:
+753: void ProjectFileDialog :: addIncludeDir ( )
+754: {
+755: const QString dir = getExistingDirectory ( tr ( "Select include directory" ) , true ) ;
+756: if ( ! dir . isEmpty ( ) ) {
+757: addIncludeDir ( dir ) ; }
+758: }
+759:
+760: void ProjectFileDialog :: removeIncludeDir ( )
+761: {
+762: const int row = mUI . mListIncludeDirs . currentRow ( ) ;
+763: QListWidgetItem * item ; item = mUI . mListIncludeDirs . takeItem ( row ) ;
+764: delete item ;
+765: }
+766:
+767: void ProjectFileDialog :: editIncludeDir ( )
+768: {
+769: QListWidgetItem * item ; item = mUI . mListIncludeDirs . currentItem ( ) ;
+770: mUI . mListIncludeDirs . editItem ( item ) ;
+771: }
+772:
+773: void ProjectFileDialog :: addExcludePath ( )
+774: {
+775: addExcludePath ( getExistingDirectory ( tr ( "Select directory to ignore" ) , true ) ) ;
+776: }
+777:
+778: void ProjectFileDialog :: addExcludeFile ( )
+779: {
+780: const QFileInfo inf ( mProjectFile . getFilename ( ) ) ;
+781: const QDir & dir = inf . absoluteDir ( ) ;
+782: QMap < QString , QString > filters ;
+783: filters [ tr ( "Source files" ) ] = "*.c *.cpp" ;
+784: filters [ tr ( "All files" ) ] = "*.*" ;
+785: addExcludePath ( QFileDialog :: getOpenFileName ( this , tr ( "Exclude file" ) , dir . canonicalPath ( ) , toFilterString ( filters ) ) ) ;
+786: }
+787:
+788: void ProjectFileDialog :: editExcludePath ( )
+789: {
+790: QListWidgetItem * item ; item = mUI . mListExcludedPaths . currentItem ( ) ;
+791: mUI . mListExcludedPaths . editItem ( item ) ;
+792: }
+793:
+794: void ProjectFileDialog :: removeExcludePath ( )
+795: {
+796: const int row = mUI . mListExcludedPaths . currentRow ( ) ;
+797: QListWidgetItem * item ; item = mUI . mListExcludedPaths . takeItem ( row ) ;
+798: delete item ;
+799: }
+800:
+801: void ProjectFileDialog :: moveIncludePathUp ( )
+802: {
+803: int row ; row = mUI . mListIncludeDirs . currentRow ( ) ;
+804: QListWidgetItem * item ; item = mUI . mListIncludeDirs . takeItem ( row ) ;
+805: row = row > 0 ? row - 1 : 0 ;
+806: mUI . mListIncludeDirs . insertItem ( row , item ) ;
+807: mUI . mListIncludeDirs . setCurrentItem ( item ) ;
+808: }
+809:
+810: void ProjectFileDialog :: moveIncludePathDown ( )
+811: {
+812: int row ; row = mUI . mListIncludeDirs . currentRow ( ) ;
+813: QListWidgetItem * item ; item = mUI . mListIncludeDirs . takeItem ( row ) ;
+814: const int count = mUI . mListIncludeDirs . count ( ) ;
+815: row = row < count ? row + 1 : count ;
+816: mUI . mListIncludeDirs . insertItem ( row , item ) ;
+817: mUI . mListIncludeDirs . setCurrentItem ( item ) ;
+818: }
+819:
+820: void ProjectFileDialog :: addSuppression ( )
+821: {
+822: NewSuppressionDialog dlg ;
+823: if ( dlg . exec ( ) == QDialog :: Accepted ) {
+824: addSingleSuppression ( dlg . getSuppression ( ) ) ;
+825: }
+826: }
+827:
+828: void ProjectFileDialog :: removeSuppression ( )
+829: {
+830: const int row = mUI . mListSuppressions . currentRow ( ) ;
+831: QListWidgetItem * item ; item = mUI . mListSuppressions . takeItem ( row ) ;
+832: if ( ! item ) {
+833: return ; }
+834:
+835: int suppressionIndex ; suppressionIndex = getSuppressionIndex ( item . text ( ) ) ;
+836: if ( suppressionIndex >= 0 ) {
+837: mSuppressions . removeAt ( suppressionIndex ) ; }
+838: delete item ;
+839: }
+840:
+841: void ProjectFileDialog :: editSuppression ( const QModelIndex & )
+842: {
+843: const int row = mUI . mListSuppressions . currentRow ( ) ;
+844: QListWidgetItem * item ; item = mUI . mListSuppressions . item ( row ) ;
+845: int suppressionIndex ; suppressionIndex = getSuppressionIndex ( item . text ( ) ) ;
+846: if ( suppressionIndex >= 0 ) {
+847: NewSuppressionDialog dlg ;
+848: dlg . setSuppression ( mSuppressions [ suppressionIndex ] ) ;
+849: if ( dlg . exec ( ) == QDialog :: Accepted ) {
+850: mSuppressions [ suppressionIndex ] = dlg . getSuppression ( ) ;
+851: setSuppressions ( mSuppressions ) ;
+852: }
+853: }
+854: }
+855:
+856: int ProjectFileDialog :: getSuppressionIndex ( const QString & shortText ) const
+857: {
+858: const std :: string s = shortText . toStdString ( ) ;
+859: for ( int i = 0 ; i < mSuppressions . size ( ) ; ++ i ) {
+860: if ( mSuppressions [ i ] . getText ( ) == s ) {
+861: return i ; }
+862: }
+863: return -1 ;
+864: }
+865:
+866: void ProjectFileDialog :: browseMisraFile ( )
+867: {
+868: const QString fileName = QFileDialog :: getOpenFileName ( this ,
+869: tr ( "Select MISRA rule texts file" ) ,
+870: QDir :: homePath ( ) ,
+871: tr ( "MISRA rule texts file (%1)" ) . arg ( "*.txt" ) ) ;
+872: if ( ! fileName . isEmpty ( ) ) {
+873: QSettings settings ;
+874: mUI . mEditMisraFile . setText ( fileName ) ;
+875: settings . setValue ( $"MISRA C 2012 file" , fileName ) ;
+876:
+877: mUI . mAddonMisra . setText ( "MISRA C 2012" ) ;
+878: mUI . mAddonMisra . setEnabled ( true ) ;
+879: updateAddonCheckBox ( mUI . mAddonMisra , nullptr , getDataDir ( ) , "misra" ) ;
+880: }
+881: }
+
+
+
+##Value flow

@@ -1,0 +1,2782 @@
+
+
+##file cppcheck-2.8/lib/config.h
+
+1:
+|
+78:
+79: static const std :: string emptyString@var1 ;
+
+##file cppcheck-2.8/lib/mathlib.h
+
+1:
+|
+33:
+34: class MathLib {
+35: friend class TestMathLib ;
+36:
+37: public:
+38:
+39: class value {
+40: private:
+41: long long mIntValue@var2 ;
+42: double mDoubleValue@var3 ;
+43: enum class Type { INT , LONG , LONGLONG , FLOAT } ; enum Type mType@var4 ;
+44: bool mIsUnsigned@var5 ;
+45:
+46: void promote ( const value & v@var6 ) ;
+47:
+48: public:
+49: explicit value ( const std :: string & s@var7 ) ;
+50: std :: string str ( ) const ;
+51: bool isInt ( ) const {
+52: return mType@var4 !=@expr1073742267 Type ::@expr1073742268 FLOAT ;
+53: }
+54: bool isFloat ( ) const {
+55: return mType@var4 ==@expr1073742269 Type ::@expr1073742270 FLOAT ;
+56: }
+57:
+58: double getDoubleValue ( ) const {
+59: return isFloat (@expr1073742271 ) ?@expr1073742272 mDoubleValue@var3 :@expr1073742273 (@expr1073742274 double ) mIntValue@var2 ;
+60: }
+61:
+62: static value calc ( char op@var8 , const value & v1@var9 , const value & v2@var10 ) ;
+63: int compare ( const value & v@var11 ) const ;
+64: value add ( int v@var12 ) const ;
+65: value shiftLeft ( const value & v@var13 ) const ;
+66: value shiftRight ( const value & v@var14 ) const ;
+67: } ;
+68:
+69:
+70:
+71: static const int bigint_bits@var15 ;
+72:
+73: static long long toLongNumber ( const std :: string & str@var16 ) ;
+74: static unsigned long long toULongNumber ( const std :: string & str@var17 ) ;
+75:
+76: template < class T > static std :: string toString ( T value@var18 ) {
+77: std ::@expr1073742275 ostringstream result@var19 ;
+78: result@var19 <<@expr1073742276 value@var18 ;
+79: return result@var19 .@expr1073742277 str (@expr1073742278 ) ;
+80: }
+81: static double toDoubleNumber ( const std :: string & str@var20 ) ;
+82:
+83: static bool isInt ( const std :: string & str@var21 ) ;
+84: static bool isFloat ( const std :: string & str@var22 ) ;
+85: static bool isDecimalFloat ( const std :: string & str@var23 ) ;
+86: static bool isNegative ( const std :: string & str@var24 ) ;
+87: static bool isPositive ( const std :: string & str@var25 ) ;
+88: static bool isDec ( const std :: string & str@var26 ) ;
+89: static bool isFloatHex ( const std :: string & str@var27 ) ;
+90: static bool isIntHex ( const std :: string & str@var28 ) ;
+91: static bool isOct ( const std :: string & str@var29 ) ;
+92: static bool isBin ( const std :: string & str@var30 ) ;
+93:
+94: static std :: string getSuffix ( const std :: string & value@var31 ) ;
+95:
+|
+101:
+102: static bool isValidIntegerSuffix ( const std :: string & str@var32 , bool supportMicrosoftExtensions@var33 = true ) ;
+103:
+104: static std :: string add ( const std :: string & first@var34 , const std :: string & second@var35 ) ;
+105: static std :: string subtract ( const std :: string & first@var36 , const std :: string & second@var37 ) ;
+106: static std :: string multiply ( const std :: string & first@var38 , const std :: string & second@var39 ) ;
+107: static std :: string divide ( const std :: string & first@var40 , const std :: string & second@var41 ) ;
+108: static std :: string mod ( const std :: string & first@var42 , const std :: string & second@var43 ) ;
+109: static std :: string incdec ( const std :: string & var@var44 , const std :: string & op@var45 ) ;
+110: static std :: string calculate ( const std :: string & first@var46 , const std :: string & second@var47 , char action@var48 ) ;
+111:
+112: static std :: string sin ( const std :: string & tok@var49 ) ;
+113: static std :: string cos ( const std :: string & tok@var50 ) ;
+114: static std :: string tan ( const std :: string & tok@var51 ) ;
+115: static std :: string abs ( const std :: string & tok@var52 ) ;
+116: static bool isEqual ( const std :: string & first@var53 , const std :: string & second@var54 ) ;
+117: static bool isNotEqual ( const std :: string & first@var55 , const std :: string & second@var56 ) ;
+118: static bool isGreater ( const std :: string & first@var57 , const std :: string & second@var58 ) ;
+119: static bool isGreaterEqual ( const std :: string & first@var59 , const std :: string & second@var60 ) ;
+120: static bool isLess ( const std :: string & first@var61 , const std :: string & second@var62 ) ;
+121: static bool isLessEqual ( const std :: string & first@var63 , const std :: string & second@var64 ) ;
+122: static bool isNullValue ( const std :: string & str@var65 ) ;
+123:
+|
+127:
+128: static bool isOctalDigit ( char c@var66 ) ;
+129:
+130: static unsigned int encodeMultiChar ( const std :: string & str@var67 ) ;
+131:
+|
+136:
+137: static bool isDigitSeparator ( const std :: string & iCode@var68 , std :: string :: size_type iPos@var69 ) ;
+138: } ;
+139:
+140: MathLib :: value operator+ ( const MathLib :: value & v1@var70 , const MathLib :: value & v2@var71 ) ;
+141: MathLib :: value operator- ( const MathLib :: value & v1@var72 , const MathLib :: value & v2@var73 ) ;
+142: MathLib :: value operator* ( const MathLib :: value & v1@var74 , const MathLib :: value & v2@var75 ) ;
+143: MathLib :: value operator/ ( const MathLib :: value & v1@var76 , const MathLib :: value & v2@var77 ) ;
+144: MathLib :: value operator% ( const MathLib :: value & v1@var78 , const MathLib :: value & v2@var79 ) ;
+145: MathLib :: value operator& ( const MathLib :: value & v1@var80 , const MathLib :: value & v2@var81 ) ;
+146: MathLib :: value operator| ( const MathLib :: value & v1@var82 , const MathLib :: value & v2@var83 ) ;
+147: MathLib :: value operator^ ( const MathLib :: value & v1@var84 , const MathLib :: value & v2@var85 ) ;
+148: MathLib :: value operator<< ( const MathLib :: value & v1@var86 , const MathLib :: value & v2@var87 ) ;
+149: MathLib :: value operator>> ( const MathLib :: value & v1@var88 , const MathLib :: value & v2@var89 ) ;
+150:
+151: template < > std :: string MathLib :: toString < double > ( double value@var90 ) ;
+
+##file cppcheck-2.8/lib/valueflow.h
+
+1:
+|
+36:
+37: class ErrorLogger ;
+38: struct InferModel ;
+39: class Settings ;
+40: class SymbolDatabase ;
+41: class Token ;
+42: class TokenList ;
+43: class ValueType ;
+44: class Variable ;
+45: class Scope ;
+46:
+47: template < class T >
+48: class ValuePtr ;
+49:
+50: namespace ValueFlow {
+51: struct increment {
+52: template < class T >
+53: void operator() ( T & x@var91 ) const {
+54: x@var91 ++@expr1073742279 ;
+55: }
+56: } ;
+57: struct decrement {
+58: template < class T >
+59: void operator() ( T & x@var92 ) const {
+60: x@var92 --@expr1073742280 ;
+61: }
+62: } ;
+63:
+64: struct less {
+65: template < class T , class U >
+66: bool operator() ( const T & x@var93 , const U & y@var94 ) const {
+67: return x@var93 <@expr1073742281 y@var94 ;
+68: }
+69: } ;
+70:
+71: struct adjacent {
+72: template < class T , class U >
+73: bool operator() ( const T & x@var95 , const U & y@var96 ) const {
+74: return std ::@expr1073742282 abs (@expr1073742283 x@var95 -@expr1073742284 y@var96 ) ==@expr1073742285 1 ;
+75: }
+76: } ;
+77:
+78: struct equalVisitor {
+79: template < class T , class U >
+80: void operator() ( bool & result@var97 , T x@var98 , U y@var99 ) const {
+81: result@var97 =@expr1073742286 !@expr1073742287 (@expr1073742288 x@var98 >@expr1073742289 y@var99 ||@expr1073742290 x@var98 <@expr1073742291 y@var99 ) ;
+82: }
+83: } ;
+84: class Value {
+85: public:
+86:
+87:
+88: enum class Bound { Upper , Lower , Point } ;
+89:
+90: explicit Value ( long long val@var100 = 0 , Bound b@var101 = Bound :: Point )
+91: : valueType@var141 ( ValueType :: INT ) ,
+92: bound@var142 ( b@var101 ) ,
+93: intvalue@var143 ( val@var100 ) ,
+94: tokvalue@var144 ( nullptr ) ,
+95: floatValue@var145 ( 0.0 ) ,
+96: moveKind@var146 ( MoveKind :: NonMovedVariable ) ,
+97: varvalue@var147 ( val@var100 ) ,
+98: condition@var148 ( nullptr ) ,
+99: varId@var150 ( 0U ) ,
+100: safe@var151 ( false ) ,
+101: conditional@var152 ( false ) ,
+102: macro@var153 ( false ) ,
+103: defaultArg@var154 ( false ) ,
+104: indirect@var155 ( 0 ) ,
+105: path@var156 ( 0 ) ,
+106: wideintvalue@var157 ( val@var100 ) ,
+107: subexpressions@var158 ( ) ,
+108: capturetok@var159 ( nullptr ) ,
+109: lifetimeKind@var160 ( LifetimeKind :: Object ) ,
+110: lifetimeScope@var161 ( LifetimeScope :: Local ) ,
+111: valueKind@var166 ( ValueKind :: Possible )
+112: { }
+113: Value ( const Token * c@var102 , long long val@var103 , Bound b@var104 = Bound :: Point ) ;
+114:
+115: static Value unknown ( ) ;
+116:
+117: bool equalValue ( const ValueFlow :: Value & rhs@var105 ) const {
+118: if (@expr1073742292 valueType@var141 !=@expr1073742293 rhs@var105 .@expr1073742294 valueType@var106 ) {
+119: return false ; }
+120: switch (@expr1073742295 valueType@var141 ) {
+121: case ValueType ::@expr1073742296 INT :@expr473
+122: case ValueType ::@expr1073742298 CONTAINER_SIZE :@expr473
+123: case ValueType ::@expr1073742300 BUFFER_SIZE :@expr473
+124: case ValueType ::@expr1073742302 ITERATOR_START :@expr473
+125: case ValueType ::@expr1073742304 ITERATOR_END :@expr473 ;
+126: if (@expr482 intvalue@var143 !=@expr483 rhs@var105 .@expr484 intvalue@var107 ) {
+127: return false ; }
+128: break ;
+129: case ValueType ::@expr1073742309 TOK :@expr473 ;
+130: if (@expr487 tokvalue@var144 !=@expr488 rhs@var105 .@expr489 tokvalue@var108 ) {
+131: return false ; }
+132: break ;
+133: case ValueType ::@expr1073742314 FLOAT :@expr473 ;
+134:
+135: if (@expr1073742316 floatValue@var145 >@expr1073742317 rhs@var105 .@expr494 floatValue@var109 ||@expr1073742319 floatValue@var145 <@expr1073742320 rhs@var105 .@expr494 floatValue@var109 ) {
+136: return false ; }
+137: break ;
+138: case ValueType ::@expr1073742322 MOVED :@expr473 ;
+139: if (@expr1073742324 moveKind@var146 !=@expr1073742325 rhs@var105 .@expr1073742326 moveKind@var110 ) {
+140: return false ; }
+141: break ;
+142: case ValueType ::@expr1073742327 UNINIT :@expr473 ;
+143: break ;
+144: case ValueType ::@expr1073742329 LIFETIME :@expr473 ;
+145: if (@expr487 tokvalue@var144 !=@expr488 rhs@var105 .@expr489 tokvalue@var108 ) {
+146: return false ; }
+147: break ;
+148: case ValueType ::@expr1073742334 SYMBOLIC :@expr473 ;
+149: if (@expr1073742336 !@expr1073742337 sameToken (@expr1073742338 tokvalue@var144 , rhs@var105 .@expr489 tokvalue@var108 ) ) {
+150: return false ; }
+151: if (@expr482 intvalue@var143 !=@expr483 rhs@var105 .@expr484 intvalue@var107 ) {
+152: return false ; }
+153: break ;
+154: }
+155: return true ;
+156: }
+157:
+158: template < class T , class F >
+159: static void visitValue ( T & self@var111 , F f@var112 ) {
+160: switch (@expr1073742343 self@var111 .@expr1073742344 valueType@var113 ) {
+161: case ValueType ::@expr1073742345 INT :@expr522
+162: case ValueType ::@expr1073742347 SYMBOLIC :@expr522
+163: case ValueType ::@expr1073742349 BUFFER_SIZE :@expr522
+164: case ValueType ::@expr1073742351 CONTAINER_SIZE :@expr522
+165: case ValueType ::@expr1073742353 ITERATOR_START :@expr522
+166: case ValueType ::@expr1073742355 ITERATOR_END :@expr522 ; {
+167: f@var112 (@expr1073742357 self@var111 .@expr1073742358 intvalue@var114 ) ;
+168: break ;
+169: }
+170: case ValueType ::@expr1073742359 FLOAT :@expr522 ; {
+171: f@var112 (@expr1073742361 self@var111 .@expr1073742362 floatValue@var115 ) ;
+172: break ;
+173: }
+174: case ValueType ::@expr1073742363 UNINIT :@expr522
+175: case ValueType ::@expr1073742365 TOK :@expr522
+176: case ValueType ::@expr1073742367 LIFETIME :@expr522
+177: case ValueType ::@expr1073742369 MOVED :@expr522 ;
+178: break ;
+179: }
+180: }
+181:
+182: struct compareVisitor {
+183: struct innerVisitor {
+184: template < class Compare , class T , class U >
+185: void operator() ( bool & result@var116 , Compare compare@var117 , T x@var118 , U y@var119 ) const {
+186: result@var116 =@expr1073742371 compare@var117 (@expr1073742372 x@var118 , y@var119 ) ;
+187: }
+188: } ;
+189: template < class Compare , class T >
+190: void operator() ( bool & result@var120 , const Value & rhs@var121 , Compare compare@var122 , T x@var123 ) const {
+191: visitValue (@expr1073742374 rhs@var121 ,
+192: std ::@expr1073742375 bind (@expr1073742376 innerVisitor {@expr1073742377 } , std ::@expr1073742378 ref (@expr1073742379 result@var120 ) , std ::@expr1073742380 move (@expr1073742381 compare@var122 ) , x@var123 , std ::@expr1073742382 placeholders ::@expr1073742383 _1@expr1073742373 ) ) ;
+193: }
+194: } ;
+195:
+196: template < class Compare >
+197: bool compareValue ( const Value & rhs@var124 , Compare compare@var125 ) const {
+198: assert (@expr1073742385 (@expr1073742386 !@expr1073742387 this@expr564 .@expr1073742389 isSymbolicValue (@expr1073742390 ) &&@expr1073742391 !@expr1073742392 rhs@var124 .@expr1073742393 isSymbolicValue (@expr1073742394 ) ) ||@expr1073742395
+199: (@expr1073742396 this@expr564 .@expr1073742397 valueType@var141 ==@expr1073742398 rhs@var124 .@expr1073742399 valueType@var126 &&@expr1073742400 sameToken (@expr1073742401 this@expr564 .@expr1073742402 tokvalue@var144 , rhs@var124 .@expr1073742403 tokvalue@var127 ) ) ) ;
+200: bool result@var128 ; result@var128 =@expr1073742404 false ;
+201: visitValue (@expr1073742405
+202: *@expr1073742406 this@expr564 ,
+203: std ::@expr1073742407 bind (@expr1073742408 compareVisitor {@expr1073742409 } , std ::@expr586 ref (@expr1073742411 result@var128 ) , std ::@expr586 ref (@expr1073742413 rhs@var124 ) , std ::@expr1073742414 move (@expr1073742415 compare@var125 ) , std ::@expr1073742416 placeholders ::@expr1073742417 _1@expr1073742384 ) ) ;
+204: return result@var128 ;
+205: }
+206:
+207: bool operator== ( const Value & rhs@var129 ) const {
+208: if (@expr1073742418 !@expr1073742419 equalValue (@expr1073742420 rhs@var129 ) ) {
+209: return false ; }
+210:
+211: return varvalue@var147 ==@expr1073742421 rhs@var129 .@expr1073742422 varvalue@var130 &&@expr1073742423
+212: condition@var148 ==@expr1073742424 rhs@var129 .@expr1073742425 condition@var131 &&@expr1073742426
+213: varId@var150 ==@expr1073742427 rhs@var129 .@expr1073742428 varId@var132 &&@expr1073742429
+214: conditional@var152 ==@expr1073742430 rhs@var129 .@expr1073742431 conditional@var133 &&@expr1073742432
+215: defaultArg@var154 ==@expr1073742433 rhs@var129 .@expr1073742434 defaultArg@var134 &&@expr1073742435
+216: indirect@var155 ==@expr1073742436 rhs@var129 .@expr1073742437 indirect@var135 &&@expr1073742438
+217: valueKind@var166 ==@expr1073742439 rhs@var129 .@expr1073742440 valueKind@var136 ;
+218: }
+219:
+220: bool operator!= ( const Value & rhs@var137 ) const {
+221: return !@expr1073742441 (@expr1073742442 *@expr1073742443 this@expr1073742444 ==@expr1073742445 rhs@var137 ) ;
+222: }
+223:
+224: template < class T , $class $= $typename $std $:: $enable_if $< std :: is_arithmetic < T > $:: $value $> $:: $type >
+225: bool equalTo ( const T & x@var138 ) const {
+226: bool result@var139 ; result@var139 =@expr1073742447 false ;
+227: visitValue (@expr1073742448 *@expr1073742449 this@expr1073742450 , std ::@expr1073742451 bind (@expr1073742452 equalVisitor {@expr1073742453 } , std ::@expr1073742454 ref (@expr1073742455 result@var139 ) , x@var138 , std ::@expr1073742456 placeholders ::@expr1073742457 _1@expr1073742446 ) ) ;
+228: return result@var139 ;
+229: }
+230:
+231: void decreaseRange ( ) {
+232: if (@expr1073742458 bound@var142 ==@expr1073742459 Bound ::@expr1073742460 Lower ) {
+233: visitValue (@expr1073742461 *@expr638 this@expr639 , increment {@expr1073742464 } ) ; }
+234: else { if (@expr1073742465 bound@var142 ==@expr1073742466 Bound ::@expr1073742467 Upper ) {
+235: visitValue (@expr1073742468 *@expr638 this@expr639 , decrement {@expr1073742470 } ) ; } }
+236: }
+237:
+238: void invertBound ( ) {
+239: if (@expr1073742471 bound@var142 ==@expr1073742472 Bound ::@expr649 Lower ) {
+240: bound@var142 =@expr1073742474 Bound ::@expr651 Upper ; }
+241: else { if (@expr1073742476 bound@var142 ==@expr1073742477 Bound ::@expr651 Upper ) {
+242: bound@var142 =@expr1073742479 Bound ::@expr649 Lower ; } }
+243: }
+244:
+245: void invertRange ( ) {
+246: invertBound (@expr1073742481 ) ;
+247: decreaseRange (@expr1073742482 ) ;
+248: }
+249:
+250: void assumeCondition ( const Token * tok@var140 ) ;
+251:
+252: std :: string infoString ( ) const ;
+253:
+254: enum class ValueType {
+255: INT ,
+256: TOK ,
+257: FLOAT ,
+258: MOVED ,
+259: UNINIT ,
+260: CONTAINER_SIZE ,
+261: LIFETIME ,
+262: BUFFER_SIZE ,
+263: ITERATOR_START ,
+264: ITERATOR_END ,
+265: SYMBOLIC
+266: } ; enum ValueType valueType@var141 ;
+267: bool isIntValue ( ) const {
+268: return valueType@var141 ==@expr1073742484 ValueType ::@expr1073742485 INT@expr1073742483 ;
+269: }
+270: bool isTokValue ( ) const {
+271: return valueType@var141 ==@expr1073742486 ValueType ::@expr1073742487 TOK ;
+272: }
+273: bool isFloatValue ( ) const {
+274: return valueType@var141 ==@expr1073742488 ValueType ::@expr1073742489 FLOAT ;
+275: }
+276: bool isMovedValue ( ) const {
+277: return valueType@var141 ==@expr1073742490 ValueType ::@expr1073742491 MOVED ;
+278: }
+279: bool isUninitValue ( ) const {
+280: return valueType@var141 ==@expr1073742492 ValueType ::@expr1073742493 UNINIT ;
+281: }
+282: bool isContainerSizeValue ( ) const {
+283: return valueType@var141 ==@expr1073742494 ValueType ::@expr1073742495 CONTAINER_SIZE ;
+284: }
+285: bool isLifetimeValue ( ) const {
+286: return valueType@var141 ==@expr1073742496 ValueType ::@expr1073742497 LIFETIME ;
+287: }
+288: bool isBufferSizeValue ( ) const {
+289: return valueType@var141 ==@expr1073742498 ValueType ::@expr1073742499 BUFFER_SIZE ;
+290: }
+291: bool isIteratorValue ( ) const {
+292: return valueType@var141 ==@expr1073742500 ValueType ::@expr1073742501 ITERATOR_START ||@expr1073742502 valueType@var141 ==@expr1073742503 ValueType ::@expr1073742504 ITERATOR_END ;
+293: }
+294: bool isIteratorStartValue ( ) const {
+295: return valueType@var141 ==@expr1073742505 ValueType ::@expr1073742506 ITERATOR_START ;
+296: }
+297: bool isIteratorEndValue ( ) const {
+298: return valueType@var141 ==@expr1073742507 ValueType ::@expr1073742508 ITERATOR_END ;
+299: }
+300: bool isSymbolicValue ( ) const {
+301: return valueType@var141 ==@expr1073742509 ValueType ::@expr1073742510 SYMBOLIC ;
+302: }
+303:
+304: bool isLocalLifetimeValue ( ) const {
+305: return valueType@var141 ==@expr1073742512 ValueType ::@expr1073742513 LIFETIME &&@expr1073742514 lifetimeScope@var161 ==@expr1073742515 LifetimeScope ::@expr1073742516 Local@expr1073742511 ;
+306: }
+307:
+308: bool isArgumentLifetimeValue ( ) const {
+309: return valueType@var141 ==@expr1073742517 ValueType ::@expr1073742518 LIFETIME &&@expr1073742519 lifetimeScope@var161 ==@expr1073742520 LifetimeScope ::@expr1073742521 Argument ;
+310: }
+311:
+312: bool isSubFunctionLifetimeValue ( ) const {
+313: return valueType@var141 ==@expr1073742522 ValueType ::@expr1073742523 LIFETIME &&@expr1073742524 lifetimeScope@var161 ==@expr1073742525 LifetimeScope ::@expr1073742526 SubFunction ;
+314: }
+315:
+316: bool isNonValue ( ) const {
+317: return isMovedValue (@expr1073742527 ) ||@expr1073742528 isUninitValue (@expr1073742529 ) ||@expr1073742530 isLifetimeValue (@expr1073742531 ) ;
+318: }
+319:
+320:
+321: Bound bound@var142 ;
+322:
+323:
+324: long long intvalue@var143 ;
+325:
+326:
+327: const Token * tokvalue@var144 ;
+328:
+329:
+330: double floatValue@var145 ;
+331:
+332:
+333: enum class MoveKind { NonMovedVariable , MovedVariable , ForwardedVariable } ; enum MoveKind moveKind@var146 ;
+334:
+335:
+336: long long varvalue@var147 ;
+337:
+338:
+339: const Token * condition@var148 ;
+340:
+341: std :: list < std :: pair < const Token * , std :: string > > errorPath@var149 ;
+342:
+343:
+344: int varId@var150 ;
+345:
+346:
+347: bool safe@var151 ;
+348:
+349:
+350: bool conditional@var152 ;
+351:
+352:
+353: bool macro@var153 ;
+354:
+355:
+356: bool defaultArg@var154 ;
+357:
+358: int indirect@var155 ;
+359:
+360:
+361: long long path@var156 ;
+362:
+363:
+364: long long wideintvalue@var157 ;
+365:
+366: std :: vector < std :: string > subexpressions@var158 ;
+367:
+368:
+369: const Token * capturetok@var159 ;
+370:
+371: enum class LifetimeKind {
+372:
+373: Object ,
+374:
+375: SubObject ,
+376:
+377: Lambda ,
+378:
+379: Iterator ,
+380:
+381: Address
+382: } ; enum LifetimeKind lifetimeKind@var160 ;
+383:
+384: enum class LifetimeScope { Local , Argument , SubFunction , ThisPointer , ThisValue } ; enum LifetimeScope lifetimeScope@var161 ;
+385:
+386: static const char * toString ( MoveKind moveKind@var162 ) ;
+387: static const char * toString ( LifetimeKind lifetimeKind@var163 ) ;
+388: static const char * toString ( LifetimeScope lifetimeScope@var164 ) ;
+389: static const char * toString ( Bound bound@var165 ) ;
+390:
+391:
+392: enum class ValueKind {
+393:
+394: Possible ,
+395:
+396: Known ,
+397:
+398: Inconclusive ,
+399:
+400: Impossible
+401: } ; enum ValueKind valueKind@var166 ;
+402:
+403: void setKnown ( ) {
+404: valueKind@var166 =@expr1073742532 ValueKind ::@expr1073742533 Known ;
+405: }
+406:
+407: bool isKnown ( ) const {
+408: return valueKind@var166 ==@expr1073742534 ValueKind ::@expr1073742535 Known ;
+409: }
+410:
+411: void setPossible ( ) {
+412: valueKind@var166 =@expr1073742537 ValueKind ::@expr1073742538 Possible@expr1073742536 ;
+413: }
+414:
+415: bool isPossible ( ) const {
+416: return valueKind@var166 ==@expr1073742540 ValueKind ::@expr1073742541 Possible@expr1073742539 ;
+417: }
+418:
+419: bool isImpossible ( ) const {
+420: return valueKind@var166 ==@expr1073742542 ValueKind ::@expr1073742543 Impossible ;
+421: }
+422:
+423: void setImpossible ( ) {
+424: valueKind@var166 =@expr1073742544 ValueKind ::@expr1073742545 Impossible ;
+425: }
+426:
+427: void setInconclusive ( bool inconclusive@var167 = true ) {
+428: if (@expr1073742546 inconclusive@var167 ) {
+429: valueKind@var166 =@expr1073742547 ValueKind ::@expr1073742548 Inconclusive ; }
+430: }
+431:
+432: bool isInconclusive ( ) const {
+433: return valueKind@var166 ==@expr1073742549 ValueKind ::@expr1073742550 Inconclusive ;
+434: }
+435:
+436: void changeKnownToPossible ( ) {
+437: if (@expr1073742552 isKnown (@expr1073742553 ) ) {
+438: valueKind@var166 =@expr1073742554 ValueKind ::@expr1073742555 Possible@expr1073742551 ; }
+439: }
+440:
+441: bool errorSeverity ( ) const {
+442: return !@expr1073742556 condition@var148 &&@expr1073742557 !@expr1073742558 defaultArg@var154 ;
+443: }
+444:
+445: static bool sameToken ( const Token * tok1@var168 , const Token * tok2@var169 ) ;
+446: } ;
+447:
+448:
+449: const ValueFlow :: Value * valueFlowConstantFoldAST ( Token * expr@var170 , const Settings * settings@var171 ) ;
+450:
+451:
+452: void setValues ( TokenList * tokenlist@var172 , SymbolDatabase * symboldatabase@var173 , ErrorLogger * errorLogger@var174 , const Settings * settings@var175 ) ;
+453:
+454: std :: string eitherTheConditionIsRedundant ( const Token * condition@var176 ) ;
+455:
+456: unsigned long getSizeOf ( const ValueType & vt@var177 , const Settings * settings@var178 ) ;
+457:
+458: const ValueFlow :: Value * findValue ( const std :: list < ValueFlow :: Value > & values@var179 ,
+459: const Settings * settings@var180 ,
+460: std :: function < bool ( const ValueFlow :: Value & ) > pred@var181 ) ;
+461:
+462: std :: vector < ValueFlow :: Value > isOutOfBounds ( const Value & size@var182 , const Token * indexTok@var183 , bool possible@var184 = true ) ;
+463: }
+464:
+465: ValueFlow :: Value asImpossible ( ValueFlow :: Value v@var185 ) ;
+466:
+467: bool isContainerSizeChanged ( const Token * tok@var186 , const Settings * settings@var187 = nullptr , int depth@var188 = 20 ) ;
+468:
+469: struct LifetimeToken {
+470: const Token * token@var189 ;
+471: bool addressOf@var190 ;
+472: std :: list < std :: pair < const Token * , std :: string > > errorPath@var191 ;
+473: bool inconclusive@var192 ;
+474:
+475: LifetimeToken ( ) : token@var189 ( nullptr ) , addressOf@var190 ( false ) , errorPath@var191 ( ) , inconclusive@var192 ( false ) { }
+476:
+477: LifetimeToken ( const Token * token@var193 , std :: list < std :: pair < const Token * , std :: string > > errorPath@var194 )
+478: : token@var189 ( token@var193 ) , addressOf@var190 ( false ) , errorPath@var191 ( std :: move ( errorPath@var194 ) ) , inconclusive@var192 ( false )
+479: { }
+480:
+481: LifetimeToken ( const Token * token@var195 , bool addressOf@var196 , std :: list < std :: pair < const Token * , std :: string > > errorPath@var197 )
+482: : token@var189 ( token@var195 ) , addressOf@var190 ( addressOf@var196 ) , errorPath@var191 ( std :: move ( errorPath@var197 ) ) , inconclusive@var192 ( false )
+483: { }
+484:
+485: static std :: vector < LifetimeToken > setAddressOf ( std :: vector < LifetimeToken > v@var198 , bool b@var199 ) {
+486: for (@expr1073742559 LifetimeToken &@expr1073742560 x@var200 :@expr1073742561 v@var198 ) {
+487: x@var200 .@expr1073742562 addressOf@var201 =@expr1073742563 b@var199 ; }
+488: return v@var198 ;
+489: }
+490:
+491: static std :: vector < LifetimeToken > setInconclusive ( std :: vector < LifetimeToken > v@var202 , bool b@var203 ) {
+492: for (@expr1073742564 LifetimeToken &@expr1073742565 x@var204 :@expr1073742566 v@var202 ) {
+493: x@var204 .@expr1073742567 inconclusive@var205 =@expr1073742568 b@var203 ; }
+494: return v@var202 ;
+495: }
+496: } ;
+497:
+498: const Token * parseCompareInt ( const Token * tok@var206 , ValueFlow :: Value & true_value@var207 , ValueFlow :: Value & false_value@var208 , const std :: function < std :: vector < long long > ( const Token * ) > & evaluate@var209 ) ;
+499: const Token * parseCompareInt ( const Token * tok@var210 , ValueFlow :: Value & true_value@var211 , ValueFlow :: Value & false_value@var212 ) ;
+500:
+501: ValueFlow :: Value inferCondition ( std :: string op@var213 , long long val@var214 , const Token * varTok@var215 ) ;
+502: ValueFlow :: Value inferCondition ( const std :: string & op@var216 , const Token * varTok@var217 , long long val@var218 ) ;
+503:
+504: ValuePtr<InferModel> makeIntegralInferModel ( ) ;
+505:
+506: const Token * solveExprValue ( const Token * expr@var219 ,
+507: const std :: function < std :: vector < long long > ( const Token * ) > & eval@var220 ,
+508: ValueFlow :: Value & value@var221 ) ;
+509:
+510: std :: vector < LifetimeToken > getLifetimeTokens ( const Token * tok@var222 ,
+511: bool escape@var223 = false ,
+512: std :: list < std :: pair < const Token * , std :: string > > errorPath@var224 = std :: list < std :: pair < const Token * , std :: string > > { } ) ;
+513:
+514: bool hasLifetimeToken ( const Token * tok@var225 , const Token * lifetime@var226 ) ;
+515:
+516: const Variable * getLifetimeVariable ( const Token * tok@var227 , std :: list < std :: pair < const Token * , std :: string > > & errorPath@var228 , bool * addressOf@var229 = nullptr ) ;
+517:
+518: const Variable * getLifetimeVariable ( const Token * tok@var230 ) ;
+519:
+520: bool isLifetimeBorrowed ( const Token * tok@var231 , const Settings * settings@var232 ) ;
+521:
+522: std :: string lifetimeType ( const Token * tok@var233 , const ValueFlow :: Value * val@var234 ) ;
+523:
+524: std :: string lifetimeMessage ( const Token * tok@var235 , const ValueFlow :: Value * val@var236 , std :: list < std :: pair < const Token * , std :: string > > & errorPath@var237 ) ;
+525:
+526: ValueFlow :: Value getLifetimeObjValue ( const Token * tok@var238 , bool inconclusive@var239 = false ) ;
+527:
+528: std :: vector < ValueFlow :: Value > getLifetimeObjValues ( const Token * tok@var240 ,
+529: bool inconclusive@var241 = false ,
+530: long long path@var242 = 0 ) ;
+531:
+532: const Token * getEndOfExprScope ( const Token * tok@var243 , const Scope * defaultScope@var244 = nullptr , bool smallest@var245 = true ) ;
+
+##file cppcheck-2.8/lib/infer.h
+
+1:
+|
+29:
+30: struct Interval ;
+31:
+32:
+33: struct InferModel {
+34: virtual bool match ( const ValueFlow :: Value & value@var246 ) const = 0 ;
+35: virtual ValueFlow :: Value yield ( long long value@var247 ) const = 0 ;
+36: virtual ~ InferModel ( ) { }
+37: } ;
+38:
+39: std :: vector < ValueFlow :: Value > infer ( const ValuePtr<InferModel> & model@var248 ,
+40: const std :: string & op@var249 ,
+41: std :: list < ValueFlow :: Value > lhsValues@var250 ,
+42: std :: list < ValueFlow :: Value > rhsValues@var251 ) ;
+43:
+44: std :: vector < ValueFlow :: Value > infer ( const ValuePtr<InferModel> & model@var252 ,
+45: const std :: string & op@var253 ,
+46: long long lhs@var254 ,
+47: std :: list < ValueFlow :: Value > rhsValues@var255 ) ;
+48:
+49: std :: vector < ValueFlow :: Value > infer ( const ValuePtr<InferModel> & model@var256 ,
+50: const std :: string & op@var257 ,
+51: std :: list < ValueFlow :: Value > lhsValues@var258 ,
+52: long long rhs@var259 ) ;
+53:
+54: std :: vector < long long > getMinValue ( const ValuePtr<InferModel> & model@var260 , const std :: list < ValueFlow :: Value > & values@var261 ) ;
+55: std :: vector < long long > getMaxValue ( const ValuePtr<InferModel> & model@var262 , const std :: list < ValueFlow :: Value > & values@var263 ) ;
+56:
+57: std :: string toString ( const Interval & i@var264 ) ;
+
+##file cppcheck-2.8/lib/errortypes.h
+
+1:
+|
+31:
+32: class Token ;
+33:
+34:
+35: struct InternalError {
+36: enum Type { AST , SYNTAX , UNKNOWN_MACRO , INTERNAL , LIMIT , INSTANTIATION } ;
+37: InternalError ( const Token * tok@var265 , const std :: string & errorMsg@var266 , Type type@var267 = INTERNAL ) ;
+38: const Token * token@var268 ;
+39: std :: string errorMessage@var269 ;
+40: Type type@var270 ;
+41: std :: string id@var271 ;
+42: } ;
+43:
+44: class Certainty {
+45: public:
+46: enum CertaintyLevel {
+47: normal , inconclusive , safe , experimental
+48: } ;
+49: } ;
+50:
+51: class Checks {
+52: public:
+53: enum CheckList {
+54: unusedFunction , missingInclude , internalCheck
+55: } ;
+56: } ;
+57:
+58:
+59: class Severity {
+60: public:
+61:
+62:
+63:
+64: enum SeverityType {
+65:
+66:
+67:
+68: none ,
+69:
+|
+73:
+74: error ,
+75:
+|
+79:
+80: warning ,
+81:
+|
+86:
+87: style ,
+88:
+|
+92:
+93: performance ,
+94:
+|
+100:
+101: portability ,
+102:
+|
+107:
+108: information ,
+109:
+|
+112:
+113: debug
+114: } ;
+115:
+116: static std :: string toString ( SeverityType severity@var272 ) ;
+117: static SeverityType fromString ( const std :: string & severity@var273 ) ;
+118: } ;
+119:
+120: struct CWE {
+121: explicit CWE ( unsigned short cweId@var274 ) : id@var275 ( cweId@var274 ) { }
+122: unsigned short id@var275 ;
+123: } ;
+
+##file cppcheck-2.8/lib/calculate.h
+
+1:
+|
+25:
+26: template < class T >
+27: bool isEqual ( T x@var276 , T y@var277 )
+28: {
+29: return x@var276 ==@expr1073742569 y@var277 ;
+30: }
+31:
+32: bool isEqual ( double x@var278 , double y@var279 )
+33: {
+34: const double diff@var280 =@expr1073742570 (@expr1073742571 x@var278 >@expr1073742572 y@var279 ) ?@expr1073742573 x@var278 -@expr1073742574 y@var279 :@expr1073742575 y@var279 -@expr1073742576 x@var278 ;
+35: return !@expr1073742577 (@expr1073742578 (@expr1073742579 diff@var280 /@expr1073742580 2 ) <@expr1073742581 diff@var280 ) ;
+36: }
+37: bool isEqual ( float x@var281 , float y@var282 )
+38: {
+39: return isEqual (@expr1073742582 double {@expr1073742583 x@var281 } , double {@expr1073742584 y@var282 } ) ;
+40: }
+41:
+42: template < class T >
+43: bool isZero ( T x@var283 )
+44: {
+45: return isEqual (@expr1073742585 x@var283 , T (@expr1073742586 0 ) ) ;
+46: }
+47:
+48: template < class R , class T >
+49: R calculate ( const std :: string & s@var284 , const T & x@var285 , const T & y@var286 , bool * error@var287 = nullptr )
+50: {
+51: auto wrap@var288 ; wrap@var288 =@expr1073742587 [@expr1073742588 ] (@expr1073742589 T z@var289 ) {
+52: return R {@expr1073742590 z@var289 } ;
+53: } ;
+54: const long long maxBitsShift@var290 =@expr1073742591 sizeof (@expr1073742592 long long ) *@expr1073742593 8 ;
+55:
+56: const long long maxBitsSignedShift@var291 =@expr1073742594 maxBitsShift@var290 -@expr1073742595 1 ;
+57: switch (@expr1073742596 MathLib ::@expr1073742597 encodeMultiChar (@expr1073742598 s@var284 ) ) {
+58: case '+' :@expr775 ;
+59: return wrap@var288 (@expr1073742600 x@var285 +@expr1073742601 y@var286 ) ;
+60: case '-' :@expr775 ;
+61: return wrap@var288 (@expr779 x@var285 -@expr780 y@var286 ) ;
+62: case '*' :@expr775 ;
+63: return wrap@var288 (@expr1073742606 x@var285 *@expr1073742607 y@var286 ) ;
+64: case '/' :@expr775 ;
+65: if (@expr1073742609 isZero (@expr786 y@var286 ) ) {
+66: if (@expr787 error@var287 ) {
+67: *@expr788 error@var287 =@expr1073742613 true ; }
+68: return R {@expr1073742614 } ;
+69: }
+70: return wrap@var288 (@expr1073742615 x@var285 /@expr1073742616 y@var286 ) ;
+71: case '%' :@expr775 ;
+72: if (@expr1073742618 isZero (@expr1073742619 long long (@expr796 y@var286 ) ) ) {
+73: if (@expr787 error@var287 ) {
+74: *@expr788 error@var287 =@expr1073742623 true ; }
+75: return R {@expr1073742624 } ;
+76: }
+77: return wrap@var288 (@expr1073742625 long long (@expr802 x@var285 ) %@expr1073742627 long long (@expr796 y@var286 ) ) ;
+78: case '&' :@expr775 ;
+79: return wrap@var288 (@expr1073742630 long long (@expr802 x@var285 ) &@expr1073742632 long long (@expr796 y@var286 ) ) ;
+80: case '|' :@expr775 ;
+81: return wrap@var288 (@expr1073742635 long long (@expr802 x@var285 ) |@expr1073742637 long long (@expr796 y@var286 ) ) ;
+82: case '^' :@expr775 ;
+83: return wrap@var288 (@expr1073742640 long long (@expr802 x@var285 ) ^@expr1073742642 long long (@expr796 y@var286 ) ) ;
+84: case '>' :@expr775 ;
+85: return wrap@var288 (@expr1073742645 x@var285 >@expr1073742646 y@var286 ) ;
+86: case '<' :@expr775 ;
+87: return wrap@var288 (@expr1073742648 x@var285 <@expr1073742649 y@var286 ) ;
+88: case '<<' :@expr775 ;
+89: if (@expr827 y@var286 >=@expr828 maxBitsSignedShift@var291 ||@expr829 y@var286 <@expr830 0 ||@expr831 x@var285 <@expr832 0 ) {
+90: if (@expr787 error@var287 ) {
+91: *@expr788 error@var287 =@expr1073742659 true ; }
+92: return R {@expr1073742660 } ;
+93: }
+94: return wrap@var288 (@expr1073742661 long long (@expr802 x@var285 ) <<@expr1073742663 long long (@expr796 y@var286 ) ) ;
+95: case '>>' :@expr775 ;
+96: if (@expr827 y@var286 >=@expr828 maxBitsSignedShift@var291 ||@expr829 y@var286 <@expr830 0 ||@expr831 x@var285 <@expr832 0 ) {
+97: if (@expr787 error@var287 ) {
+98: *@expr788 error@var287 =@expr1073742674 true ; }
+99: return R {@expr1073742675 } ;
+100: }
+101: return wrap@var288 (@expr1073742676 long long (@expr802 x@var285 ) >>@expr1073742678 long long (@expr796 y@var286 ) ) ;
+102: case '&&' :@expr775 ;
+103: return wrap@var288 (@expr1073742681 !@expr858 isZero (@expr859 x@var285 ) &&@expr1073742684 !@expr861 isZero (@expr786 y@var286 ) ) ;
+104: case '||' :@expr775 ;
+105: return wrap@var288 (@expr1073742688 !@expr858 isZero (@expr859 x@var285 ) ||@expr1073742691 !@expr861 isZero (@expr786 y@var286 ) ) ;
+106: case '==' :@expr775 ;
+107: return wrap@var288 (@expr1073742695 isEqual (@expr872 x@var285 , y@var286 ) ) ;
+108: case '!=' :@expr775 ;
+109: return wrap@var288 (@expr1073742698 !@expr1073742699 isEqual (@expr872 x@var285 , y@var286 ) ) ;
+110: case '>=' :@expr775 ;
+111: return wrap@var288 (@expr1073742702 x@var285 >=@expr1073742703 y@var286 ) ;
+112: case '<=' :@expr775 ;
+113: return wrap@var288 (@expr1073742705 x@var285 <=@expr1073742706 y@var286 ) ;
+114: case '<=>' :@expr775 ;
+115: return wrap@var288 (@expr779 x@var285 -@expr780 y@var286 ) ;
+116: }
+117: throw InternalError (@expr1073742710 nullptr , "Unknown operator: " +@expr1073742711 s@var284 ) ;
+118: }
+119:
+120: template < class T >
+121: T calculate ( const std :: string & s@var292 , const T & x@var293 , const T & y@var294 , bool * error@var295 = nullptr )
+122: {
+123: return calculate < T , T > (@expr1073742712 s@var292 , x@var293 , y@var294 , error@var295 ) ;
+124: }
+
+##file cppcheck-2.8/lib/valueptr.h
+
+1:
+|
+27:
+28: class ValuePtr<InferModel> ;
+
+##file cppcheck-2.8/lib/infer.cpp
+
+1:
+|
+31:
+32: class Token ;
+33:
+34: template < class Predicate , class Compare >
+35: static const ValueFlow :: Value * getCompareValue ( const std :: list < ValueFlow :: Value > & values@var296 , Predicate pred@var297 , Compare compare@var298 )
+36: {
+37: const ValueFlow ::@expr1073742713 Value * result@var299 ; result@var299 =@expr1073742714 nullptr ;
+38: for (@expr1073742715 const ValueFlow ::@expr892 Value &@expr893 value@var300 :@expr1073742718 values@var296 ) {
+39: if (@expr1073742719 !@expr1073742720 pred@var297 (@expr1073742721 value@var300 ) ) {
+40: continue ; }
+41: if (@expr1073742722 result@var299 ) {
+42: result@var299 =@expr1073742723 &@expr1073742724 std ::@expr1073742725 min (@expr1073742726 value@var300 , *@expr1073742727 result@var299 , [@expr1073742728 compare@var298 ] (@expr1073742729 const ValueFlow ::@expr892 Value &@expr893 x@var301 , const ValueFlow ::@expr892 Value &@expr893 y@var302 ) {
+43: return compare@var298 (@expr1073742734 x@var301 .@expr1073742735 intvalue@var303 , y@var302 .@expr1073742736 intvalue@var304 ) ;
+44: } ) ; }
+45: else {
+46: result@var299 =@expr1073742737 &@expr1073742738 value@var300 ; }
+47: }
+48: return result@var299 ;
+49: }
+50:
+51: struct Interval {
+52: std :: vector < long long > minvalue@var305 ; minvalue@var305 = { } ;
+53: std :: vector < long long > maxvalue@var306 ; maxvalue@var306 = { } ;
+54: std :: vector < const ValueFlow :: Value * > minRef@var307 ; minRef@var307 = { } ;
+55: std :: vector < const ValueFlow :: Value * > maxRef@var308 ; maxRef@var308 = { } ;
+56:
+57: std :: string str ( ) const
+58: {
+59: std ::@expr1073742739 string result@var309 ; result@var309 =@expr1073742740 "[" ;
+60: if (@expr1073742741 minvalue@var305 .@expr1073742742 size (@expr1073742743 ) ==@expr1073742744 1 ) {
+61: result@var309 +=@expr1073742745 std ::@expr922 to_string (@expr1073742747 minvalue@var305 .@expr1073742748 front (@expr1073742749 ) ) ; }
+62: else {
+63: result@var309 +=@expr1073742750 "*" ; }
+64: result@var309 +=@expr1073742751 "," ;
+65: if (@expr1073742752 maxvalue@var306 .@expr1073742753 size (@expr1073742754 ) ==@expr1073742755 1 ) {
+66: result@var309 +=@expr1073742756 std ::@expr922 to_string (@expr1073742758 maxvalue@var306 .@expr1073742759 front (@expr1073742760 ) ) ; }
+67: else {
+68: result@var309 +=@expr1073742761 "*" ; }
+69: result@var309 +=@expr1073742762 "]" ;
+70: return result@var309 ;
+71: }
+72:
+73: void setMinValue ( long long x@var310 , const ValueFlow :: Value * ref@var311 = nullptr )
+74: {
+75: minvalue@var305 =@expr1073742763 {@expr1073742764 x@var310 } ;
+76: if (@expr1073742765 ref@var311 ) {
+77: minRef@var307 =@expr1073742766 {@expr1073742767 ref@var311 } ; }
+78: }
+79:
+80: void setMaxValue ( long long x@var312 , const ValueFlow :: Value * ref@var313 = nullptr )
+81: {
+82: maxvalue@var306 =@expr1073742768 {@expr1073742769 x@var312 } ;
+83: if (@expr1073742770 ref@var313 ) {
+84: maxRef@var308 =@expr1073742771 {@expr1073742772 ref@var313 } ; }
+85: }
+86:
+87: bool isLessThan ( long long x@var314 , std :: vector < const ValueFlow :: Value * > * ref@var315 = nullptr ) const
+88: {
+89: if (@expr1073742773 !@expr1073742774 this@expr951 .@expr952 maxvalue@var306 .@expr1073742777 empty (@expr1073742778 ) &&@expr1073742779 this@expr951 .@expr952 maxvalue@var306 .@expr1073742781 front (@expr1073742782 ) <@expr1073742783 x@var314 ) {
+90: if (@expr1073742784 ref@var315 ) {
+91: *@expr1073742785 ref@var315 =@expr1073742786 maxRef@var308 ; }
+92: return true ;
+93: }
+94: return false ;
+95: }
+96:
+97: bool isGreaterThan ( long long x@var316 , std :: vector < const ValueFlow :: Value * > * ref@var317 = nullptr ) const
+98: {
+99: if (@expr1073742787 !@expr1073742788 this@expr965 .@expr966 minvalue@var305 .@expr1073742791 empty (@expr1073742792 ) &&@expr1073742793 this@expr965 .@expr966 minvalue@var305 .@expr1073742795 front (@expr1073742796 ) >@expr1073742797 x@var316 ) {
+100: if (@expr1073742798 ref@var317 ) {
+101: *@expr1073742799 ref@var317 =@expr1073742800 minRef@var307 ; }
+102: return true ;
+103: }
+104: return false ;
+105: }
+106:
+107: bool isScalar ( ) const {
+108: return minvalue@var305 .@expr1073742801 size (@expr1073742802 ) ==@expr1073742803 1 &&@expr1073742804 minvalue@var305 ==@expr1073742805 maxvalue@var306 ;
+109: }
+110:
+111: bool empty ( ) const {
+112: return minvalue@var305 .@expr1073742806 empty (@expr1073742807 ) &&@expr1073742808 maxvalue@var306 .@expr1073742809 empty (@expr1073742810 ) ;
+113: }
+114:
+115: bool isScalarOrEmpty ( ) const {
+116: return empty (@expr1073742811 ) ||@expr1073742812 isScalar (@expr1073742813 ) ;
+117: }
+118:
+119: long long getScalar ( ) const
+120: {
+121: assert (@expr1073742814 isScalar (@expr1073742815 ) ) ;
+122: return minvalue@var305 .@expr1073742816 front (@expr1073742817 ) ;
+123: }
+124:
+125: std :: vector < const ValueFlow :: Value * > getScalarRef ( ) const
+126: {
+127: assert (@expr1073742818 isScalar (@expr1073742819 ) ) ;
+128: if (@expr1073742820 minRef@var307 !=@expr1073742821 maxRef@var308 ) {
+129: return merge (@expr1073742822 minRef@var307 , maxRef@var308 ) ; }
+130: return minRef@var307 ;
+131: }
+132:
+133: static Interval fromInt ( long long x@var318 , const ValueFlow :: Value * ref@var319 = nullptr )
+134: {
+135: Interval result@var320 ;
+136: result@var320 .@expr1073742823 setMinValue (@expr1073742824 x@var318 , ref@var319 ) ;
+137: result@var320 .@expr1073742825 setMaxValue (@expr1073742826 x@var318 , ref@var319 ) ;
+138: return result@var320 ;
+139: }
+140:
+141: template < class Predicate >
+142: static Interval fromValues ( const std :: list < ValueFlow :: Value > & values@var321 , Predicate predicate@var322 )
+143: {
+144: Interval result@var323 ;
+145: const ValueFlow ::@expr1003 Value * minValue@var324 ; minValue@var324 =@expr1073742828 getCompareValue (@expr1073742829 values@var321 , predicate@var322 , std ::@expr1073742830 less < long long > {@expr1073742831 } ) ;
+146: if (@expr1073742832 minValue@var324 ) {
+147: if (@expr1073742833 minValue@var324 .@expr1073742834 isImpossible (@expr1073742835 ) &&@expr1073742836 minValue@var324 .@expr1013 bound@var325 ==@expr1073742838 ValueFlow ::@expr1003 Value ::@expr1016 Bound ::@expr1017 Upper ) {
+148: result@var323 .@expr1018 setMinValue (@expr1073742843 minValue@var324 .@expr1020 intvalue@var326 +@expr1073742845 1 , minValue@var324 ) ; }
+149: if (@expr1073742846 minValue@var324 .@expr1073742847 isPossible (@expr1073742848 ) &&@expr1073742849 minValue@var324 .@expr1013 bound@var325 ==@expr1073742851 ValueFlow ::@expr1003 Value ::@expr1016 Bound ::@expr1030 Lower ) {
+150: result@var323 .@expr1018 setMinValue (@expr1073742856 minValue@var324 .@expr1020 intvalue@var326 , minValue@var324 ) ; }
+151: if (@expr1073742858 minValue@var324 .@expr1073742859 isKnown (@expr1073742860 ) ) {
+152: return Interval ::@expr1073742861 fromInt (@expr1073742862 minValue@var324 .@expr1020 intvalue@var326 , minValue@var324 ) ; }
+153: }
+154: const ValueFlow ::@expr1003 Value * maxValue@var327 ; maxValue@var327 =@expr1073742865 getCompareValue (@expr1073742866 values@var321 , predicate@var322 , std ::@expr1073742867 greater < long long > {@expr1073742868 } ) ;
+155: if (@expr1073742869 maxValue@var327 ) {
+156: if (@expr1073742870 maxValue@var327 .@expr1073742871 isImpossible (@expr1073742872 ) &&@expr1073742873 maxValue@var327 .@expr1050 bound@var328 ==@expr1073742875 ValueFlow ::@expr1003 Value ::@expr1016 Bound ::@expr1030 Lower ) {
+157: result@var323 .@expr1055 setMaxValue (@expr1073742880 maxValue@var327 .@expr1057 intvalue@var329 -@expr1073742882 1 , maxValue@var327 ) ; }
+158: if (@expr1073742883 maxValue@var327 .@expr1073742884 isPossible (@expr1073742885 ) &&@expr1073742886 maxValue@var327 .@expr1050 bound@var328 ==@expr1073742888 ValueFlow ::@expr1003 Value ::@expr1016 Bound ::@expr1017 Upper ) {
+159: result@var323 .@expr1055 setMaxValue (@expr1073742893 maxValue@var327 .@expr1057 intvalue@var329 , maxValue@var327 ) ; }
+160: assert (@expr1073742895 !@expr1073742896 maxValue@var327 .@expr1073742897 isKnown (@expr1073742898 ) ) ;
+161: }
+162: return result@var323 ;
+163: }
+164:
+165: static Interval fromValues ( const std :: list < ValueFlow :: Value > & values@var330 )
+166: {
+167: return Interval ::@expr1073742899 fromValues (@expr1073742900 values@var330 , [@expr1073742901 ] (@expr1073742902 const ValueFlow ::@expr1073742903 Value &@expr1073742904 ) {
+168: return true ;
+169: } ) ;
+170: }
+171:
+172: template < class F >
+173: static std :: vector < long long > apply ( const std :: vector < long long > & x@var331 ,
+174: const std :: vector < long long > & y@var332 ,
+175: F f@var333 )
+176: {
+177: if (@expr1073742905 x@var331 .@expr1073742906 empty (@expr1073742907 ) ) {
+178: return { } ; }
+179: if (@expr1073742908 y@var332 .@expr1073742909 empty (@expr1073742910 ) ) {
+180: return { } ; }
+181: return {@expr1073742911 f@var333 (@expr1073742912 x@var331 .@expr1073742913 front (@expr1073742914 ) , y@var332 .@expr1073742915 front (@expr1073742916 ) ) } ;
+182: }
+183:
+184: static std :: vector < const ValueFlow :: Value * > merge ( std :: vector < const ValueFlow :: Value * > x@var334 ,
+185: const std :: vector < const ValueFlow :: Value * > & y@var335 )
+186: {
+187: x@var334 .@expr1073742917 insert (@expr1073742918 x@var334 .@expr1073742919 end (@expr1073742920 ) , y@var335 .@expr1073742921 begin (@expr1073742922 ) , y@var335 .@expr1073742923 end (@expr1073742924 ) ) ;
+188: return x@var334 ;
+189: }
+190:
+191: friend Interval operator- ( const Interval & lhs@var336 , const Interval & rhs@var337 )
+192: {
+193: Interval result@var338 ;
+194: result@var338 .@expr1101 minvalue@var339 =@expr1073742926 Interval ::@expr1103 apply (@expr1073742928 lhs@var336 .@expr1073742929 minvalue@var340 , rhs@var337 .@expr1073742930 maxvalue@var341 , std ::@expr1107 minus < long long > {@expr1073742932 } ) ;
+195: result@var338 .@expr1109 maxvalue@var342 =@expr1073742934 Interval ::@expr1103 apply (@expr1073742936 lhs@var336 .@expr1073742937 maxvalue@var343 , rhs@var337 .@expr1073742938 minvalue@var344 , std ::@expr1107 minus < long long > {@expr1073742940 } ) ;
+196: if (@expr1073742941 !@expr1073742942 result@var338 .@expr1101 minvalue@var339 .@expr1073742944 empty (@expr1073742945 ) ) {
+197: result@var338 .@expr1073742946 minRef@var345 =@expr1073742947 merge (@expr1073742948 lhs@var336 .@expr1073742949 minRef@var346 , rhs@var337 .@expr1073742950 maxRef@var347 ) ; }
+198: if (@expr1073742951 !@expr1073742952 result@var338 .@expr1109 maxvalue@var342 .@expr1073742954 empty (@expr1073742955 ) ) {
+199: result@var338 .@expr1073742956 maxRef@var348 =@expr1073742957 merge (@expr1073742958 lhs@var336 .@expr1073742959 maxRef@var349 , rhs@var337 .@expr1073742960 minRef@var350 ) ; }
+200: return result@var338 ;
+201: }
+202:
+203: static std :: vector < int > equal ( const Interval & lhs@var351 ,
+204: const Interval & rhs@var352 ,
+205: std :: vector < const ValueFlow :: Value * > * ref@var353 = nullptr )
+206: {
+207: if (@expr1073742961 !@expr1073742962 lhs@var351 .@expr1073742963 isScalar (@expr1073742964 ) ) {
+208: return { } ; }
+209: if (@expr1073742965 !@expr1073742966 rhs@var352 .@expr1073742967 isScalar (@expr1073742968 ) ) {
+210: return { } ; }
+211: if (@expr1073742969 ref@var353 ) {
+212: *@expr1073742970 ref@var353 =@expr1073742971 merge (@expr1073742972 lhs@var351 .@expr1073742973 getScalarRef (@expr1073742974 ) , rhs@var352 .@expr1073742975 getScalarRef (@expr1073742976 ) ) ; }
+213: return {@expr1073742977 lhs@var351 .@expr1073742978 minvalue@var354 ==@expr1073742979 rhs@var352 .@expr1073742980 minvalue@var355 } ;
+214: }
+215:
+216: static std :: vector < int > compare ( const Interval & lhs@var356 ,
+217: const Interval & rhs@var357 ,
+218: std :: vector < const ValueFlow :: Value * > * ref@var358 = nullptr )
+219: {
+220: Interval diff@var359 ; diff@var359 =@expr1073742981 lhs@var356 -@expr1073742982 rhs@var357 ;
+221: if (@expr1073742983 diff@var359 .@expr1160 isGreaterThan (@expr1073742985 0 , ref@var358 ) ) {
+222: return {@expr1073742986 1 } ; }
+223: if (@expr1073742987 diff@var359 .@expr1164 isLessThan (@expr1073742989 0 , ref@var358 ) ) {
+224: return {@expr1073742990 -1 } ; }
+225: std ::@expr1073742991 vector < int > eq@var360 ; eq@var360 =@expr1073742992 Interval ::@expr1073742993 equal (@expr1073742994 lhs@var356 , rhs@var357 , ref@var358 ) ;
+226: if (@expr1073742995 !@expr1073742996 eq@var360 .@expr1073742997 empty (@expr1073742998 ) ) {
+227: if (@expr1073742999 eq@var360 .@expr1073743000 front (@expr1073743001 ) ==@expr1073743002 0 ) {
+228: return {@expr1073743003 1 , -1 } ; }
+229: else {
+230: return {@expr1073743004 0 } ; }
+231: }
+232: if (@expr1073743005 diff@var359 .@expr1160 isGreaterThan (@expr1073743007 -1 , ref@var358 ) ) {
+233: return {@expr1073743008 0 , 1 } ; }
+234: if (@expr1073743009 diff@var359 .@expr1164 isLessThan (@expr1073743011 1 , ref@var358 ) ) {
+235: return {@expr1073743012 0 , -1 } ; }
+236: return { } ;
+237: }
+238:
+239: static std :: vector < bool > compare ( const std :: string & op@var361 ,
+240: const Interval & lhs@var362 ,
+241: const Interval & rhs@var363 ,
+242: std :: vector < const ValueFlow :: Value * > * ref@var364 = nullptr )
+243: {
+244: std ::@expr1073743013 vector < int > r@var365 ; r@var365 =@expr1073743014 compare (@expr1073743015 lhs@var362 , rhs@var363 , ref@var364 ) ;
+245: if (@expr1073743016 r@var365 .@expr1073743017 empty (@expr1073743018 ) ) {
+246: return { } ; }
+247: bool b@var366 ; b@var366 =@expr1073743019 calculate (@expr1073743020 op@var361 , r@var365 .@expr1073743021 front (@expr1073743022 ) , 0 ) ;
+248: if (@expr1073743023 std ::@expr1073743024 all_of (@expr1073743025 r@var365 .@expr1073743026 begin (@expr1073743027 ) +@expr1073743028 1 , r@var365 .@expr1073743029 end (@expr1073743030 ) , [@expr1073743031 &@expr1073743032 ] (@expr1073743033 int i@var367 ) {
+249: return b@var366 ==@expr1073743034 calculate (@expr1073743035 op@var361 , i@var367 , 0 ) ;
+250: } ) ) {
+251: return {@expr1073743036 b@var366 } ; }
+252: return { } ;
+253: }
+254: } ;
+255:
+256: std :: string toString ( const Interval & i@var368 ) {
+257: return i@var368 .@expr1073743037 str (@expr1073743038 ) ;
+258: }
+259:
+260: static void addToErrorPath ( ValueFlow :: Value & value@var369 , const std :: vector < const ValueFlow :: Value * > & refs@var370 )
+261: {
+262: std ::@expr1073743039 unordered_set < const Token *@expr1216 > locations@var371 ;
+263: for (@expr1073743041 const ValueFlow ::@expr1218 Value *@expr1216 ref@var372 :@expr1073743044 refs@var370 ) {
+264: if (@expr1073743045 ref@var372 .@expr1222 condition@var373 &&@expr1073743047 !@expr1073743048 value@var369 .@expr1225 condition@var374 ) {
+265: value@var369 .@expr1225 condition@var374 =@expr1073743051 ref@var372 .@expr1222 condition@var373 ; }
+266: std ::@expr1073743053 copy_if (@expr1073743054 ref@var372 .@expr1231 errorPath@var375 .@expr1073743056 begin (@expr1073743057 ) ,
+267: ref@var372 .@expr1231 errorPath@var375 .@expr1073743059 end (@expr1073743060 ) ,
+268: std ::@expr1073743061 back_inserter (@expr1073743062 value@var369 .@expr1073743063 errorPath@var376 ) ,
+269: [@expr1073743064 &@expr1241 ] (@expr1073743066 const std ::@expr1218 pair < const Token *@expr1216 , std ::@expr1218 string > &@expr1241 e@var377 ) {
+270: return locations@var371 .@expr1073743071 insert (@expr1073743072 e@var377 .@expr1073743073 first@var378 ) .@expr1073743074 second@var379 ;
+271: } ) ;
+272: }
+273: }
+274:
+275: static void setValueKind ( ValueFlow :: Value & value@var380 , const std :: vector < const ValueFlow :: Value * > & refs@var381 )
+276: {
+277: bool isPossible@var382 ; isPossible@var382 =@expr1073743075 false ;
+278: bool isInconclusive@var383 ; isInconclusive@var383 =@expr1073743076 false ;
+279: for (@expr1073743077 const ValueFlow ::@expr1073743078 Value *@expr1073743079 ref@var384 :@expr1073743080 refs@var381 ) {
+280: if (@expr1073743081 ref@var384 .@expr1073743082 isPossible (@expr1073743083 ) ) {
+281: isPossible@var382 =@expr1073743084 true ; }
+282: if (@expr1073743085 ref@var384 .@expr1073743086 isInconclusive (@expr1073743087 ) ) {
+283: isInconclusive@var383 =@expr1073743088 true ; }
+284: }
+285: if (@expr1073743089 isInconclusive@var383 ) {
+286: value@var380 .@expr1073743090 setInconclusive (@expr1073743091 ) ; }
+287: else { if (@expr1073743092 isPossible@var382 ) {
+288: value@var380 .@expr1073743093 setPossible (@expr1073743094 ) ; }
+289: else {
+290: value@var380 .@expr1073743095 setKnown (@expr1073743096 ) ; } }
+291: }
+292:
+293: static bool inferNotEqual ( const std :: list < ValueFlow :: Value > & values@var385 , long long x@var386 )
+294: {
+295: return std ::@expr1073743097 any_of (@expr1073743098 values@var385 .@expr1073743099 begin (@expr1073743100 ) , values@var385 .@expr1073743101 end (@expr1073743102 ) , [@expr1073743103 &@expr1280 ] (@expr1073743105 const ValueFlow ::@expr1073743106 Value &@expr1280 value@var387 ) {
+296: return value@var387 .@expr1073743108 isImpossible (@expr1073743109 ) &&@expr1073743110 value@var387 .@expr1073743111 intvalue@var388 ==@expr1073743112 x@var386 ;
+297: } ) ;
+298: }
+299:
+300: std :: vector < ValueFlow :: Value > infer ( const ValuePtr<InferModel> & model@var389 ,
+301: const std :: string & op@var390 ,
+302: std :: list < ValueFlow :: Value > lhsValues@var391 ,
+303: std :: list < ValueFlow :: Value > rhsValues@var392 )
+304: {
+305: std ::@expr1073743113 vector < ValueFlow ::@expr1290 Value > result@var393 ;
+306: auto notMatch@var394 ; notMatch@var394 =@expr1073743115 [@expr1073743116 &@expr1293 ] (@expr1073743118 const ValueFlow ::@expr1290 Value &@expr1293 value@var395 ) {
+307: return !@expr1073743121 model@var389 .@expr1073743122 match (@expr1073743123 value@var395 ) ;
+308: } ;
+309: lhsValues@var391 .@expr1073743124 remove_if (@expr1073743125 notMatch@var394 ) ;
+310: rhsValues@var392 .@expr1073743126 remove_if (@expr1073743127 notMatch@var394 ) ;
+311: if (@expr1073743128 lhsValues@var391 .@expr1073743129 empty (@expr1073743130 ) ||@expr1073743131 rhsValues@var392 .@expr1073743132 empty (@expr1073743133 ) ) {
+312: return result@var393 ; }
+313:
+314: Interval lhs@var396 ; lhs@var396 =@expr1073743134 Interval ::@expr1311 fromValues (@expr1073743136 lhsValues@var391 ) ;
+315: Interval rhs@var397 ; rhs@var397 =@expr1073743137 Interval ::@expr1311 fromValues (@expr1073743139 rhsValues@var392 ) ;
+316:
+317: if (@expr1073743140 op@var390 ==@expr1073743141 "-" ) {
+318: Interval diff@var398 ; diff@var398 =@expr1073743142 lhs@var396 -@expr1073743143 rhs@var397 ;
+319: if (@expr1073743144 diff@var398 .@expr1073743145 isScalar (@expr1073743146 ) ) {
+320: std ::@expr1073743147 vector < const ValueFlow ::@expr1290 Value *@expr1325 > refs@var399 ; refs@var399 =@expr1073743150 diff@var398 .@expr1073743151 getScalarRef (@expr1073743152 ) ;
+321: ValueFlow ::@expr1073743153 Value value@var400 (@expr1073743154 diff@var398 .@expr1073743155 getScalar (@expr1073743156 ) ) ;
+322: addToErrorPath (@expr1073743157 value@var400 , refs@var399 ) ;
+323: setValueKind (@expr1073743158 value@var400 , refs@var399 ) ;
+324: result@var393 .@expr1335 push_back (@expr1073743160 value@var400 ) ;
+325: } else {
+326: if (@expr1073743161 !@expr1073743162 diff@var398 .@expr1339 minvalue@var401 .@expr1073743164 empty (@expr1073743165 ) ) {
+327: ValueFlow ::@expr1073743166 Value value@var402 (@expr1073743167 diff@var398 .@expr1339 minvalue@var401 .@expr1073743169 front (@expr1073743170 ) -@expr1073743171 1 ) ;
+328: value@var402 .@expr1073743172 setImpossible (@expr1073743173 ) ;
+329: value@var402 .@expr1073743174 bound@var403 =@expr1073743175 ValueFlow ::@expr1352 Value ::@expr1353 Bound ::@expr1073743178 Upper ;
+330: addToErrorPath (@expr1073743179 value@var402 , diff@var398 .@expr1073743180 minRef@var404 ) ;
+331: result@var393 .@expr1335 push_back (@expr1073743182 value@var402 ) ;
+332: }
+333: if (@expr1073743183 !@expr1073743184 diff@var398 .@expr1361 maxvalue@var405 .@expr1073743186 empty (@expr1073743187 ) ) {
+334: ValueFlow ::@expr1073743188 Value value@var406 (@expr1073743189 diff@var398 .@expr1361 maxvalue@var405 .@expr1073743191 front (@expr1073743192 ) +@expr1073743193 1 ) ;
+335: value@var406 .@expr1073743194 setImpossible (@expr1073743195 ) ;
+336: value@var406 .@expr1073743196 bound@var407 =@expr1073743197 ValueFlow ::@expr1352 Value ::@expr1353 Bound ::@expr1073743200 Lower ;
+337: addToErrorPath (@expr1073743201 value@var406 , diff@var398 .@expr1073743202 maxRef@var408 ) ;
+338: result@var393 .@expr1335 push_back (@expr1073743204 value@var406 ) ;
+339: }
+340: }
+341: } else { if (@expr1073743205 (@expr1073743206 op@var390 ==@expr1383 "!=" ||@expr1073743208 op@var390 ==@expr1073743209 "==" ) &&@expr1073743210 lhs@var396 .@expr1073743211 isScalarOrEmpty (@expr1073743212 ) &&@expr1073743213 rhs@var397 .@expr1073743214 isScalarOrEmpty (@expr1073743215 ) ) {
+342: if (@expr1073743216 lhs@var396 .@expr1393 isScalar (@expr1394 ) &&@expr1073743219 rhs@var397 .@expr1396 isScalar (@expr1397 ) ) {
+343: std ::@expr1073743222 vector < const ValueFlow ::@expr1290 Value *@expr1325 > refs@var409 ; refs@var409 =@expr1073743225 Interval ::@expr1073743226 merge (@expr1073743227 lhs@var396 .@expr1404 getScalarRef (@expr1405 ) , rhs@var397 .@expr1406 getScalarRef (@expr1407 ) ) ;
+344: ValueFlow ::@expr1073743232 Value value@var410 (@expr1073743233 calculate (@expr1073743234 op@var390 , lhs@var396 .@expr1411 getScalar (@expr1412 ) , rhs@var397 .@expr1413 getScalar (@expr1414 ) ) ) ;
+345: addToErrorPath (@expr1073743239 value@var410 , refs@var409 ) ;
+346: setValueKind (@expr1073743240 value@var410 , refs@var409 ) ;
+347: result@var393 .@expr1335 push_back (@expr1073743242 value@var410 ) ;
+348: } else {
+349: std ::@expr1073743243 vector < const ValueFlow ::@expr1290 Value *@expr1325 > refs@var411 ;
+350: if (@expr1073743246 lhs@var396 .@expr1393 isScalar (@expr1394 ) &&@expr1073743249 inferNotEqual (@expr1073743250 rhsValues@var392 , lhs@var396 .@expr1411 getScalar (@expr1412 ) ) ) {
+351: refs@var411 =@expr1073743253 lhs@var396 .@expr1404 getScalarRef (@expr1405 ) ; }
+352: else { if (@expr1073743256 rhs@var397 .@expr1396 isScalar (@expr1397 ) &&@expr1073743259 inferNotEqual (@expr1073743260 lhsValues@var391 , rhs@var397 .@expr1413 getScalar (@expr1414 ) ) ) {
+353: refs@var411 =@expr1073743263 rhs@var397 .@expr1406 getScalarRef (@expr1407 ) ; } }
+354: if (@expr1073743266 !@expr1073743267 refs@var411 .@expr1073743268 empty (@expr1073743269 ) ) {
+355: ValueFlow ::@expr1073743270 Value value@var412 (@expr1073743271 op@var390 ==@expr1383 "!=" ) ;
+356: addToErrorPath (@expr1073743273 value@var412 , refs@var411 ) ;
+357: setValueKind (@expr1073743274 value@var412 , refs@var411 ) ;
+358: result@var393 .@expr1335 push_back (@expr1073743276 value@var412 ) ;
+359: }
+360: }
+361: } else {
+362: std ::@expr1073743277 vector < const ValueFlow ::@expr1290 Value *@expr1325 > refs@var413 ;
+363: std ::@expr1073743280 vector < bool > r@var414 ; r@var414 =@expr1073743281 Interval ::@expr1073743282 compare (@expr1073743283 op@var390 , lhs@var396 , rhs@var397 , &@expr1073743284 refs@var413 ) ;
+364: if (@expr1073743285 !@expr1073743286 r@var414 .@expr1073743287 empty (@expr1073743288 ) ) {
+365: ValueFlow ::@expr1073743289 Value value@var415 (@expr1073743290 r@var414 .@expr1073743291 front (@expr1073743292 ) ) ;
+366: addToErrorPath (@expr1073743293 value@var415 , refs@var413 ) ;
+367: setValueKind (@expr1073743294 value@var415 , refs@var413 ) ;
+368: result@var393 .@expr1335 push_back (@expr1073743296 value@var415 ) ;
+369: }
+370: } }
+371:
+372: return result@var393 ;
+373: }
+374:
+375: std :: vector < ValueFlow :: Value > infer ( const ValuePtr<InferModel> & model@var416 ,
+376: const std :: string & op@var417 ,
+377: long long lhs@var418 ,
+378: std :: list < ValueFlow :: Value > rhsValues@var419 )
+379: {
+380: return infer (@expr1073743297 model@var416 , op@var417 , {@expr1073743298 model@var416 .@expr1073743299 yield (@expr1073743300 lhs@var418 ) } , std ::@expr1073743301 move (@expr1073743302 rhsValues@var419 ) ) ;
+381: }
+382:
+383: std :: vector < ValueFlow :: Value > infer ( const ValuePtr<InferModel> & model@var420 ,
+384: const std :: string & op@var421 ,
+385: std :: list < ValueFlow :: Value > lhsValues@var422 ,
+386: long long rhs@var423 )
+387: {
+388: return infer (@expr1073743303 model@var420 , op@var421 , std ::@expr1073743304 move (@expr1073743305 lhsValues@var422 ) , {@expr1073743306 model@var420 .@expr1073743307 yield (@expr1073743308 rhs@var423 ) } ) ;
+389: }
+390:
+391: std :: vector < long long > getMinValue ( const ValuePtr<InferModel> & model@var424 , const std :: list < ValueFlow :: Value > & values@var425 )
+392: {
+393: return Interval ::@expr1073743309 fromValues (@expr1073743310 values@var425 , [@expr1073743311 &@expr1488 ] (@expr1073743313 const ValueFlow ::@expr1073743314 Value &@expr1488 v@var426 ) {
+394: return model@var424 .@expr1073743316 match (@expr1073743317 v@var426 ) ;
+395: } ) .@expr1073743318 minvalue@var443 ;
+396: }
+397: std :: vector < long long > getMaxValue ( const ValuePtr<InferModel> & model@var427 , const std :: list < ValueFlow :: Value > & values@var428 )
+398: {
+399: return Interval ::@expr1073743319 fromValues (@expr1073743320 values@var428 , [@expr1073743321 &@expr1498 ] (@expr1073743323 const ValueFlow ::@expr1073743324 Value &@expr1498 v@var429 ) {
+400: return model@var427 .@expr1073743326 match (@expr1073743327 v@var429 ) ;
+401: } ) .@expr1073743328 maxvalue@var444 ;
+402: }
+
+##file cppcheck-2.8/lib/valueptr.h
+
+1:
+|
+28:
+29: class ValuePtr<InferModel> {
+30: struct cloner<InferModel> ;
+31:
+|
+36:
+37: public:
+38:
+39:
+40: using cloner_type = decltype ( & cloner<InferModel> :: apply ) ;
+41:
+42: ValuePtr<InferModel> ( ) : mPtr@var440 ( nullptr ) , mClone@var441 ( ) { }
+43:
+44: template < class U >
+45:
+46: ValuePtr<InferModel> ( const U & value@var430 ) : mPtr@var440 ( cloner < U > :: apply ( & value@var430 ) ) , mClone@var441 ( & cloner < U > :: apply )
+47: { }
+48:
+49: ValuePtr<InferModel> ( const ValuePtr<InferModel> & rhs@var431 ) : mPtr@var440 ( nullptr ) , mClone@var441 ( rhs@var431 . mClone@var432 ) {
+50: if (@expr1073743329 rhs@var431 ) {
+51: mPtr@var440 .@expr1073743330 reset (@expr1073743331 mClone@var441 (@expr1073743332 rhs@var431 .@expr1073743333 get (@expr1073743334 ) ) ) ;
+52: }
+53: }
+54: ValuePtr<InferModel> ( ValuePtr<InferModel> && rhs@var433 ) : mPtr@var440 ( std :: move ( rhs@var433 . mPtr@var434 ) ) , mClone@var441 ( std :: move ( rhs@var433 . mClone@var435 ) ) { }
+55:
+56: InferModel * release ( ) {
+57: return mPtr@var440 .@expr1073743335 release (@expr1073743336 ) ;
+58: }
+59:
+60: InferModel * get ( ) {
+61: return mPtr@var440 .@expr1073743337 get (@expr1073743338 ) ;
+62: }
+63: const InferModel * get ( ) const {
+64: return mPtr@var440 .@expr1073743339 get (@expr1073743340 ) ;
+65: }
+66:
+67: InferModel & operator* ( ) {
+68: return *@expr1073743341 get (@expr1073743342 ) ;
+69: }
+70: const InferModel & operator* ( ) const {
+71: return *@expr1073743343 get (@expr1073743344 ) ;
+72: }
+73:
+74: InferModel * operator-> ( ) {
+75: return get (@expr1073743345 ) ;
+76: }
+77: const InferModel * operator-> ( ) const {
+78: return get (@expr1073743346 ) ;
+79: }
+80:
+81: void swap ( ValuePtr<InferModel> & rhs@var436 ) {
+82:
+83: std ::@expr1523 swap (@expr1073743348 mPtr@var440 , rhs@var436 .@expr1073743349 mPtr@var437 ) ;
+84: std ::@expr1523 swap (@expr1073743351 mClone@var441 , rhs@var436 .@expr1073743352 mClone@var438 ) ;
+85: }
+86:
+87: ValuePtr<InferModel> & operator= ( ValuePtr<InferModel> rhs@var439 ) {
+88: swap (@expr1073743353 rhs@var439 ) ;
+89: return *@expr1073743354 this@expr1073743355 ;
+90: }
+91:
+92: operatorbool ( ) const {
+93: return !@expr1073743356 !@expr1073743357 mPtr@var440 ;
+94: }
+95: ~ ValuePtr<InferModel> ( ) { }
+96:
+97: private:
+98: std :: shared_ptr < InferModel > mPtr@var440 ;
+99: cloner_type mClone@var441 ;
+100: } ;
+31: struct ValuePtr<InferModel> :: cloner<InferModel> {
+32: static InferModel * apply ( const InferModel * x@var442 ) {
+33: return new InferModel (@expr1073743358 *@expr1073743359 static_cast < const InferModel *@expr1073743360 > (@expr1073743361 x@var442 ) ) ;
+34: }
+35: } ;
+
+
+
+##Value flow
+Line 43
+  INT always 0
+  LONG always 1
+  LONGLONG always 2
+  FLOAT always 3
+Line 44
+  mIsUnsigned always {!<=-1,!>=2}
+Line 51
+  ( always {!<=-1,!>=2}
+Line 52
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+  :: always 3
+  FLOAT always 3
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 3
+  FLOAT always 3
+Line 59
+  ( always {!<=-1,!>=2}
+Line 74
+  ( always !<=-1
+Line 83
+  ( always {!<=-1,!>=2}
+Line 84
+  ( always {!<=-1,!>=2}
+Line 85
+  ( always {!<=-1,!>=2}
+Line 86
+  ( always {!<=-1,!>=2}
+Line 87
+  ( always {!<=-1,!>=2}
+Line 88
+  ( always {!<=-1,!>=2}
+Line 89
+  ( always {!<=-1,!>=2}
+Line 90
+  ( always {!<=-1,!>=2}
+Line 91
+  ( always {!<=-1,!>=2}
+Line 92
+  ( always {!<=-1,!>=2}
+Line 102
+  ( always {!<=-1,!>=2}
+  , always 1
+  supportMicrosoftExtensions always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 115
+  ( always !<=-1
+Line 116
+  ( always {!<=-1,!>=2}
+Line 117
+  ( always {!<=-1,!>=2}
+Line 118
+  ( always {!<=-1,!>=2}
+Line 119
+  ( always {!<=-1,!>=2}
+Line 120
+  ( always {!<=-1,!>=2}
+Line 121
+  ( always {!<=-1,!>=2}
+Line 122
+  ( always {!<=-1,!>=2}
+Line 128
+  ( always {!<=-1,!>=2}
+Line 130
+  ( always !<=-1
+Line 137
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  :: always !<=-1
+  iPos always !<=-1
+Line 66
+  ( always {!<=-1,!>=2}
+Line 67
+  return always {!<=-1,!>=2}
+  < always {!<=-1,!>=2}
+Line 73
+  ( always {!<=-1,!>=2}
+Line 74
+  return always {!<=-1,!>=2}
+  ( always !<=-1
+  == always {!<=-1,!>=2}
+  1 always 1
+Line 80
+  result always {!<=-1,!>=2}
+Line 81
+  result always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  > always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  x {!>=symbolic=(y+1),<=symbolic=(y)}
+  < always {!<=-1,!>=2}
+  y {!<=symbolic=(x-1),>=symbolic=(x)}
+Line 88
+  Upper always 0
+  Lower always 1
+  Point always 2
+Line 90
+  = always 0
+  0 always 0
+Line 94
+  nullptr always 0
+Line 95
+  0.0 always 0
+Line 98
+  nullptr always 0
+Line 99
+  0U always 0
+Line 100
+  safe always {!<=-1,!>=2}
+  false always 0
+Line 101
+  conditional always {!<=-1,!>=2}
+  false always 0
+Line 102
+  macro always {!<=-1,!>=2}
+  false always 0
+Line 103
+  defaultArg always {!<=-1,!>=2}
+  false always 0
+Line 104
+  0 always 0
+Line 105
+  0 always 0
+Line 108
+  nullptr always 0
+Line 117
+  ( always {!<=-1,!>=2}
+Line 118
+  != always {!<=-1,!>=2}
+Line 119
+  return always {!<=-1,!>=2}
+  false always 0
+Line 120
+  valueType always symbolic=(rhs.valueType)
+Line 122
+  :: always 5
+  CONTAINER_SIZE always 5
+Line 123
+  :: always 7
+  BUFFER_SIZE always 7
+Line 124
+  :: always 8
+  ITERATOR_START always 8
+Line 125
+  :: always 9
+  ITERATOR_END always 9
+Line 126
+  != always {!<=-1,!>=2}
+Line 127
+  return always {!<=-1,!>=2}
+  false always 0
+Line 129
+  :: always 1
+  TOK always 1
+Line 130
+  != always {!<=-1,!>=2}
+Line 131
+  return always {!<=-1,!>=2}
+  false always 0
+Line 133
+  :: always 2
+  FLOAT always 2
+Line 135
+  > always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  floatValue possible <=symbolic=(rhs.floatValue)
+  < always {!<=-1,!>=2}
+  . possible >=symbolic=(floatValue)
+Line 136
+  return always {!<=-1,!>=2}
+  false always 0
+Line 138
+  :: always 3
+  MOVED always 3
+Line 139
+  != always {!<=-1,!>=2}
+Line 140
+  return always {!<=-1,!>=2}
+  false always 0
+Line 142
+  :: always 4
+  UNINIT always 4
+Line 144
+  :: always 6
+  LIFETIME always 6
+Line 145
+  != always {!<=-1,!>=2}
+Line 146
+  return always {!<=-1,!>=2}
+  false always 0
+Line 148
+  :: always 10
+  SYMBOLIC always 10
+Line 149
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 150
+  return always {!<=-1,!>=2}
+  false always 0
+Line 151
+  != always {!<=-1,!>=2}
+Line 152
+  return always {!<=-1,!>=2}
+  false always 0
+Line 155
+  return always {!<=-1,!>=2}
+  true always 1
+Line 162
+  :: always 10
+  SYMBOLIC always 10
+Line 163
+  :: always 7
+  BUFFER_SIZE always 7
+Line 164
+  :: always 5
+  CONTAINER_SIZE always 5
+Line 165
+  :: always 8
+  ITERATOR_START always 8
+Line 166
+  :: always 9
+  ITERATOR_END always 9
+Line 170
+  :: always 2
+  FLOAT always 2
+Line 174
+  :: always 4
+  UNINIT always 4
+Line 175
+  :: always 1
+  TOK always 1
+Line 176
+  :: always 6
+  LIFETIME always 6
+Line 177
+  :: always 3
+  MOVED always 3
+Line 185
+  result always {!<=-1,!>=2}
+Line 186
+  result always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+Line 190
+  result always {!<=-1,!>=2}
+Line 192
+  ( possible {lifetime[Object]=(x),lifetime[Object]=(result),lifetime[Object]=(compare)}
+  ( possible lifetime[Object]=(result)
+  result always {!<=-1,!>=2}
+  ( possible lifetime[Object]=(compare)
+Line 197
+  ( always {!<=-1,!>=2}
+Line 198
+  ! always {!<=-1,!>=2}
+  this always !0
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 199
+  this always !0
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  this always !0
+Line 200
+  result always {!<=-1,!>=2}
+  result always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 202
+  this always !0
+Line 203
+  ( possible {lifetime[Object]=(result),lifetime[Object]=(rhs),lifetime[Object]=(compare)}
+  ( possible lifetime[Object]=(result)
+  result always 0
+  ( possible lifetime[Object]=(rhs)
+  ( possible lifetime[Object]=(compare)
+Line 204
+  return always {!<=-1,!>=2}
+  result {!<=-1,!>=2,0}
+Line 207
+  ( always {!<=-1,!>=2}
+Line 208
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 209
+  return always {!<=-1,!>=2}
+  false always 0
+Line 211
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 212
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 213
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 214
+  conditional always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  conditional always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 215
+  defaultArg always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  defaultArg always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 216
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 217
+  == always {!<=-1,!>=2}
+Line 220
+  ( always {!<=-1,!>=2}
+Line 221
+  return always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  this always !0
+  == always {!<=-1,!>=2}
+Line 225
+  ( always {!<=-1,!>=2}
+Line 226
+  result always {!<=-1,!>=2}
+  result always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 227
+  this always !0
+  ( possible {lifetime[Object]=(x),lifetime[Object]=(result)}
+  ( possible lifetime[Object]=(result)
+  result always 0
+Line 228
+  return always {!<=-1,!>=2}
+  result {!<=-1,!>=2,0}
+Line 232
+  bound possible 0
+  == {!<=-1,!>=2,0}
+  :: always 1
+  Lower always 1
+Line 233
+  this always !0
+Line 234
+  bound always !1
+  == always {!<=-1,!>=2}
+  :: always 0
+  Upper always 0
+Line 235
+  this always !0
+Line 239
+  bound possible 0
+  == {!<=-1,!>=2,0}
+  :: always 1
+  Lower always 1
+Line 240
+  = always 0
+  :: always 0
+  Upper always 0
+Line 241
+  bound always !1
+  == always {!<=-1,!>=2}
+  :: always 0
+  Upper always 0
+Line 242
+  = always 1
+  :: always 1
+  Lower always 1
+Line 255
+  INT always 0
+Line 256
+  TOK always 1
+Line 257
+  FLOAT always 2
+Line 258
+  MOVED always 3
+Line 259
+  UNINIT always 4
+Line 260
+  CONTAINER_SIZE always 5
+Line 261
+  LIFETIME always 6
+Line 262
+  BUFFER_SIZE always 7
+Line 263
+  ITERATOR_START always 8
+Line 264
+  ITERATOR_END always 9
+Line 265
+  SYMBOLIC always 10
+Line 267
+  ( always {!<=-1,!>=2}
+Line 268
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 270
+  ( always {!<=-1,!>=2}
+Line 271
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 1
+  TOK always 1
+Line 273
+  ( always {!<=-1,!>=2}
+Line 274
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 2
+  FLOAT always 2
+Line 276
+  ( always {!<=-1,!>=2}
+Line 277
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 3
+  MOVED always 3
+Line 279
+  ( always {!<=-1,!>=2}
+Line 280
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 4
+  UNINIT always 4
+Line 282
+  ( always {!<=-1,!>=2}
+Line 283
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 5
+  CONTAINER_SIZE always 5
+Line 285
+  ( always {!<=-1,!>=2}
+Line 286
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 6
+  LIFETIME always 6
+Line 288
+  ( always {!<=-1,!>=2}
+Line 289
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 7
+  BUFFER_SIZE always 7
+Line 291
+  ( always {!<=-1,!>=2}
+Line 292
+  return always {!<=-1,!>=2}
+  valueType possible 9
+  == {!<=-1,!>=2,0}
+  :: always 8
+  ITERATOR_START always 8
+  || always {!<=-1,!>=2}
+  valueType always !8
+  == always {!<=-1,!>=2}
+  :: always 9
+  ITERATOR_END always 9
+Line 294
+  ( always {!<=-1,!>=2}
+Line 295
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 8
+  ITERATOR_START always 8
+Line 297
+  ( always {!<=-1,!>=2}
+Line 298
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 9
+  ITERATOR_END always 9
+Line 300
+  ( always {!<=-1,!>=2}
+Line 301
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 10
+  SYMBOLIC always 10
+Line 304
+  ( always {!<=-1,!>=2}
+Line 305
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 6
+  LIFETIME always 6
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 308
+  ( always {!<=-1,!>=2}
+Line 309
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 6
+  LIFETIME always 6
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 1
+  Argument always 1
+Line 312
+  ( always {!<=-1,!>=2}
+Line 313
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 6
+  LIFETIME always 6
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 2
+  SubFunction always 2
+Line 316
+  ( always {!<=-1,!>=2}
+Line 317
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 333
+  NonMovedVariable always 0
+  MovedVariable always 1
+  ForwardedVariable always 2
+Line 347
+  safe always {!<=-1,!>=2}
+Line 350
+  conditional always {!<=-1,!>=2}
+Line 353
+  macro always {!<=-1,!>=2}
+Line 356
+  defaultArg always {!<=-1,!>=2}
+Line 373
+  Object always 0
+Line 375
+  SubObject always 1
+Line 377
+  Lambda always 2
+Line 379
+  Iterator always 3
+Line 381
+  Address always 4
+Line 384
+  Local always 0
+  Argument always 1
+  SubFunction always 2
+  ThisPointer always 3
+  ThisValue always 4
+Line 394
+  Possible always 0
+Line 396
+  Known always 1
+Line 398
+  Inconclusive always 2
+Line 400
+  Impossible always 3
+Line 404
+  = always 1
+  :: always 1
+  Known always 1
+Line 407
+  ( always {!<=-1,!>=2}
+Line 408
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 1
+  Known always 1
+Line 415
+  ( always {!<=-1,!>=2}
+Line 416
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 419
+  ( always {!<=-1,!>=2}
+Line 420
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 3
+  Impossible always 3
+Line 424
+  = always 3
+  :: always 3
+  Impossible always 3
+Line 427
+  inconclusive always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 428
+  inconclusive always {!<=-1,!>=2}
+Line 429
+  = always 2
+  :: always 2
+  Inconclusive always 2
+Line 432
+  ( always {!<=-1,!>=2}
+Line 433
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 2
+  Inconclusive always 2
+Line 437
+  ( always {!<=-1,!>=2}
+Line 441
+  ( always {!<=-1,!>=2}
+Line 442
+  return always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  defaultArg always {!<=-1,!>=2}
+Line 445
+  ( always {!<=-1,!>=2}
+Line 456
+  ( always !<=-1
+Line 460
+  ( always {!<=-1,!>=2}
+Line 462
+  possible always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 467
+  ( always {!<=-1,!>=2}
+  , always 0
+  = always 0
+  nullptr always 0
+  , always 20
+  = always 20
+  20 always 20
+Line 471
+  addressOf always {!<=-1,!>=2}
+Line 473
+  inconclusive always {!<=-1,!>=2}
+Line 475
+  nullptr always 0
+  addressOf always {!<=-1,!>=2}
+  false always 0
+  inconclusive always {!<=-1,!>=2}
+  false always 0
+Line 478
+  addressOf always {!<=-1,!>=2}
+  false always 0
+  ( possible lifetime[Object]=(errorPath)
+  inconclusive always {!<=-1,!>=2}
+  false always 0
+Line 481
+  addressOf always {!<=-1,!>=2}
+Line 482
+  addressOf always {!<=-1,!>=2}
+  addressOf always {!<=-1,!>=2}
+  ( possible lifetime[Object]=(errorPath)
+  inconclusive always {!<=-1,!>=2}
+  false always 0
+Line 485
+  b always {!<=-1,!>=2}
+Line 487
+  . always {!<=-1,!>=2}
+  addressOf always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  b always {!<=-1,!>=2}
+Line 491
+  b always {!<=-1,!>=2}
+Line 493
+  . always {!<=-1,!>=2}
+  inconclusive always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  b always {!<=-1,!>=2}
+Line 511
+  escape always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 514
+  ( always {!<=-1,!>=2}
+Line 516
+  , always 0
+  = always 0
+  nullptr always 0
+Line 520
+  ( always {!<=-1,!>=2}
+Line 526
+  , always 0
+  inconclusive always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 529
+  inconclusive always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 530
+  = always 0
+  0 always 0
+Line 532
+  , always 0
+  = always 0
+  nullptr always 0
+  , always 1
+  smallest always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 34
+  ( always {!<=-1,!>=2}
+  = always 0
+  0 always 0
+Line 35
+  = always 0
+  0 always 0
+Line 36
+  AST always 0
+  SYNTAX always 1
+  UNKNOWN_MACRO always 2
+  INTERNAL always 3
+  LIMIT always 4
+  INSTANTIATION always 5
+Line 37
+  = always 3
+  INTERNAL always 3
+Line 47
+  normal always 0
+  inconclusive always 1
+  safe always 2
+  experimental always 3
+Line 54
+  unusedFunction always 0
+  missingInclude always 1
+  internalCheck always 2
+Line 68
+  none always 0
+Line 74
+  error always 1
+Line 80
+  warning always 2
+Line 87
+  style always 3
+Line 93
+  performance always 4
+Line 101
+  portability always 5
+Line 108
+  information always 6
+Line 113
+  debug always 7
+Line 121
+  ( possible lifetime[SubObject]=(cweId)
+  cweId always !<=-1
+  id always !<=-1
+  cweId always !<=-1
+Line 122
+  id always !<=-1
+Line 27
+  ( always {!<=-1,!>=2}
+Line 29
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 32
+  ( always {!<=-1,!>=2}
+Line 34
+  > always {!<=-1,!>=2}
+  x {>=symbolic=(y+1),!<=symbolic=(y)}
+  y {<=symbolic=(x-1),!>=symbolic=(x)}
+  y {!<=symbolic=(x-1),>=symbolic=(x)}
+  x {!>=symbolic=(y+1),<=symbolic=(y)}
+Line 35
+  return always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  diff always symbolic=((x>y)?x-y:y-x)
+  2 always 2
+  < always {!<=-1,!>=2}
+  diff always symbolic=((x>y)?x-y:y-x)
+Line 37
+  ( always {!<=-1,!>=2}
+Line 39
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 43
+  ( always {!<=-1,!>=2}
+Line 45
+  return always {!<=-1,!>=2}
+  0 always 0
+Line 49
+  , always 0
+  = always 0
+  nullptr always 0
+Line 54
+  maxBitsShift always 64
+  = always 64
+  ( always 8
+  * always 64
+  8 always 8
+Line 56
+  = always 63
+  maxBitsShift always 64
+  - always 63
+  1 always 1
+Line 57
+  ( always !<=-1
+Line 58
+  '+' always 43
+Line 60
+  '-' always 45
+Line 62
+  '*' always 42
+Line 64
+  '/' always 47
+Line 65
+  ( always {!<=-1,!>=2}
+Line 67
+  * always {!<=-1,!>=2}
+  error always !0
+  = always 1
+  true always 1
+Line 71
+  '%' always 37
+Line 72
+  ( always {!<=-1,!>=2}
+Line 74
+  * always {!<=-1,!>=2}
+  error always !0
+  = always 1
+  true always 1
+Line 78
+  '&' always 38
+Line 80
+  '|' always 124
+Line 82
+  '^' always 94
+Line 84
+  '>' always 62
+Line 85
+  > always {!<=-1,!>=2}
+Line 86
+  '<' always 60
+Line 87
+  < always {!<=-1,!>=2}
+Line 88
+  '<<' always 15420
+Line 89
+  >= always {!<=-1,!>=2}
+  maxBitsSignedShift always 63
+  || always {!<=-1,!>=2}
+  y {!>=symbolic=(maxBitsSignedShift),<=symbolic=(maxBitsSignedShift-1),!>=63,<=62}
+  < {!<=-1,!>=2,<=0}
+  0 always 0
+  || always {!<=-1,!>=2}
+  < always {!<=-1,!>=2}
+  0 always 0
+Line 91
+  * always {!<=-1,!>=2}
+  error always !0
+  = always 1
+  true always 1
+Line 94
+  ( {!<=-1,>=0}
+  x {!<=-1,>=0}
+  << possible 0
+  ( {!>=symbolic=(maxBitsSignedShift),<=symbolic=(maxBitsSignedShift-1),!>=63,<=62,!<=-1,>=0}
+  y {!>=symbolic=(maxBitsSignedShift),<=symbolic=(maxBitsSignedShift-1),!>=63,<=62,!<=-1,>=0}
+Line 95
+  '>>' always 15934
+Line 96
+  >= always {!<=-1,!>=2}
+  maxBitsSignedShift always 63
+  || always {!<=-1,!>=2}
+  y {!>=symbolic=(maxBitsSignedShift),<=symbolic=(maxBitsSignedShift-1),!>=63,<=62}
+  < {!<=-1,!>=2,<=0}
+  0 always 0
+  || always {!<=-1,!>=2}
+  < always {!<=-1,!>=2}
+  0 always 0
+Line 98
+  * always {!<=-1,!>=2}
+  error always !0
+  = always 1
+  true always 1
+Line 101
+  ( {!<=-1,>=0}
+  x {!<=-1,>=0}
+  >> possible 0
+  ( {!>=symbolic=(maxBitsSignedShift),<=symbolic=(maxBitsSignedShift-1),!>=63,<=62,!<=-1,>=0}
+  y {!>=symbolic=(maxBitsSignedShift),<=symbolic=(maxBitsSignedShift-1),!>=63,<=62,!<=-1,>=0}
+Line 102
+  '&&' always 9766
+Line 103
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 104
+  '||' always 31868
+Line 105
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 106
+  '==' always 15677
+Line 107
+  ( always {!<=-1,!>=2}
+Line 108
+  '!=' always 8509
+Line 109
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 110
+  '>=' always 15933
+Line 111
+  >= always {!<=-1,!>=2}
+Line 112
+  '<=' always 15421
+Line 113
+  <= always {!<=-1,!>=2}
+Line 114
+  '<=>' always 3947838
+Line 117
+  nullptr always 0
+  "Unknown operator: " always "Unknown operator: "
+Line 121
+  , always 0
+  = always 0
+  nullptr always 0
+Line 37
+  = always 0
+  nullptr always 0
+Line 39
+  ! always {!<=-1,!>=2}
+  pred possible {lifetime[Lambda]=(model)@1859,lifetime[Lambda]=(model)@2115}
+Line 42
+  = {lifetime[Address]=(std::min(value,*result,[compare](const ValueFlow::Value&x,const ValueFlow::Value&y){return compare(x.intvalue,y.intvalue);})),!0}
+  & {lifetime[Address]=(std::min(value,*result,[compare](const ValueFlow::Value&x,const ValueFlow::Value&y){return compare(x.intvalue,y.intvalue);})),!0}
+  result always !0
+  [ possible lifetime[Lambda]=(compare)
+Line 46
+  = {&,lifetime[Address]=(values),!0}
+  & {&,lifetime[Address]=(values),!0}
+Line 59
+  = always "["
+  "[" always "["
+Line 60
+  ( always !<=-1
+  == always {!<=-1,!>=2}
+  1 always 1
+Line 61
+  minvalue always size=1
+Line 63
+  result always size=1
+  "*" always "*"
+Line 64
+  "," always ","
+Line 65
+  ( always !<=-1
+  == always {!<=-1,!>=2}
+  1 always 1
+Line 66
+  maxvalue always size=1
+Line 68
+  result always !<=size=0
+  "*" always "*"
+Line 69
+  "]" always "]"
+Line 70
+  result always !<=size=0
+Line 73
+  = always 0
+  nullptr always 0
+Line 77
+  ref always !0
+Line 80
+  = always 0
+  nullptr always 0
+Line 84
+  ref always !0
+Line 87
+  ( always {!<=-1,!>=2}
+  = always 0
+  nullptr always 0
+Line 89
+  ! {!<=-1,!>=2,0}
+  this always !0
+  . possible size=0
+  ( {!<=-1,!>=2,1}
+  && always {!<=-1,!>=2}
+  this always !0
+  . always !size=0
+  < always {!<=-1,!>=2}
+  x possible 1@56
+Line 91
+  ref always !0
+Line 92
+  return always {!<=-1,!>=2}
+  true always 1
+Line 94
+  return always {!<=-1,!>=2}
+  false always 0
+Line 97
+  ( always {!<=-1,!>=2}
+  = always 0
+  nullptr always 0
+Line 99
+  ! {!<=-1,!>=2,0}
+  this always !0
+  . possible size=0
+  ( {!<=-1,!>=2,1}
+  && always {!<=-1,!>=2}
+  this always !0
+  . always !size=0
+  > always {!<=-1,!>=2}
+  x possible -1@55
+Line 101
+  ref always !0
+Line 102
+  return always {!<=-1,!>=2}
+  true always 1
+Line 104
+  return always {!<=-1,!>=2}
+  false always 0
+Line 107
+  ( always {!<=-1,!>=2}
+Line 108
+  return always {!<=-1,!>=2}
+  minvalue possible symbolic=(maxvalue)
+  ( always !<=-1
+  == always {!<=-1,!>=2}
+  1 always 1
+  && always {!<=-1,!>=2}
+  minvalue always size=1
+  == always {!<=-1,!>=2}
+Line 111
+  ( always {!<=-1,!>=2}
+Line 112
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 115
+  ( always {!<=-1,!>=2}
+Line 116
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 121
+  ( always {!<=-1,!>=2}
+Line 127
+  ( always {!<=-1,!>=2}
+Line 128
+  != always {!<=-1,!>=2}
+Line 129
+  minRef always !symbolic=(maxRef)
+  maxRef always !symbolic=(minRef)
+Line 130
+  minRef always symbolic=(maxRef)
+Line 133
+  = always 0
+  nullptr always 0
+Line 145
+  predicate possible {lifetime[Lambda]=(model)@7,lifetime[Lambda]=(model)@8}
+Line 147
+  minValue always !0
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  minValue always !0
+  == always {!<=-1,!>=2}
+  :: always 0
+  Upper always 0
+Line 148
+  minValue always !0
+  1 always 1
+  minValue always !0
+Line 149
+  minValue always !0
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  minValue always !0
+  == always {!<=-1,!>=2}
+  :: always 1
+  Lower always 1
+Line 150
+  minValue always !0
+  minValue always !0
+Line 151
+  minValue always !0
+  ( always {!<=-1,!>=2}
+Line 152
+  minValue always !0
+  minValue always !0
+Line 154
+  predicate possible {lifetime[Lambda]=(model)@7,lifetime[Lambda]=(model)@8}
+Line 156
+  maxValue always !0
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  maxValue always !0
+  == always {!<=-1,!>=2}
+  :: always 1
+  Lower always 1
+Line 157
+  maxValue always !0
+  1 always 1
+  maxValue always !0
+Line 158
+  maxValue always !0
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  maxValue always !0
+  == always {!<=-1,!>=2}
+  :: always 0
+  Upper always 0
+Line 159
+  maxValue always !0
+  maxValue always !0
+Line 160
+  ! always {!<=-1,!>=2}
+  maxValue always !0
+  ( always {!<=-1,!>=2}
+Line 168
+  true always 1
+Line 177
+  ( always {!<=-1,!>=2}
+Line 178
+  { always {size=0,{}
+Line 179
+  ( always {!<=-1,!>=2}
+Line 180
+  { always {size=0,{}
+Line 181
+  { always {size=1,{}
+  x always !size=0
+  y always !size=0
+Line 187
+  ( possible lifetime[Iterator]=(x)
+  ( {lifetime[Iterator]=(x),end=0}
+  ( {lifetime[Iterator]=(y),start=0}
+  ( {lifetime[Iterator]=(y),end=0}
+Line 196
+  ! {!<=-1,!>=2,0}
+  . possible size=0
+  ( {!<=-1,!>=2,1}
+Line 198
+  ! {!<=-1,!>=2,0}
+  . possible size=0
+  ( {!<=-1,!>=2,1}
+Line 205
+  = always 0
+  nullptr always 0
+Line 207
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 208
+  { always {size=0,{}
+Line 209
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 210
+  { always {size=0,{}
+Line 212
+  ref always !0
+Line 213
+  { always {size=1,{}
+  == always {!<=-1,!>=2}
+Line 218
+  = always 0
+  nullptr always 0
+Line 220
+  lhs possible symbolic=(Interval::fromValues(lhsValues))@10547
+  rhs possible symbolic=(Interval::fromValues(rhsValues))@10547
+Line 221
+  diff always symbolic=(lhs-rhs)
+  ( always {!<=-1,!>=2}
+  0 always 0
+  ref possible lifetime[Address]=(refs)@10547
+Line 222
+  { always {size=1,{}
+  1 always 1
+Line 223
+  ( always {!<=-1,!>=2}
+  0 always 0
+  ref possible lifetime[Address]=(refs)@10547
+Line 224
+  { always {size=1,{}
+  -1 always -1
+Line 226
+  ! {!<=-1,!>=2,0}
+  eq possible size=0
+  ( {!<=-1,!>=2,1}
+Line 227
+  eq always !size=0
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 228
+  { always {size=2,{}
+  1 always 1
+  -1 always -1
+Line 230
+  { always {size=1,{}
+  0 always 0
+Line 232
+  ( always {!<=-1,!>=2}
+  -1 always -1
+Line 233
+  { always {size=2,{}
+  0 always 0
+  1 always 1
+Line 234
+  ( always {!<=-1,!>=2}
+  1 always 1
+Line 235
+  { always {size=2,{}
+  0 always 0
+  -1 always -1
+Line 236
+  { always {size=0,{}
+Line 242
+  = always 0
+  nullptr always 0
+Line 244
+  lhs possible symbolic=(Interval::fromValues(lhsValues))@41
+  rhs possible symbolic=(Interval::fromValues(rhsValues))@41
+  ref possible lifetime[Address]=(refs)@41
+Line 245
+  ( always {!<=-1,!>=2}
+Line 246
+  { always {size=0,{}
+Line 247
+  b always {!<=-1,!>=2}
+  b always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  r always !size=0
+  0 always 0
+Line 248
+  ( always {!<=-1,!>=2}
+  r always !size=0
+  ( {lifetime[Iterator]=(r),!size=0,start=0}
+  + {lifetime[Iterator]=(r),!size=0,start=1}
+  1 always 1
+  r always !size=0
+  ( {lifetime[Iterator]=(r),!size=0,end=0}
+Line 249
+  b always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 251
+  { always {size=1,{}
+  b always {!<=-1,!>=2}
+Line 252
+  { always {size=0,{}
+Line 263
+  : possible symbolic=(diff.getScalarRef())@14
+  refs possible symbolic=(diff.getScalarRef())@14
+Line 264
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+Line 265
+  = always !0
+  . always !0
+Line 266
+  ( {lifetime[Iterator]=(ref->errorPath),start=0}
+Line 267
+  ( {lifetime[Iterator]=(ref->errorPath),end=0}
+Line 268
+  ( possible lifetime[Object]=(errorPath)
+Line 269
+  [ possible lifetime[Lambda]=(locations)
+Line 277
+  isPossible always {!<=-1,!>=2}
+  isPossible always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 278
+  isInconclusive always {!<=-1,!>=2}
+  isInconclusive always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 279
+  : possible symbolic=(diff.getScalarRef())@15
+  refs possible symbolic=(diff.getScalarRef())@15
+Line 280
+  ( always {!<=-1,!>=2}
+Line 281
+  isPossible always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 282
+  ( always {!<=-1,!>=2}
+Line 283
+  isInconclusive always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 285
+  isInconclusive always {!<=-1,!>=2}
+Line 287
+  isPossible always {!<=-1,!>=2}
+Line 293
+  ( always {!<=-1,!>=2}
+Line 295
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(values),start=0}
+  ( {lifetime[Iterator]=(values),end=0}
+  [ possible lifetime[Lambda]=(x)
+Line 296
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 306
+  = possible lifetime[Lambda]=(model)
+  [ possible lifetime[Lambda]=(model)
+Line 307
+  ! always {!<=-1,!>=2}
+Line 309
+  notMatch possible lifetime[Lambda]=(model)
+Line 310
+  notMatch inconclusive lifetime[Lambda]=(model)
+Line 311
+  ( always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 312
+  result always size=0
+Line 314
+  lhsValues always !size=0
+Line 315
+  rhsValues always !size=0
+Line 317
+  op possible size=2
+  == {!<=-1,!>=2,0}
+  "-" always "-"
+Line 318
+  lhs always symbolic=(Interval::fromValues(lhsValues))
+  rhs always symbolic=(Interval::fromValues(rhsValues))
+Line 319
+  diff always symbolic=(lhs-rhs)
+  ( always {!<=-1,!>=2}
+Line 320
+  diff always symbolic=(lhs-rhs)
+Line 321
+  diff always symbolic=(lhs-rhs)
+Line 322
+  refs always symbolic=(diff.getScalarRef())
+Line 323
+  refs always symbolic=(diff.getScalarRef())
+Line 324
+  result always size=0
+Line 326
+  ! {!<=-1,!>=2,0}
+  diff always symbolic=(lhs-rhs)
+  . possible size=0
+  ( {!<=-1,!>=2,1}
+Line 327
+  1 always 1
+Line 329
+  = always 0
+  :: always 0
+  Upper always 0
+Line 333
+  ! {!<=-1,!>=2,0}
+  . possible size=0
+  ( {!<=-1,!>=2,1}
+Line 334
+  1 always 1
+Line 336
+  = always 1
+  :: always 1
+  Lower always 1
+Line 341
+  op possible size=2
+  == always {!<=-1,!>=2}
+  "!=" always "!="
+  || always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "==" always "=="
+  && always {!<=-1,!>=2}
+  lhs always symbolic=(Interval::fromValues(lhsValues))
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  rhs always symbolic=(Interval::fromValues(rhsValues))
+  ( always {!<=-1,!>=2}
+Line 342
+  lhs always symbolic=(Interval::fromValues(lhsValues))
+  ( {!<=-1,!>=2,0}
+  && always {!<=-1,!>=2}
+  rhs always symbolic=(Interval::fromValues(rhsValues))
+  ( always {!<=-1,!>=2}
+Line 343
+  lhs always symbolic=(Interval::fromValues(lhsValues))
+  rhs always symbolic=(Interval::fromValues(rhsValues))
+Line 344
+  lhs always symbolic=(Interval::fromValues(lhsValues))
+  rhs always symbolic=(Interval::fromValues(rhsValues))
+Line 347
+  result always size=0
+Line 350
+  lhs always symbolic=(Interval::fromValues(lhsValues))
+  ( {!<=-1,!>=2,0}
+  && always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  rhsValues always !size=0
+  lhs always symbolic=(Interval::fromValues(lhsValues))
+Line 351
+  lhs always symbolic=(Interval::fromValues(lhsValues))
+Line 352
+  rhs always symbolic=(Interval::fromValues(rhsValues))
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  lhsValues always !size=0
+  rhs always symbolic=(Interval::fromValues(rhsValues))
+Line 353
+  rhs always symbolic=(Interval::fromValues(rhsValues))
+Line 354
+  ! {!<=-1,!>=2,0}
+  refs possible {symbolic=(lhs.getScalarRef()),symbolic=(rhs.getScalarRef()),size=0}
+  ( {!<=-1,!>=2,1}
+Line 355
+  == always {!<=-1,!>=2}
+  "!=" always "!="
+Line 356
+  refs always !size=0
+Line 357
+  refs always !size=0
+Line 363
+  lhs always symbolic=(Interval::fromValues(lhsValues))
+  rhs always symbolic=(Interval::fromValues(rhsValues))
+  & {lifetime[Address]=(refs),!0}
+  refs always size=0
+Line 364
+  ! {!<=-1,!>=2,0}
+  r possible size=0
+  ( {!<=-1,!>=2,1}
+Line 365
+  r always !size=0
+  ( always {!<=-1,!>=2}
+Line 380
+  ( possible lifetime[Object]=(rhsValues)
+Line 388
+  ( possible lifetime[Object]=(lhsValues)
+Line 393
+  [ possible lifetime[Lambda]=(model)
+Line 399
+  [ possible lifetime[Lambda]=(model)
+Line 40
+  & {lifetime[Address]=(apply),!0}
+Line 42
+  nullptr always 0
+Line 46
+  & {lifetime[Address]=(value),!0}
+  & {lifetime[Address]=(apply),!0}
+Line 49
+  nullptr always 0
+  rhs possible 0
+Line 54
+  && always {!<=-1,!>=2}
+Line 61
+  ( always symbolic=(mPtr)
+Line 64
+  ( always symbolic=(mPtr)
+Line 89
+  this always !0
+Line 92
+  ( always !>=2
+Line 93
+  ! always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}

@@ -1,0 +1,1347 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741938 expected@var22 !=@expr1073741939 actual@var23 ) {
+62: std ::@expr1073741940 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741941 expected@var22 ;
+64: std ::@expr1073741942 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741943 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741944 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741945 str (@expr1073741946 ) , actualStr@var26 .@expr1073741947 str (@expr1073741948 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741949 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741950 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741951 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741952 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testunusedprivfunc.cpp
+
+1:
+|
+33:
+34: class TestUnusedPrivateFunction : public TestFixture {
+35: public:
+36: TestUnusedPrivateFunction ( ) : TestFixture ( "TestUnusedPrivateFunction" ) { }
+37:
+38: private:
+39: Settings settings@var102 ;
+40:
+41: void run ( ) override {
+42: settings@var102 .@expr1073741954 severity@var103 .@expr1073741955 enable (@expr1073741956 Severity ::@expr1073741957 style@expr1073741953 ) ;
+43:
+44: $do ${ $if $(@expr1073741958 $prepareTest $(@expr1073741959 "test1" $) $) ${ $setVerbose $(@expr1073741960 $false $) $; test1 $(@expr1073741961 $) $; $} $} $while $(@expr1073741962 $false $) ;
+45: $do ${ $if $(@expr1073741963 $prepareTest $(@expr1073741964 "test2" $) $) ${ $setVerbose $(@expr1073741965 $false $) $; test2 $(@expr1073741966 $) $; $} $} $while $(@expr1073741967 $false $) ;
+46: $do ${ $if $(@expr1073741968 $prepareTest $(@expr1073741969 "test3" $) $) ${ $setVerbose $(@expr1073741970 $false $) $; test3 $(@expr1073741971 $) $; $} $} $while $(@expr1073741972 $false $) ;
+47: $do ${ $if $(@expr1073741973 $prepareTest $(@expr1073741974 "test4" $) $) ${ $setVerbose $(@expr1073741975 $false $) $; test4 $(@expr1073741976 $) $; $} $} $while $(@expr1073741977 $false $) ;
+48: $do ${ $if $(@expr1073741978 $prepareTest $(@expr1073741979 "test5" $) $) ${ $setVerbose $(@expr1073741980 $false $) $; test5 $(@expr1073741981 $) $; $} $} $while $(@expr1073741982 $false $) ;
+49: $do ${ $if $(@expr1073741983 $prepareTest $(@expr1073741984 "test6" $) $) ${ $setVerbose $(@expr1073741985 $false $) $; test6 $(@expr1073741986 $) $; $} $} $while $(@expr1073741987 $false $) ;
+50:
+51:
+52: $do ${ $if $(@expr1073741988 $prepareTest $(@expr1073741989 "func_pointer1" $) $) ${ $setVerbose $(@expr1073741990 $false $) $; func_pointer1 $(@expr1073741991 $) $; $} $} $while $(@expr1073741992 $false $) ;
+53: $do ${ $if $(@expr1073741993 $prepareTest $(@expr1073741994 "func_pointer2" $) $) ${ $setVerbose $(@expr1073741995 $false $) $; func_pointer2 $(@expr1073741996 $) $; $} $} $while $(@expr1073741997 $false $) ;
+54: $do ${ $if $(@expr1073741998 $prepareTest $(@expr1073741999 "func_pointer3" $) $) ${ $setVerbose $(@expr1073742000 $false $) $; func_pointer3 $(@expr1073742001 $) $; $} $} $while $(@expr1073742002 $false $) ;
+55: $do ${ $if $(@expr1073742003 $prepareTest $(@expr1073742004 "func_pointer4" $) $) ${ $setVerbose $(@expr1073742005 $false $) $; func_pointer4 $(@expr1073742006 $) $; $} $} $while $(@expr1073742007 $false $) ;
+56: $do ${ $if $(@expr1073742008 $prepareTest $(@expr1073742009 "func_pointer5" $) $) ${ $setVerbose $(@expr1073742010 $false $) $; func_pointer5 $(@expr1073742011 $) $; $} $} $while $(@expr1073742012 $false $) ;
+57: $do ${ $if $(@expr1073742013 $prepareTest $(@expr1073742014 "func_pointer6" $) $) ${ $setVerbose $(@expr1073742015 $false $) $; func_pointer6 $(@expr1073742016 $) $; $} $} $while $(@expr1073742017 $false $) ;
+58: $do ${ $if $(@expr1073742018 $prepareTest $(@expr1073742019 "func_pointer7" $) $) ${ $setVerbose $(@expr1073742020 $false $) $; func_pointer7 $(@expr1073742021 $) $; $} $} $while $(@expr1073742022 $false $) ;
+59:
+60: $do ${ $if $(@expr1073742023 $prepareTest $(@expr1073742024 "ctor" $) $) ${ $setVerbose $(@expr1073742025 $false $) $; ctor $(@expr1073742026 $) $; $} $} $while $(@expr1073742027 $false $) ;
+61: $do ${ $if $(@expr1073742028 $prepareTest $(@expr1073742029 "ctor2" $) $) ${ $setVerbose $(@expr1073742030 $false $) $; ctor2 $(@expr1073742031 $) $; $} $} $while $(@expr1073742032 $false $) ;
+62:
+63: $do ${ $if $(@expr1073742033 $prepareTest $(@expr1073742034 "classInClass" $) $) ${ $setVerbose $(@expr1073742035 $false $) $; classInClass $(@expr1073742036 $) $; $} $} $while $(@expr1073742037 $false $) ;
+64: $do ${ $if $(@expr1073742038 $prepareTest $(@expr1073742039 "sameFunctionNames" $) $) ${ $setVerbose $(@expr1073742040 $false $) $; sameFunctionNames $(@expr1073742041 $) $; $} $} $while $(@expr1073742042 $false $) ;
+65: $do ${ $if $(@expr1073742043 $prepareTest $(@expr1073742044 "incompleteImplementation" $) $) ${ $setVerbose $(@expr1073742045 $false $) $; incompleteImplementation $(@expr1073742046 $) $; $} $} $while $(@expr1073742047 $false $) ;
+66:
+67: $do ${ $if $(@expr1073742048 $prepareTest $(@expr1073742049 "derivedClass" $) $) ${ $setVerbose $(@expr1073742050 $false $) $; derivedClass $(@expr1073742051 $) $; $} $} $while $(@expr1073742052 $false $) ;
+68:
+69: $do ${ $if $(@expr1073742053 $prepareTest $(@expr1073742054 "friendClass" $) $) ${ $setVerbose $(@expr1073742055 $false $) $; friendClass $(@expr1073742056 $) $; $} $} $while $(@expr1073742057 $false $) ;
+70:
+71: $do ${ $if $(@expr1073742058 $prepareTest $(@expr1073742059 "borland1" $) $) ${ $setVerbose $(@expr1073742060 $false $) $; borland1 $(@expr1073742061 $) $; $} $} $while $(@expr1073742062 $false $) ;
+72: $do ${ $if $(@expr1073742063 $prepareTest $(@expr1073742064 "borland2" $) $) ${ $setVerbose $(@expr1073742065 $false $) $; borland2 $(@expr1073742066 $) $; $} $} $while $(@expr1073742067 $false $) ;
+73:
+74:
+75: $do ${ $if $(@expr1073742068 $prepareTest $(@expr1073742069 "template1" $) $) ${ $setVerbose $(@expr1073742070 $false $) $; template1 $(@expr1073742071 $) $; $} $} $while $(@expr1073742072 $false $) ;
+76:
+77:
+78: $do ${ $if $(@expr1073742073 $prepareTest $(@expr1073742074 "fp_operator" $) $) ${ $setVerbose $(@expr1073742075 $false $) $; fp_operator $(@expr1073742076 $) $; $} $} $while $(@expr1073742077 $false $) ;
+79: $do ${ $if $(@expr1073742078 $prepareTest $(@expr1073742079 "testDoesNotIdentifyMethodAsFirstFunctionArgument" $) $) ${ $setVerbose $(@expr1073742080 $false $) $; testDoesNotIdentifyMethodAsFirstFunctionArgument $(@expr1073742081 $) $; $} $} $while $(@expr1073742082 $false $) ;
+80: $do ${ $if $(@expr1073742083 $prepareTest $(@expr1073742084 "testDoesNotIdentifyMethodAsMiddleFunctionArgument" $) $) ${ $setVerbose $(@expr1073742085 $false $) $; testDoesNotIdentifyMethodAsMiddleFunctionArgument $(@expr1073742086 $) $; $} $} $while $(@expr1073742087 $false $) ;
+81: $do ${ $if $(@expr1073742088 $prepareTest $(@expr1073742089 "testDoesNotIdentifyMethodAsLastFunctionArgument" $) $) ${ $setVerbose $(@expr1073742090 $false $) $; testDoesNotIdentifyMethodAsLastFunctionArgument $(@expr1073742091 $) $; $} $} $while $(@expr1073742092 $false $) ;
+82:
+83: $do ${ $if $(@expr1073742093 $prepareTest $(@expr1073742094 "multiFile" $) $) ${ $setVerbose $(@expr1073742095 $false $) $; multiFile $(@expr1073742096 $) $; $} $} $while $(@expr1073742097 $false $) ;
+84: $do ${ $if $(@expr1073742098 $prepareTest $(@expr1073742099 "unknownBaseTemplate" $) $) ${ $setVerbose $(@expr1073742100 $false $) $; unknownBaseTemplate $(@expr1073742101 $) $; $} $} $while $(@expr1073742102 $false $) ;
+85: $do ${ $if $(@expr1073742103 $prepareTest $(@expr1073742104 "hierarchy_loop" $) $) ${ $setVerbose $(@expr1073742105 $false $) $; hierarchy_loop $(@expr1073742106 $) $; $} $} $while $(@expr1073742107 $false $) ;
+86:
+87: $do ${ $if $(@expr1073742108 $prepareTest $(@expr1073742109 "staticVariable" $) $) ${ $setVerbose $(@expr1073742110 $false $) $; staticVariable $(@expr1073742111 $) $; $} $} $while $(@expr1073742112 $false $) ;
+88:
+89: $do ${ $if $(@expr1073742113 $prepareTest $(@expr1073742114 "templateSimplification" $) $) ${ $setVerbose $(@expr1073742115 $false $) $; templateSimplification $(@expr1073742116 $) $; $} $} $while $(@expr1073742117 $false $) ;
+90: }
+91:
+92:
+93: void check ( const char code@var104 [ ] , Settings :: PlatformType platform@var105 = Settings :: Native ) {
+94:
+95: errout@var100 .@expr1073742118 str (@expr1073742119 "" ) ;
+96:
+97: settings@var102 .@expr1073742120 platform (@expr1073742121 platform@var105 ) ;
+98:
+99:
+100: std ::@expr1073742122 vector < std ::@expr299 string > files@var106 (@expr1073742124 1 , "test.cpp" ) ;
+101: std ::@expr1073742125 istringstream istr@var107 (@expr1073742126 code@var104 ) ;
+102: const simplecpp ::@expr1073742127 TokenList tokens1@var108 (@expr1073742128 istr@var107 , files@var106 , files@var106 [@expr1073742129 0 ] ) ;
+103:
+104:
+105: simplecpp ::@expr1073742130 TokenList tokens2@var109 (@expr1073742131 files@var106 ) ;
+106: std ::@expr1073742132 map < std ::@expr299 string , simplecpp ::@expr299 TokenList *@expr1073742135 > filedata@var110 ;
+107: simplecpp ::@expr1073742136 preprocess (@expr1073742137 tokens2@var109 , tokens1@var108 , files@var106 , filedata@var110 , simplecpp ::@expr1073742138 DUI (@expr1073742139 ) ) ;
+108:
+109:
+110: Tokenizer tokenizer@var111 (@expr1073742140 &@expr317 settings@var102 , this@expr318 ) ;
+111: tokenizer@var111 .@expr1073742143 createTokens (@expr1073742144 std ::@expr1073742145 move (@expr1073742146 tokens2@var109 ) ) ;
+112: tokenizer@var111 .@expr1073742147 simplifyTokens1 (@expr1073742148 "" ) ;
+113:
+114:
+115: CheckClass checkClass@var112 (@expr1073742149 &@expr1073742150 tokenizer@var111 , &@expr317 settings@var102 , this@expr318 ) ;
+116: checkClass@var112 .@expr1073742152 privateFunctions (@expr1073742153 ) ;
+117: }
+118:
+119:
+120:
+121: void test1 ( ) {
+122: check (@expr1073742154 "class Fred\n{\nprivate:\n    unsigned int f();\npublic:\n    Fred();\n};\n\nFred::Fred()\n{ }\n\nunsigned int Fred::f()\n{ }"
+123:
+|
+133:
+134: ) ;
+135:
+136: $if $(@expr1073742155 $!@expr1073742156 $assertEquals $(@expr1073742157 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 136 $, "[test.cpp:4]: (style) Unused private function: 'Fred::f'\n" $, errout@var100 .@expr334 str (@expr335 ) $) $) { $return ; }
+137:
+138: check (@expr1073742160 "#line 1 \"p.h\"\nclass Fred\n{\nprivate:\n    unsigned int f();\npublic:\n    Fred();\n};\n\n#line 1 \"p.cpp\"\nFred::Fred()\n{ }\n\nunsigned int Fred::f()\n{ }"
+139:
+|
+151:
+152: ) ;
+153:
+154: $if $(@expr1073742161 $!@expr1073742162 $assertEquals $(@expr1073742163 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 154 $, "[p.h:4]: (style) Unused private function: 'Fred::f'\n" $, errout@var100 .@expr334 str (@expr335 ) $) $) { $return ; }
+155:
+156: check (@expr1073742166 "#line 1 \"p.h\"\nclass Fred\n{\nprivate:\nvoid f();\n};\n\n\n#line 1 \"p.cpp\"\n\nvoid Fred::f()\n{\n}"
+157:
+|
+167:
+168: ) ;
+169: $if $(@expr1073742167 $!@expr1073742168 $assertEquals $(@expr1073742169 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 169 $, "[p.h:4]: (style) Unused private function: 'Fred::f'\n" $, errout@var100 .@expr334 str (@expr335 ) $) $) { $return ; }
+170:
+171:
+172: check (@expr1073742172 "#line 1 \"p.h\"\nclass Fred\n{\nprivate:\nvoid f();\nvoid g() {}\n};\n\n#line 1 \"p.cpp\"\n\nint main()\n{\n}"
+173:
+|
+183:
+184: ) ;
+185: $if $(@expr1073742173 $!@expr1073742174 $assertEquals $(@expr1073742175 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 185 $, "" $, errout@var100 .@expr334 str (@expr335 ) $) $) { $return ; }
+186: }
+187:
+188:
+189: void test2 ( ) {
+190: check (@expr1073742178 "class A {\npublic:\n    A();\n\n    void a() const\n    { b(); }\nprivate:\n    void b( ) const\n    { }\n};\n\nA::A()\n{ }"
+191:
+|
+201:
+202: ) ;
+203: $if $(@expr1073742179 $!@expr1073742180 $assertEquals $(@expr1073742181 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 203 $, "" $, errout@var100 .@expr1073742182 str (@expr1073742183 ) $) $) { $return ; }
+204: }
+205:
+206:
+207: void test3 ( ) {
+208: check (@expr1073742184 "class A {\npublic:\n    A() { }\n    ~A();\nprivate:\n    void B() { }\n};\n\nA::~A()\n{ B(); }"
+209:
+|
+216:
+217: ) ;
+218: $if $(@expr1073742185 $!@expr1073742186 $assertEquals $(@expr1073742187 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 218 $, "" $, errout@var100 .@expr1073742188 str (@expr1073742189 ) $) $) { $return ; }
+219: }
+220:
+221:
+222: void test4 ( ) {
+223: check (@expr1073742190 "class A {\npublic:\n    A();\nprivate:\n    bool _owner;\n    void b() { }\n};\n\nA::A() : _owner(false)\n{ b(); }"
+224:
+|
+231:
+232: ) ;
+233: $if $(@expr1073742191 $!@expr1073742192 $assertEquals $(@expr1073742193 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 233 $, "" $, errout@var100 .@expr1073742194 str (@expr1073742195 ) $) $) { $return ; }
+234: }
+235:
+236:
+237: void test5 ( ) {
+238: check (@expr1073742196 "class A {\nprivate:\n    A() : lock(new Lock())\n    { }\n    Lock *lock;\n};"
+239:
+|
+242:
+243: ) ;
+244: $if $(@expr1073742197 $!@expr1073742198 $assertEquals $(@expr1073742199 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 244 $, "" $, errout@var100 .@expr1073742200 str (@expr1073742201 ) $) $) { $return ; }
+245: }
+246:
+247: void test6 ( ) {
+248: check (@expr1073742202 "class A {\n    A& operator=(const A&);\n};"
+249:
+250: ) ;
+251: $if $(@expr1073742203 $!@expr1073742204 $assertEquals $(@expr1073742205 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 251 $, "" $, errout@var100 .@expr1073742206 str (@expr1073742207 ) $) $) { $return ; }
+252: }
+253:
+|
+257:
+258: void func_pointer1 ( ) {
+259: check (@expr1073742208 "class Fred\n{\nprivate:\n    typedef void (*testfp)();\n\n    testfp get()\n    {\n        return test;\n    }\n\n    static void test()\n    { }\n\npublic:\n    Fred();\n};\n\nFred::Fred()\n{}"
+260:
+|
+276:
+277: ) ;
+278:
+279: $if $(@expr1073742209 $!@expr1073742210 $assertEquals $(@expr1073742211 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 279 $, "[test.cpp:6]: (style) Unused private function: 'Fred::get'\n" $, errout@var100 .@expr1073742212 str (@expr1073742213 ) $) $) { $return ; }
+280: }
+281:
+282:
+283:
+284: void func_pointer2 ( ) {
+285: check (@expr1073742214 "class UnusedPrivateFunctionMemberPointer\n{\npublic:\n    UnusedPrivateFunctionMemberPointer()\n    :   mObserver(this, &UnusedPrivateFunctionMemberPointer::callback)\n    {}\n\nprivate:\n    void callback(const& unsigned) const {}\n\n    Observer<UnusedPrivateFunctionMemberPointer, unsigned> mObserver;\n};"
+286:
+|
+295:
+296: ) ;
+297: $if $(@expr1073742215 $!@expr1073742216 $assertEquals $(@expr1073742217 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 297 $, "" $, errout@var100 .@expr1073742218 str (@expr1073742219 ) $) $) { $return ; }
+298: }
+299:
+300:
+301: void func_pointer3 ( ) {
+302: check (@expr1073742220 "class c1\n{\npublic:\n    c1()\n    { sigc::mem_fun(this, &c1::f1); }\n\nprivate:\n    void f1() const {}\n};"
+303:
+|
+309:
+310: ) ;
+311: $if $(@expr1073742221 $!@expr1073742222 $assertEquals $(@expr1073742223 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 311 $, "" $, errout@var100 .@expr1073742224 str (@expr1073742225 ) $) $) { $return ; }
+312: }
+313:
+314:
+315: void func_pointer4 ( ) {
+316: check (@expr1073742226 "class myclass {\npublic:\n    myclass();\nprivate:\n    static void f();\n    void (*fptr)();\n};\nmyclass::myclass() { fptr = &f; }\nvoid myclass::f() {}"
+317:
+|
+323:
+324: ) ;
+325: $if $(@expr1073742227 $!@expr1073742228 $assertEquals $(@expr1073742229 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 325 $, "" $, errout@var100 .@expr1073742230 str (@expr1073742231 ) $) $) { $return ; }
+326: }
+327:
+328:
+329: void func_pointer5 ( ) {
+330: check (@expr1073742232 "class A {\npublic:\n    A() { f = A::func; }\n    void (*f)();\nprivate:\n    static void func() { }\n};"
+331:
+|
+335:
+336: ) ;
+337: $if $(@expr1073742233 $!@expr1073742234 $assertEquals $(@expr1073742235 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 337 $, "" $, errout@var100 .@expr1073742236 str (@expr1073742237 ) $) $) { $return ; }
+338: }
+339:
+340:
+341: void func_pointer6 ( ) {
+342: check (@expr1073742238 "class Test {\nprivate:\n    static void a(const char* p) { }\npublic:\n    void test(void* f = a) {\n        f(\"test\");\n    }\n};"
+343:
+|
+348:
+349: ) ;
+350: $if $(@expr1073742239 $!@expr1073742240 $assertEquals $(@expr1073742241 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 350 $, "" $, errout@var100 .@expr1073742242 str (@expr1073742243 ) $) $) { $return ; }
+351: }
+352:
+353: void func_pointer7 ( ) {
+354: check (@expr1073742244 "class C {\n    static void f() {}\n    static constexpr void(*p)() = f;\n};\n"
+355:
+356:
+357: ) ;
+358: $if $(@expr1073742245 $!@expr1073742246 $assertEquals $(@expr1073742247 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 358 $, "" $, errout@var100 .@expr424 str (@expr425 ) $) $) { $return ; }
+359:
+360: check (@expr1073742250 "class C {\n    static void f() {}\n    static constexpr void(*p)() = &f;\n};\n"
+361:
+362:
+363: ) ;
+364: $if $(@expr1073742251 $!@expr1073742252 $assertEquals $(@expr1073742253 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 364 $, "" $, errout@var100 .@expr424 str (@expr425 ) $) $) { $return ; }
+365:
+366: check (@expr1073742256 "class C {\n    static void f() {}\n    static constexpr void(*p)() = C::f;\n};\n"
+367:
+368:
+369: ) ;
+370: $if $(@expr1073742257 $!@expr1073742258 $assertEquals $(@expr1073742259 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 370 $, "" $, errout@var100 .@expr424 str (@expr425 ) $) $) { $return ; }
+371:
+372: check (@expr1073742262 "class C {\n    static void f() {}\n    static constexpr void(*p)() = &C::f;\n};\n"
+373:
+374:
+375: ) ;
+376: $if $(@expr1073742263 $!@expr1073742264 $assertEquals $(@expr1073742265 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 376 $, "" $, errout@var100 .@expr424 str (@expr425 ) $) $) { $return ; }
+377: }
+378:
+379:
+380: void ctor ( ) {
+381: check (@expr1073742268 "class PrivateCtor\n{\nprivate:\n    PrivateCtor(int threadNum) :\n        numOfThreads(threadNum)\n    {\n    }\n\n    int numOfThreads;\n};"
+382:
+|
+389:
+390: ) ;
+391:
+392: $if $(@expr1073742269 $!@expr1073742270 $assertEquals $(@expr1073742271 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 392 $, "" $, errout@var100 .@expr1073742272 str (@expr1073742273 ) $) $) { $return ; }
+393: }
+394:
+395: void ctor2 ( ) {
+396: check (@expr1073742274 "struct State {\n  State(double const totalWeighting= TotalWeighting()) :\n    totalWeighting_(totalWeighting) {}\nprivate:\n  double TotalWeighting() { return 123.0; }\npublic:\n  double totalWeighting_;\n};"
+397:
+|
+402:
+403: ) ;
+404: $if $(@expr1073742275 $!@expr1073742276 $assertEquals $(@expr1073742277 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 404 $, "" $, errout@var100 .@expr1073742278 str (@expr1073742279 ) $) $) { $return ; }
+405: }
+406:
+407:
+408: void classInClass ( ) {
+409: check (@expr1073742280 "class A\n{\npublic:\n\n    class B\n    {\n    private:\n    };\nprivate:\n    static void f()\n    { }\n};"
+410:
+|
+419:
+420: ) ;
+421: $if $(@expr1073742281 $!@expr1073742282 $assertEquals $(@expr1073742283 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 421 $, "[test.cpp:10]: (style) Unused private function: 'A::f'\n" $, errout@var100 .@expr460 str (@expr461 ) $) $) { $return ; }
+422:
+423: check (@expr1073742286 "class A\n{\npublic:\n    A()\n    { }\n\nprivate:\n    void f()\n    { }\n\n    class B\n    {\n    public:\n        B(A *a)\n        { a->f(); }\n    };\n};"
+424:
+|
+438:
+439: ) ;
+440: $if $(@expr1073742287 $!@expr1073742288 $assertEquals $(@expr1073742289 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 440 $, "" $, errout@var100 .@expr460 str (@expr461 ) $) $) { $return ; }
+441:
+442: check (@expr1073742292 "class A {\npublic:\n  class B;\nprivate:\n  void f() {}\n}\nclass A::B {  B() { A a; a.f(); }\n}"
+443:
+|
+449:
+450: ) ;
+451: $if $(@expr1073742293 $!@expr1073742294 $assertEquals $(@expr1073742295 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 451 $, "" $, errout@var100 .@expr460 str (@expr461 ) $) $) { $return ; }
+452: }
+453:
+454:
+455: void sameFunctionNames ( ) {
+456: check (@expr1073742298 "class A\n{\npublic:\n    void a()\n    {\n        f(1);\n    }\n\nprivate:\n    void f() { }\n    void f(int) { }\n};"
+457:
+|
+466:
+467: ) ;
+468: $if $(@expr1073742299 $!@expr1073742300 $assertEquals $(@expr1073742301 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 468 $, "" $, errout@var100 .@expr1073742302 str (@expr1073742303 ) $) $) { $return ; }
+469: }
+470:
+471: void incompleteImplementation ( ) {
+472:
+473:
+474: check (@expr1073742304 "#file \"test.h\"\nclass A\n{\npublic:\n    A();\n    void a();\nprivate:\n    void b();\n};\n#endfile\nA::A() { }\nvoid A::b() { }"
+475:
+|
+484:
+485: ) ;
+486: $if $(@expr1073742305 $!@expr1073742306 $assertEquals $(@expr1073742307 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 486 $, "" $, errout@var100 .@expr1073742308 str (@expr1073742309 ) $) $) { $return ; }
+487: }
+488:
+489: void derivedClass ( ) {
+490:
+491: check (@expr1073742310 "class derived : public base\n{\npublic:\n    derived() : base() { }\nprivate:\n    void f();\n};"
+492:
+|
+496:
+497: ) ;
+498: $if $(@expr1073742311 $!@expr1073742312 $assertEquals $(@expr1073742313 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 498 $, "" $, errout@var100 .@expr490 str (@expr491 ) $) $) { $return ; }
+499:
+500: check (@expr1073742316 "class base {\npublic:\n    virtual void foo();\n    void bar();\n};\nclass derived : public base {\nprivate:\n    void foo() {}\n    void bar() {}\n};"
+501:
+|
+508:
+509: ) ;
+510: $if $(@expr1073742317 $!@expr1073742318 $assertEquals $(@expr1073742319 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 510 $, "[test.cpp:9]: (style) Unused private function: 'derived::bar'\n" $, errout@var100 .@expr490 str (@expr491 ) $) $) { $return ; }
+511:
+512: check (@expr1073742322 "class Base {\nprivate:\n    virtual void func() = 0;\npublic:\n    void public_func() {\n        func();\n    };\n};\n\nclass Derived1: public Base {\nprivate:\n    void func() {}\n};\nclass Derived2: public Derived1 {\nprivate:\n    void func() {}\n};"
+513:
+|
+527:
+528: ) ;
+529: $if $(@expr1073742323 $!@expr1073742324 $assertEquals $(@expr1073742325 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 529 $, "" $, errout@var100 .@expr490 str (@expr491 ) $) $) { $return ; }
+530:
+531: check (@expr1073742328 "class Base {\npublic:\n    void dostuff() {\n      f();\n    }\n\nprivate:\n    virtual Base* f() = 0;\n};\n\nclass Derived : public Base {\nprivate:\n    Derived* f() {\n      return 0;\n    }\n};"
+532:
+|
+545:
+546: ) ;
+547: $if $(@expr1073742329 $!@expr1073742330 $assertEquals $(@expr1073742331 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 547 $, "" $, errout@var100 .@expr490 str (@expr491 ) $) $) { $return ; }
+548: }
+549:
+550: void friendClass ( ) {
+551:
+552: check (@expr1073742334 "class Foo {\nprivate:\n    friend Bar;\n    void f() { }\n};"
+553:
+554:
+555:
+556: ) ;
+557: $if $(@expr1073742335 $!@expr1073742336 $assertEquals $(@expr1073742337 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 557 $, "" $, errout@var100 .@expr514 str (@expr515 ) $) $) { $return ; }
+558:
+559: check (@expr1073742340 "struct Bar {\n    void g() { f(); }\n};\nclass Foo {\nprivate:\n    friend Bar;\n    void f();\n};"
+560:
+|
+565:
+566: ) ;
+567: $if $(@expr1073742341 $!@expr1073742342 $assertEquals $(@expr1073742343 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 567 $, "" $, errout@var100 .@expr514 str (@expr515 ) $) $) { $return ; }
+568:
+569: check (@expr1073742346 "struct Bar {\n    void g() { f(); }\n};\nclass Foo {\nprivate:\n    friend Bar;\n    void f() { }\n};"
+570:
+|
+575:
+576: ) ;
+577: $if $(@expr1073742347 $!@expr1073742348 $assertEquals $(@expr1073742349 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 577 $, "" $, errout@var100 .@expr514 str (@expr515 ) $) $) { $return ; }
+578:
+579: check (@expr1073742352 "class Bar {\n};\nclass Foo {\n    friend Bar;\n    void f() { }\n};"
+580:
+|
+583:
+584: ) ;
+585: $if $(@expr1073742353 $!@expr1073742354 $assertEquals $(@expr1073742355 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 585 $, "[test.cpp:5]: (style) Unused private function: 'Foo::f'\n" $, errout@var100 .@expr514 str (@expr515 ) $) $) { $return ; }
+586:
+587: check (@expr1073742358 "struct F;\nstruct S {\n    int i{};\n    friend struct F;\nprivate:\n    int f() const { return i; }\n};\nstruct F {\n    bool operator()(const S& lhs, const S& rhs) const {\n        return lhs.f() < rhs.f();\n    }\n};"
+588:
+|
+597:
+598: ) ;
+599: $if $(@expr1073742359 $!@expr1073742360 $assertEquals $(@expr1073742361 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 599 $, "" $, errout@var100 .@expr514 str (@expr515 ) $) $) { $return ; }
+600: }
+601:
+602: void borland1 ( ) {
+603:
+604: check (@expr1073742365 "class Foo {\nprivate:\n    int getx() {\n        return 123;\n    }\npublic:\n    Foo() { }\n    __property int x = {read=getx}\n};"
+605:
+|
+611:
+612: , Settings ::@expr1073742366 Win32A@expr1073742364 ) ;
+613: $if $(@expr1073742367 $!@expr1073742368 $assertEquals $(@expr1073742369 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 613 $, "" $, errout@var100 .@expr1073742370 str (@expr1073742371 ) $) $) { $return ; }
+614: }
+615:
+616: void borland2 ( ) {
+617:
+618: check (@expr1073742373 "class Foo {\n__published:\n    int getx() {\n        return 123;\n    }\npublic:\n    Foo() { }\n};"
+619:
+|
+624:
+625: , Settings ::@expr1073742374 Win32A@expr1073742372 ) ;
+626: $if $(@expr1073742375 $!@expr1073742376 $assertEquals $(@expr1073742377 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 626 $, "" $, errout@var100 .@expr1073742378 str (@expr1073742379 ) $) $) { $return ; }
+627: }
+628:
+629: void template1 ( ) {
+630:
+631: check (@expr1073742380 "class A {\npublic:\n    template <class T>\n    T getVal() const;\n\nprivate:\n    int internalGetVal() const { return 8000; }\n};\n\ntemplate <class T>\nT A::getVal() const {\n    return internalGetVal();\n};"
+632:
+|
+642:
+643: ) ;
+644: $if $(@expr1073742381 $!@expr1073742382 $assertEquals $(@expr1073742383 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 644 $, "" $, errout@var100 .@expr1073742384 str (@expr1073742385 ) $) $) { $return ; }
+645: }
+646:
+647: void fp_operator ( ) {
+648:
+649: check (@expr1073742386 "class Fred\n{\npublic:\n    void operator()(int x) {\n        startListening();\n    }\n\nprivate:\n    void startListening() {\n    }\n};"
+650:
+|
+658:
+659: ) ;
+660: $if $(@expr1073742387 $!@expr1073742388 $assertEquals $(@expr1073742389 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 660 $, "" $, errout@var100 .@expr566 str (@expr567 ) $) $) { $return ; }
+661:
+662: check (@expr1073742392 "class Fred\n{\npublic:\n    void operator()(int x) {\n    }\n\nprivate:\n    void startListening() {\n    }\n};"
+663:
+|
+670:
+671: ) ;
+672: $if $(@expr1073742393 $!@expr1073742394 $assertEquals $(@expr1073742395 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 672 $, "[test.cpp:8]: (style) Unused private function: 'Fred::startListening'\n" $, errout@var100 .@expr566 str (@expr567 ) $) $) { $return ; }
+673:
+674:
+675: check (@expr1073742398 "class Fred {\n    void* operator new(size_t obj_size, size_t buf_size) {}\n};"
+676:
+677: ) ;
+678: $todoAssertEquals $(@expr1073742399 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 678 $, "[test.cpp:2]: (style) Unused private function: 'Fred::operatornew'\n" $, "" $, errout@var100 .@expr566 str (@expr567 ) $) ;
+679:
+680: check (@expr1073742402 "class Fred {\n    void* operator new(size_t obj_size, size_t buf_size) {}\npublic:\n    void* foo() { return new(size) Fred(); }\n};"
+681:
+682:
+683:
+684: ) ;
+685: $if $(@expr1073742403 $!@expr1073742404 $assertEquals $(@expr1073742405 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 685 $, "" $, errout@var100 .@expr566 str (@expr567 ) $) $) { $return ; }
+686: }
+687:
+688: void testDoesNotIdentifyMethodAsFirstFunctionArgument ( ) {
+689: check (@expr1073742408 "void callback(void (*func)(int), int arg){    (*func)(arg);}class MountOperation{    static void Completed(int i);public:    MountOperation(int i);};void MountOperation::Completed(int i){    std::cerr << i << std::endl;}MountOperation::MountOperation(int i){    callback(MountOperation::Completed, i);}int main(void){    MountOperation aExample(10);}"
+690:
+|
+710:
+711: ) ;
+712: $if $(@expr1073742409 $!@expr1073742410 $assertEquals $(@expr1073742411 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 712 $, "" $, errout@var100 .@expr1073742412 str (@expr1073742413 ) $) $) { $return ; }
+713: }
+714:
+715: void testDoesNotIdentifyMethodAsMiddleFunctionArgument ( ) {
+716: check (@expr1073742414 "void callback(char, void (*func)(int), int arg){    (*func)(arg);}class MountOperation{    static void Completed(int i);public:    MountOperation(int i);};void MountOperation::Completed(int i){    std::cerr << i << std::endl;}MountOperation::MountOperation(int i){    callback('a', MountOperation::Completed, i);}int main(void){    MountOperation aExample(10);}"
+717:
+|
+737:
+738: ) ;
+739: $if $(@expr1073742415 $!@expr1073742416 $assertEquals $(@expr1073742417 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 739 $, "" $, errout@var100 .@expr1073742418 str (@expr1073742419 ) $) $) { $return ; }
+740: }
+741:
+742: void testDoesNotIdentifyMethodAsLastFunctionArgument ( ) {
+743: check (@expr1073742420 "void callback(int arg, void (*func)(int)){    (*func)(arg);}class MountOperation{    static void Completed(int i);public:    MountOperation(int i);};void MountOperation::Completed(int i){    std::cerr << i << std::endl;}MountOperation::MountOperation(int i){    callback(i, MountOperation::Completed);}int main(void){    MountOperation aExample(10);}"
+744:
+|
+764:
+765: ) ;
+766: $if $(@expr1073742421 $!@expr1073742422 $assertEquals $(@expr1073742423 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 766 $, "" $, errout@var100 .@expr1073742424 str (@expr1073742425 ) $) $) { $return ; }
+767: }
+768:
+769: void multiFile ( ) {
+770: check (@expr1073742426 "#file \"test.h\"\nstruct Fred\n{\n    Fred()\n    {\n        Init();\n    }\nprivate:\n    void Init();\n};\n#endfile\nvoid Fred::Init()\n{\n}"
+771:
+|
+782:
+783: ) ;
+784:
+785: $if $(@expr1073742427 $!@expr1073742428 $assertEquals $(@expr1073742429 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 785 $, "" $, errout@var100 .@expr1073742430 str (@expr1073742431 ) $) $) { $return ; }
+786: }
+787:
+788: void unknownBaseTemplate ( ) {
+789: check (@expr1073742432 "class Bla : public Base2<Base> {\npublic:\n    Bla() {}\nprivate:\n    virtual void F() const;\n};\nvoid Bla::F() const { }"
+790:
+|
+794:
+795: ) ;
+796:
+797: $if $(@expr1073742433 $!@expr1073742434 $assertEquals $(@expr1073742435 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 797 $, "" $, errout@var100 .@expr1073742436 str (@expr1073742437 ) $) $) { $return ; }
+798: }
+799:
+800: void hierarchy_loop ( ) {
+801: check (@expr1073742438 "class InfiniteB : InfiniteA {\n    class D {\n    };\n};\nnamespace N {\n    class InfiniteA : InfiniteB {\n    };\n}\nclass InfiniteA : InfiniteB {\n    void foo();\n};\nvoid InfiniteA::foo() {\n    C a;\n}"
+802:
+|
+813:
+814: ) ;
+815:
+816: $if $(@expr1073742439 $!@expr1073742440 $assertEquals $(@expr1073742441 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 816 $, "" $, errout@var100 .@expr1073742442 str (@expr1073742443 ) $) $) { $return ; }
+817: }
+818:
+819: void staticVariable ( ) {
+820: check (@expr1073742444 "class Foo {\n    static int i;\n    static int F() const { return 1; }\n};\nint Foo::i = Foo::F();"
+821:
+822:
+823:
+824: ) ;
+825: $if $(@expr1073742445 $!@expr1073742446 $assertEquals $(@expr1073742447 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 825 $, "" $, errout@var100 .@expr624 str (@expr625 ) $) $) { $return ; }
+826:
+827: check (@expr1073742450 "class Foo {\n    static int i;\n    int F() const { return 1; }\n};\nFoo f;\nint Foo::i = f.F();"
+828:
+|
+831:
+832: ) ;
+833: $if $(@expr1073742451 $!@expr1073742452 $assertEquals $(@expr1073742453 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 833 $, "" $, errout@var100 .@expr624 str (@expr625 ) $) $) { $return ; }
+834:
+835: check (@expr1073742456 "class Foo {\n    static int i;\n    static int F() const { return 1; }\n};\nint Foo::i = sth();int i = F();"
+836:
+|
+839:
+840: ) ;
+841: $if $(@expr1073742457 $!@expr1073742458 $assertEquals $(@expr1073742459 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 841 $, "[test.cpp:3]: (style) Unused private function: 'Foo::F'\n" $, errout@var100 .@expr624 str (@expr625 ) $) $) { $return ; }
+842: }
+843:
+844: void templateSimplification ( ) {
+845: check (@expr1073742462 "class CTest {\npublic:\n    template <typename T>\n    static void Greeting(T val) {\n        std::cout << val << std::endl;\n    }\nprivate:\n    static void SayHello() {\n        std::cout << \"Hello World!\" << std::endl;\n    }\n};\ntemplate<>\nvoid CTest::Greeting(bool) {\n    CTest::SayHello();\n}\nint main() {\n    CTest::Greeting<bool>(true);\n    return 0;\n}"
+846:
+|
+862:
+863: ) ;
+864: $if $(@expr1073742463 $!@expr1073742464 $assertEquals $(@expr1073742465 "cppcheck-2.8/test/testunusedprivfunc.cpp" $, 864 $, "" $, errout@var100 .@expr1073742466 str (@expr1073742467 ) $) $) { $return ; }
+865: }
+866: } ;
+867:
+868: $namespace ${ TestUnusedPrivateFunction instance_TestUnusedPrivateFunction@var113 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@53}
+  v {!<=-1,!>=2,0@53}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 36
+  "TestUnusedPrivateFunction" always "TestUnusedPrivateFunction"
+Line 44
+  ( always {!<=-1,!>=2}
+  "test1" always "test1"
+  false always 0
+  false always 0
+Line 45
+  ( always {!<=-1,!>=2}
+  "test2" always "test2"
+  false always 0
+  false always 0
+Line 46
+  ( always {!<=-1,!>=2}
+  "test3" always "test3"
+  false always 0
+  false always 0
+Line 47
+  ( always {!<=-1,!>=2}
+  "test4" always "test4"
+  false always 0
+  false always 0
+Line 48
+  ( always {!<=-1,!>=2}
+  "test5" always "test5"
+  false always 0
+  false always 0
+Line 49
+  ( always {!<=-1,!>=2}
+  "test6" always "test6"
+  false always 0
+  false always 0
+Line 52
+  ( always {!<=-1,!>=2}
+  "func_pointer1" always "func_pointer1"
+  false always 0
+  false always 0
+Line 53
+  ( always {!<=-1,!>=2}
+  "func_pointer2" always "func_pointer2"
+  false always 0
+  false always 0
+Line 54
+  ( always {!<=-1,!>=2}
+  "func_pointer3" always "func_pointer3"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "func_pointer4" always "func_pointer4"
+  false always 0
+  false always 0
+Line 56
+  ( always {!<=-1,!>=2}
+  "func_pointer5" always "func_pointer5"
+  false always 0
+  false always 0
+Line 57
+  ( always {!<=-1,!>=2}
+  "func_pointer6" always "func_pointer6"
+  false always 0
+  false always 0
+Line 58
+  ( always {!<=-1,!>=2}
+  "func_pointer7" always "func_pointer7"
+  false always 0
+  false always 0
+Line 60
+  ( always {!<=-1,!>=2}
+  "ctor" always "ctor"
+  false always 0
+  false always 0
+Line 61
+  ( always {!<=-1,!>=2}
+  "ctor2" always "ctor2"
+  false always 0
+  false always 0
+Line 63
+  ( always {!<=-1,!>=2}
+  "classInClass" always "classInClass"
+  false always 0
+  false always 0
+Line 64
+  ( always {!<=-1,!>=2}
+  "sameFunctionNames" always "sameFunctionNames"
+  false always 0
+  false always 0
+Line 65
+  ( always {!<=-1,!>=2}
+  "incompleteImplementation" always "incompleteImplementation"
+  false always 0
+  false always 0
+Line 67
+  ( always {!<=-1,!>=2}
+  "derivedClass" always "derivedClass"
+  false always 0
+  false always 0
+Line 69
+  ( always {!<=-1,!>=2}
+  "friendClass" always "friendClass"
+  false always 0
+  false always 0
+Line 71
+  ( always {!<=-1,!>=2}
+  "borland1" always "borland1"
+  false always 0
+  false always 0
+Line 72
+  ( always {!<=-1,!>=2}
+  "borland2" always "borland2"
+  false always 0
+  false always 0
+Line 75
+  ( always {!<=-1,!>=2}
+  "template1" always "template1"
+  false always 0
+  false always 0
+Line 78
+  ( always {!<=-1,!>=2}
+  "fp_operator" always "fp_operator"
+  false always 0
+  false always 0
+Line 79
+  ( always {!<=-1,!>=2}
+  "testDoesNotIdentifyMethodAsFirstFunctionArgument" always "testDoesNotIdentifyMethodAsFirstFunctionArgument"
+  false always 0
+  false always 0
+Line 80
+  ( always {!<=-1,!>=2}
+  "testDoesNotIdentifyMethodAsMiddleFunctionArgument" always "testDoesNotIdentifyMethodAsMiddleFunctionArgument"
+  false always 0
+  false always 0
+Line 81
+  ( always {!<=-1,!>=2}
+  "testDoesNotIdentifyMethodAsLastFunctionArgument" always "testDoesNotIdentifyMethodAsLastFunctionArgument"
+  false always 0
+  false always 0
+Line 83
+  ( always {!<=-1,!>=2}
+  "multiFile" always "multiFile"
+  false always 0
+  false always 0
+Line 84
+  ( always {!<=-1,!>=2}
+  "unknownBaseTemplate" always "unknownBaseTemplate"
+  false always 0
+  false always 0
+Line 85
+  ( always {!<=-1,!>=2}
+  "hierarchy_loop" always "hierarchy_loop"
+  false always 0
+  false always 0
+Line 87
+  ( always {!<=-1,!>=2}
+  "staticVariable" always "staticVariable"
+  false always 0
+  false always 0
+Line 89
+  ( always {!<=-1,!>=2}
+  "templateSimplification" always "templateSimplification"
+  false always 0
+  false always 0
+Line 95
+  "" always ""
+Line 100
+  1 always 1
+  "test.cpp" always "test.cpp"
+Line 101
+  code possible {"class CTest {\npublic:\n    template <typename T>\n    static void Greeting(T val) {\n        std::cout << val << std::endl;\n    }\nprivate:\n    static void SayHello() {\n        std::cout << \"Hello World!\" << std::endl;\n    }\n};\ntemplate<>\nvoid CTest::Greeting(bool) {\n    CTest::SayHello();\n}\nint main() {\n    CTest::Greeting<bool>(true);\n    return 0;\n}"@1,"class Foo {\n    static int i;\n    static int F() const { return 1; }\n};\nint Foo::i = Foo::F();"@2,"class Foo {\n    static int i;\n    int F() const { return 1; }\n};\nFoo f;\nint Foo::i = f.F();"@3,"class Foo {\n    static int i;\n    static int F() const { return 1; }\n};\nint Foo::i = sth();int i = F();"@4,"class InfiniteB : InfiniteA {\n    class D {\n    };\n};\nnamespace N {\n    class InfiniteA : InfiniteB {\n    };\n}\nclass InfiniteA : InfiniteB {\n    void foo();\n};\nvoid InfiniteA::foo() {\n    C a;\n}"@5,"class Bla : public Base2<Base> {\npublic:\n    Bla() {}\nprivate:\n    virtual void F() const;\n};\nvoid Bla::F() const { }"@6,"#file \"test.h\"\nstruct Fred\n{\n    Fred()\n    {\n        Init();\n    }\nprivate:\n    void Init();\n};\n#endfile\nvoid Fred::Init()\n{\n}"@7,"void callback(int arg, void (*func)(int)){    (*func)(arg);}class MountOperation{    static void Completed(int i);public:    MountOperation(int i);};void MountOperation::Completed(int i){    std::cerr << i << std::endl;}MountOperation::MountOperation(int i){    callback(i, MountOperation::Completed);}int main(void){    MountOperation aExample(10);}"@8,"void callback(char, void (*func)(int), int arg){    (*func)(arg);}class MountOperation{    static void Completed(int i);public:    MountOperation(int i);};void MountOperation::Completed(int i){    std::cerr << i << std::endl;}MountOperation::MountOperation(int i){    callback('a', MountOperation::Completed, i);}int main(void){    MountOperation aExample(10);}"@9,"void callback(void (*func)(int), int arg){    (*func)(arg);}class MountOperation{    static void Completed(int i);public:    MountOperation(int i);};void MountOperation::Completed(int i){    std::cerr << i << std::endl;}MountOperation::MountOperation(int i){    callback(MountOperation::Completed, i);}int main(void){    MountOperation aExample(10);}"@10}
+Line 102
+  files always size=1
+  0 always 0
+Line 107
+  filedata always size=0
+Line 110
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 112
+  "" always ""
+Line 115
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 122
+  "class Fred\n{\nprivate:\n    unsigned int f();\npublic:\n    Fred();\n};\n\nFred::Fred()\n{ }\n\nunsigned int Fred::f()\n{ }" always "class Fred\n{\nprivate:\n    unsigned int f();\npublic:\n    Fred();\n};\n\nFred::Fred()\n{ }\n\nunsigned int Fred::f()\n{ }"
+Line 136
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  136 always 136
+  "[test.cpp:4]: (style) Unused private function: 'Fred::f'\n" always "[test.cpp:4]: (style) Unused private function: 'Fred::f'\n"
+Line 138
+  "#line 1 \"p.h\"\nclass Fred\n{\nprivate:\n    unsigned int f();\npublic:\n    Fred();\n};\n\n#line 1 \"p.cpp\"\nFred::Fred()\n{ }\n\nunsigned int Fred::f()\n{ }" always "#line 1 \"p.h\"\nclass Fred\n{\nprivate:\n    unsigned int f();\npublic:\n    Fred();\n};\n\n#line 1 \"p.cpp\"\nFred::Fred()\n{ }\n\nunsigned int Fred::f()\n{ }"
+Line 154
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  154 always 154
+  "[p.h:4]: (style) Unused private function: 'Fred::f'\n" always "[p.h:4]: (style) Unused private function: 'Fred::f'\n"
+Line 156
+  "#line 1 \"p.h\"\nclass Fred\n{\nprivate:\nvoid f();\n};\n\n\n#line 1 \"p.cpp\"\n\nvoid Fred::f()\n{\n}" always "#line 1 \"p.h\"\nclass Fred\n{\nprivate:\nvoid f();\n};\n\n\n#line 1 \"p.cpp\"\n\nvoid Fred::f()\n{\n}"
+Line 169
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  169 always 169
+  "[p.h:4]: (style) Unused private function: 'Fred::f'\n" always "[p.h:4]: (style) Unused private function: 'Fred::f'\n"
+Line 172
+  "#line 1 \"p.h\"\nclass Fred\n{\nprivate:\nvoid f();\nvoid g() {}\n};\n\n#line 1 \"p.cpp\"\n\nint main()\n{\n}" always "#line 1 \"p.h\"\nclass Fred\n{\nprivate:\nvoid f();\nvoid g() {}\n};\n\n#line 1 \"p.cpp\"\n\nint main()\n{\n}"
+Line 185
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  185 always 185
+  "" always ""
+Line 190
+  "class A {\npublic:\n    A();\n\n    void a() const\n    { b(); }\nprivate:\n    void b( ) const\n    { }\n};\n\nA::A()\n{ }" always "class A {\npublic:\n    A();\n\n    void a() const\n    { b(); }\nprivate:\n    void b( ) const\n    { }\n};\n\nA::A()\n{ }"
+Line 203
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  203 always 203
+  "" always ""
+Line 208
+  "class A {\npublic:\n    A() { }\n    ~A();\nprivate:\n    void B() { }\n};\n\nA::~A()\n{ B(); }" always "class A {\npublic:\n    A() { }\n    ~A();\nprivate:\n    void B() { }\n};\n\nA::~A()\n{ B(); }"
+Line 218
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  218 always 218
+  "" always ""
+Line 223
+  "class A {\npublic:\n    A();\nprivate:\n    bool _owner;\n    void b() { }\n};\n\nA::A() : _owner(false)\n{ b(); }" always "class A {\npublic:\n    A();\nprivate:\n    bool _owner;\n    void b() { }\n};\n\nA::A() : _owner(false)\n{ b(); }"
+Line 233
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  233 always 233
+  "" always ""
+Line 238
+  "class A {\nprivate:\n    A() : lock(new Lock())\n    { }\n    Lock *lock;\n};" always "class A {\nprivate:\n    A() : lock(new Lock())\n    { }\n    Lock *lock;\n};"
+Line 244
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  244 always 244
+  "" always ""
+Line 248
+  "class A {\n    A& operator=(const A&);\n};" always "class A {\n    A& operator=(const A&);\n};"
+Line 251
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  251 always 251
+  "" always ""
+Line 259
+  "class Fred\n{\nprivate:\n    typedef void (*testfp)();\n\n    testfp get()\n    {\n        return test;\n    }\n\n    static void test()\n    { }\n\npublic:\n    Fred();\n};\n\nFred::Fred()\n{}" always "class Fred\n{\nprivate:\n    typedef void (*testfp)();\n\n    testfp get()\n    {\n        return test;\n    }\n\n    static void test()\n    { }\n\npublic:\n    Fred();\n};\n\nFred::Fred()\n{}"
+Line 279
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  279 always 279
+  "[test.cpp:6]: (style) Unused private function: 'Fred::get'\n" always "[test.cpp:6]: (style) Unused private function: 'Fred::get'\n"
+Line 285
+  "class UnusedPrivateFunctionMemberPointer\n{\npublic:\n    UnusedPrivateFunctionMemberPointer()\n    :   mObserver(this, &UnusedPrivateFunctionMemberPointer::callback)\n    {}\n\nprivate:\n    void callback(const& unsigned) const {}\n\n    Observer<UnusedPrivateFunctionMemberPointer, unsigned> mObserver;\n};" always "class UnusedPrivateFunctionMemberPointer\n{\npublic:\n    UnusedPrivateFunctionMemberPointer()\n    :   mObserver(this, &UnusedPrivateFunctionMemberPointer::callback)\n    {}\n\nprivate:\n    void callback(const& unsigned) const {}\n\n    Observer<UnusedPrivateFunctionMemberPointer, unsigned> mObserver;\n};"
+Line 297
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  297 always 297
+  "" always ""
+Line 302
+  "class c1\n{\npublic:\n    c1()\n    { sigc::mem_fun(this, &c1::f1); }\n\nprivate:\n    void f1() const {}\n};" always "class c1\n{\npublic:\n    c1()\n    { sigc::mem_fun(this, &c1::f1); }\n\nprivate:\n    void f1() const {}\n};"
+Line 311
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  311 always 311
+  "" always ""
+Line 316
+  "class myclass {\npublic:\n    myclass();\nprivate:\n    static void f();\n    void (*fptr)();\n};\nmyclass::myclass() { fptr = &f; }\nvoid myclass::f() {}" always "class myclass {\npublic:\n    myclass();\nprivate:\n    static void f();\n    void (*fptr)();\n};\nmyclass::myclass() { fptr = &f; }\nvoid myclass::f() {}"
+Line 325
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  325 always 325
+  "" always ""
+Line 330
+  "class A {\npublic:\n    A() { f = A::func; }\n    void (*f)();\nprivate:\n    static void func() { }\n};" always "class A {\npublic:\n    A() { f = A::func; }\n    void (*f)();\nprivate:\n    static void func() { }\n};"
+Line 337
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  337 always 337
+  "" always ""
+Line 342
+  "class Test {\nprivate:\n    static void a(const char* p) { }\npublic:\n    void test(void* f = a) {\n        f(\"test\");\n    }\n};" always "class Test {\nprivate:\n    static void a(const char* p) { }\npublic:\n    void test(void* f = a) {\n        f(\"test\");\n    }\n};"
+Line 350
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  350 always 350
+  "" always ""
+Line 354
+  "class C {\n    static void f() {}\n    static constexpr void(*p)() = f;\n};\n" always "class C {\n    static void f() {}\n    static constexpr void(*p)() = f;\n};\n"
+Line 358
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  358 always 358
+  "" always ""
+Line 360
+  "class C {\n    static void f() {}\n    static constexpr void(*p)() = &f;\n};\n" always "class C {\n    static void f() {}\n    static constexpr void(*p)() = &f;\n};\n"
+Line 364
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  364 always 364
+  "" always ""
+Line 366
+  "class C {\n    static void f() {}\n    static constexpr void(*p)() = C::f;\n};\n" always "class C {\n    static void f() {}\n    static constexpr void(*p)() = C::f;\n};\n"
+Line 370
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  370 always 370
+  "" always ""
+Line 372
+  "class C {\n    static void f() {}\n    static constexpr void(*p)() = &C::f;\n};\n" always "class C {\n    static void f() {}\n    static constexpr void(*p)() = &C::f;\n};\n"
+Line 376
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  376 always 376
+  "" always ""
+Line 381
+  "class PrivateCtor\n{\nprivate:\n    PrivateCtor(int threadNum) :\n        numOfThreads(threadNum)\n    {\n    }\n\n    int numOfThreads;\n};" always "class PrivateCtor\n{\nprivate:\n    PrivateCtor(int threadNum) :\n        numOfThreads(threadNum)\n    {\n    }\n\n    int numOfThreads;\n};"
+Line 392
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  392 always 392
+  "" always ""
+Line 396
+  "struct State {\n  State(double const totalWeighting= TotalWeighting()) :\n    totalWeighting_(totalWeighting) {}\nprivate:\n  double TotalWeighting() { return 123.0; }\npublic:\n  double totalWeighting_;\n};" always "struct State {\n  State(double const totalWeighting= TotalWeighting()) :\n    totalWeighting_(totalWeighting) {}\nprivate:\n  double TotalWeighting() { return 123.0; }\npublic:\n  double totalWeighting_;\n};"
+Line 404
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  404 always 404
+  "" always ""
+Line 409
+  "class A\n{\npublic:\n\n    class B\n    {\n    private:\n    };\nprivate:\n    static void f()\n    { }\n};" always "class A\n{\npublic:\n\n    class B\n    {\n    private:\n    };\nprivate:\n    static void f()\n    { }\n};"
+Line 421
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  421 always 421
+  "[test.cpp:10]: (style) Unused private function: 'A::f'\n" always "[test.cpp:10]: (style) Unused private function: 'A::f'\n"
+Line 423
+  "class A\n{\npublic:\n    A()\n    { }\n\nprivate:\n    void f()\n    { }\n\n    class B\n    {\n    public:\n        B(A *a)\n        { a->f(); }\n    };\n};" always "class A\n{\npublic:\n    A()\n    { }\n\nprivate:\n    void f()\n    { }\n\n    class B\n    {\n    public:\n        B(A *a)\n        { a->f(); }\n    };\n};"
+Line 440
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  440 always 440
+  "" always ""
+Line 442
+  "class A {\npublic:\n  class B;\nprivate:\n  void f() {}\n}\nclass A::B {  B() { A a; a.f(); }\n}" always "class A {\npublic:\n  class B;\nprivate:\n  void f() {}\n}\nclass A::B {  B() { A a; a.f(); }\n}"
+Line 451
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  451 always 451
+  "" always ""
+Line 456
+  "class A\n{\npublic:\n    void a()\n    {\n        f(1);\n    }\n\nprivate:\n    void f() { }\n    void f(int) { }\n};" always "class A\n{\npublic:\n    void a()\n    {\n        f(1);\n    }\n\nprivate:\n    void f() { }\n    void f(int) { }\n};"
+Line 468
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  468 always 468
+  "" always ""
+Line 474
+  "#file \"test.h\"\nclass A\n{\npublic:\n    A();\n    void a();\nprivate:\n    void b();\n};\n#endfile\nA::A() { }\nvoid A::b() { }" always "#file \"test.h\"\nclass A\n{\npublic:\n    A();\n    void a();\nprivate:\n    void b();\n};\n#endfile\nA::A() { }\nvoid A::b() { }"
+Line 486
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  486 always 486
+  "" always ""
+Line 491
+  "class derived : public base\n{\npublic:\n    derived() : base() { }\nprivate:\n    void f();\n};" always "class derived : public base\n{\npublic:\n    derived() : base() { }\nprivate:\n    void f();\n};"
+Line 498
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  498 always 498
+  "" always ""
+Line 500
+  "class base {\npublic:\n    virtual void foo();\n    void bar();\n};\nclass derived : public base {\nprivate:\n    void foo() {}\n    void bar() {}\n};" always "class base {\npublic:\n    virtual void foo();\n    void bar();\n};\nclass derived : public base {\nprivate:\n    void foo() {}\n    void bar() {}\n};"
+Line 510
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  510 always 510
+  "[test.cpp:9]: (style) Unused private function: 'derived::bar'\n" always "[test.cpp:9]: (style) Unused private function: 'derived::bar'\n"
+Line 512
+  "class Base {\nprivate:\n    virtual void func() = 0;\npublic:\n    void public_func() {\n        func();\n    };\n};\n\nclass Derived1: public Base {\nprivate:\n    void func() {}\n};\nclass Derived2: public Derived1 {\nprivate:\n    void func() {}\n};" always "class Base {\nprivate:\n    virtual void func() = 0;\npublic:\n    void public_func() {\n        func();\n    };\n};\n\nclass Derived1: public Base {\nprivate:\n    void func() {}\n};\nclass Derived2: public Derived1 {\nprivate:\n    void func() {}\n};"
+Line 529
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  529 always 529
+  "" always ""
+Line 531
+  "class Base {\npublic:\n    void dostuff() {\n      f();\n    }\n\nprivate:\n    virtual Base* f() = 0;\n};\n\nclass Derived : public Base {\nprivate:\n    Derived* f() {\n      return 0;\n    }\n};" always "class Base {\npublic:\n    void dostuff() {\n      f();\n    }\n\nprivate:\n    virtual Base* f() = 0;\n};\n\nclass Derived : public Base {\nprivate:\n    Derived* f() {\n      return 0;\n    }\n};"
+Line 547
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  547 always 547
+  "" always ""
+Line 552
+  "class Foo {\nprivate:\n    friend Bar;\n    void f() { }\n};" always "class Foo {\nprivate:\n    friend Bar;\n    void f() { }\n};"
+Line 557
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  557 always 557
+  "" always ""
+Line 559
+  "struct Bar {\n    void g() { f(); }\n};\nclass Foo {\nprivate:\n    friend Bar;\n    void f();\n};" always "struct Bar {\n    void g() { f(); }\n};\nclass Foo {\nprivate:\n    friend Bar;\n    void f();\n};"
+Line 567
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  567 always 567
+  "" always ""
+Line 569
+  "struct Bar {\n    void g() { f(); }\n};\nclass Foo {\nprivate:\n    friend Bar;\n    void f() { }\n};" always "struct Bar {\n    void g() { f(); }\n};\nclass Foo {\nprivate:\n    friend Bar;\n    void f() { }\n};"
+Line 577
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  577 always 577
+  "" always ""
+Line 579
+  "class Bar {\n};\nclass Foo {\n    friend Bar;\n    void f() { }\n};" always "class Bar {\n};\nclass Foo {\n    friend Bar;\n    void f() { }\n};"
+Line 585
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  585 always 585
+  "[test.cpp:5]: (style) Unused private function: 'Foo::f'\n" always "[test.cpp:5]: (style) Unused private function: 'Foo::f'\n"
+Line 587
+  "struct F;\nstruct S {\n    int i{};\n    friend struct F;\nprivate:\n    int f() const { return i; }\n};\nstruct F {\n    bool operator()(const S& lhs, const S& rhs) const {\n        return lhs.f() < rhs.f();\n    }\n};" always "struct F;\nstruct S {\n    int i{};\n    friend struct F;\nprivate:\n    int f() const { return i; }\n};\nstruct F {\n    bool operator()(const S& lhs, const S& rhs) const {\n        return lhs.f() < rhs.f();\n    }\n};"
+Line 599
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  599 always 599
+  "" always ""
+Line 604
+  "class Foo {\nprivate:\n    int getx() {\n        return 123;\n    }\npublic:\n    Foo() { }\n    __property int x = {read=getx}\n};" always "class Foo {\nprivate:\n    int getx() {\n        return 123;\n    }\npublic:\n    Foo() { }\n    __property int x = {read=getx}\n};"
+Line 613
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  613 always 613
+  "" always ""
+Line 618
+  "class Foo {\n__published:\n    int getx() {\n        return 123;\n    }\npublic:\n    Foo() { }\n};" always "class Foo {\n__published:\n    int getx() {\n        return 123;\n    }\npublic:\n    Foo() { }\n};"
+Line 626
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  626 always 626
+  "" always ""
+Line 631
+  "class A {\npublic:\n    template <class T>\n    T getVal() const;\n\nprivate:\n    int internalGetVal() const { return 8000; }\n};\n\ntemplate <class T>\nT A::getVal() const {\n    return internalGetVal();\n};" always "class A {\npublic:\n    template <class T>\n    T getVal() const;\n\nprivate:\n    int internalGetVal() const { return 8000; }\n};\n\ntemplate <class T>\nT A::getVal() const {\n    return internalGetVal();\n};"
+Line 644
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  644 always 644
+  "" always ""
+Line 649
+  "class Fred\n{\npublic:\n    void operator()(int x) {\n        startListening();\n    }\n\nprivate:\n    void startListening() {\n    }\n};" always "class Fred\n{\npublic:\n    void operator()(int x) {\n        startListening();\n    }\n\nprivate:\n    void startListening() {\n    }\n};"
+Line 660
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  660 always 660
+  "" always ""
+Line 662
+  "class Fred\n{\npublic:\n    void operator()(int x) {\n    }\n\nprivate:\n    void startListening() {\n    }\n};" always "class Fred\n{\npublic:\n    void operator()(int x) {\n    }\n\nprivate:\n    void startListening() {\n    }\n};"
+Line 672
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  672 always 672
+  "[test.cpp:8]: (style) Unused private function: 'Fred::startListening'\n" always "[test.cpp:8]: (style) Unused private function: 'Fred::startListening'\n"
+Line 675
+  "class Fred {\n    void* operator new(size_t obj_size, size_t buf_size) {}\n};" always "class Fred {\n    void* operator new(size_t obj_size, size_t buf_size) {}\n};"
+Line 678
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  678 always 678
+  "[test.cpp:2]: (style) Unused private function: 'Fred::operatornew'\n" always "[test.cpp:2]: (style) Unused private function: 'Fred::operatornew'\n"
+  "" always ""
+Line 680
+  "class Fred {\n    void* operator new(size_t obj_size, size_t buf_size) {}\npublic:\n    void* foo() { return new(size) Fred(); }\n};" always "class Fred {\n    void* operator new(size_t obj_size, size_t buf_size) {}\npublic:\n    void* foo() { return new(size) Fred(); }\n};"
+Line 685
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  685 always 685
+  "" always ""
+Line 689
+  "void callback(void (*func)(int), int arg){    (*func)(arg);}class MountOperation{    static void Completed(int i);public:    MountOperation(int i);};void MountOperation::Completed(int i){    std::cerr << i << std::endl;}MountOperation::MountOperation(int i){    callback(MountOperation::Completed, i);}int main(void){    MountOperation aExample(10);}" always "void callback(void (*func)(int), int arg){    (*func)(arg);}class MountOperation{    static void Completed(int i);public:    MountOperation(int i);};void MountOperation::Completed(int i){    std::cerr << i << std::endl;}MountOperation::MountOperation(int i){    callback(MountOperation::Completed, i);}int main(void){    MountOperation aExample(10);}"
+Line 712
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  712 always 712
+  "" always ""
+Line 716
+  "void callback(char, void (*func)(int), int arg){    (*func)(arg);}class MountOperation{    static void Completed(int i);public:    MountOperation(int i);};void MountOperation::Completed(int i){    std::cerr << i << std::endl;}MountOperation::MountOperation(int i){    callback('a', MountOperation::Completed, i);}int main(void){    MountOperation aExample(10);}" always "void callback(char, void (*func)(int), int arg){    (*func)(arg);}class MountOperation{    static void Completed(int i);public:    MountOperation(int i);};void MountOperation::Completed(int i){    std::cerr << i << std::endl;}MountOperation::MountOperation(int i){    callback('a', MountOperation::Completed, i);}int main(void){    MountOperation aExample(10);}"
+Line 739
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  739 always 739
+  "" always ""
+Line 743
+  "void callback(int arg, void (*func)(int)){    (*func)(arg);}class MountOperation{    static void Completed(int i);public:    MountOperation(int i);};void MountOperation::Completed(int i){    std::cerr << i << std::endl;}MountOperation::MountOperation(int i){    callback(i, MountOperation::Completed);}int main(void){    MountOperation aExample(10);}" always "void callback(int arg, void (*func)(int)){    (*func)(arg);}class MountOperation{    static void Completed(int i);public:    MountOperation(int i);};void MountOperation::Completed(int i){    std::cerr << i << std::endl;}MountOperation::MountOperation(int i){    callback(i, MountOperation::Completed);}int main(void){    MountOperation aExample(10);}"
+Line 766
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  766 always 766
+  "" always ""
+Line 770
+  "#file \"test.h\"\nstruct Fred\n{\n    Fred()\n    {\n        Init();\n    }\nprivate:\n    void Init();\n};\n#endfile\nvoid Fred::Init()\n{\n}" always "#file \"test.h\"\nstruct Fred\n{\n    Fred()\n    {\n        Init();\n    }\nprivate:\n    void Init();\n};\n#endfile\nvoid Fred::Init()\n{\n}"
+Line 785
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  785 always 785
+  "" always ""
+Line 789
+  "class Bla : public Base2<Base> {\npublic:\n    Bla() {}\nprivate:\n    virtual void F() const;\n};\nvoid Bla::F() const { }" always "class Bla : public Base2<Base> {\npublic:\n    Bla() {}\nprivate:\n    virtual void F() const;\n};\nvoid Bla::F() const { }"
+Line 797
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  797 always 797
+  "" always ""
+Line 801
+  "class InfiniteB : InfiniteA {\n    class D {\n    };\n};\nnamespace N {\n    class InfiniteA : InfiniteB {\n    };\n}\nclass InfiniteA : InfiniteB {\n    void foo();\n};\nvoid InfiniteA::foo() {\n    C a;\n}" always "class InfiniteB : InfiniteA {\n    class D {\n    };\n};\nnamespace N {\n    class InfiniteA : InfiniteB {\n    };\n}\nclass InfiniteA : InfiniteB {\n    void foo();\n};\nvoid InfiniteA::foo() {\n    C a;\n}"
+Line 816
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  816 always 816
+  "" always ""
+Line 820
+  "class Foo {\n    static int i;\n    static int F() const { return 1; }\n};\nint Foo::i = Foo::F();" always "class Foo {\n    static int i;\n    static int F() const { return 1; }\n};\nint Foo::i = Foo::F();"
+Line 825
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  825 always 825
+  "" always ""
+Line 827
+  "class Foo {\n    static int i;\n    int F() const { return 1; }\n};\nFoo f;\nint Foo::i = f.F();" always "class Foo {\n    static int i;\n    int F() const { return 1; }\n};\nFoo f;\nint Foo::i = f.F();"
+Line 833
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  833 always 833
+  "" always ""
+Line 835
+  "class Foo {\n    static int i;\n    static int F() const { return 1; }\n};\nint Foo::i = sth();int i = F();" always "class Foo {\n    static int i;\n    static int F() const { return 1; }\n};\nint Foo::i = sth();int i = F();"
+Line 841
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  841 always 841
+  "[test.cpp:3]: (style) Unused private function: 'Foo::F'\n" always "[test.cpp:3]: (style) Unused private function: 'Foo::F'\n"
+Line 845
+  "class CTest {\npublic:\n    template <typename T>\n    static void Greeting(T val) {\n        std::cout << val << std::endl;\n    }\nprivate:\n    static void SayHello() {\n        std::cout << \"Hello World!\" << std::endl;\n    }\n};\ntemplate<>\nvoid CTest::Greeting(bool) {\n    CTest::SayHello();\n}\nint main() {\n    CTest::Greeting<bool>(true);\n    return 0;\n}" always "class CTest {\npublic:\n    template <typename T>\n    static void Greeting(T val) {\n        std::cout << val << std::endl;\n    }\nprivate:\n    static void SayHello() {\n        std::cout << \"Hello World!\" << std::endl;\n    }\n};\ntemplate<>\nvoid CTest::Greeting(bool) {\n    CTest::SayHello();\n}\nint main() {\n    CTest::Greeting<bool>(true);\n    return 0;\n}"
+Line 864
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testunusedprivfunc.cpp" always "cppcheck-2.8/test/testunusedprivfunc.cpp"
+  864 always 864
+  "" always ""

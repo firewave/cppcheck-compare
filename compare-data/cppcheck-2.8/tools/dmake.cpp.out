@@ -1,0 +1,1347 @@
+
+
+##file cppcheck-2.8/cli/filelister.h
+
+1:
+|
+26:
+27: class PathMatch ;
+28:
+|
+32:
+33: class FileLister {
+34: public:
+35:
+|
+44:
+45: static std :: string recursiveAddFiles ( std :: map < std :: string , unsigned long > & files@var1 , const std :: string & path@var2 , const PathMatch & ignored@var3 ) {
+46: const std ::@expr1073741899 set < std ::@expr1073741900 string > extra@var4 ;
+47: return recursiveAddFiles (@expr1073741901 files@var1 , path@var2 , extra@var4 , ignored@var3 ) ;
+48: }
+49:
+|
+60:
+61: static std :: string recursiveAddFiles ( std :: map < std :: string , unsigned long > & files@var5 , const std :: string & path@var6 , const std :: set < std :: string > & extra@var7 , const PathMatch & ignored@var8 ) ;
+62:
+|
+74:
+75: static std :: string addFiles ( std :: map < std :: string , unsigned long > & files@var9 , const std :: string & path@var10 , const std :: set < std :: string > & extra@var11 , bool recursive@var12 , const PathMatch & ignored@var13 ) ;
+76:
+|
+80:
+81: static bool isDirectory ( const std :: string & path@var14 ) ;
+82:
+|
+86:
+87: static bool fileExists ( const std :: string & path@var15 ) ;
+88: } ;
+
+##file cppcheck-2.8/lib/config.h
+
+1:
+|
+78:
+79: static const std :: string emptyString@var16 ;
+
+##file cppcheck-2.8/lib/pathmatch.h
+
+1:
+|
+32:
+33: class PathMatch {
+34: public:
+35:
+|
+41:
+42: explicit PathMatch ( const std :: vector < std :: string > & excludedPaths@var17 , bool caseSensitive@var18 = true ) ;
+43:
+|
+48:
+49: bool match ( const std :: string & path@var19 ) const ;
+50:
+51: protected:
+52:
+|
+57:
+58: static std :: string removeFilename ( const std :: string & path@var20 ) ;
+59:
+60: private:
+61: std :: vector < std :: string > mExcludedPaths@var21 ;
+62: bool mCaseSensitive@var22 ;
+63: std :: vector < std :: string > mWorkingDirectory@var23 ;
+64: } ;
+
+##file cppcheck-2.8/tools/dmake.cpp
+
+1:
+|
+29:
+30: static std :: string builddir ( std :: string filename@var24 )
+31: {
+32: if (@expr1073741902 filename@var24 .@expr1073741903 compare (@expr1073741904 0 , 4 , "lib/" ) ==@expr1073741905 0 ) {
+33: filename@var24 =@expr1073741906 "$(libcppdir)" +@expr1073741907 filename@var24 .@expr1073741908 substr (@expr1073741909 3 ) ; }
+34: return filename@var24 ;
+35: }
+36:
+37: static std :: string objfile ( std :: string cppfile@var25 )
+38: {
+39: cppfile@var25 .@expr1073741910 erase (@expr1073741911 cppfile@var25 .@expr1073741912 rfind (@expr1073741913 '.' ) ) ;
+40: return builddir (@expr1073741914 cppfile@var25 +@expr1073741915 ".o" ) ;
+41: }
+42:
+43: static std :: string objfiles ( const std :: vector < std :: string > & files@var26 )
+44: {
+45: std ::@expr1073741916 string allObjfiles@var27 ;
+46: for (@expr1073741917 const std ::@expr1073741918 string &@expr1073741919 file@var28 :@expr1073741920 files@var26 ) {
+47: if (@expr1073741921 file@var28 !=@expr1073741922 files@var26 .@expr1073741923 front (@expr1073741924 ) ) {
+48: allObjfiles@var27 +=@expr1073741925 std ::@expr1073741926 string (@expr1073741927 14 , ' ' ) ; }
+49: allObjfiles@var27 +=@expr1073741928 objfile (@expr1073741929 file@var28 ) ;
+50: if (@expr1073741930 file@var28 !=@expr1073741931 files@var26 .@expr1073741932 back (@expr1073741933 ) ) {
+51: allObjfiles@var27 +=@expr1073741934 " \\\n" ; }
+52: }
+53: return allObjfiles@var27 ;
+54: }
+55:
+56: static void getDeps ( const std :: string & filename@var29 , std :: vector < std :: string > & depfiles@var30 )
+57: {
+58: static const std ::@expr112 vector < std ::@expr112 string > externalfolders@var31 {@expr1073741938 "externals" , "externals/picojson" , "externals/simplecpp" , "externals/tinyxml2" } ;
+59:
+60:
+61: if (@expr1073741939 std ::@expr1073741940 find (@expr1073741941 depfiles@var30 .@expr1073741942 begin (@expr1073741943 ) , depfiles@var30 .@expr120 end (@expr121 ) , filename@var29 ) !=@expr1073741946 depfiles@var30 .@expr120 end (@expr121 ) ) {
+62: return ; }
+63:
+64: std ::@expr1073741949 ifstream f@var32 (@expr1073741950 filename@var29 .@expr1073741951 c_str (@expr1073741952 ) ) ;
+65: if (@expr1073741953 !@expr1073741954 f@var32 .@expr1073741955 is_open (@expr1073741956 ) ) {
+66:
+|
+70:
+71: if (@expr1073741957 filename@var29 .@expr134 compare (@expr1073741959 0 , 4 , "cli/" ) ==@expr1073741960 0 ) {
+72: getDeps (@expr1073741961 "lib" +@expr1073741962 filename@var29 .@expr139 substr (@expr140 filename@var29 .@expr141 find (@expr142 '/' ) ) , depfiles@var30 ) ; }
+73: else { if (@expr1073741967 filename@var29 .@expr134 compare (@expr1073741969 0 , 5 , "test/" ) ==@expr1073741970 0 ) {
+74: getDeps (@expr147 "cli" +@expr148 filename@var29 .@expr139 substr (@expr140 filename@var29 .@expr141 find (@expr142 '/' ) ) , depfiles@var30 ) ; }
+75: else { if (@expr1073741977 filename@var29 .@expr134 compare (@expr1073741979 0 , 6 , "tools/" ) ==@expr1073741980 0 ) {
+76: getDeps (@expr147 "cli" +@expr148 filename@var29 .@expr139 substr (@expr140 filename@var29 .@expr141 find (@expr142 '/' ) ) , depfiles@var30 ) ; }
+77: else { if (@expr1073741987 filename@var29 .@expr134 compare (@expr1073741989 0 , 4 , "lib/" ) ==@expr1073741990 0 ) {
+78: for (@expr1073741991 const std ::@expr112 string &@expr1073741993 external@var33 :@expr1073741994 externalfolders@var31 ) {
+79: getDeps (@expr1073741995 external@var33 +@expr1073741996 filename@var29 .@expr139 substr (@expr140 filename@var29 .@expr141 find (@expr142 '/' ) ) , depfiles@var30 ) ; }
+80: } } } }
+81: return ;
+82: }
+83: if (@expr1073742001 filename@var29 .@expr141 find (@expr1073742003 ".c" ) ==@expr1073742004 std ::@expr181 string ::@expr182 npos@expr111 ) {
+84: depfiles@var30 .@expr1073742007 push_back (@expr1073742008 filename@var29 ) ; }
+85:
+86: std ::@expr1073742009 string path@var34 (@expr1073742010 filename@var29 ) ;
+87: if (@expr1073742011 path@var34 .@expr1073742012 find (@expr1073742013 '/' ) !=@expr1073742014 std ::@expr181 string ::@expr182 npos@expr111 ) {
+88: path@var34 .@expr1073742017 erase (@expr1073742018 1 +@expr1073742019 path@var34 .@expr1073742020 rfind (@expr1073742021 '/' ) ) ; }
+89:
+90: std ::@expr1073742022 string line@var35 ;
+91: while (@expr1073742023 std ::@expr1073742024 getline (@expr1073742025 f@var32 , line@var35 ) ) {
+92: std ::@expr181 string ::@expr1073742027 size_type pos1@var36 ; pos1@var36 =@expr1073742028 line@var35 .@expr205 find (@expr1073742030 "#include \"" ) ;
+93: char rightBracket@var37 ; rightBracket@var37 =@expr1073742031 '\"' ;
+94: if (@expr208 pos1@var36 ==@expr209 std ::@expr181 string ::@expr182 npos@expr111 ) {
+95: pos1@var36 =@expr1073742036 line@var35 .@expr205 find (@expr1073742038 "#include <" ) ;
+96: rightBracket@var37 =@expr1073742039 '>' ;
+97: if (@expr208 pos1@var36 ==@expr209 std ::@expr181 string ::@expr182 npos@expr111 ) {
+98: continue ; }
+99: }
+100:
+101: pos1@var36 +=@expr1073742044 10 ;
+102:
+103: std ::@expr181 string ::@expr1073742046 size_type pos2@var38 ; pos2@var38 =@expr1073742047 line@var35 .@expr205 find (@expr1073742049 rightBracket@var37 , pos1@var36 ) ;
+104: std ::@expr1073742050 string hfile@var39 ; hfile@var39 =@expr1073742051 path@var34 +@expr1073742052 line@var35 .@expr1073742053 substr (@expr1073742054 pos1@var36 , pos2@var38 -@expr1073742055 pos1@var36 ) ;
+105:
+106: if (@expr1073742056 hfile@var39 .@expr233 find (@expr234 "/../" ) !=@expr1073742059 std ::@expr181 string ::@expr182 npos@expr111 ) {
+107: hfile@var39 .@expr1073742062 erase (@expr1073742063 0 , 4 +@expr1073742064 hfile@var39 .@expr233 find (@expr234 "/../" ) ) ; }
+108: getDeps (@expr1073742067 hfile@var39 , depfiles@var30 ) ;
+109: }
+110: }
+111:
+112: static void compilefiles ( std :: ostream & fout@var40 , const std :: vector < std :: string > & files@var41 , const std :: string & args@var42 )
+113: {
+114: for (@expr1073742068 const std ::@expr245 string &@expr246 file@var43 :@expr1073742071 files@var41 ) {
+115: bool external@var44 (@expr1073742072 file@var43 .@expr1073742073 compare (@expr1073742074 0 , 10 , "externals/" ) ==@expr1073742075 0 ) ;
+116: fout@var40 <<@expr1073742076 objfile (@expr253 file@var43 ) <<@expr1073742078 ": " <<@expr1073742079 file@var43 ;
+117: std ::@expr1073742080 vector < std ::@expr245 string > depfiles@var45 ;
+118: getDeps (@expr1073742082 file@var43 , depfiles@var45 ) ;
+119: std ::@expr1073742083 sort (@expr1073742084 depfiles@var45 .@expr1073742085 begin (@expr1073742086 ) , depfiles@var45 .@expr1073742087 end (@expr1073742088 ) ) ;
+120: for (@expr1073742089 const std ::@expr245 string &@expr246 depfile@var46 :@expr1073742092 depfiles@var45 ) {
+121: fout@var40 <<@expr1073742093 " " <<@expr1073742094 depfile@var46 ; }
+122: fout@var40 <<@expr1073742095 "\n\t$(CXX) " <<@expr1073742096 args@var42 <<@expr1073742097 " $(CPPFLAGS) $(CPPFILESDIR) $(CXXFLAGS)" <<@expr1073742098 (@expr1073742099 external@var44 ?@expr1073742100 " -w" :@expr1073742101 "" ) <<@expr1073742102 " $(UNDEF_STRICT_ANSI) -c -o " <<@expr1073742103 objfile (@expr253 file@var43 ) <<@expr1073742105 " " <<@expr1073742106 builddir (@expr1073742107 file@var43 ) <<@expr1073742108 "\n\n" ;
+123: }
+124: }
+125:
+126: static std :: string getCppFiles ( std :: vector < std :: string > & files@var47 , const std :: string & path@var48 , bool recursive@var49 )
+127: {
+128: std ::@expr1073742110 map < std ::@expr287 string , unsigned long > filemap@var50 ;
+129: const std ::@expr1073742112 set < std ::@expr287 string > extra@var51 ;
+130: const std ::@expr1073742114 vector < std ::@expr287 string > masks@var52 ;
+131: const PathMatch matcher@var53 (@expr1073742116 masks@var52 ) ;
+132: std ::@expr1073742117 string err@var54 ; err@var54 =@expr1073742118 FileLister ::@expr1073742119 addFiles (@expr1073742120 filemap@var50 , path@var48 , extra@var51 , recursive@var49 , matcher@var53 ) ;
+133: if (@expr1073742121 !@expr1073742122 err@var54 .@expr1073742123 empty (@expr1073742124 ) ) {
+134: return err@var54 ; }
+135:
+136:
+137: for (@expr1073742125 const std ::@expr287 pair < const std ::@expr287 string &@expr1073742128 , unsigned long > file@var55 :@expr1073742129 filemap@var50 ) {
+138: if (@expr1073742130 file@var55 .@expr307 first@var56 .@expr1073742132 find (@expr1073742133 ".cpp" ) !=@expr1073742134 std ::@expr1073742135 string ::@expr1073742136 npos@expr1073742109 ) {
+139: files@var47 .@expr1073742137 push_back (@expr1073742138 file@var55 .@expr307 first@var56 ) ; }
+140: }
+141: return "" ;
+142: }
+143:
+144:
+145: static void makeConditionalVariable ( std :: ostream & os@var57 , const std :: string & variable@var58 , const std :: string & defaultValue@var59 )
+146: {
+147: os@var57 <<@expr1073742140 "ifndef " <<@expr1073742141 variable@var58 <<@expr1073742142 '\n'
+148: <<@expr1073742143 "    " <<@expr1073742144 variable@var58 <<@expr1073742145 '=' <<@expr1073742146 defaultValue@var59 <<@expr1073742147 '\n'
+149: <<@expr1073742148 "endif\n"
+150: <<@expr1073742149 "\n" ;
+151: }
+152:
+153: int main ( int argc@var60 , char * * argv@var61 )
+154: {
+155: const bool release@var62 (@expr1073742154 argc@var60 >=@expr1073742155 2 &&@expr1073742156 std ::@expr333 string (@expr1073742158 argv@var61 [@expr1073742159 1 ] ) ==@expr1073742160 "--release" ) ;
+156:
+157:
+158: std ::@expr1073742161 vector < std ::@expr338 string > libfiles@var63 ;
+159: std ::@expr1073742163 string err@var64 ; err@var64 =@expr1073742164 getCppFiles (@expr1073742165 libfiles@var63 , "lib/" , false ) ;
+160: if (@expr342 !@expr343 err@var64 .@expr344 empty (@expr345 ) ) {
+161: std ::@expr346 cerr@expr326 <<@expr347 err@var64 <<@expr348 std ::@expr349 endl@expr327 ;
+162: return EXIT_FAILURE ;
+163: }
+164:
+165: std ::@expr1073742174 vector < std ::@expr338 string > extfiles@var65 ;
+166: err@var64 =@expr1073742176 getCppFiles (@expr1073742177 extfiles@var65 , "externals/" , true ) ;
+167: if (@expr342 !@expr343 err@var64 .@expr344 empty (@expr345 ) ) {
+168: std ::@expr346 cerr@expr326 <<@expr347 err@var64 <<@expr348 std ::@expr349 endl@expr327 ;
+169: return EXIT_FAILURE ;
+170: }
+171:
+172: std ::@expr1073742186 vector < std ::@expr338 string > clifiles@var66 ;
+173: err@var64 =@expr1073742188 getCppFiles (@expr1073742189 clifiles@var66 , "cli/" , false ) ;
+174: if (@expr342 !@expr343 err@var64 .@expr344 empty (@expr345 ) ) {
+175: std ::@expr346 cerr@expr326 <<@expr347 err@var64 <<@expr348 std ::@expr349 endl@expr327 ;
+176: return EXIT_FAILURE ;
+177: }
+178:
+179: std ::@expr1073742198 vector < std ::@expr338 string > testfiles@var67 ;
+180: err@var64 =@expr1073742200 getCppFiles (@expr1073742201 testfiles@var67 , "test/" , false ) ;
+181: if (@expr342 !@expr343 err@var64 .@expr344 empty (@expr345 ) ) {
+182: std ::@expr346 cerr@expr326 <<@expr347 err@var64 <<@expr348 std ::@expr349 endl@expr327 ;
+183: return EXIT_FAILURE ;
+184: }
+185:
+186: std ::@expr1073742210 vector < std ::@expr338 string > toolsfiles@var68 ;
+187: err@var64 =@expr1073742212 getCppFiles (@expr1073742213 toolsfiles@var68 , "tools/" , false ) ;
+188: if (@expr342 !@expr343 err@var64 .@expr344 empty (@expr345 ) ) {
+189: std ::@expr346 cerr@expr326 <<@expr347 err@var64 <<@expr348 std ::@expr349 endl@expr327 ;
+190: return EXIT_FAILURE ;
+191: }
+192:
+193: if (@expr1073742222 libfiles@var63 .@expr1073742223 empty (@expr1073742224 ) &&@expr1073742225 clifiles@var66 .@expr1073742226 empty (@expr1073742227 ) &&@expr1073742228 testfiles@var67 .@expr1073742229 empty (@expr1073742230 ) ) {
+194: std ::@expr346 cerr@expr326 <<@expr1073742232 "No files found. Are you in the correct directory?" <<@expr1073742233 std ::@expr349 endl@expr327 ;
+195: return EXIT_FAILURE ;
+196: }
+197:
+198:
+199: {
+200: std ::@expr1073742235 ofstream fout1@var69 (@expr1073742236 "lib/lib.pri" ) ;
+201: if (@expr1073742237 fout1@var69 .@expr1073742238 is_open (@expr1073742239 ) ) {
+202: fout1@var69 <<@expr1073742240 "# no manual edits - this file is autogenerated by dmake\n\n" ;
+203: fout1@var69 <<@expr1073742241 "include($$PWD/pcrerules.pri)\n" ;
+204: fout1@var69 <<@expr1073742242 "include($$PWD/../externals/externals.pri)\n" ;
+205: fout1@var69 <<@expr1073742243 "INCLUDEPATH += $$PWD\n" ;
+206: fout1@var69 <<@expr1073742244 "HEADERS += " ;
+207: for (@expr1073742245 const std ::@expr338 string &@expr423 libfile@var70 :@expr1073742248 libfiles@var63 ) {
+208: std ::@expr1073742249 string fname@var71 (@expr1073742250 libfile@var70 .@expr1073742251 substr (@expr1073742252 4 ) ) ;
+209: if (@expr1073742253 fname@var71 .@expr430 find (@expr431 ".cpp" ) ==@expr1073742256 std ::@expr333 string ::@expr1073742258 npos@expr1073742152 ) {
+210: continue ; }
+211: fname@var71 .@expr1073742259 erase (@expr1073742260 fname@var71 .@expr430 find (@expr431 ".cpp" ) ) ;
+212: fout1@var69 <<@expr439 "$${PWD}/" <<@expr1073742264 fname@var71 <<@expr1073742265 ".h" ;
+213: if (@expr1073742266 libfile@var70 !=@expr1073742267 libfiles@var63 .@expr444 back (@expr445 ) ) {
+214: fout1@var69 <<@expr446 " \\\n" <<@expr447 std ::@expr333 string (@expr449 11 , ' ' ) ; }
+215: }
+216: fout1@var69 <<@expr1073742274 "\n\nSOURCES += " ;
+217: for (@expr1073742275 const std ::@expr338 string &@expr423 libfile@var72 :@expr1073742278 libfiles@var63 ) {
+218: fout1@var69 <<@expr439 "$${PWD}/" <<@expr1073742280 libfile@var72 .@expr1073742281 substr (@expr1073742282 4 ) ;
+219: if (@expr1073742283 libfile@var72 !=@expr1073742284 libfiles@var63 .@expr444 back (@expr445 ) ) {
+220: fout1@var69 <<@expr446 " \\\n" <<@expr447 std ::@expr333 string (@expr449 11 , ' ' ) ; }
+221: }
+222: fout1@var69 <<@expr1073742291 "\n" ;
+223: }
+224: }
+225:
+226: static const char makefile@var73 [@expr1073742292 9 ] =@expr1073742293 "Makefile" ;
+227: std ::@expr1073742294 ofstream fout@var74 (@expr1073742295 makefile@var73 , std ::@expr1073742296 ios_base ::@expr1073742297 trunc@expr1073742153 ) ;
+228: if (@expr1073742298 !@expr1073742299 fout@var74 .@expr1073742300 is_open (@expr1073742301 ) ) {
+229: std ::@expr346 cerr@expr326 <<@expr1073742303 "An error occurred while trying to open "
+230: <<@expr1073742304 makefile@var73
+231: <<@expr1073742305 ".\n" ;
+232: return EXIT_FAILURE ;
+233: }
+234:
+235: fout@var74 <<@expr1073742306 "# This file is generated by tools/dmake, do not edit.\n\n" ;
+236: fout@var74 <<@expr1073742307 "# To compile with rules, use 'make HAVE_RULES=yes'\n" ;
+237: makeConditionalVariable (@expr1073742308 fout@var74 , "HAVE_RULES" , "no" ) ;
+238:
+239:
+240: fout@var74 <<@expr1073742309 "# use match compiler\n" ;
+241: fout@var74 <<@expr1073742310 "ifeq ($(SRCDIR),build)\n"
+242: <<@expr1073742311 "    $(warning Usage of SRCDIR to activate match compiler is deprecated. Use MATCHCOMPILER=yes instead.)\n"
+243: <<@expr1073742312 "    MATCHCOMPILER:=yes\n"
+244: <<@expr1073742313 "endif\n" ;
+245: fout@var74 <<@expr1073742314 "ifeq ($(MATCHCOMPILER),yes)\n"
+246: <<@expr1073742315 "    # Find available Python interpreter\n"
+247: <<@expr1073742316 "    ifndef PYTHON_INTERPRETER\n"
+248: <<@expr1073742317 "        PYTHON_INTERPRETER := $(shell which python3)\n"
+249: <<@expr1073742318 "    endif\n"
+250: <<@expr1073742319 "    ifndef PYTHON_INTERPRETER\n"
+251: <<@expr1073742320 "        PYTHON_INTERPRETER := $(shell which python)\n"
+252: <<@expr1073742321 "    endif\n"
+253: <<@expr1073742322 "    ifndef PYTHON_INTERPRETER\n"
+254: <<@expr1073742323 "        $(error Did not find a Python interpreter)\n"
+255: <<@expr1073742324 "    endif\n"
+256: <<@expr1073742325 "    ifdef VERIFY\n"
+257: <<@expr1073742326 "        matchcompiler_S := $(shell $(PYTHON_INTERPRETER) tools/matchcompiler.py --verify)\n"
+258: <<@expr1073742327 "    else\n"
+259: <<@expr1073742328 "        matchcompiler_S := $(shell $(PYTHON_INTERPRETER) tools/matchcompiler.py)\n"
+260: <<@expr1073742329 "    endif\n"
+261: <<@expr1073742330 "    libcppdir:=build\n"
+262: <<@expr1073742331 "else\n"
+263: <<@expr1073742332 "    libcppdir:=lib\n"
+264: <<@expr1073742333 "endif\n\n" ;
+265:
+266:
+267: fout@var74 <<@expr510 "ifdef FILESDIR\n"
+268: <<@expr1073742335 "    CPPFILESDIR=-DFILESDIR=\\\"$(FILESDIR)\\\"\n"
+269: <<@expr1073742336 "else\n"
+270: <<@expr1073742337 "    CPPFILESDIR=\n"
+271: <<@expr1073742338 "endif\n\n" ;
+272:
+273:
+274: fout@var74 <<@expr1073742339 "RDYNAMIC=-rdynamic\n" ;
+275:
+276:
+277: fout@var74 <<@expr1073742340 "# Set the CPPCHK_GLIBCXX_DEBUG flag. This flag is not used in release Makefiles.\n"
+278: <<@expr1073742341 "# The _GLIBCXX_DEBUG define doesn't work in Cygwin or other Win32 systems.\n"
+279: <<@expr1073742342 "ifndef COMSPEC\n"
+280: <<@expr1073742343 "    ifdef ComSpec\n"
+281: <<@expr1073742344 "        #### ComSpec is defined on some WIN32's.\n"
+282: <<@expr1073742345 "        WINNT=1\n"
+283: <<@expr1073742346 "\n"
+284: <<@expr1073742347 "        ifneq (,$(findstring /cygdrive/,$(PATH)))\n"
+285: <<@expr1073742348 "            CYGWIN=1\n"
+286: <<@expr1073742349 "        endif # CYGWIN\n"
+287: <<@expr1073742350 "    endif # ComSpec\n"
+288: <<@expr1073742351 "endif # COMSPEC\n"
+289: <<@expr1073742352 "\n"
+290: <<@expr1073742353 "ifdef WINNT\n"
+291: <<@expr1073742354 "    #### Maybe Windows\n"
+292: <<@expr1073742355 "    ifndef CPPCHK_GLIBCXX_DEBUG\n"
+293: <<@expr1073742356 "        CPPCHK_GLIBCXX_DEBUG=\n"
+294: <<@expr1073742357 "    endif # !CPPCHK_GLIBCXX_DEBUG\n"
+295: <<@expr1073742358 "\n"
+296: <<@expr1073742359 "    ifeq ($(MSYSTEM),MINGW32 MINGW64)\n"
+297: <<@expr1073742360 "        LDFLAGS=-lshlwapi\n"
+298: <<@expr1073742361 "    else\n"
+299: <<@expr1073742362 "        RDYNAMIC=-lshlwapi\n"
+300: <<@expr1073742363 "    endif\n"
+301: <<@expr1073742364 "else # !WINNT\n"
+302: <<@expr1073742365 "    uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')\n"
+303: <<@expr1073742366 "\n"
+304: <<@expr1073742367 "    ifeq ($(uname_S),Linux)\n"
+305: <<@expr1073742368 "        ifndef CPPCHK_GLIBCXX_DEBUG\n"
+306: <<@expr1073742369 "            CPPCHK_GLIBCXX_DEBUG=-D_GLIBCXX_DEBUG\n"
+307: <<@expr1073742370 "        endif # !CPPCHK_GLIBCXX_DEBUG\n"
+308: <<@expr1073742371 "    endif # Linux\n"
+309: <<@expr1073742372 "\n"
+310: <<@expr1073742373 "    ifeq ($(uname_S),GNU/kFreeBSD)\n"
+311: <<@expr1073742374 "        ifndef CPPCHK_GLIBCXX_DEBUG\n"
+312: <<@expr1073742375 "            CPPCHK_GLIBCXX_DEBUG=-D_GLIBCXX_DEBUG\n"
+313: <<@expr1073742376 "        endif # !CPPCHK_GLIBCXX_DEBUG\n"
+314: <<@expr1073742377 "    endif # GNU/kFreeBSD\n"
+315: <<@expr1073742378 "\n"
+316: <<@expr1073742379 "endif # WINNT\n"
+317: <<@expr1073742380 "\n" ;
+318:
+319:
+320: fout@var74 <<@expr1073742381 "ifdef CYGWIN\n"
+321: <<@expr1073742382 "    # Set the UNDEF_STRICT_ANSI flag to address compile time warnings\n"
+322: <<@expr1073742383 "    # with tinyxml2 and Cygwin.\n"
+323: <<@expr1073742384 "    UNDEF_STRICT_ANSI=-U__STRICT_ANSI__\n"
+324: <<@expr1073742385 "    \n"
+325: <<@expr1073742386 "    # Increase stack size for Cygwin builds to avoid segmentation fault in limited recursive tests.\n"
+326: <<@expr1073742387 "    CXXFLAGS+=-Wl,--stack,8388608\n"
+327: <<@expr1073742388 "endif # CYGWIN\n"
+328: <<@expr1073742389 "\n" ;
+329:
+330:
+331: makeConditionalVariable (@expr1073742390 fout@var74 , "CXX" , "g++" ) ;
+332: fout@var74 <<@expr1073742391 "ifeq (clang++, $(findstring clang++,$(CXX)))\n"
+333: <<@expr1073742392 "    CPPCHK_GLIBCXX_DEBUG=\n"
+334: <<@expr1073742393 "endif\n" ;
+335:
+336:
+337: if (@expr1073742394 release@var62 ) {
+338: makeConditionalVariable (@expr1073742395 fout@var74 , "CXXFLAGS" , "-std=c++0x -O2 -DNDEBUG -Wall -Wno-sign-compare" ) ;
+339: } else {
+340:
+|
+343:
+344: makeConditionalVariable (@expr1073742396 fout@var74 , "CXXFLAGS" ,
+345: "-pedantic -Wall -Wextra -Wcast-qual -Wno-deprecated-declarations -Wfloat-equal -Wmissing-declarations -Wmissing-format-attribute -Wno-long-long -Wpacked -Wredundant-decls -Wundef -Wno-shadow -Wno-missing-field-initializers -Wno-missing-braces -Wno-sign-compare -Wno-multichar $(CPPCHK_GLIBCXX_DEBUG) -g"
+346:
+|
+368:
+369: ) ;
+370: }
+371:
+372: fout@var74 <<@expr1073742397 "ifeq (g++, $(findstring g++,$(CXX)))\n"
+373: <<@expr1073742398 "    override CXXFLAGS += -std=c++0x\n"
+374: <<@expr1073742399 "else ifeq (clang++, $(findstring clang++,$(CXX)))\n"
+375: <<@expr1073742400 "    override CXXFLAGS += -std=c++0x\n"
+376: <<@expr1073742401 "else ifeq ($(CXX), c++)\n"
+377: <<@expr1073742402 "    ifeq ($(shell uname -s), Darwin)\n"
+378: <<@expr1073742403 "        override CXXFLAGS += -std=c++0x\n"
+379: <<@expr1073742404 "    endif\n"
+380: <<@expr1073742405 "endif\n"
+381: <<@expr1073742406 "\n" ;
+382:
+383: fout@var74 <<@expr1073742407 "ifeq ($(HAVE_RULES),yes)\n"
+384: <<@expr1073742408 "    override CXXFLAGS += -DHAVE_RULES -DTIXML_USE_STL $(shell pcre-config --cflags)\n"
+385: <<@expr1073742409 "    ifdef LIBS\n"
+386: <<@expr1073742410 "        LIBS += $(shell pcre-config --libs)\n"
+387: <<@expr1073742411 "    else\n"
+388: <<@expr1073742412 "        LIBS=$(shell pcre-config --libs)\n"
+389: <<@expr1073742413 "    endif\n"
+390: <<@expr1073742414 "endif\n\n" ;
+391:
+392: makeConditionalVariable (@expr1073742415 fout@var74 , "PREFIX" , "/usr" ) ;
+393: makeConditionalVariable (@expr1073742416 fout@var74 , "INCLUDE_FOR_LIB" , "-Ilib -isystem externals -isystem externals/picojson -isystem externals/simplecpp -isystem externals/tinyxml2" ) ;
+394: makeConditionalVariable (@expr1073742417 fout@var74 , "INCLUDE_FOR_CLI" , "-Ilib -isystem externals/simplecpp -isystem externals/tinyxml2" ) ;
+395: makeConditionalVariable (@expr1073742418 fout@var74 , "INCLUDE_FOR_TEST" , "-Ilib -Icli -isystem externals/simplecpp -isystem externals/tinyxml2" ) ;
+396:
+397: fout@var74 <<@expr1073742419 "BIN=$(DESTDIR)$(PREFIX)/bin\n\n" ;
+398: fout@var74 <<@expr1073742420 "# For 'make man': sudo apt-get install xsltproc docbook-xsl docbook-xml on Linux\n" ;
+399: fout@var74 <<@expr1073742421 "DB2MAN?=/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl\n" ;
+400: fout@var74 <<@expr1073742422 "XP=xsltproc -''-nonet -''-param man.charmap.use.subset \"0\"\n" ;
+401: fout@var74 <<@expr1073742423 "MAN_SOURCE=man/cppcheck.1.xml\n\n" ;
+402:
+403: fout@var74 <<@expr1073742424 "\n###### Object Files\n\n" ;
+404: fout@var74 <<@expr1073742425 "LIBOBJ =      " <<@expr1073742426 objfiles (@expr1073742427 libfiles@var63 ) <<@expr1073742428 "\n\n" ;
+405: fout@var74 <<@expr1073742429 "EXTOBJ =      " <<@expr1073742430 objfiles (@expr1073742431 extfiles@var65 ) <<@expr1073742432 "\n\n" ;
+406: fout@var74 <<@expr1073742433 "CLIOBJ =      " <<@expr1073742434 objfiles (@expr1073742435 clifiles@var66 ) <<@expr1073742436 "\n\n" ;
+407: fout@var74 <<@expr1073742437 "TESTOBJ =     " <<@expr1073742438 objfiles (@expr1073742439 testfiles@var67 ) <<@expr1073742440 "\n\n" ;
+408:
+409: fout@var74 <<@expr1073742441 ".PHONY: run-dmake tags\n\n" ;
+410: fout@var74 <<@expr1073742442 "\n###### Targets\n\n" ;
+411: fout@var74 <<@expr1073742443 "cppcheck: $(LIBOBJ) $(CLIOBJ) $(EXTOBJ)\n" ;
+412: fout@var74 <<@expr620 "\t$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $^ $(LIBS) $(LDFLAGS) $(RDYNAMIC)\n\n" ;
+413: fout@var74 <<@expr1073742445 "all:\tcppcheck testrunner\n\n" ;
+414: fout@var74 <<@expr1073742446 "testrunner: $(TESTOBJ) $(LIBOBJ) $(EXTOBJ) cli/threadexecutor.o cli/cmdlineparser.o cli/cppcheckexecutor.o cli/filelister.o\n" ;
+415: fout@var74 <<@expr620 "\t$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $^ $(LIBS) $(LDFLAGS) $(RDYNAMIC)\n\n" ;
+416: fout@var74 <<@expr1073742448 "test:\tall\n" ;
+417: fout@var74 <<@expr1073742449 "\t./testrunner\n\n" ;
+418: fout@var74 <<@expr1073742450 "check:\tall\n" ;
+419: fout@var74 <<@expr1073742451 "\t./testrunner -q\n\n" ;
+420: fout@var74 <<@expr1073742452 "checkcfg:\tcppcheck validateCFG\n" ;
+421: fout@var74 <<@expr1073742453 "\t./test/cfg/runtests.sh\n\n" ;
+422: fout@var74 <<@expr1073742454 "dmake:\ttools/dmake.o cli/filelister.o $(libcppdir)/pathmatch.o $(libcppdir)/path.o $(libcppdir)/utils.o externals/simplecpp/simplecpp.o\n" ;
+423: fout@var74 <<@expr1073742455 "\t$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)\n\n" ;
+424: fout@var74 <<@expr1073742456 "run-dmake: dmake\n" ;
+425: fout@var74 <<@expr1073742457 "\t./dmake\n\n" ;
+426: fout@var74 <<@expr1073742458 "clean:\n" ;
+427: fout@var74 <<@expr1073742459 "\trm -f build/*.o lib/*.o cli/*.o test/*.o tools/*.o externals/*/*.o testrunner dmake cppcheck cppcheck.exe cppcheck.1\n\n" ;
+428: fout@var74 <<@expr1073742460 "man:\tman/cppcheck.1\n\n" ;
+429: fout@var74 <<@expr1073742461 "man/cppcheck.1:\t$(MAN_SOURCE)\n\n" ;
+430: fout@var74 <<@expr1073742462 "\t$(XP) $(DB2MAN) $(MAN_SOURCE)\n\n" ;
+431: fout@var74 <<@expr1073742463 "tags:\n" ;
+432: fout@var74 <<@expr1073742464 "\tctags -R --exclude=doxyoutput --exclude=test/cfg --exclude=test/synthetic cli externals gui lib test\n\n" ;
+433: fout@var74 <<@expr1073742465 "install: cppcheck\n" ;
+434: fout@var74 <<@expr1073742466 "\tinstall -d ${BIN}\n" ;
+435: fout@var74 <<@expr1073742467 "\tinstall cppcheck ${BIN}\n" ;
+436: fout@var74 <<@expr1073742468 "\tinstall htmlreport/cppcheck-htmlreport ${BIN}\n" ;
+437: fout@var74 <<@expr510 "ifdef FILESDIR\n" ;
+438: fout@var74 <<@expr1073742470 "\tinstall -d ${DESTDIR}${FILESDIR}\n" ;
+439: fout@var74 <<@expr1073742471 "\tinstall -d ${DESTDIR}${FILESDIR}/addons\n" ;
+440: fout@var74 <<@expr1073742472 "\tinstall -m 644 addons/*.py ${DESTDIR}${FILESDIR}/addons\n" ;
+441: fout@var74 <<@expr1073742473 "\tinstall -d ${DESTDIR}${FILESDIR}/cfg\n" ;
+442: fout@var74 <<@expr1073742474 "\tinstall -m 644 cfg/*.cfg ${DESTDIR}${FILESDIR}/cfg\n" ;
+443: fout@var74 <<@expr1073742475 "\tinstall -d ${DESTDIR}${FILESDIR}/platforms\n" ;
+444: fout@var74 <<@expr1073742476 "\tinstall -m 644 platforms/*.xml ${DESTDIR}${FILESDIR}/platforms\n" ;
+445: fout@var74 <<@expr1073742477 "else\n" ;
+446: fout@var74 <<@expr1073742478 "\t$(error FILESDIR must be set!)\n" ;
+447: fout@var74 <<@expr655 "endif\n" ;
+448: fout@var74 <<@expr1073742480 "\n" ;
+449: fout@var74 <<@expr1073742481 "uninstall:\n" ;
+450: fout@var74 <<@expr1073742482 "\t@if test -d ${BIN}; then \\\n" ;
+451: fout@var74 <<@expr1073742483 "\t  files=\"cppcheck cppcheck-htmlreport\"; \\\n" ;
+452: fout@var74 <<@expr1073742484 "\t  echo '(' cd ${BIN} '&&' rm -f $$files ')'; \\\n" ;
+453: fout@var74 <<@expr1073742485 "\t  ( cd ${BIN} && rm -f $$files ); \\\n" ;
+454: fout@var74 <<@expr662 "\tfi\n" ;
+455: fout@var74 <<@expr1073742487 "ifdef FILESDIR \n" ;
+456: fout@var74 <<@expr1073742488 "\t@if test -d ${DESTDIR}${FILESDIR}; then \\\n" ;
+457: fout@var74 <<@expr1073742489 "\t  echo rm -rf ${DESTDIR}${FILESDIR}; \\\n" ;
+458: fout@var74 <<@expr1073742490 "\t  rm -rf ${DESTDIR}${FILESDIR}; \\\n" ;
+459: fout@var74 <<@expr662 "\tfi\n" ;
+460: fout@var74 <<@expr655 "endif\n" ;
+461: fout@var74 <<@expr1073742493 "ifdef CFGDIR \n" ;
+462: fout@var74 <<@expr1073742494 "\t@if test -d ${DESTDIR}${CFGDIR}; then \\\n" ;
+463: fout@var74 <<@expr1073742495 "\t  files=\"`cd cfg 2>/dev/null && ls`\"; \\\n" ;
+464: fout@var74 <<@expr1073742496 "\t  if test -n \"$$files\"; then \\\n" ;
+465: fout@var74 <<@expr1073742497 "\t    echo '(' cd ${DESTDIR}${CFGDIR} '&&' rm -f $$files ')'; \\\n" ;
+466: fout@var74 <<@expr1073742498 "\t    ( cd ${DESTDIR}${CFGDIR} && rm -f $$files ); \\\n" ;
+467: fout@var74 <<@expr1073742499 "\t  fi; \\\n" ;
+468: fout@var74 <<@expr662 "\tfi\n" ;
+469: fout@var74 <<@expr1073742501 "endif\n\n" ;
+470: fout@var74 <<@expr1073742502 "# Validation of library files:\n" ;
+471: fout@var74 <<@expr1073742503 "ConfigFiles := $(wildcard cfg/*.cfg)\n" ;
+472: fout@var74 <<@expr1073742504 "ConfigFilesCHECKED := $(patsubst %.cfg,%.checked,$(ConfigFiles))\n" ;
+473: fout@var74 <<@expr1073742505 ".PHONY: validateCFG\n" ;
+474: fout@var74 <<@expr1073742506 "%.checked:%.cfg\n" ;
+475: fout@var74 <<@expr1073742507 "\txmllint --noout --relaxng cfg/cppcheck-cfg.rng $<\n" ;
+476: fout@var74 <<@expr1073742508 "validateCFG: ${ConfigFilesCHECKED}\n" ;
+477: fout@var74 <<@expr1073742509 "\txmllint --noout cfg/cppcheck-cfg.rng\n\n" ;
+478: fout@var74 <<@expr1073742510 "# Validation of platforms files:\n" ;
+479: fout@var74 <<@expr1073742511 "PlatformFiles := $(wildcard platforms/*.xml)\n" ;
+480: fout@var74 <<@expr1073742512 "PlatformFilesCHECKED := $(patsubst %.xml,%.checked,$(PlatformFiles))\n" ;
+481: fout@var74 <<@expr1073742513 ".PHONY: validatePlatforms\n" ;
+482: fout@var74 <<@expr1073742514 "%.checked:%.xml\n" ;
+483: fout@var74 <<@expr1073742515 "\txmllint --noout --relaxng platforms/cppcheck-platforms.rng $<\n" ;
+484: fout@var74 <<@expr1073742516 "validatePlatforms: ${PlatformFilesCHECKED}\n\n" ;
+485: fout@var74 <<@expr1073742517 "# Validate XML output (to detect regressions)\n" ;
+486: fout@var74 <<@expr1073742518 "/tmp/errorlist.xml: cppcheck\n" ;
+487: fout@var74 <<@expr1073742519 "\t./cppcheck --errorlist >$@\n" ;
+488: fout@var74 <<@expr1073742520 "/tmp/example.xml: cppcheck\n" ;
+489: fout@var74 <<@expr1073742521 "\t./cppcheck --xml --enable=all --inconclusive --max-configs=1 samples 2>/tmp/example.xml\n" ;
+490: fout@var74 <<@expr1073742522 "createXMLExamples:/tmp/errorlist.xml /tmp/example.xml\n" ;
+491: fout@var74 <<@expr1073742523 ".PHONY: validateXML\n" ;
+492: fout@var74 <<@expr1073742524 "validateXML: createXMLExamples\n" ;
+493: fout@var74 <<@expr1073742525 "\txmllint --noout cppcheck-errors.rng\n" ;
+494: fout@var74 <<@expr1073742526 "\txmllint --noout --relaxng cppcheck-errors.rng /tmp/errorlist.xml\n" ;
+495: fout@var74 <<@expr1073742527 "\txmllint --noout --relaxng cppcheck-errors.rng /tmp/example.xml\n" ;
+496: fout@var74 <<@expr1073742528 "\ncheckCWEEntries: /tmp/errorlist.xml\n" ;
+497: fout@var74 <<@expr1073742529 "\t./tools/listErrorsWithoutCWE.py -F /tmp/errorlist.xml\n" ;
+498: fout@var74 <<@expr1073742530 ".PHONY: validateRules\n" ;
+499: fout@var74 <<@expr1073742531 "validateRules:\n" ;
+500: fout@var74 <<@expr1073742532 "\txmllint --noout rules/*.xml\n" ;
+501:
+502: fout@var74 <<@expr1073742533 "\n###### Build\n\n" ;
+503:
+504: compilefiles (@expr1073742534 fout@var74 , libfiles@var63 , "${INCLUDE_FOR_LIB}" ) ;
+505: compilefiles (@expr1073742535 fout@var74 , clifiles@var66 , "${INCLUDE_FOR_CLI}" ) ;
+506: compilefiles (@expr1073742536 fout@var74 , testfiles@var67 , "${INCLUDE_FOR_TEST}" ) ;
+507: compilefiles (@expr1073742537 fout@var74 , extfiles@var65 , "" ) ;
+508: compilefiles (@expr1073742538 fout@var74 , toolsfiles@var68 , "${INCLUDE_FOR_LIB}" ) ;
+509:
+510: return 0 ;
+511: }
+
+
+
+##Value flow
+Line 47
+  extra always size=0
+Line 75
+  , always {!<=-1,!>=2}
+  recursive always {!<=-1,!>=2}
+Line 81
+  ( always {!<=-1,!>=2}
+Line 87
+  ( always {!<=-1,!>=2}
+Line 42
+  , always 1
+  caseSensitive always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 49
+  ( always {!<=-1,!>=2}
+Line 62
+  mCaseSensitive always {!<=-1,!>=2}
+Line 32
+  0 always 0
+  4 always 4
+  "lib/" always "lib/"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 33
+  "$(libcppdir)" always "$(libcppdir)"
+  3 always 3
+Line 39
+  ( always !<=-1
+  '.' always 46
+Line 40
+  ".o" always ".o"
+Line 47
+  != always {!<=-1,!>=2}
+Line 48
+  14 always 14
+  ' ' always 32
+Line 50
+  != always {!<=-1,!>=2}
+Line 51
+  " \\\n" always " \\\n"
+Line 58
+  "externals" always "externals"
+  "externals/picojson" always "externals/picojson"
+  "externals/simplecpp" always "externals/simplecpp"
+  "externals/tinyxml2" always "externals/tinyxml2"
+Line 61
+  ( possible lifetime[Iterator]=(depfiles)
+  depfiles possible size=0@24
+  ( {lifetime[Iterator]=(depfiles),start=0}
+  ( {lifetime[Iterator]=(depfiles),end=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(depfiles),end=0}
+Line 64
+  ( {lifetime[Object]=(filename),!0}
+Line 65
+  ! always {!<=-1,!>=2}
+Line 71
+  0 always 0
+  4 always 4
+  "cli/" always "cli/"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 72
+  "lib" always "lib"
+  ( always !<=-1
+  '/' always 47
+Line 73
+  0 always 0
+  5 always 5
+  "test/" always "test/"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 74
+  "cli" always "cli"
+  ( always !<=-1
+  '/' always 47
+Line 75
+  0 always 0
+  6 always 6
+  "tools/" always "tools/"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 76
+  "cli" always "cli"
+  ( always !<=-1
+  '/' always 47
+Line 77
+  0 always 0
+  4 always 4
+  "lib/" always "lib/"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 79
+  ( always !<=-1
+  '/' always 47
+Line 83
+  ( always !<=-1
+  ".c" always ".c"
+  == always {!<=-1,!>=2}
+Line 87
+  ( always !<=-1
+  '/' always 47
+  != always {!<=-1,!>=2}
+Line 88
+  1 always 1
+  + always !<=0
+  ( always !<=-1
+  '/' always 47
+Line 91
+  line possible size=0
+Line 92
+  :: always !<=-1
+  pos1 always !<=-1
+  pos1 always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  "#include \"" always "#include \""
+Line 93
+  = always 34
+  '\"' always 34
+Line 94
+  pos1 always !<=-1
+  == always {!<=-1,!>=2}
+Line 95
+  pos1 always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  "#include <" always "#include <"
+Line 96
+  = always 62
+  '>' always 62
+Line 97
+  pos1 always !<=-1
+  == always {!<=-1,!>=2}
+Line 101
+  pos1 always !<=-1
+  += always !<=-1
+  10 always 10
+Line 103
+  :: always !<=-1
+  pos2 always !<=-1
+  pos2 always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  rightBracket possible {34,62}
+  pos1 always !<=-1
+Line 104
+  pos1 always !<=-1
+  pos2 always !<=-1
+  - always !<=-1
+  pos1 always !<=-1
+Line 106
+  ( always !<=-1
+  "/../" always "/../"
+  != always {!<=-1,!>=2}
+Line 107
+  0 always 0
+  4 always 4
+  + always !<=3
+  ( always !<=-1
+  "/../" always "/../"
+Line 115
+  external {!<=-1,!>=2,0}
+  0 always 0
+  10 always 10
+  "externals/" always "externals/"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 116
+  ": " always ": "
+Line 118
+  depfiles always size=0
+Line 119
+  ( {lifetime[Iterator]=(depfiles),start=0}
+  ( {lifetime[Iterator]=(depfiles),end=0}
+Line 121
+  " " always " "
+Line 122
+  "\n\t$(CXX) " always "\n\t$(CXX) "
+  args possible {"${INCLUDE_FOR_LIB}"@18,"${INCLUDE_FOR_CLI}"@19,"${INCLUDE_FOR_TEST}"@20,""@21,"${INCLUDE_FOR_LIB}"@22}
+  " $(CPPFLAGS) $(CPPFILESDIR) $(CXXFLAGS)" always " $(CPPFLAGS) $(CPPFILESDIR) $(CXXFLAGS)"
+  external always {!<=-1,!>=2}
+  ? possible {" -w",""}
+  " -w" always " -w"
+  : always ""
+  "" always ""
+  " $(UNDEF_STRICT_ANSI) -c -o " always " $(UNDEF_STRICT_ANSI) -c -o "
+  " " always " "
+  "\n\n" always "\n\n"
+Line 126
+  , always {!<=-1,!>=2}
+  recursive always {!<=-1,!>=2}
+Line 131
+  masks always size=0
+Line 132
+  filemap always size=0
+  path possible {"lib/"@1,"externals/"@2,"cli/"@3,"test/"@4,"tools/"@5}
+  extra always size=0
+  recursive {!<=-1,!>=2,0@1,1@2}
+Line 133
+  ! {!<=-1,!>=2,0}
+  err possible size=0
+  ( {!<=-1,!>=2,1}
+Line 134
+  err always !size=0
+Line 138
+  ".cpp" always ".cpp"
+  != always {!<=-1,!>=2}
+Line 141
+  "" always ""
+Line 147
+  "ifndef " always "ifndef "
+  variable possible {"HAVE_RULES"@6,"CXX"@7,"CXXFLAGS"@8,"CXXFLAGS"@9,"PREFIX"@10,"INCLUDE_FOR_LIB"@11,"INCLUDE_FOR_CLI"@12,"INCLUDE_FOR_TEST"@13}
+  '\n' always 10
+Line 148
+  "    " always "    "
+  variable possible {"HAVE_RULES"@6,"CXX"@7,"CXXFLAGS"@8,"CXXFLAGS"@9,"PREFIX"@10,"INCLUDE_FOR_LIB"@11,"INCLUDE_FOR_CLI"@12,"INCLUDE_FOR_TEST"@13}
+  '=' always 61
+  defaultValue possible {"no"@6,"g++"@7,"-std=c++0x -O2 -DNDEBUG -Wall -Wno-sign-compare"@8,"-pedantic -Wall -Wextra -Wcast-qual -Wno-deprecated-declarations -Wfloat-equal -Wmissing-declarations -Wmissing-format-attribute -Wno-long-long -Wpacked -Wredundant-decls -Wundef -Wno-shadow -Wno-missing-field-initializers -Wno-missing-braces -Wno-sign-compare -Wno-multichar $(CPPCHK_GLIBCXX_DEBUG) -g"@9,"/usr"@10,"-Ilib -isystem externals -isystem externals/picojson -isystem externals/simplecpp -isystem externals/tinyxml2"@11,"-Ilib -isystem externals/simplecpp -isystem externals/tinyxml2"@12,"-Ilib -Icli -isystem externals/simplecpp -isystem externals/tinyxml2"@13}
+  '\n' always 10
+Line 149
+  "endif\n" always "endif\n"
+Line 150
+  "\n" always "\n"
+Line 155
+  release always {!<=-1,!>=2}
+  >= always {!<=-1,!>=2}
+  2 always 2
+  && always {!<=-1,!>=2}
+  1 always 1
+  == always {!<=-1,!>=2}
+  "--release" always "--release"
+Line 159
+  libfiles always size=0
+  "lib/" always "lib/"
+  false always 0
+Line 160
+  ! {!<=-1,!>=2,0}
+  err possible size=0
+  ( {!<=-1,!>=2,1}
+Line 161
+  err always !size=0
+Line 166
+  extfiles always size=0
+  "externals/" always "externals/"
+  true always 1
+Line 167
+  ! {!<=-1,!>=2,0}
+  err possible size=0
+  ( {!<=-1,!>=2,1}
+Line 168
+  err always !size=0
+Line 173
+  clifiles always size=0
+  "cli/" always "cli/"
+  false always 0
+Line 174
+  ! {!<=-1,!>=2,0}
+  err possible size=0
+  ( {!<=-1,!>=2,1}
+Line 175
+  err always !size=0
+Line 180
+  testfiles always size=0
+  "test/" always "test/"
+  false always 0
+Line 181
+  ! {!<=-1,!>=2,0}
+  err possible size=0
+  ( {!<=-1,!>=2,1}
+Line 182
+  err always !size=0
+Line 187
+  toolsfiles always size=0
+  "tools/" always "tools/"
+  false always 0
+Line 188
+  ! {!<=-1,!>=2,0}
+  err possible size=0
+  ( {!<=-1,!>=2,1}
+Line 189
+  err always !size=0
+Line 193
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 194
+  "No files found. Are you in the correct directory?" always "No files found. Are you in the correct directory?"
+Line 200
+  "lib/lib.pri" always "lib/lib.pri"
+Line 202
+  "# no manual edits - this file is autogenerated by dmake\n\n" always "# no manual edits - this file is autogenerated by dmake\n\n"
+Line 203
+  "include($$PWD/pcrerules.pri)\n" always "include($$PWD/pcrerules.pri)\n"
+Line 204
+  "include($$PWD/../externals/externals.pri)\n" always "include($$PWD/../externals/externals.pri)\n"
+Line 205
+  "INCLUDEPATH += $$PWD\n" always "INCLUDEPATH += $$PWD\n"
+Line 206
+  "HEADERS += " always "HEADERS += "
+Line 208
+  4 always 4
+Line 209
+  ( always !<=-1
+  ".cpp" always ".cpp"
+  == always {!<=-1,!>=2}
+Line 211
+  ( always !<=-1
+  ".cpp" always ".cpp"
+Line 212
+  "$${PWD}/" always "$${PWD}/"
+  ".h" always ".h"
+Line 213
+  != always {!<=-1,!>=2}
+Line 214
+  " \\\n" always " \\\n"
+  11 always 11
+  ' ' always 32
+Line 216
+  "\n\nSOURCES += " always "\n\nSOURCES += "
+Line 218
+  "$${PWD}/" always "$${PWD}/"
+  libfile possible symbolic=(libfiles.back())
+  4 always 4
+Line 219
+  != always {!<=-1,!>=2}
+Line 220
+  " \\\n" always " \\\n"
+  11 always 11
+  ' ' always 32
+Line 222
+  "\n" always "\n"
+Line 226
+  9 always 9
+  = always "Makefile"
+  "Makefile" always "Makefile"
+Line 227
+  makefile always "Makefile"
+Line 228
+  ! always {!<=-1,!>=2}
+Line 229
+  "An error occurred while trying to open " always "An error occurred while trying to open "
+Line 230
+  makefile {"Makefile",lifetime[Object]=(makefile)}
+Line 231
+  ".\n" always ".\n"
+Line 235
+  "# This file is generated by tools/dmake, do not edit.\n\n" always "# This file is generated by tools/dmake, do not edit.\n\n"
+Line 236
+  "# To compile with rules, use 'make HAVE_RULES=yes'\n" always "# To compile with rules, use 'make HAVE_RULES=yes'\n"
+Line 237
+  "HAVE_RULES" always "HAVE_RULES"
+  "no" always "no"
+Line 240
+  "# use match compiler\n" always "# use match compiler\n"
+Line 241
+  "ifeq ($(SRCDIR),build)\n" always "ifeq ($(SRCDIR),build)\n"
+Line 242
+  "    $(warning Usage of SRCDIR to activate match compiler is deprecated. Use MATCHCOMPILER=yes instead.)\n" always "    $(warning Usage of SRCDIR to activate match compiler is deprecated. Use MATCHCOMPILER=yes instead.)\n"
+Line 243
+  "    MATCHCOMPILER:=yes\n" always "    MATCHCOMPILER:=yes\n"
+Line 244
+  "endif\n" always "endif\n"
+Line 245
+  "ifeq ($(MATCHCOMPILER),yes)\n" always "ifeq ($(MATCHCOMPILER),yes)\n"
+Line 246
+  "    # Find available Python interpreter\n" always "    # Find available Python interpreter\n"
+Line 247
+  "    ifndef PYTHON_INTERPRETER\n" always "    ifndef PYTHON_INTERPRETER\n"
+Line 248
+  "        PYTHON_INTERPRETER := $(shell which python3)\n" always "        PYTHON_INTERPRETER := $(shell which python3)\n"
+Line 249
+  "    endif\n" always "    endif\n"
+Line 250
+  "    ifndef PYTHON_INTERPRETER\n" always "    ifndef PYTHON_INTERPRETER\n"
+Line 251
+  "        PYTHON_INTERPRETER := $(shell which python)\n" always "        PYTHON_INTERPRETER := $(shell which python)\n"
+Line 252
+  "    endif\n" always "    endif\n"
+Line 253
+  "    ifndef PYTHON_INTERPRETER\n" always "    ifndef PYTHON_INTERPRETER\n"
+Line 254
+  "        $(error Did not find a Python interpreter)\n" always "        $(error Did not find a Python interpreter)\n"
+Line 255
+  "    endif\n" always "    endif\n"
+Line 256
+  "    ifdef VERIFY\n" always "    ifdef VERIFY\n"
+Line 257
+  "        matchcompiler_S := $(shell $(PYTHON_INTERPRETER) tools/matchcompiler.py --verify)\n" always "        matchcompiler_S := $(shell $(PYTHON_INTERPRETER) tools/matchcompiler.py --verify)\n"
+Line 258
+  "    else\n" always "    else\n"
+Line 259
+  "        matchcompiler_S := $(shell $(PYTHON_INTERPRETER) tools/matchcompiler.py)\n" always "        matchcompiler_S := $(shell $(PYTHON_INTERPRETER) tools/matchcompiler.py)\n"
+Line 260
+  "    endif\n" always "    endif\n"
+Line 261
+  "    libcppdir:=build\n" always "    libcppdir:=build\n"
+Line 262
+  "else\n" always "else\n"
+Line 263
+  "    libcppdir:=lib\n" always "    libcppdir:=lib\n"
+Line 264
+  "endif\n\n" always "endif\n\n"
+Line 267
+  "ifdef FILESDIR\n" always "ifdef FILESDIR\n"
+Line 268
+  "    CPPFILESDIR=-DFILESDIR=\\\"$(FILESDIR)\\\"\n" always "    CPPFILESDIR=-DFILESDIR=\\\"$(FILESDIR)\\\"\n"
+Line 269
+  "else\n" always "else\n"
+Line 270
+  "    CPPFILESDIR=\n" always "    CPPFILESDIR=\n"
+Line 271
+  "endif\n\n" always "endif\n\n"
+Line 274
+  "RDYNAMIC=-rdynamic\n" always "RDYNAMIC=-rdynamic\n"
+Line 277
+  "# Set the CPPCHK_GLIBCXX_DEBUG flag. This flag is not used in release Makefiles.\n" always "# Set the CPPCHK_GLIBCXX_DEBUG flag. This flag is not used in release Makefiles.\n"
+Line 278
+  "# The _GLIBCXX_DEBUG define doesn't work in Cygwin or other Win32 systems.\n" always "# The _GLIBCXX_DEBUG define doesn't work in Cygwin or other Win32 systems.\n"
+Line 279
+  "ifndef COMSPEC\n" always "ifndef COMSPEC\n"
+Line 280
+  "    ifdef ComSpec\n" always "    ifdef ComSpec\n"
+Line 281
+  "        #### ComSpec is defined on some WIN32's.\n" always "        #### ComSpec is defined on some WIN32's.\n"
+Line 282
+  "        WINNT=1\n" always "        WINNT=1\n"
+Line 283
+  "\n" always "\n"
+Line 284
+  "        ifneq (,$(findstring /cygdrive/,$(PATH)))\n" always "        ifneq (,$(findstring /cygdrive/,$(PATH)))\n"
+Line 285
+  "            CYGWIN=1\n" always "            CYGWIN=1\n"
+Line 286
+  "        endif # CYGWIN\n" always "        endif # CYGWIN\n"
+Line 287
+  "    endif # ComSpec\n" always "    endif # ComSpec\n"
+Line 288
+  "endif # COMSPEC\n" always "endif # COMSPEC\n"
+Line 289
+  "\n" always "\n"
+Line 290
+  "ifdef WINNT\n" always "ifdef WINNT\n"
+Line 291
+  "    #### Maybe Windows\n" always "    #### Maybe Windows\n"
+Line 292
+  "    ifndef CPPCHK_GLIBCXX_DEBUG\n" always "    ifndef CPPCHK_GLIBCXX_DEBUG\n"
+Line 293
+  "        CPPCHK_GLIBCXX_DEBUG=\n" always "        CPPCHK_GLIBCXX_DEBUG=\n"
+Line 294
+  "    endif # !CPPCHK_GLIBCXX_DEBUG\n" always "    endif # !CPPCHK_GLIBCXX_DEBUG\n"
+Line 295
+  "\n" always "\n"
+Line 296
+  "    ifeq ($(MSYSTEM),MINGW32 MINGW64)\n" always "    ifeq ($(MSYSTEM),MINGW32 MINGW64)\n"
+Line 297
+  "        LDFLAGS=-lshlwapi\n" always "        LDFLAGS=-lshlwapi\n"
+Line 298
+  "    else\n" always "    else\n"
+Line 299
+  "        RDYNAMIC=-lshlwapi\n" always "        RDYNAMIC=-lshlwapi\n"
+Line 300
+  "    endif\n" always "    endif\n"
+Line 301
+  "else # !WINNT\n" always "else # !WINNT\n"
+Line 302
+  "    uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')\n" always "    uname_S := $(shell sh -c 'uname -s 2>/dev/null || echo not')\n"
+Line 303
+  "\n" always "\n"
+Line 304
+  "    ifeq ($(uname_S),Linux)\n" always "    ifeq ($(uname_S),Linux)\n"
+Line 305
+  "        ifndef CPPCHK_GLIBCXX_DEBUG\n" always "        ifndef CPPCHK_GLIBCXX_DEBUG\n"
+Line 306
+  "            CPPCHK_GLIBCXX_DEBUG=-D_GLIBCXX_DEBUG\n" always "            CPPCHK_GLIBCXX_DEBUG=-D_GLIBCXX_DEBUG\n"
+Line 307
+  "        endif # !CPPCHK_GLIBCXX_DEBUG\n" always "        endif # !CPPCHK_GLIBCXX_DEBUG\n"
+Line 308
+  "    endif # Linux\n" always "    endif # Linux\n"
+Line 309
+  "\n" always "\n"
+Line 310
+  "    ifeq ($(uname_S),GNU/kFreeBSD)\n" always "    ifeq ($(uname_S),GNU/kFreeBSD)\n"
+Line 311
+  "        ifndef CPPCHK_GLIBCXX_DEBUG\n" always "        ifndef CPPCHK_GLIBCXX_DEBUG\n"
+Line 312
+  "            CPPCHK_GLIBCXX_DEBUG=-D_GLIBCXX_DEBUG\n" always "            CPPCHK_GLIBCXX_DEBUG=-D_GLIBCXX_DEBUG\n"
+Line 313
+  "        endif # !CPPCHK_GLIBCXX_DEBUG\n" always "        endif # !CPPCHK_GLIBCXX_DEBUG\n"
+Line 314
+  "    endif # GNU/kFreeBSD\n" always "    endif # GNU/kFreeBSD\n"
+Line 315
+  "\n" always "\n"
+Line 316
+  "endif # WINNT\n" always "endif # WINNT\n"
+Line 317
+  "\n" always "\n"
+Line 320
+  "ifdef CYGWIN\n" always "ifdef CYGWIN\n"
+Line 321
+  "    # Set the UNDEF_STRICT_ANSI flag to address compile time warnings\n" always "    # Set the UNDEF_STRICT_ANSI flag to address compile time warnings\n"
+Line 322
+  "    # with tinyxml2 and Cygwin.\n" always "    # with tinyxml2 and Cygwin.\n"
+Line 323
+  "    UNDEF_STRICT_ANSI=-U__STRICT_ANSI__\n" always "    UNDEF_STRICT_ANSI=-U__STRICT_ANSI__\n"
+Line 324
+  "    \n" always "    \n"
+Line 325
+  "    # Increase stack size for Cygwin builds to avoid segmentation fault in limited recursive tests.\n" always "    # Increase stack size for Cygwin builds to avoid segmentation fault in limited recursive tests.\n"
+Line 326
+  "    CXXFLAGS+=-Wl,--stack,8388608\n" always "    CXXFLAGS+=-Wl,--stack,8388608\n"
+Line 327
+  "endif # CYGWIN\n" always "endif # CYGWIN\n"
+Line 328
+  "\n" always "\n"
+Line 331
+  "CXX" always "CXX"
+  "g++" always "g++"
+Line 332
+  "ifeq (clang++, $(findstring clang++,$(CXX)))\n" always "ifeq (clang++, $(findstring clang++,$(CXX)))\n"
+Line 333
+  "    CPPCHK_GLIBCXX_DEBUG=\n" always "    CPPCHK_GLIBCXX_DEBUG=\n"
+Line 334
+  "endif\n" always "endif\n"
+Line 337
+  release always {!<=-1,!>=2}
+Line 338
+  "CXXFLAGS" always "CXXFLAGS"
+  "-std=c++0x -O2 -DNDEBUG -Wall -Wno-sign-compare" always "-std=c++0x -O2 -DNDEBUG -Wall -Wno-sign-compare"
+Line 344
+  "CXXFLAGS" always "CXXFLAGS"
+Line 345
+  "-pedantic -Wall -Wextra -Wcast-qual -Wno-deprecated-declarations -Wfloat-equal -Wmissing-declarations -Wmissing-format-attribute -Wno-long-long -Wpacked -Wredundant-decls -Wundef -Wno-shadow -Wno-missing-field-initializers -Wno-missing-braces -Wno-sign-compare -Wno-multichar $(CPPCHK_GLIBCXX_DEBUG) -g" always "-pedantic -Wall -Wextra -Wcast-qual -Wno-deprecated-declarations -Wfloat-equal -Wmissing-declarations -Wmissing-format-attribute -Wno-long-long -Wpacked -Wredundant-decls -Wundef -Wno-shadow -Wno-missing-field-initializers -Wno-missing-braces -Wno-sign-compare -Wno-multichar $(CPPCHK_GLIBCXX_DEBUG) -g"
+Line 372
+  "ifeq (g++, $(findstring g++,$(CXX)))\n" always "ifeq (g++, $(findstring g++,$(CXX)))\n"
+Line 373
+  "    override CXXFLAGS += -std=c++0x\n" always "    override CXXFLAGS += -std=c++0x\n"
+Line 374
+  "else ifeq (clang++, $(findstring clang++,$(CXX)))\n" always "else ifeq (clang++, $(findstring clang++,$(CXX)))\n"
+Line 375
+  "    override CXXFLAGS += -std=c++0x\n" always "    override CXXFLAGS += -std=c++0x\n"
+Line 376
+  "else ifeq ($(CXX), c++)\n" always "else ifeq ($(CXX), c++)\n"
+Line 377
+  "    ifeq ($(shell uname -s), Darwin)\n" always "    ifeq ($(shell uname -s), Darwin)\n"
+Line 378
+  "        override CXXFLAGS += -std=c++0x\n" always "        override CXXFLAGS += -std=c++0x\n"
+Line 379
+  "    endif\n" always "    endif\n"
+Line 380
+  "endif\n" always "endif\n"
+Line 381
+  "\n" always "\n"
+Line 383
+  "ifeq ($(HAVE_RULES),yes)\n" always "ifeq ($(HAVE_RULES),yes)\n"
+Line 384
+  "    override CXXFLAGS += -DHAVE_RULES -DTIXML_USE_STL $(shell pcre-config --cflags)\n" always "    override CXXFLAGS += -DHAVE_RULES -DTIXML_USE_STL $(shell pcre-config --cflags)\n"
+Line 385
+  "    ifdef LIBS\n" always "    ifdef LIBS\n"
+Line 386
+  "        LIBS += $(shell pcre-config --libs)\n" always "        LIBS += $(shell pcre-config --libs)\n"
+Line 387
+  "    else\n" always "    else\n"
+Line 388
+  "        LIBS=$(shell pcre-config --libs)\n" always "        LIBS=$(shell pcre-config --libs)\n"
+Line 389
+  "    endif\n" always "    endif\n"
+Line 390
+  "endif\n\n" always "endif\n\n"
+Line 392
+  "PREFIX" always "PREFIX"
+  "/usr" always "/usr"
+Line 393
+  "INCLUDE_FOR_LIB" always "INCLUDE_FOR_LIB"
+  "-Ilib -isystem externals -isystem externals/picojson -isystem externals/simplecpp -isystem externals/tinyxml2" always "-Ilib -isystem externals -isystem externals/picojson -isystem externals/simplecpp -isystem externals/tinyxml2"
+Line 394
+  "INCLUDE_FOR_CLI" always "INCLUDE_FOR_CLI"
+  "-Ilib -isystem externals/simplecpp -isystem externals/tinyxml2" always "-Ilib -isystem externals/simplecpp -isystem externals/tinyxml2"
+Line 395
+  "INCLUDE_FOR_TEST" always "INCLUDE_FOR_TEST"
+  "-Ilib -Icli -isystem externals/simplecpp -isystem externals/tinyxml2" always "-Ilib -Icli -isystem externals/simplecpp -isystem externals/tinyxml2"
+Line 397
+  "BIN=$(DESTDIR)$(PREFIX)/bin\n\n" always "BIN=$(DESTDIR)$(PREFIX)/bin\n\n"
+Line 398
+  "# For 'make man': sudo apt-get install xsltproc docbook-xsl docbook-xml on Linux\n" always "# For 'make man': sudo apt-get install xsltproc docbook-xsl docbook-xml on Linux\n"
+Line 399
+  "DB2MAN?=/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl\n" always "DB2MAN?=/usr/share/sgml/docbook/stylesheet/xsl/nwalsh/manpages/docbook.xsl\n"
+Line 400
+  "XP=xsltproc -''-nonet -''-param man.charmap.use.subset \"0\"\n" always "XP=xsltproc -''-nonet -''-param man.charmap.use.subset \"0\"\n"
+Line 401
+  "MAN_SOURCE=man/cppcheck.1.xml\n\n" always "MAN_SOURCE=man/cppcheck.1.xml\n\n"
+Line 403
+  "\n###### Object Files\n\n" always "\n###### Object Files\n\n"
+Line 404
+  "LIBOBJ =      " always "LIBOBJ =      "
+  "\n\n" always "\n\n"
+Line 405
+  "EXTOBJ =      " always "EXTOBJ =      "
+  "\n\n" always "\n\n"
+Line 406
+  "CLIOBJ =      " always "CLIOBJ =      "
+  "\n\n" always "\n\n"
+Line 407
+  "TESTOBJ =     " always "TESTOBJ =     "
+  "\n\n" always "\n\n"
+Line 409
+  ".PHONY: run-dmake tags\n\n" always ".PHONY: run-dmake tags\n\n"
+Line 410
+  "\n###### Targets\n\n" always "\n###### Targets\n\n"
+Line 411
+  "cppcheck: $(LIBOBJ) $(CLIOBJ) $(EXTOBJ)\n" always "cppcheck: $(LIBOBJ) $(CLIOBJ) $(EXTOBJ)\n"
+Line 412
+  "\t$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $^ $(LIBS) $(LDFLAGS) $(RDYNAMIC)\n\n" always "\t$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $^ $(LIBS) $(LDFLAGS) $(RDYNAMIC)\n\n"
+Line 413
+  "all:\tcppcheck testrunner\n\n" always "all:\tcppcheck testrunner\n\n"
+Line 414
+  "testrunner: $(TESTOBJ) $(LIBOBJ) $(EXTOBJ) cli/threadexecutor.o cli/cmdlineparser.o cli/cppcheckexecutor.o cli/filelister.o\n" always "testrunner: $(TESTOBJ) $(LIBOBJ) $(EXTOBJ) cli/threadexecutor.o cli/cmdlineparser.o cli/cppcheckexecutor.o cli/filelister.o\n"
+Line 415
+  "\t$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $^ $(LIBS) $(LDFLAGS) $(RDYNAMIC)\n\n" always "\t$(CXX) $(CPPFLAGS) $(CXXFLAGS) -o $@ $^ $(LIBS) $(LDFLAGS) $(RDYNAMIC)\n\n"
+Line 416
+  "test:\tall\n" always "test:\tall\n"
+Line 417
+  "\t./testrunner\n\n" always "\t./testrunner\n\n"
+Line 418
+  "check:\tall\n" always "check:\tall\n"
+Line 419
+  "\t./testrunner -q\n\n" always "\t./testrunner -q\n\n"
+Line 420
+  "checkcfg:\tcppcheck validateCFG\n" always "checkcfg:\tcppcheck validateCFG\n"
+Line 421
+  "\t./test/cfg/runtests.sh\n\n" always "\t./test/cfg/runtests.sh\n\n"
+Line 422
+  "dmake:\ttools/dmake.o cli/filelister.o $(libcppdir)/pathmatch.o $(libcppdir)/path.o $(libcppdir)/utils.o externals/simplecpp/simplecpp.o\n" always "dmake:\ttools/dmake.o cli/filelister.o $(libcppdir)/pathmatch.o $(libcppdir)/path.o $(libcppdir)/utils.o externals/simplecpp/simplecpp.o\n"
+Line 423
+  "\t$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)\n\n" always "\t$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)\n\n"
+Line 424
+  "run-dmake: dmake\n" always "run-dmake: dmake\n"
+Line 425
+  "\t./dmake\n\n" always "\t./dmake\n\n"
+Line 426
+  "clean:\n" always "clean:\n"
+Line 427
+  "\trm -f build/*.o lib/*.o cli/*.o test/*.o tools/*.o externals/*/*.o testrunner dmake cppcheck cppcheck.exe cppcheck.1\n\n" always "\trm -f build/*.o lib/*.o cli/*.o test/*.o tools/*.o externals/*/*.o testrunner dmake cppcheck cppcheck.exe cppcheck.1\n\n"
+Line 428
+  "man:\tman/cppcheck.1\n\n" always "man:\tman/cppcheck.1\n\n"
+Line 429
+  "man/cppcheck.1:\t$(MAN_SOURCE)\n\n" always "man/cppcheck.1:\t$(MAN_SOURCE)\n\n"
+Line 430
+  "\t$(XP) $(DB2MAN) $(MAN_SOURCE)\n\n" always "\t$(XP) $(DB2MAN) $(MAN_SOURCE)\n\n"
+Line 431
+  "tags:\n" always "tags:\n"
+Line 432
+  "\tctags -R --exclude=doxyoutput --exclude=test/cfg --exclude=test/synthetic cli externals gui lib test\n\n" always "\tctags -R --exclude=doxyoutput --exclude=test/cfg --exclude=test/synthetic cli externals gui lib test\n\n"
+Line 433
+  "install: cppcheck\n" always "install: cppcheck\n"
+Line 434
+  "\tinstall -d ${BIN}\n" always "\tinstall -d ${BIN}\n"
+Line 435
+  "\tinstall cppcheck ${BIN}\n" always "\tinstall cppcheck ${BIN}\n"
+Line 436
+  "\tinstall htmlreport/cppcheck-htmlreport ${BIN}\n" always "\tinstall htmlreport/cppcheck-htmlreport ${BIN}\n"
+Line 437
+  "ifdef FILESDIR\n" always "ifdef FILESDIR\n"
+Line 438
+  "\tinstall -d ${DESTDIR}${FILESDIR}\n" always "\tinstall -d ${DESTDIR}${FILESDIR}\n"
+Line 439
+  "\tinstall -d ${DESTDIR}${FILESDIR}/addons\n" always "\tinstall -d ${DESTDIR}${FILESDIR}/addons\n"
+Line 440
+  "\tinstall -m 644 addons/*.py ${DESTDIR}${FILESDIR}/addons\n" always "\tinstall -m 644 addons/*.py ${DESTDIR}${FILESDIR}/addons\n"
+Line 441
+  "\tinstall -d ${DESTDIR}${FILESDIR}/cfg\n" always "\tinstall -d ${DESTDIR}${FILESDIR}/cfg\n"
+Line 442
+  "\tinstall -m 644 cfg/*.cfg ${DESTDIR}${FILESDIR}/cfg\n" always "\tinstall -m 644 cfg/*.cfg ${DESTDIR}${FILESDIR}/cfg\n"
+Line 443
+  "\tinstall -d ${DESTDIR}${FILESDIR}/platforms\n" always "\tinstall -d ${DESTDIR}${FILESDIR}/platforms\n"
+Line 444
+  "\tinstall -m 644 platforms/*.xml ${DESTDIR}${FILESDIR}/platforms\n" always "\tinstall -m 644 platforms/*.xml ${DESTDIR}${FILESDIR}/platforms\n"
+Line 445
+  "else\n" always "else\n"
+Line 446
+  "\t$(error FILESDIR must be set!)\n" always "\t$(error FILESDIR must be set!)\n"
+Line 447
+  "endif\n" always "endif\n"
+Line 448
+  "\n" always "\n"
+Line 449
+  "uninstall:\n" always "uninstall:\n"
+Line 450
+  "\t@if test -d ${BIN}; then \\\n" always "\t@if test -d ${BIN}; then \\\n"
+Line 451
+  "\t  files=\"cppcheck cppcheck-htmlreport\"; \\\n" always "\t  files=\"cppcheck cppcheck-htmlreport\"; \\\n"
+Line 452
+  "\t  echo '(' cd ${BIN} '&&' rm -f $$files ')'; \\\n" always "\t  echo '(' cd ${BIN} '&&' rm -f $$files ')'; \\\n"
+Line 453
+  "\t  ( cd ${BIN} && rm -f $$files ); \\\n" always "\t  ( cd ${BIN} && rm -f $$files ); \\\n"
+Line 454
+  "\tfi\n" always "\tfi\n"
+Line 455
+  "ifdef FILESDIR \n" always "ifdef FILESDIR \n"
+Line 456
+  "\t@if test -d ${DESTDIR}${FILESDIR}; then \\\n" always "\t@if test -d ${DESTDIR}${FILESDIR}; then \\\n"
+Line 457
+  "\t  echo rm -rf ${DESTDIR}${FILESDIR}; \\\n" always "\t  echo rm -rf ${DESTDIR}${FILESDIR}; \\\n"
+Line 458
+  "\t  rm -rf ${DESTDIR}${FILESDIR}; \\\n" always "\t  rm -rf ${DESTDIR}${FILESDIR}; \\\n"
+Line 459
+  "\tfi\n" always "\tfi\n"
+Line 460
+  "endif\n" always "endif\n"
+Line 461
+  "ifdef CFGDIR \n" always "ifdef CFGDIR \n"
+Line 462
+  "\t@if test -d ${DESTDIR}${CFGDIR}; then \\\n" always "\t@if test -d ${DESTDIR}${CFGDIR}; then \\\n"
+Line 463
+  "\t  files=\"`cd cfg 2>/dev/null && ls`\"; \\\n" always "\t  files=\"`cd cfg 2>/dev/null && ls`\"; \\\n"
+Line 464
+  "\t  if test -n \"$$files\"; then \\\n" always "\t  if test -n \"$$files\"; then \\\n"
+Line 465
+  "\t    echo '(' cd ${DESTDIR}${CFGDIR} '&&' rm -f $$files ')'; \\\n" always "\t    echo '(' cd ${DESTDIR}${CFGDIR} '&&' rm -f $$files ')'; \\\n"
+Line 466
+  "\t    ( cd ${DESTDIR}${CFGDIR} && rm -f $$files ); \\\n" always "\t    ( cd ${DESTDIR}${CFGDIR} && rm -f $$files ); \\\n"
+Line 467
+  "\t  fi; \\\n" always "\t  fi; \\\n"
+Line 468
+  "\tfi\n" always "\tfi\n"
+Line 469
+  "endif\n\n" always "endif\n\n"
+Line 470
+  "# Validation of library files:\n" always "# Validation of library files:\n"
+Line 471
+  "ConfigFiles := $(wildcard cfg/*.cfg)\n" always "ConfigFiles := $(wildcard cfg/*.cfg)\n"
+Line 472
+  "ConfigFilesCHECKED := $(patsubst %.cfg,%.checked,$(ConfigFiles))\n" always "ConfigFilesCHECKED := $(patsubst %.cfg,%.checked,$(ConfigFiles))\n"
+Line 473
+  ".PHONY: validateCFG\n" always ".PHONY: validateCFG\n"
+Line 474
+  "%.checked:%.cfg\n" always "%.checked:%.cfg\n"
+Line 475
+  "\txmllint --noout --relaxng cfg/cppcheck-cfg.rng $<\n" always "\txmllint --noout --relaxng cfg/cppcheck-cfg.rng $<\n"
+Line 476
+  "validateCFG: ${ConfigFilesCHECKED}\n" always "validateCFG: ${ConfigFilesCHECKED}\n"
+Line 477
+  "\txmllint --noout cfg/cppcheck-cfg.rng\n\n" always "\txmllint --noout cfg/cppcheck-cfg.rng\n\n"
+Line 478
+  "# Validation of platforms files:\n" always "# Validation of platforms files:\n"
+Line 479
+  "PlatformFiles := $(wildcard platforms/*.xml)\n" always "PlatformFiles := $(wildcard platforms/*.xml)\n"
+Line 480
+  "PlatformFilesCHECKED := $(patsubst %.xml,%.checked,$(PlatformFiles))\n" always "PlatformFilesCHECKED := $(patsubst %.xml,%.checked,$(PlatformFiles))\n"
+Line 481
+  ".PHONY: validatePlatforms\n" always ".PHONY: validatePlatforms\n"
+Line 482
+  "%.checked:%.xml\n" always "%.checked:%.xml\n"
+Line 483
+  "\txmllint --noout --relaxng platforms/cppcheck-platforms.rng $<\n" always "\txmllint --noout --relaxng platforms/cppcheck-platforms.rng $<\n"
+Line 484
+  "validatePlatforms: ${PlatformFilesCHECKED}\n\n" always "validatePlatforms: ${PlatformFilesCHECKED}\n\n"
+Line 485
+  "# Validate XML output (to detect regressions)\n" always "# Validate XML output (to detect regressions)\n"
+Line 486
+  "/tmp/errorlist.xml: cppcheck\n" always "/tmp/errorlist.xml: cppcheck\n"
+Line 487
+  "\t./cppcheck --errorlist >$@\n" always "\t./cppcheck --errorlist >$@\n"
+Line 488
+  "/tmp/example.xml: cppcheck\n" always "/tmp/example.xml: cppcheck\n"
+Line 489
+  "\t./cppcheck --xml --enable=all --inconclusive --max-configs=1 samples 2>/tmp/example.xml\n" always "\t./cppcheck --xml --enable=all --inconclusive --max-configs=1 samples 2>/tmp/example.xml\n"
+Line 490
+  "createXMLExamples:/tmp/errorlist.xml /tmp/example.xml\n" always "createXMLExamples:/tmp/errorlist.xml /tmp/example.xml\n"
+Line 491
+  ".PHONY: validateXML\n" always ".PHONY: validateXML\n"
+Line 492
+  "validateXML: createXMLExamples\n" always "validateXML: createXMLExamples\n"
+Line 493
+  "\txmllint --noout cppcheck-errors.rng\n" always "\txmllint --noout cppcheck-errors.rng\n"
+Line 494
+  "\txmllint --noout --relaxng cppcheck-errors.rng /tmp/errorlist.xml\n" always "\txmllint --noout --relaxng cppcheck-errors.rng /tmp/errorlist.xml\n"
+Line 495
+  "\txmllint --noout --relaxng cppcheck-errors.rng /tmp/example.xml\n" always "\txmllint --noout --relaxng cppcheck-errors.rng /tmp/example.xml\n"
+Line 496
+  "\ncheckCWEEntries: /tmp/errorlist.xml\n" always "\ncheckCWEEntries: /tmp/errorlist.xml\n"
+Line 497
+  "\t./tools/listErrorsWithoutCWE.py -F /tmp/errorlist.xml\n" always "\t./tools/listErrorsWithoutCWE.py -F /tmp/errorlist.xml\n"
+Line 498
+  ".PHONY: validateRules\n" always ".PHONY: validateRules\n"
+Line 499
+  "validateRules:\n" always "validateRules:\n"
+Line 500
+  "\txmllint --noout rules/*.xml\n" always "\txmllint --noout rules/*.xml\n"
+Line 502
+  "\n###### Build\n\n" always "\n###### Build\n\n"
+Line 504
+  "${INCLUDE_FOR_LIB}" always "${INCLUDE_FOR_LIB}"
+Line 505
+  "${INCLUDE_FOR_CLI}" always "${INCLUDE_FOR_CLI}"
+Line 506
+  "${INCLUDE_FOR_TEST}" always "${INCLUDE_FOR_TEST}"
+Line 507
+  "" always ""
+Line 508
+  "${INCLUDE_FOR_LIB}" always "${INCLUDE_FOR_LIB}"
+Line 510
+  0 always 0

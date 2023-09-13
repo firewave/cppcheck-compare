@@ -1,0 +1,2319 @@
+
+
+##file cppcheck-2.8/lib/config.h
+
+1:
+|
+78:
+79: static const std :: string emptyString@var1 ;
+
+##file cppcheck-2.8/lib/platform.h
+
+1:
+|
+31:
+32: namespace tinyxml2 {
+33: class XMLDocument ;
+34: }
+35:
+36: namespace cppcheck {
+37:
+|
+40:
+41: class Platform {
+42: private:
+43: static long long min_value ( int bit@var2 ) {
+44: if (@expr1073742254 bit@var2 >=@expr1073742255 64 ) {
+45: return LLONG_MIN ; }
+46: return -@expr1073742256 (@expr1073742257 1LL <<@expr1073742258 (@expr1073742259 bit@var2 -@expr1073742260 1 ) ) ;
+47: }
+48:
+49: static long long max_value ( int bit@var3 ) {
+50: if (@expr1073742261 bit@var3 >=@expr1073742262 64 ) {
+51: return (@expr439 ~@expr1073742264 0ULL ) >>@expr1073742265 1 ; }
+52: return (@expr439 1LL <<@expr1073742267 (@expr439 bit@var3 -@expr1073742269 1 ) ) -@expr1073742270 1LL ;
+53: }
+54: public:
+55: Platform ( ) ;
+56: virtual ~ Platform ( ) { }
+57:
+58: bool isIntValue ( long long value@var4 ) const {
+59: return value@var4 >=@expr1073742271 min_value (@expr1073742272 int_bit@var14 ) &&@expr1073742273 value@var4 <=@expr1073742274 max_value (@expr1073742275 int_bit@var14 ) ;
+60: }
+61:
+62: bool isIntValue ( unsigned long long value@var5 ) const {
+63: unsigned long long intMax@var6 ; intMax@var6 =@expr1073742276 max_value (@expr1073742277 int_bit@var14 ) ;
+64: return value@var5 <=@expr1073742278 intMax@var6 ;
+65: }
+66:
+67: bool isLongValue ( long long value@var7 ) const {
+68: return value@var7 >=@expr1073742279 min_value (@expr1073742280 long_bit@var15 ) &&@expr1073742281 value@var7 <=@expr1073742282 max_value (@expr1073742283 long_bit@var15 ) ;
+69: }
+70:
+71: bool isLongValue ( unsigned long long value@var8 ) const {
+72: unsigned long long longMax@var9 ; longMax@var9 =@expr1073742284 max_value (@expr1073742285 long_bit@var15 ) ;
+73: return value@var8 <=@expr1073742286 longMax@var9 ;
+74: }
+75:
+76: bool isLongLongValue ( unsigned long long value@var10 ) const {
+77: unsigned long long longLongMax@var11 ; longLongMax@var11 =@expr1073742287 max_value (@expr1073742288 long_long_bit@var16 ) ;
+78: return value@var10 <=@expr1073742289 longLongMax@var11 ;
+79: }
+80:
+81: int char_bit@var12 ;
+82: int short_bit@var13 ;
+83: int int_bit@var14 ;
+84: int long_bit@var15 ;
+85: int long_long_bit@var16 ;
+86:
+87:
+88: int sizeof_bool@var17 ;
+89: int sizeof_short@var18 ;
+90: int sizeof_int@var19 ;
+91: int sizeof_long@var20 ;
+92: int sizeof_long_long@var21 ;
+93: int sizeof_float@var22 ;
+94: int sizeof_double@var23 ;
+95: int sizeof_long_double@var24 ;
+96: int sizeof_wchar_t@var25 ;
+97: int sizeof_size_t@var26 ;
+98: int sizeof_pointer@var27 ;
+99:
+100: char defaultSign@var28 ;
+101:
+102: enum PlatformType {
+103: Unspecified ,
+104: Native ,
+105: Win32A ,
+106: Win32W ,
+107: Win64 ,
+108: Unix32 ,
+109: Unix64 ,
+110: PlatformFile
+111: } ;
+112:
+113:
+114: PlatformType platformType@var29 ;
+115:
+116:
+117: bool platform ( PlatformType type@var30 ) ;
+118:
+|
+124:
+125: bool loadPlatformFile ( const char exename@var31 [ ] , const std :: string & filename@var32 ) ;
+126:
+127:
+128: bool loadFromXmlDocument ( const tinyxml2 :: XMLDocument * doc@var33 ) ;
+129:
+|
+133:
+134: bool isWindowsPlatform ( ) const {
+135: return platformType@var29 ==@expr1073742290 Win32A ||@expr1073742291
+136: platformType@var29 ==@expr1073742292 Win32W ||@expr1073742293
+137: platformType@var29 ==@expr1073742294 Win64 ;
+138: }
+139:
+140: const char * platformString ( ) const {
+141: return platformString (@expr1073742295 platformType@var29 ) ;
+142: }
+143:
+144: static const char * platformString ( PlatformType pt@var34 ) {
+145: switch (@expr1073742296 pt@var34 ) {
+146: case Unspecified :@expr473 ;
+147: return "Unspecified" ;
+148: case Native :@expr473 ;
+149: return "Native" ;
+150: case Win32A :@expr473 ;
+151: return "win32A" ;
+152: case Win32W :@expr473 ;
+153: return "win32W" ;
+154: case Win64 :@expr473 ;
+155: return "win64" ;
+156: case Unix32 :@expr473 ;
+157: return "unix32" ;
+158: case Unix64 :@expr473 ;
+159: return "unix64" ;
+160: case PlatformFile :@expr473 ;
+161: return "platformFile" ;
+162: default :@expr473 ;
+163: return "unknown" ;
+164: }
+165: }
+166:
+167: long long unsignedCharMax ( ) const {
+168: return max_value (@expr1073742306 char_bit@var12 +@expr1073742307 1 ) ;
+169: }
+170:
+171: long long signedCharMax ( ) const {
+172: return max_value (@expr1073742308 char_bit@var12 ) ;
+173: }
+174:
+175: long long signedCharMin ( ) const {
+176: return min_value (@expr1073742309 char_bit@var12 ) ;
+177: }
+178: } ;
+179:
+180: }
+
+##file cppcheck-2.8/lib/utils.h
+
+1:
+|
+31:
+32: struct SelectMapKeys {
+33: template < class Pair >
+34: Pair :: first_type operator() ( const Pair & p@var35 ) const {
+35: return p@var35 .@expr1073742310 first@var36 ;
+36: }
+37: } ;
+38:
+39: struct SelectMapValues {
+40: template < class Pair >
+41: Pair :: second_type operator() ( const Pair & p@var37 ) const {
+42: return p@var37 .@expr1073742311 second@var38 ;
+43: }
+44: } ;
+45:
+46: template < class Range , class T >
+47: bool contains ( const Range & r@var39 , const T & x@var40 )
+48: {
+49: return std ::@expr1073742312 find (@expr1073742313 r@var39 .@expr1073742314 begin (@expr1073742315 ) , r@var39 .@expr492 end (@expr493 ) , x@var40 ) !=@expr1073742318 r@var39 .@expr492 end (@expr493 ) ;
+50: }
+51:
+52: template < class T >
+53: bool contains ( const std :: initializer_list < T > & r@var41 , const T & x@var42 )
+54: {
+55: return std ::@expr1073742321 find (@expr1073742322 r@var41 .@expr1073742323 begin (@expr1073742324 ) , r@var41 .@expr501 end (@expr502 ) , x@var42 ) !=@expr1073742327 r@var41 .@expr501 end (@expr502 ) ;
+56: }
+57:
+58: template < class T , class U >
+59: bool contains ( const std :: initializer_list < T > & r@var43 , const U & x@var44 )
+60: {
+61: return std ::@expr1073742330 find (@expr1073742331 r@var43 .@expr1073742332 begin (@expr1073742333 ) , r@var43 .@expr510 end (@expr511 ) , x@var44 ) !=@expr1073742336 r@var43 .@expr510 end (@expr511 ) ;
+62: }
+63:
+64:
+65: struct EnumClassHash {
+66: template < typename T >
+67: unsigned long operator() ( T t@var45 ) const
+68: {
+69: return static_cast < unsigned long > (@expr1073742339 t@var45 ) ;
+70: }
+71: } ;
+72:
+73: bool endsWith ( const std :: string & str@var46 , char c@var47 )
+74: {
+75: return !@expr1073742340 str@var46 .@expr1073742341 empty (@expr1073742342 ) &&@expr1073742343 str@var46 .@expr1073742344 back (@expr1073742345 ) ==@expr1073742346 c@var47 ;
+76: }
+77:
+78: bool endsWith ( const std :: string & str@var48 , const char end@var49 [ ] , unsigned long endlen@var50 )
+79: {
+80: return (@expr523 str@var48 .@expr524 size (@expr525 ) >=@expr1073742350 endlen@var50 ) &&@expr1073742351 (@expr523 str@var48 .@expr1073742353 compare (@expr1073742354 str@var48 .@expr524 size (@expr525 ) -@expr1073742357 endlen@var50 , endlen@var50 , end@var49 ) ==@expr1073742358 0 ) ;
+81: }
+82:
+83: template < unsigned long N >
+84: bool endsWith ( const std :: string & str@var51 , const char ( & end@var52 ) [ N ] )
+85: {
+86: return endsWith (@expr1073742360 str@var51 , end@var52 , N@expr1073742359 -@expr1073742361 1 ) ;
+87: }
+88:
+89: static bool isPrefixStringCharLiteral ( const std :: string & str@var53 , char q@var54 , const std :: string & p@var55 )
+90: {
+91: if (@expr1073742362 !@expr1073742363 endsWith (@expr1073742364 str@var53 , q@var54 ) ) {
+92: return false ; }
+93: if (@expr1073742365 (@expr1073742366 str@var53 .@expr1073742367 length (@expr1073742368 ) +@expr1073742369 1 ) >@expr1073742370 p@var55 .@expr1073742371 length (@expr1073742372 ) &&@expr1073742373 (@expr1073742374 str@var53 .@expr1073742375 compare (@expr1073742376 0 , p@var55 .@expr1073742377 size (@expr1073742378 ) +@expr1073742379 1 , p@var55 +@expr1073742380 q@var54 ) ==@expr1073742381 0 ) ) {
+94: return true ; }
+95: return false ;
+96: }
+97:
+98: static bool isStringCharLiteral ( const std :: string & str@var56 , char q@var57 )
+99: {
+100: static const std ::@expr558 vector < std ::@expr558 string > suffixes@var58 {@expr1073742384 "" , "u8" , "u" , "U" , "L" } ;
+101: for (@expr1073742385 const std ::@expr558 string &@expr1073742387 p@var59 :@expr1073742388 suffixes@var58 ) {
+102: if (@expr1073742389 isPrefixStringCharLiteral (@expr1073742390 str@var56 , q@var57 , p@var59 ) ) {
+103: return true ; }
+104: }
+105: return false ;
+106: }
+107:
+108: static bool isStringLiteral ( const std :: string & str@var60 )
+109: {
+110: return isStringCharLiteral (@expr1073742391 str@var60 , '"' ) ;
+111: }
+112:
+113: static bool isCharLiteral ( const std :: string & str@var61 )
+114: {
+115: return isStringCharLiteral (@expr1073742392 str@var61 , '\'' ) ;
+116: }
+117:
+118: static std :: string getStringCharLiteral ( const std :: string & str@var62 , char q@var63 )
+119: {
+120: const unsigned long quotePos@var64 =@expr1073742393 str@var62 .@expr1073742394 find (@expr1073742395 q@var63 ) ;
+121: return str@var62 .@expr1073742396 substr (@expr1073742397 quotePos@var64 +@expr1073742398 1U , str@var62 .@expr1073742399 size (@expr1073742400 ) -@expr1073742401 quotePos@var64 -@expr1073742402 2U ) ;
+122: }
+123:
+124: static std :: string getStringLiteral ( const std :: string & str@var65 )
+125: {
+126: if (@expr1073742403 isStringLiteral (@expr1073742404 str@var65 ) ) {
+127: return getStringCharLiteral (@expr1073742405 str@var65 , '"' ) ; }
+128: return "" ;
+129: }
+130:
+131: static std :: string getCharLiteral ( const std :: string & str@var66 )
+132: {
+133: if (@expr1073742406 isCharLiteral (@expr1073742407 str@var66 ) ) {
+134: return getStringCharLiteral (@expr1073742408 str@var66 , '\'' ) ; }
+135: return "" ;
+136: }
+137:
+138: static const char * getOrdinalText ( int i@var67 )
+139: {
+140: if (@expr1073742409 i@var67 ==@expr1073742410 1 ) {
+141: return "st" ; }
+142: if (@expr1073742411 i@var67 ==@expr1073742412 2 ) {
+143: return "nd" ; }
+144: if (@expr1073742413 i@var67 ==@expr1073742414 3 ) {
+145: return "rd" ; }
+146: return "th" ;
+147: }
+148:
+149: int caseInsensitiveStringCompare ( const std :: string & lhs@var68 , const std :: string & rhs@var69 ) ;
+150:
+151: bool isValidGlobPattern ( const std :: string & pattern@var70 ) ;
+152:
+153: bool matchglob ( const std :: string & pattern@var71 , const std :: string & name@var72 ) ;
+154:
+155: bool matchglobs ( const std :: vector < std :: string > & patterns@var73 , const std :: string & name@var74 ) ;
+156:
+157: void strTolower ( std :: string & str@var75 ) ;
+
+##file cppcheck-2.8/lib/importproject.h
+
+1:
+|
+37:
+38: namespace cppcheck {
+39: struct stricmp {
+40: bool operator() ( const std :: string & lhs@var76 , const std :: string & rhs@var77 ) const {
+41: return caseInsensitiveStringCompare (@expr1073742415 lhs@var76 , rhs@var77 ) <@expr1073742416 0 ;
+42: }
+43: } ;
+44: }
+45:
+46: class Settings ;
+47:
+|
+50:
+51: class ImportProject {
+52: public:
+53: enum class Type {
+54: UNKNOWN ,
+55: MISSING ,
+56: FAILURE ,
+57: COMPILE_DB ,
+58: VS_SLN ,
+59: VS_VCXPROJ ,
+60: BORLAND ,
+61: CPPCHECK_GUI
+62: } ;
+63:
+64:
+65: struct FileSettings {
+66: FileSettings ( ) : platformType@var85 ( cppcheck :: Platform :: Unspecified ) , msc@var86 ( false ) , useMfc@var87 ( false ) { }
+67: std :: string cfg@var78 ;
+68: std :: string filename@var79 ;
+69: std :: string defines@var80 ;
+70: std :: string cppcheckDefines ( ) const {
+71: return defines@var80 +@expr1073742417 (@expr1073742418 msc@var86 ?@expr1073742419 ";_MSC_VER=1900" :@expr1073742420 "" ) +@expr1073742421 (@expr1073742422 useMfc@var87 ?@expr1073742423 ";__AFXWIN_H__=1" :@expr1073742424 "" ) ;
+72: }
+73: std :: set < std :: string > undefs@var81 ;
+74: std :: list < std :: string > includePaths@var82 ;
+75: std :: list < std :: string > systemIncludePaths@var83 ;
+76: std :: string standard@var84 ;
+77: cppcheck :: Platform :: PlatformType platformType@var85 ;
+78: bool msc@var86 ;
+79: bool useMfc@var87 ;
+80:
+81: void parseCommand ( std :: string command@var88 ) ;
+82: void setDefines ( std :: string defs@var89 ) ;
+83: void setIncludePaths ( const std :: string & basepath@var90 , const std :: list < std :: string > & in@var91 , std :: map < std :: string , std :: string , cppcheck :: stricmp > & variables@var92 ) ;
+84: } ;
+85: std :: list < FileSettings > fileSettings@var93 ;
+86: Type projectType@var94 ;
+87:
+88: ImportProject ( ) ;
+89:
+90: void selectOneVsConfig ( cppcheck :: Platform :: PlatformType platform@var95 ) ;
+91:
+92: std :: list < std :: string > getVSConfigs ( ) ;
+93:
+94:
+95: struct Anonymous0 {
+96: std :: string analyzeAllVsConfigs@var96 ;
+97: std :: vector < std :: string > pathNames@var97 ;
+98: std :: list < std :: string > libraries@var98 ;
+99: std :: list < std :: string > excludedPaths@var99 ;
+100: std :: list < std :: string > checkVsConfigs@var100 ;
+101: std :: string projectFile@var101 ;
+102: std :: string platform@var102 ;
+103: } ; struct Anonymous0 guiProject@var103 ;
+104:
+105: void ignorePaths ( const std :: vector < std :: string > & ipaths@var104 ) ;
+106: void ignoreOtherConfigs ( const std :: string & cfg@var105 ) ;
+107:
+108: Type import ( const std :: string & filename@var106 , Settings * settings@var107 = nullptr ) ;
+109: protected:
+110: bool importCompileCommands ( std :: istream & istr@var108 ) ;
+111: bool importCppcheckGuiProject ( std :: istream & istr@var109 , Settings * settings@var110 ) ;
+112: virtual bool sourceFileExists ( const std :: string & file@var111 ) ;
+113: private:
+114: bool importSln ( std :: istream & istr@var112 , const std :: string & path@var113 , const std :: vector < std :: string > & fileFilters@var114 ) ;
+115: bool importVcxproj ( const std :: string & filename@var115 , std :: map < std :: string , std :: string , cppcheck :: stricmp > & variables@var116 , const std :: string & additionalIncludeDirectories@var117 , const std :: vector < std :: string > & fileFilters@var118 ) ;
+116: bool importBcb6Prj ( const std :: string & projectFilename@var119 ) ;
+117:
+118: static void printError ( const std :: string & message@var120 ) ;
+119:
+120: void setRelativePaths ( const std :: string & filename@var121 ) ;
+121:
+122: std :: string mPath@var122 ;
+123: std :: set < std :: string > mAllVSConfigs@var123 ;
+124: } ;
+125:
+126:
+127: namespace CppcheckXml {
+128: const char ProjectElementName@var124 [ 8 ] = "project" ;
+129: const char ProjectVersionAttrib@var125 [ 8 ] = "version" ;
+130: const char ProjectFileVersion@var126 [ 2 ] = "1" ;
+131: const char BuildDirElementName@var127 [ 9 ] = "builddir" ;
+132: const char ImportProjectElementName@var128 [ 14 ] = "importproject" ;
+133: const char AnalyzeAllVsConfigsElementName@var129 [ 23 ] = "analyze-all-vs-configs" ;
+134: const char Parser@var130 [ 7 ] = "parser" ;
+135: const char BugHunting@var131 [ 12 ] = "bug-hunting" ;
+136: const char IncludeDirElementName@var132 [ 11 ] = "includedir" ;
+137: const char DirElementName@var133 [ 4 ] = "dir" ;
+138: const char DirNameAttrib@var134 [ 5 ] = "name" ;
+139: const char DefinesElementName@var135 [ 8 ] = "defines" ;
+140: const char DefineName@var136 [ 7 ] = "define" ;
+141: const char DefineNameAttrib@var137 [ 5 ] = "name" ;
+142: const char UndefinesElementName@var138 [ 10 ] = "undefines" ;
+143: const char UndefineName@var139 [ 9 ] = "undefine" ;
+144: const char PathsElementName@var140 [ 6 ] = "paths" ;
+145: const char PathName@var141 [ 4 ] = "dir" ;
+146: const char PathNameAttrib@var142 [ 5 ] = "name" ;
+147: const char RootPathName@var143 [ 5 ] = "root" ;
+148: const char RootPathNameAttrib@var144 [ 5 ] = "name" ;
+149: const char IgnoreElementName@var145 [ 7 ] = "ignore" ;
+150: const char IgnorePathName@var146 [ 5 ] = "path" ;
+151: const char IgnorePathNameAttrib@var147 [ 5 ] = "name" ;
+152: const char ExcludeElementName@var148 [ 8 ] = "exclude" ;
+153: const char ExcludePathName@var149 [ 5 ] = "path" ;
+154: const char ExcludePathNameAttrib@var150 [ 5 ] = "name" ;
+155: const char FunctionContracts@var151 [ 19 ] = "function-contracts" ;
+156: const char VariableContractsElementName@var152 [ 19 ] = "variable-contracts" ;
+157: const char LibrariesElementName@var153 [ 10 ] = "libraries" ;
+158: const char LibraryElementName@var154 [ 8 ] = "library" ;
+159: const char PlatformElementName@var155 [ 9 ] = "platform" ;
+160: const char SuppressionsElementName@var156 [ 13 ] = "suppressions" ;
+161: const char SuppressionElementName@var157 [ 12 ] = "suppression" ;
+162: const char AddonElementName@var158 [ 6 ] = "addon" ;
+163: const char AddonsElementName@var159 [ 7 ] = "addons" ;
+164: const char ToolElementName@var160 [ 5 ] = "tool" ;
+165: const char ToolsElementName@var161 [ 6 ] = "tools" ;
+166: const char TagsElementName@var162 [ 5 ] = "tags" ;
+167: const char TagElementName@var163 [ 4 ] = "tag" ;
+168: const char TagWarningsElementName@var164 [ 13 ] = "tag-warnings" ;
+169: const char TagAttributeName@var165 [ 4 ] = "tag" ;
+170: const char WarningElementName@var166 [ 8 ] = "warning" ;
+171: const char HashAttributeName@var167 [ 5 ] = "hash" ;
+172: const char CheckHeadersElementName@var168 [ 14 ] = "check-headers" ;
+173: const char CheckUnusedTemplatesElementName@var169 [ 23 ] = "check-unused-templates" ;
+174: const char MaxCtuDepthElementName@var170 [ 14 ] = "max-ctu-depth" ;
+175: const char MaxTemplateRecursionElementName@var171 [ 23 ] = "max-template-recursion" ;
+176: const char CheckUnknownFunctionReturn@var172 [ 37 ] = "check-unknown-function-return-values" ;
+177: const char ClangTidy@var173 [ 11 ] = "clang-tidy" ;
+178: const char Name@var174 [ 5 ] = "name" ;
+179: const char VSConfigurationElementName@var175 [ 18 ] = "vs-configurations" ;
+180: const char VSConfigurationName@var176 [ 7 ] = "config" ;
+181: }
+
+##file cppcheck-2.8/lib/analyzerinfo.h
+
+1:
+|
+30:
+31: class ErrorMessage ;
+32:
+|
+48:
+49: class AnalyzerInformation {
+50: public:
+51: ~ AnalyzerInformation ( ) ;
+52:
+53: static void writeFilesTxt ( const std :: string & buildDir@var177 , const std :: list < std :: string > & sourcefiles@var178 , const std :: string & userDefines@var179 , const std :: list < ImportProject :: FileSettings > & fileSettings@var180 ) ;
+54:
+55:
+56: void close ( ) ;
+57: bool analyzeFile ( const std :: string & buildDir@var181 , const std :: string & sourcefile@var182 , const std :: string & cfg@var183 , unsigned long long checksum@var184 , std :: list < ErrorMessage > * errors@var185 ) ;
+58: void reportErr ( const ErrorMessage & msg@var186 , bool verbose@var187 ) ;
+59: void setFileInfo ( const std :: string & check@var188 , const std :: string & fileInfo@var189 ) ;
+60: static std :: string getAnalyzerInfoFile ( const std :: string & buildDir@var190 , const std :: string & sourcefile@var191 , const std :: string & cfg@var192 ) ;
+61: private:
+62: std :: ofstream mOutputStream@var193 ;
+63: std :: string mAnalyzerInfoFile@var194 ;
+64: } ;
+
+##file cppcheck-2.8/lib/errortypes.h
+
+1:
+|
+31:
+32: class Token ;
+33:
+34:
+35: struct InternalError {
+36: enum Type { AST , SYNTAX , UNKNOWN_MACRO , INTERNAL , LIMIT , INSTANTIATION } ;
+37: InternalError ( const Token * tok@var195 , const std :: string & errorMsg@var196 , Type type@var197 = INTERNAL ) ;
+38: const Token * token@var198 ;
+39: std :: string errorMessage@var199 ;
+40: Type type@var200 ;
+41: std :: string id@var201 ;
+42: } ;
+43:
+44: class Certainty {
+45: public:
+46: enum CertaintyLevel {
+47: normal , inconclusive , safe , experimental
+48: } ;
+49: } ;
+50:
+51: class Checks {
+52: public:
+53: enum CheckList {
+54: unusedFunction , missingInclude , internalCheck
+55: } ;
+56: } ;
+57:
+58:
+59: class Severity {
+60: public:
+61:
+62:
+63:
+64: enum SeverityType {
+65:
+66:
+67:
+68: none ,
+69:
+|
+73:
+74: error ,
+75:
+|
+79:
+80: warning ,
+81:
+|
+86:
+87: style ,
+88:
+|
+92:
+93: performance ,
+94:
+|
+100:
+101: portability ,
+102:
+|
+107:
+108: information ,
+109:
+|
+112:
+113: debug
+114: } ;
+115:
+116: static std :: string toString ( SeverityType severity@var202 ) ;
+117: static SeverityType fromString ( const std :: string & severity@var203 ) ;
+118: } ;
+119:
+120: struct CWE {
+121: explicit CWE ( unsigned short cweId@var204 ) : id@var205 ( cweId@var204 ) { }
+122: unsigned short id@var205 ;
+123: } ;
+
+##file cppcheck-2.8/lib/suppressions.h
+
+1:
+|
+34:
+35: class Tokenizer ;
+36:
+37:
+38: class Suppressions {
+39: public:
+40:
+41: struct ErrorMessage {
+42: unsigned long hash@var206 ;
+43: std :: string errorId@var207 ;
+44: void setFileName ( const std :: string & s@var208 ) ;
+45: const std :: string & getFileName ( ) const {
+46: return mFileName@var212 ;
+47: }
+48: int lineNumber@var209 ;
+49: Certainty :: CertaintyLevel certainty@var210 ;
+50: std :: string symbolNames@var211 ;
+51: private:
+52: std :: string mFileName@var212 ;
+53: } ;
+54:
+55: struct Suppression {
+56: Suppression ( ) : lineNumber@var246 ( NO_LINE ) , hash@var248 ( 0 ) , thisAndNextLine@var249 ( false ) , matched@var250 ( false ) , checked@var251 ( false ) { }
+57: Suppression ( const Suppression & other@var213 ) {
+58: *@expr1073742425 this@expr1073742426 =@expr1073742427 other@var213 ;
+59: }
+60: Suppression ( const std :: string & id@var214 , const std :: string & file@var215 , int line@var216 = NO_LINE ) : errorId@var244 ( id@var214 ) , fileName@var245 ( file@var215 ) , lineNumber@var246 ( line@var216 ) , hash@var248 ( 0 ) , thisAndNextLine@var249 ( false ) , matched@var250 ( false ) , checked@var251 ( false ) { }
+61:
+62: Suppression & operator= ( const Suppression & other@var217 ) {
+63: errorId@var244 =@expr1073742428 other@var217 .@expr1073742429 errorId@var218 ;
+64: fileName@var245 =@expr1073742430 other@var217 .@expr1073742431 fileName@var219 ;
+65: lineNumber@var246 =@expr1073742432 other@var217 .@expr1073742433 lineNumber@var220 ;
+66: symbolName@var247 =@expr1073742434 other@var217 .@expr1073742435 symbolName@var221 ;
+67: hash@var248 =@expr1073742436 other@var217 .@expr1073742437 hash@var222 ;
+68: thisAndNextLine@var249 =@expr1073742438 other@var217 .@expr1073742439 thisAndNextLine@var223 ;
+69: matched@var250 =@expr1073742440 other@var217 .@expr1073742441 matched@var224 ;
+70: checked@var251 =@expr1073742442 other@var217 .@expr1073742443 checked@var225 ;
+71: return *@expr1073742444 this@expr1073742445 ;
+72: }
+73:
+74: bool operator< ( const Suppression & other@var226 ) const {
+75: if (@expr1073742446 errorId@var244 !=@expr1073742447 other@var226 .@expr624 errorId@var227 ) {
+76: return errorId@var244 <@expr1073742449 other@var226 .@expr624 errorId@var227 ; }
+77: if (@expr1073742451 lineNumber@var246 <@expr1073742452 other@var226 .@expr1073742453 lineNumber@var228 ) {
+78: return true ; }
+79: if (@expr1073742454 fileName@var245 !=@expr1073742455 other@var226 .@expr632 fileName@var229 ) {
+80: return fileName@var245 <@expr1073742457 other@var226 .@expr632 fileName@var229 ; }
+81: if (@expr1073742459 symbolName@var247 !=@expr1073742460 other@var226 .@expr637 symbolName@var230 ) {
+82: return symbolName@var247 <@expr1073742462 other@var226 .@expr637 symbolName@var230 ; }
+83: if (@expr1073742464 hash@var248 !=@expr1073742465 other@var226 .@expr642 hash@var231 ) {
+84: return hash@var248 <@expr1073742467 other@var226 .@expr642 hash@var231 ; }
+85: if (@expr1073742469 thisAndNextLine@var249 !=@expr1073742470 other@var226 .@expr1073742471 thisAndNextLine@var232 ) {
+86: return thisAndNextLine@var249 ; }
+87: return false ;
+88: }
+89:
+|
+95:
+96: bool parseComment ( std :: string comment@var233 , std :: string * errorMessage@var234 ) ;
+97:
+98: bool isSuppressed ( const ErrorMessage & errmsg@var235 ) const ;
+99:
+100: bool isMatch ( const ErrorMessage & errmsg@var236 ) ;
+101:
+102: std :: string getText ( ) const ;
+103:
+104: bool isLocal ( ) const {
+105: return !@expr1073742473 fileName@var245 .@expr1073742474 empty (@expr1073742475 ) &&@expr1073742476 fileName@var245 .@expr1073742477 find_first_of (@expr1073742478 "?*" ) ==@expr1073742479 std ::@expr1073742480 string ::@expr1073742481 npos@expr1073742472 ;
+106: }
+107:
+108: bool isSameParameters ( const Suppression & other@var237 ) const {
+109: return errorId@var244 ==@expr1073742482 other@var237 .@expr1073742483 errorId@var238 &&@expr1073742484
+110: fileName@var245 ==@expr1073742485 other@var237 .@expr1073742486 fileName@var239 &&@expr1073742487
+111: lineNumber@var246 ==@expr1073742488 other@var237 .@expr1073742489 lineNumber@var240 &&@expr1073742490
+112: symbolName@var247 ==@expr1073742491 other@var237 .@expr1073742492 symbolName@var241 &&@expr1073742493
+113: hash@var248 ==@expr1073742494 other@var237 .@expr1073742495 hash@var242 &&@expr1073742496
+114: thisAndNextLine@var249 ==@expr1073742497 other@var237 .@expr1073742498 thisAndNextLine@var243 ;
+115: }
+116:
+117: std :: string errorId@var244 ;
+118: std :: string fileName@var245 ;
+119: int lineNumber@var246 ;
+120: std :: string symbolName@var247 ;
+121: unsigned long hash@var248 ;
+122: bool thisAndNextLine@var249 ;
+123: bool matched@var250 ;
+124: bool checked@var251 ;
+125:
+126: enum Anonymous1 { NO_LINE = -1 } ;
+127: } ;
+128:
+|
+133:
+134: std :: string parseFile ( std :: istream & istr@var252 ) ;
+135:
+|
+140:
+141: std :: string parseXmlFile ( const char * filename@var253 ) ;
+142:
+|
+148:
+149: static std :: vector < Suppression > parseMultiSuppressComment ( const std :: string & comment@var254 , std :: string * errorMessage@var255 ) ;
+150:
+|
+155:
+156: std :: string addSuppressionLine ( const std :: string & line@var256 ) ;
+157:
+|
+163:
+164: std :: string addSuppression ( const Suppression & suppression@var257 ) ;
+165:
+|
+170:
+171: std :: string addSuppressions ( const std :: list < Suppression > & suppressions@var258 ) ;
+172:
+|
+177:
+178: bool isSuppressed ( const ErrorMessage & errmsg@var259 ) ;
+179:
+|
+184:
+185: bool isSuppressedLocal ( const ErrorMessage & errmsg@var260 ) ;
+186:
+|
+190:
+191: void dump ( std :: ostream & out@var261 ) const ;
+192:
+|
+196:
+197: std :: list < Suppression > getUnmatchedLocalSuppressions ( const std :: string & file@var262 , const bool unusedFunctionChecking@var263 ) const ;
+198:
+|
+202:
+203: std :: list < Suppression > getUnmatchedGlobalSuppressions ( const bool unusedFunctionChecking@var264 ) const ;
+204:
+|
+208:
+209: const std :: list < Suppression > & getSuppressions ( ) const ;
+210:
+|
+213:
+214: void markUnmatchedInlineSuppressionsAsChecked ( const Tokenizer & tokenizer@var265 ) ;
+215:
+216: private:
+217:
+218: std :: list < Suppression > mSuppressions@var266 ;
+219: } ;
+
+##file cppcheck-2.8/lib/color.h
+
+1:
+|
+26:
+27: enum class Color {
+28: Reset = 0 ,
+29: Bold = 1 ,
+30: Dim = 2 ,
+31: FgRed = 31 ,
+32: FgGreen = 32 ,
+33: FgBlue = 34 ,
+34: FgMagenta = 35 ,
+35: FgDefault = 39 ,
+36: BgRed = 41 ,
+37: BgGreen = 42 ,
+38: BgBlue = 44 ,
+39: BgDefault = 49
+40: } ;
+41: std :: ostream & operator<< ( std :: ostream & os@var267 , const Color & c@var268 ) ;
+42:
+43: std :: string toString ( const Color & c@var269 ) ;
+
+##file cppcheck-2.8/lib/errorlogger.h
+
+1:
+|
+39:
+40: static const struct CWE CWE_USE_OF_UNINITIALIZED_VARIABLE@var270 ( 457U ) ;
+41: static const struct CWE CWE_NULL_POINTER_DEREFERENCE@var271 ( 476U ) ;
+42: static const struct CWE CWE_USE_OF_POTENTIALLY_DANGEROUS_FUNCTION@var272 ( 676U ) ;
+43: static const struct CWE CWE_INCORRECT_CALCULATION@var273 ( 682U ) ;
+44: static const struct CWE CWE_EXPIRED_POINTER_DEREFERENCE@var274 ( 825U ) ;
+45:
+46:
+47: class Token ;
+48: class TokenList ;
+49:
+50: namespace tinyxml2 {
+51: class XMLElement ;
+52: }
+53:
+|
+59:
+60: class ErrorMessage {
+61: public:
+62:
+|
+66:
+67: class FileLocation {
+68: public:
+69: FileLocation ( )
+70: : fileIndex@var290 ( 0 ) , line@var291 ( 0 ) , column@var292 ( 0 ) { }
+71:
+72: FileLocation ( const std :: string & file@var275 , int line@var276 , unsigned int column@var277 )
+73: : fileIndex@var290 ( 0 ) , line@var291 ( line@var276 ) , column@var292 ( column@var277 ) , mOrigFileName@var294 ( file@var275 ) , mFileName@var295 ( file@var275 ) { }
+74:
+75: FileLocation ( const std :: string & file@var278 , const std :: string & info@var279 , int line@var280 , unsigned int column@var281 )
+76: : fileIndex@var290 ( 0 ) , line@var291 ( line@var280 ) , column@var292 ( column@var281 ) , mOrigFileName@var294 ( file@var278 ) , mFileName@var295 ( file@var278 ) , mInfo@var296 ( info@var279 ) { }
+77:
+78: FileLocation ( const Token * tok@var282 , const TokenList * tokenList@var283 ) ;
+79: FileLocation ( const Token * tok@var284 , const std :: string & info@var285 , const TokenList * tokenList@var286 ) ;
+80:
+|
+85:
+86: std :: string getfile ( bool convert@var287 = true ) const ;
+87:
+|
+92:
+93: std :: string getOrigFile ( bool convert@var288 = true ) const ;
+94:
+|
+98:
+99: void setfile ( const std :: string & file@var289 ) ;
+100:
+|
+103:
+104: std :: string stringify ( ) const ;
+105:
+106: unsigned int fileIndex@var290 ;
+107: int line@var291 ;
+108: unsigned int column@var292 ;
+109:
+110: std :: string getinfo ( ) const {
+111: return mInfo@var296 ;
+112: }
+113: void setinfo ( const std :: string & i@var293 ) {
+114: mInfo@var296 =@expr1073742499 i@var293 ;
+115: }
+116:
+117: private:
+118: std :: string mOrigFileName@var294 ;
+119: std :: string mFileName@var295 ;
+120: std :: string mInfo@var296 ;
+121: } ;
+122:
+123: ErrorMessage ( const std :: list < FileLocation > & callStack@var297 ,
+124: const std :: string & file1@var298 ,
+125: Severity :: SeverityType severity@var299 ,
+126: const std :: string & msg@var300 ,
+127: const std :: string & id@var301 , Certainty :: CertaintyLevel certainty@var302 ) ;
+128: ErrorMessage ( const std :: list < FileLocation > & callStack@var303 ,
+129: const std :: string & file1@var304 ,
+130: Severity :: SeverityType severity@var305 ,
+131: const std :: string & msg@var306 ,
+132: const std :: string & id@var307 ,
+133: const CWE & cwe@var308 ,
+134: Certainty :: CertaintyLevel certainty@var309 ) ;
+135: ErrorMessage ( const std :: list < const Token * > & callstack@var310 ,
+136: const TokenList * list@var311 ,
+137: Severity :: SeverityType severity@var312 ,
+138: const std :: string & id@var313 ,
+139: const std :: string & msg@var314 ,
+140: Certainty :: CertaintyLevel certainty@var315 ) ;
+141: ErrorMessage ( const std :: list < const Token * > & callstack@var316 ,
+142: const TokenList * list@var317 ,
+143: Severity :: SeverityType severity@var318 ,
+144: const std :: string & id@var319 ,
+145: const std :: string & msg@var320 ,
+146: const CWE & cwe@var321 ,
+147: Certainty :: CertaintyLevel certainty@var322 ) ;
+148: ErrorMessage ( const std :: list < std :: pair < const Token * , std :: string > > & errorPath@var323 ,
+149: const TokenList * tokenList@var324 ,
+150: Severity :: SeverityType severity@var325 ,
+151: const char id@var326 [ ] ,
+152: const std :: string & msg@var327 ,
+153: const CWE & cwe@var328 ,
+154: Certainty :: CertaintyLevel certainty@var329 ) ;
+155: ErrorMessage ( ) ;
+156: explicit ErrorMessage ( const tinyxml2 :: XMLElement * const errmsg@var330 ) ;
+157:
+|
+160:
+161: std :: string toXML ( ) const ;
+162:
+163: static std :: string getXMLHeader ( ) ;
+164: static std :: string getXMLFooter ( ) ;
+165:
+|
+174:
+175: std :: string toString ( bool verbose@var331 ,
+176: const std :: string & templateFormat@var332 = emptyString@var1 ,
+177: const std :: string & templateLocation@var333 = emptyString@var1 ) const ;
+178:
+179: std :: string serialize ( ) const ;
+180: bool deserialize ( const std :: string & data@var334 ) ;
+181:
+182: std :: list < FileLocation > callStack@var335 ;
+183: std :: string id@var336 ;
+184:
+185:
+186: std :: string file0@var337 ;
+187:
+188: std :: string function@var338 ;
+189:
+190: bool incomplete@var339 ;
+191:
+192: Severity :: SeverityType severity@var340 ;
+193: CWE cwe@var341 ;
+194: Certainty :: CertaintyLevel certainty@var342 ;
+195:
+196:
+197: unsigned long hash@var343 ;
+198:
+199:
+200: void setmsg ( const std :: string & msg@var344 ) ;
+201:
+202:
+203: const std :: string & shortMessage ( ) const {
+204: return mShortMessage@var346 ;
+205: }
+206:
+207:
+208: const std :: string & verboseMessage ( ) const {
+209: return mVerboseMessage@var347 ;
+210: }
+211:
+212:
+213: const std :: string & symbolNames ( ) const {
+214: return mSymbolNames@var348 ;
+215: }
+216:
+217: Suppressions :: ErrorMessage toSuppressionsErrorMessage ( ) const ;
+218:
+219: private:
+220: static std :: string fixInvalidChars ( const std :: string & raw@var345 ) ;
+221:
+222:
+223: std :: string mShortMessage@var346 ;
+224:
+225:
+226: std :: string mVerboseMessage@var347 ;
+227:
+228:
+229: std :: string mSymbolNames@var348 ;
+230: } ;
+231:
+|
+235:
+236: class ErrorLogger {
+237: protected:
+238: std :: ofstream plistFile@var349 ;
+239: public:
+240: ErrorLogger ( ) { }
+241: virtual ~ ErrorLogger ( ) {
+242: if (@expr1073742500 plistFile@var349 .@expr1073742501 is_open (@expr1073742502 ) ) {
+243: plistFile@var349 <<@expr1073742503 ErrorLogger ::@expr1073742504 plistFooter (@expr1073742505 ) ;
+244: plistFile@var349 .@expr1073742506 close (@expr1073742507 ) ;
+245: }
+246: }
+247:
+|
+253:
+254: virtual void reportOut ( const std :: string & outmsg@var350 , Color c@var351 = Color :: Reset ) = 0 ;
+255:
+|
+261:
+262: virtual void reportErr ( const ErrorMessage & msg@var352 ) = 0 ;
+263:
+|
+269:
+270: virtual void reportProgress ( const std :: string & filename@var353 , const char stage@var354 [ ] , const unsigned long value@var355 ) {
+271: (@expr1073742508 void ) filename@var353 ;
+272: (@expr1073742509 void ) stage@var354 ;
+273: (@expr1073742510 void ) value@var355 ;
+274: }
+275:
+|
+279:
+280: virtual void reportInfo ( const ErrorMessage & msg@var356 ) {
+281: reportErr (@expr1073742511 msg@var356 ) ;
+282: }
+283:
+|
+288:
+289: bool reportUnmatchedSuppressions ( const std :: list < Suppressions :: Suppression > & unmatched@var357 ) ;
+290:
+291: static std :: string callStackToString ( const std :: list < ErrorMessage :: FileLocation > & callStack@var358 ) ;
+292:
+|
+297:
+298: static std :: string toxml ( const std :: string & str@var359 ) ;
+299:
+300: static std :: string plistHeader ( const std :: string & version@var360 , const std :: vector < std :: string > & files@var361 ) ;
+301: static std :: string plistData ( const ErrorMessage & msg@var362 ) ;
+302: static const char * plistFooter ( ) {
+303: return " </array>\r\n</dict>\r\n</plist>"
+304:
+305: ;
+306: }
+307: } ;
+308:
+309:
+310: std :: string replaceStr ( std :: string s@var363 , const std :: string & from@var364 , const std :: string & to@var365 ) ;
+
+##file cppcheck-2.8/lib/path.h
+
+1:
+|
+39:
+40: class Path {
+41: public:
+42:
+|
+46:
+47: static std :: string toNativeSeparators ( std :: string path@var366 ) ;
+48:
+|
+53:
+54: static std :: string fromNativeSeparators ( std :: string path@var367 ) ;
+55:
+|
+60:
+61: static std :: string simplifyPath ( std :: string originalPath@var368 ) ;
+62:
+|
+67:
+68: static std :: string getPathFromFilename ( const std :: string & filename@var369 ) ;
+69:
+|
+76:
+77: static bool sameFileName ( const std :: string & fname1@var370 , const std :: string & fname2@var371 ) ;
+78:
+|
+83:
+84: static std :: string removeQuotationMarks ( std :: string path@var372 ) ;
+85:
+|
+90:
+91: static std :: string getFilenameExtension ( const std :: string & path@var373 ) ;
+92:
+|
+97:
+98: static std :: string getFilenameExtensionInLowerCase ( const std :: string & path@var374 ) ;
+99:
+|
+103:
+104: static std :: string getCurrentPath ( ) ;
+105:
+|
+110:
+111: static bool isAbsolute ( const std :: string & path@var375 ) ;
+112:
+|
+118:
+119: static std :: string getRelativePath ( const std :: string & absolutePath@var376 , const std :: vector < std :: string > & basePaths@var377 ) ;
+120:
+|
+125:
+126: static std :: string getAbsoluteFilePath ( const std :: string & filePath@var378 ) ;
+127:
+|
+133:
+134: static bool acceptFile ( const std :: string & filename@var379 ) {
+135: const std ::@expr1073742512 set < std ::@expr1073742513 string > extra@var380 ;
+136: return acceptFile (@expr1073742514 filename@var379 , extra@var380 ) ;
+137: }
+138:
+|
+145:
+146: static bool acceptFile ( const std :: string & path@var381 , const std :: set < std :: string > & extra@var382 ) ;
+147:
+|
+152:
+153: static bool isC ( const std :: string & path@var383 ) ;
+154:
+|
+159:
+160: static bool isCPP ( const std :: string & path@var384 ) ;
+161:
+|
+166:
+167: static bool isHeader ( const std :: string & path@var385 ) ;
+168:
+|
+173:
+174: static std :: string stripDirectoryPart ( const std :: string & file@var386 ) ;
+175:
+|
+180:
+181: static bool fileExists ( const std :: string & file@var387 ) ;
+182: } ;
+
+##file cppcheck-2.8/lib/analyzerinfo.cpp
+
+1:
+|
+29:
+30: AnalyzerInformation :: ~ AnalyzerInformation ( )
+31: {
+32: close (@expr1073742515 ) ;
+33: }
+34:
+35: static std :: string getFilename ( const std :: string & fullpath@var388 )
+36: {
+37: std ::@expr693 string ::@expr1073742518 size_type pos1@var389 ; pos1@var389 =@expr1073742519 fullpath@var388 .@expr1073742520 find_last_of (@expr1073742521 "/\\" ) ;
+38: pos1@var389 =@expr1073742522 (@expr1073742523 pos1@var389 ==@expr1073742524 std ::@expr693 string ::@expr702 npos@expr692 ) ?@expr1073742527 0U :@expr1073742528 (@expr1073742529 pos1@var389 +@expr1073742530 1U ) ;
+39: std ::@expr693 string ::@expr1073742532 size_type pos2@var390 ; pos2@var390 =@expr1073742533 fullpath@var388 .@expr1073742534 rfind (@expr1073742535 '.' ) ;
+40: if (@expr1073742536 pos2@var390 <@expr1073742537 pos1@var389 ) {
+41: pos2@var390 =@expr1073742538 std ::@expr693 string ::@expr702 npos@expr692 ; }
+42: if (@expr1073742541 pos2@var390 !=@expr1073742542 std ::@expr693 string ::@expr702 npos@expr692 ) {
+43: pos2@var390 =@expr1073742545 pos2@var390 -@expr1073742546 pos1@var389 ; }
+44: return fullpath@var388 .@expr1073742547 substr (@expr1073742548 pos1@var389 , pos2@var390 ) ;
+45: }
+46:
+47: void AnalyzerInformation :: writeFilesTxt ( const std :: string & buildDir@var391 , const std :: list < std :: string > & sourcefiles@var392 , const std :: string & userDefines@var393 , const std :: list < ImportProject :: FileSettings > & fileSettings@var394 )
+48: {
+49: std ::@expr1073742550 map < std ::@expr727 string , unsigned int > fileCount@var395 ;
+50:
+51: const std ::@expr1073742552 string filesTxt@var396 (@expr1073742553 buildDir@var391 +@expr1073742554 "/files.txt" ) ;
+52: std ::@expr1073742555 ofstream fout@var397 (@expr1073742556 filesTxt@var396 ) ;
+53: for (@expr1073742557 const std ::@expr727 string &@expr735 f@var398 :@expr1073742560 sourcefiles@var392 ) {
+54: const std ::@expr727 string afile@var399 =@expr1073742562 getFilename (@expr1073742563 f@var398 ) ;
+55: fout@var397 <<@expr740 afile@var399 <<@expr741 ".a" <<@expr1073742566 (@expr1073742567 ++@expr1073742568 fileCount@var395 [@expr745 afile@var399 ] ) <<@expr1073742570 "::" <<@expr1073742571 Path ::@expr748 simplifyPath (@expr749 Path ::@expr750 fromNativeSeparators (@expr751 f@var398 ) ) <<@expr1073742576 '\n' ;
+56: if (@expr1073742577 !@expr1073742578 userDefines@var393 .@expr1073742579 empty (@expr1073742580 ) ) {
+57: fout@var397 <<@expr740 afile@var399 <<@expr741 ".a" <<@expr1073742583 (@expr1073742584 ++@expr1073742585 fileCount@var395 [@expr745 afile@var399 ] ) <<@expr1073742587 ":" <<@expr1073742588 userDefines@var393 <<@expr1073742589 ":" <<@expr1073742590 Path ::@expr748 simplifyPath (@expr749 Path ::@expr750 fromNativeSeparators (@expr751 f@var398 ) ) <<@expr1073742595 '\n' ; }
+58: }
+59:
+60: for (@expr1073742596 const ImportProject ::@expr727 FileSettings &@expr735 fs@var400 :@expr1073742599 fileSettings@var394 ) {
+61: const std ::@expr727 string afile@var401 =@expr1073742601 getFilename (@expr1073742602 fs@var400 .@expr779 filename@var402 ) ;
+62: fout@var397 <<@expr1073742604 afile@var401 <<@expr1073742605 ".a" <<@expr1073742606 (@expr1073742607 ++@expr1073742608 fileCount@var395 [@expr1073742609 afile@var401 ] ) <<@expr1073742610 ":" <<@expr1073742611 fs@var400 .@expr1073742612 cfg@var403 <<@expr1073742613 ":" <<@expr1073742614 Path ::@expr748 simplifyPath (@expr1073742616 Path ::@expr750 fromNativeSeparators (@expr1073742618 fs@var400 .@expr779 filename@var402 ) ) <<@expr1073742620 std ::@expr1073742621 endl@expr1073742549 ;
+63: }
+64: }
+65:
+66: void AnalyzerInformation :: close ( )
+67: {
+68: mAnalyzerInfoFile@var194 .@expr1073742622 clear (@expr1073742623 ) ;
+69: if (@expr1073742624 mOutputStream@var193 .@expr1073742625 is_open (@expr1073742626 ) ) {
+70: mOutputStream@var193 <<@expr1073742627 "</analyzerinfo>\n" ;
+71: mOutputStream@var193 .@expr1073742628 close (@expr1073742629 ) ;
+72: }
+73: }
+74:
+75: static bool skipAnalysis ( const std :: string & analyzerInfoFile@var404 , unsigned long long checksum@var405 , std :: list < ErrorMessage > * errors@var406 )
+76: {
+77: tinyxml2 ::@expr1073742632 XMLDocument doc@var407 ;
+78: const tinyxml2 ::@expr809 XMLError error@var408 =@expr1073742634 doc@var407 .@expr1073742635 LoadFile (@expr1073742636 analyzerInfoFile@var404 .@expr1073742637 c_str (@expr1073742638 ) ) ;
+79: if (@expr1073742639 error@var408 !=@expr1073742640 tinyxml2 ::@expr1073742641 XML_SUCCESS@expr1073742630 ) {
+80: return false ; }
+81:
+82: const tinyxml2 ::@expr1073742642 XMLElement@expr1073742631 * const rootNode@var409 ; rootNode@var409 =@expr1073742643 doc@var407 .@expr1073742644 FirstChildElement (@expr1073742645 ) ;
+83: if (@expr1073742646 rootNode@var409 ==@expr1073742647 nullptr ) {
+84: return false ; }
+85:
+86: const char * attr@var410 ; attr@var410 =@expr1073742648 rootNode@var409 .@expr1073742649 Attribute (@expr1073742650 "checksum" ) ;
+87: if (@expr1073742651 !@expr1073742652 attr@var410 ||@expr1073742653 attr@var410 !=@expr1073742654 std ::@expr1073742655 to_string (@expr1073742656 checksum@var405 ) ) {
+88: return false ; }
+89:
+90: for (@expr1073742657 const tinyxml2 ::@expr809 XMLElement *@expr1073742659 e@var411 =@expr1073742660 rootNode@var409 .@expr1073742661 FirstChildElement (@expr1073742662 ) ; e@var411 ; e@var411 =@expr1073742663 e@var411 .@expr1073742664 NextSiblingElement (@expr1073742665 ) ) {
+91: if (@expr1073742666 std ::@expr1073742667 strcmp (@expr1073742668 e@var411 .@expr1073742669 Name (@expr1073742670 ) , "error" ) ==@expr1073742671 0 ) {
+92: errors@var406 .@expr1073742672 emplace_back (@expr1073742673 e@var411 ) ; }
+93: }
+94:
+95: return true ;
+96: }
+97:
+98: std :: string AnalyzerInformation :: getAnalyzerInfoFile ( const std :: string & buildDir@var412 , const std :: string & sourcefile@var413 , const std :: string & cfg@var414 )
+99: {
+100: const std ::@expr1073742675 string files@var415 (@expr1073742676 buildDir@var412 +@expr1073742677 "/files.txt" ) ;
+101: std ::@expr1073742678 ifstream fin@var416 (@expr1073742679 files@var415 ) ;
+102: if (@expr1073742680 fin@var416 .@expr1073742681 is_open (@expr1073742682 ) ) {
+103: std ::@expr1073742683 string line@var417 ;
+104: const std ::@expr1073742684 string end@var418 (@expr1073742685 ':' +@expr1073742686 cfg@var414 +@expr1073742687 ':' +@expr1073742688 sourcefile@var413 ) ;
+105: while (@expr1073742689 std ::@expr1073742690 getline (@expr1073742691 fin@var416 , line@var417 ) ) {
+106: if (@expr1073742692 line@var417 .@expr1073742693 size (@expr1073742694 ) <=@expr1073742695 end@var418 .@expr872 size (@expr873 ) +@expr1073742698 2U ) {
+107: continue ; }
+108: if (@expr1073742699 !@expr1073742700 endsWith (@expr1073742701 line@var417 , end@var418 .@expr1073742702 c_str (@expr1073742703 ) , end@var418 .@expr872 size (@expr873 ) ) ) {
+109: continue ; }
+110: std ::@expr1073742706 ostringstream ostr@var419 ;
+111: ostr@var419 <<@expr1073742707 buildDir@var412 <<@expr1073742708 '/' <<@expr1073742709 line@var417 .@expr1073742710 substr (@expr1073742711 0 , line@var417 .@expr1073742712 find (@expr1073742713 ':' ) ) ;
+112: return ostr@var419 .@expr1073742714 str (@expr1073742715 ) ;
+113: }
+114: }
+115:
+116: std ::@expr1073742716 string filename@var420 ; filename@var420 =@expr1073742717 Path ::@expr1073742718 fromNativeSeparators (@expr1073742719 buildDir@var412 ) ;
+117: if (@expr1073742720 !@expr1073742721 endsWith (@expr1073742722 filename@var420 , '/' ) ) {
+118: filename@var420 +=@expr1073742723 '/' ; }
+119: const std ::@expr900 string ::@expr900 size_type pos@var421 =@expr1073742726 sourcefile@var413 .@expr1073742727 rfind (@expr1073742728 '/' ) ;
+120: if (@expr1073742729 pos@var421 ==@expr1073742730 std ::@expr1073742731 string ::@expr1073742732 npos@expr1073742674 ) {
+121: filename@var420 +=@expr1073742733 sourcefile@var413 ; }
+122: else {
+123: filename@var420 +=@expr1073742734 sourcefile@var413 .@expr1073742735 substr (@expr1073742736 pos@var421 +@expr1073742737 1 ) ; }
+124: filename@var420 +=@expr1073742738 ".analyzerinfo" ;
+125: return filename@var420 ;
+126: }
+127:
+128: bool AnalyzerInformation :: analyzeFile ( const std :: string & buildDir@var422 , const std :: string & sourcefile@var423 , const std :: string & cfg@var424 , unsigned long long checksum@var425 , std :: list < ErrorMessage > * errors@var426 )
+129: {
+130: if (@expr1073742739 buildDir@var422 .@expr1073742740 empty (@expr1073742741 ) ||@expr1073742742 sourcefile@var423 .@expr1073742743 empty (@expr1073742744 ) ) {
+131: return true ; }
+132: close (@expr1073742745 ) ;
+133:
+134: mAnalyzerInfoFile@var194 =@expr1073742746 AnalyzerInformation ::@expr1073742747 getAnalyzerInfoFile (@expr1073742748 buildDir@var422 , sourcefile@var423 , cfg@var424 ) ;
+135:
+136: if (@expr1073742749 skipAnalysis (@expr1073742750 mAnalyzerInfoFile@var194 , checksum@var425 , errors@var426 ) ) {
+137: return false ; }
+138:
+139: mOutputStream@var193 .@expr1073742751 open (@expr1073742752 mAnalyzerInfoFile@var194 ) ;
+140: if (@expr1073742753 mOutputStream@var193 .@expr1073742754 is_open (@expr1073742755 ) ) {
+141: mOutputStream@var193 <<@expr1073742756 "<?xml version=\"1.0\"?>\n" ;
+142: mOutputStream@var193 <<@expr1073742757 "<analyzerinfo checksum=\"" <<@expr1073742758 checksum@var425 <<@expr1073742759 "\">\n" ;
+143: } else {
+144: mAnalyzerInfoFile@var194 .@expr1073742760 clear (@expr1073742761 ) ;
+145: }
+146:
+147: return true ;
+148: }
+149:
+150: void AnalyzerInformation :: reportErr ( const ErrorMessage & msg@var427 , bool )
+151: {
+152: if (@expr1073742762 mOutputStream@var193 .@expr1073742763 is_open (@expr1073742764 ) ) {
+153: mOutputStream@var193 <<@expr1073742765 msg@var427 .@expr1073742766 toXML (@expr1073742767 ) <<@expr1073742768 '\n' ; }
+154: }
+155:
+156: void AnalyzerInformation :: setFileInfo ( const std :: string & check@var428 , const std :: string & fileInfo@var429 )
+157: {
+158: if (@expr1073742769 mOutputStream@var193 .@expr1073742770 is_open (@expr1073742771 ) &&@expr1073742772 !@expr1073742773 fileInfo@var429 .@expr1073742774 empty (@expr1073742775 ) ) {
+159: mOutputStream@var193 <<@expr1073742776 "  <FileInfo check=\"" <<@expr1073742777 check@var428 <<@expr1073742778 "\">\n" <<@expr1073742779 fileInfo@var429 <<@expr1073742780 "  </FileInfo>\n" ; }
+160: }
+
+
+
+##Value flow
+Line 44
+  >= always {!<=-1,!>=2}
+  64 always 64
+Line 46
+  - possible >=-4611686018427387904
+  1LL always 1
+  << possible <=4611686018427387904
+  bit {!>=64,<=63}
+  - {!>=63,<=62}
+  1 always 1
+Line 50
+  >= always {!<=-1,!>=2}
+  64 always 64
+Line 51
+  ~ always !<=-1
+  0ULL always 0
+  >> always !<=-1
+  1 always 1
+Line 52
+  1LL always 1
+  << possible <=4611686018427387904
+  bit {!>=64,<=63}
+  - {!>=63,<=62}
+  1 always 1
+  - {<=4611686018427387903,!>=4611686018427387904}
+  1LL always 1
+Line 58
+  ( always {!<=-1,!>=2}
+Line 59
+  return always {!<=-1,!>=2}
+  >= always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  <= always {!<=-1,!>=2}
+Line 62
+  ( always {!<=-1,!>=2}
+  value always !<=-1
+Line 63
+  intMax always !<=-1
+  intMax always !<=-1
+  = always !<=-1
+Line 64
+  return always {!<=-1,!>=2}
+  value always !<=-1
+  <= always {!<=-1,!>=2}
+  intMax always !<=-1
+Line 67
+  ( always {!<=-1,!>=2}
+Line 68
+  return always {!<=-1,!>=2}
+  >= always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  <= always {!<=-1,!>=2}
+Line 71
+  ( always {!<=-1,!>=2}
+  value always !<=-1
+Line 72
+  longMax always !<=-1
+  longMax always !<=-1
+  = always !<=-1
+Line 73
+  return always {!<=-1,!>=2}
+  value always !<=-1
+  <= always {!<=-1,!>=2}
+  longMax always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  value always !<=-1
+Line 77
+  longLongMax always !<=-1
+  longLongMax always !<=-1
+  = always !<=-1
+Line 78
+  return always {!<=-1,!>=2}
+  value always !<=-1
+  <= always {!<=-1,!>=2}
+  longLongMax always !<=-1
+Line 103
+  Unspecified always 0
+Line 104
+  Native always 1
+Line 105
+  Win32A always 2
+Line 106
+  Win32W always 3
+Line 107
+  Win64 always 4
+Line 108
+  Unix32 always 5
+Line 109
+  Unix64 always 6
+Line 110
+  PlatformFile always 7
+Line 117
+  ( always {!<=-1,!>=2}
+Line 125
+  ( always {!<=-1,!>=2}
+Line 128
+  ( always {!<=-1,!>=2}
+Line 134
+  ( always {!<=-1,!>=2}
+Line 135
+  return always {!<=-1,!>=2}
+  platformType possible {3,4}
+  == {!<=-1,!>=2,0}
+  Win32A always 2
+  || always {!<=-1,!>=2}
+Line 136
+  platformType {4,!2}
+  == {!<=-1,!>=2,0}
+  Win32W always 3
+  || always {!<=-1,!>=2}
+Line 137
+  platformType always {!2,!3}
+  == always {!<=-1,!>=2}
+  Win64 always 4
+Line 146
+  Unspecified always 0
+Line 147
+  "Unspecified" always "Unspecified"
+Line 148
+  Native always 1
+Line 149
+  "Native" always "Native"
+Line 150
+  Win32A always 2
+Line 151
+  "win32A" always "win32A"
+Line 152
+  Win32W always 3
+Line 153
+  "win32W" always "win32W"
+Line 154
+  Win64 always 4
+Line 155
+  "win64" always "win64"
+Line 156
+  Unix32 always 5
+Line 157
+  "unix32" always "unix32"
+Line 158
+  Unix64 always 6
+Line 159
+  "unix64" always "unix64"
+Line 160
+  PlatformFile always 7
+Line 161
+  "platformFile" always "platformFile"
+Line 163
+  "unknown" always "unknown"
+Line 168
+  1 always 1
+Line 47
+  ( always {!<=-1,!>=2}
+Line 49
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+Line 53
+  ( always {!<=-1,!>=2}
+Line 55
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+Line 59
+  ( always {!<=-1,!>=2}
+Line 61
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+Line 67
+  ( always !<=-1
+Line 69
+  return always !<=-1
+  ( always !<=-1
+Line 73
+  ( always {!<=-1,!>=2}
+Line 75
+  return always {!<=-1,!>=2}
+  ! {!<=-1,!>=2,0}
+  str possible size=0
+  ( {!<=-1,!>=2,1}
+  && always {!<=-1,!>=2}
+  str always !size=0
+  == always {!<=-1,!>=2}
+  c possible 47@5
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  endlen always !<=-1
+Line 80
+  return always {!<=-1,!>=2}
+  ( always !<=-1
+  >= always {!<=-1,!>=2}
+  endlen {!<=-1,<=symbolic=(line.size()-3)@4}
+  && always {!<=-1,!>=2}
+  ( {!<=-1,>=symbolic=(endlen),!<=symbolic=(endlen-1)}
+  - always !<=-1
+  endlen {!<=-1,<=symbolic=(str.size()),!>=symbolic=(str.size()+1)}
+  endlen {!<=-1,<=symbolic=(str.size()),!>=symbolic=(str.size()+1)}
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 84
+  ( always {!<=-1,!>=2}
+  ( always !0
+  & always !0
+Line 86
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  1 always 1
+Line 89
+  ( always {!<=-1,!>=2}
+Line 91
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  q possible {39@3600,34@3856}
+Line 92
+  return always {!<=-1,!>=2}
+  false always 0
+Line 93
+  ( always !<=-1
+  + always !<=0
+  1 always 1
+  > always {!<=-1,!>=2}
+  ( always !<=-1
+  && always {!<=-1,!>=2}
+  0 always 0
+  ( always !<=-1
+  + always !<=0
+  1 always 1
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 94
+  return always {!<=-1,!>=2}
+  true always 1
+Line 95
+  return always {!<=-1,!>=2}
+  false always 0
+Line 98
+  ( always {!<=-1,!>=2}
+Line 100
+  "" always ""
+  "u8" always "u8"
+  "u" always "u"
+  "U" always "U"
+  "L" always "L"
+Line 102
+  ( always {!<=-1,!>=2}
+  q possible {39@14,34@15}
+Line 103
+  return always {!<=-1,!>=2}
+  true always 1
+Line 105
+  return always {!<=-1,!>=2}
+  false always 0
+Line 108
+  ( always {!<=-1,!>=2}
+Line 110
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  '"' always 34
+Line 113
+  ( always {!<=-1,!>=2}
+Line 115
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  '\'' always 39
+Line 120
+  quotePos always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  q possible {39@11,34@13}
+Line 121
+  quotePos {symbolic=(str.find(q)),!<=-1}
+  + always !<=0
+  1U always 1
+  ( always !<=-1
+  - always !<=-1
+  quotePos {symbolic=(str.find(q)),!<=-1}
+  - always !<=-1
+  2U always 2
+Line 126
+  ( always {!<=-1,!>=2}
+Line 127
+  '"' always 34
+Line 128
+  "" always ""
+Line 133
+  ( always {!<=-1,!>=2}
+Line 134
+  '\'' always 39
+Line 135
+  "" always ""
+Line 140
+  i possible {2,3}
+  == {!<=-1,!>=2,0}
+  1 always 1
+Line 141
+  "st" always "st"
+Line 142
+  i {3,!1}
+  == {!<=-1,!>=2,0}
+  2 always 2
+Line 143
+  "nd" always "nd"
+Line 144
+  i always {!1,!2}
+  == always {!<=-1,!>=2}
+  3 always 3
+Line 145
+  "rd" always "rd"
+Line 146
+  "th" always "th"
+Line 151
+  ( always {!<=-1,!>=2}
+Line 153
+  ( always {!<=-1,!>=2}
+Line 155
+  ( always {!<=-1,!>=2}
+Line 40
+  ( always {!<=-1,!>=2}
+Line 41
+  return always {!<=-1,!>=2}
+  < always {!<=-1,!>=2}
+  0 always 0
+Line 54
+  UNKNOWN always 0
+Line 55
+  MISSING always 1
+Line 56
+  FAILURE always 2
+Line 57
+  COMPILE_DB always 3
+Line 58
+  VS_SLN always 4
+Line 59
+  VS_VCXPROJ always 5
+Line 60
+  BORLAND always 6
+Line 61
+  CPPCHECK_GUI always 7
+Line 66
+  :: always 0
+  Unspecified always 0
+  msc always {!<=-1,!>=2}
+  false always 0
+  useMfc always {!<=-1,!>=2}
+  false always 0
+Line 71
+  msc always {!<=-1,!>=2}
+  ? possible {";_MSC_VER=1900",""}
+  ";_MSC_VER=1900" always ";_MSC_VER=1900"
+  : always ""
+  "" always ""
+  useMfc always {!<=-1,!>=2}
+  ? possible {";__AFXWIN_H__=1",""}
+  ";__AFXWIN_H__=1" always ";__AFXWIN_H__=1"
+  : always ""
+  "" always ""
+Line 78
+  msc always {!<=-1,!>=2}
+Line 79
+  useMfc always {!<=-1,!>=2}
+Line 108
+  , always 0
+  = always 0
+  nullptr always 0
+Line 110
+  ( always {!<=-1,!>=2}
+Line 111
+  ( always {!<=-1,!>=2}
+Line 112
+  ( always {!<=-1,!>=2}
+Line 114
+  ( always {!<=-1,!>=2}
+Line 115
+  ( always {!<=-1,!>=2}
+Line 116
+  ( always {!<=-1,!>=2}
+Line 128
+  8 always 8
+  = always "project"
+  "project" always "project"
+Line 129
+  8 always 8
+  = always "version"
+  "version" always "version"
+Line 130
+  2 always 2
+  = always "1"
+  "1" always "1"
+Line 131
+  9 always 9
+  = always "builddir"
+  "builddir" always "builddir"
+Line 132
+  14 always 14
+  = always "importproject"
+  "importproject" always "importproject"
+Line 133
+  23 always 23
+  = always "analyze-all-vs-configs"
+  "analyze-all-vs-configs" always "analyze-all-vs-configs"
+Line 134
+  7 always 7
+  = always "parser"
+  "parser" always "parser"
+Line 135
+  12 always 12
+  = always "bug-hunting"
+  "bug-hunting" always "bug-hunting"
+Line 136
+  11 always 11
+  = always "includedir"
+  "includedir" always "includedir"
+Line 137
+  4 always 4
+  = always "dir"
+  "dir" always "dir"
+Line 138
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 139
+  8 always 8
+  = always "defines"
+  "defines" always "defines"
+Line 140
+  7 always 7
+  = always "define"
+  "define" always "define"
+Line 141
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 142
+  10 always 10
+  = always "undefines"
+  "undefines" always "undefines"
+Line 143
+  9 always 9
+  = always "undefine"
+  "undefine" always "undefine"
+Line 144
+  6 always 6
+  = always "paths"
+  "paths" always "paths"
+Line 145
+  4 always 4
+  = always "dir"
+  "dir" always "dir"
+Line 146
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 147
+  5 always 5
+  = always "root"
+  "root" always "root"
+Line 148
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 149
+  7 always 7
+  = always "ignore"
+  "ignore" always "ignore"
+Line 150
+  5 always 5
+  = always "path"
+  "path" always "path"
+Line 151
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 152
+  8 always 8
+  = always "exclude"
+  "exclude" always "exclude"
+Line 153
+  5 always 5
+  = always "path"
+  "path" always "path"
+Line 154
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 155
+  19 always 19
+  = always "function-contracts"
+  "function-contracts" always "function-contracts"
+Line 156
+  19 always 19
+  = always "variable-contracts"
+  "variable-contracts" always "variable-contracts"
+Line 157
+  10 always 10
+  = always "libraries"
+  "libraries" always "libraries"
+Line 158
+  8 always 8
+  = always "library"
+  "library" always "library"
+Line 159
+  9 always 9
+  = always "platform"
+  "platform" always "platform"
+Line 160
+  13 always 13
+  = always "suppressions"
+  "suppressions" always "suppressions"
+Line 161
+  12 always 12
+  = always "suppression"
+  "suppression" always "suppression"
+Line 162
+  6 always 6
+  = always "addon"
+  "addon" always "addon"
+Line 163
+  7 always 7
+  = always "addons"
+  "addons" always "addons"
+Line 164
+  5 always 5
+  = always "tool"
+  "tool" always "tool"
+Line 165
+  6 always 6
+  = always "tools"
+  "tools" always "tools"
+Line 166
+  5 always 5
+  = always "tags"
+  "tags" always "tags"
+Line 167
+  4 always 4
+  = always "tag"
+  "tag" always "tag"
+Line 168
+  13 always 13
+  = always "tag-warnings"
+  "tag-warnings" always "tag-warnings"
+Line 169
+  4 always 4
+  = always "tag"
+  "tag" always "tag"
+Line 170
+  8 always 8
+  = always "warning"
+  "warning" always "warning"
+Line 171
+  5 always 5
+  = always "hash"
+  "hash" always "hash"
+Line 172
+  14 always 14
+  = always "check-headers"
+  "check-headers" always "check-headers"
+Line 173
+  23 always 23
+  = always "check-unused-templates"
+  "check-unused-templates" always "check-unused-templates"
+Line 174
+  14 always 14
+  = always "max-ctu-depth"
+  "max-ctu-depth" always "max-ctu-depth"
+Line 175
+  23 always 23
+  = always "max-template-recursion"
+  "max-template-recursion" always "max-template-recursion"
+Line 176
+  37 always 37
+  = always "check-unknown-function-return-values"
+  "check-unknown-function-return-values" always "check-unknown-function-return-values"
+Line 177
+  11 always 11
+  = always "clang-tidy"
+  "clang-tidy" always "clang-tidy"
+Line 178
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 179
+  18 always 18
+  = always "vs-configurations"
+  "vs-configurations" always "vs-configurations"
+Line 180
+  7 always 7
+  = always "config"
+  "config" always "config"
+Line 57
+  ( always {!<=-1,!>=2}
+Line 36
+  AST always 0
+  SYNTAX always 1
+  UNKNOWN_MACRO always 2
+  INTERNAL always 3
+  LIMIT always 4
+  INSTANTIATION always 5
+Line 37
+  = always 3
+  INTERNAL always 3
+Line 47
+  normal always 0
+  inconclusive always 1
+  safe always 2
+  experimental always 3
+Line 54
+  unusedFunction always 0
+  missingInclude always 1
+  internalCheck always 2
+Line 68
+  none always 0
+Line 74
+  error always 1
+Line 80
+  warning always 2
+Line 87
+  style always 3
+Line 93
+  performance always 4
+Line 101
+  portability always 5
+Line 108
+  information always 6
+Line 113
+  debug always 7
+Line 121
+  ( possible lifetime[SubObject]=(cweId)
+  cweId always !<=-1
+  id always !<=-1
+  cweId always !<=-1
+Line 122
+  id always !<=-1
+Line 42
+  hash always !<=-1
+Line 56
+  NO_LINE always -1
+  hash always !<=-1
+  0 always 0
+  thisAndNextLine always {!<=-1,!>=2}
+  false always 0
+  matched always {!<=-1,!>=2}
+  false always 0
+  checked always {!<=-1,!>=2}
+  false always 0
+Line 58
+  this always !0
+Line 60
+  = always -1
+  NO_LINE always -1
+  hash always !<=-1
+  0 always 0
+  thisAndNextLine always {!<=-1,!>=2}
+  false always 0
+  matched always {!<=-1,!>=2}
+  false always 0
+  checked always {!<=-1,!>=2}
+  false always 0
+Line 67
+  hash always !<=-1
+  = always !<=-1
+  . always !<=-1
+  hash always !<=-1
+Line 68
+  thisAndNextLine always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  thisAndNextLine always {!<=-1,!>=2}
+Line 69
+  matched always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  matched always {!<=-1,!>=2}
+Line 70
+  checked always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  checked always {!<=-1,!>=2}
+Line 71
+  this always !0
+Line 74
+  ( always {!<=-1,!>=2}
+Line 75
+  != always {!<=-1,!>=2}
+Line 76
+  return always {!<=-1,!>=2}
+  errorId always !symbolic=(other.errorId)
+  < always {!<=-1,!>=2}
+  . always !symbolic=(errorId)
+Line 77
+  < always {!<=-1,!>=2}
+Line 78
+  return always {!<=-1,!>=2}
+  true always 1
+Line 79
+  != always {!<=-1,!>=2}
+Line 80
+  return always {!<=-1,!>=2}
+  fileName always !symbolic=(other.fileName)
+  < always {!<=-1,!>=2}
+  . always !symbolic=(fileName)
+Line 81
+  != always {!<=-1,!>=2}
+Line 82
+  return always {!<=-1,!>=2}
+  symbolName always !symbolic=(other.symbolName)
+  < always {!<=-1,!>=2}
+  . always !symbolic=(symbolName)
+Line 83
+  hash always !<=-1
+  != always {!<=-1,!>=2}
+  . always !<=-1
+  hash always !<=-1
+Line 84
+  return always {!<=-1,!>=2}
+  hash always {!<=-1,!symbolic=(other.hash)}
+  < always {!<=-1,!>=2}
+  . always {!<=-1,!symbolic=(hash)}
+  hash always !<=-1
+Line 85
+  thisAndNextLine always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  thisAndNextLine always {!<=-1,!>=2}
+Line 86
+  return always {!<=-1,!>=2}
+  thisAndNextLine always {!<=-1,!>=2,!symbolic=(other.thisAndNextLine)}
+Line 87
+  return always {!<=-1,!>=2}
+  false always 0
+Line 96
+  ( always {!<=-1,!>=2}
+Line 98
+  ( always {!<=-1,!>=2}
+Line 100
+  ( always {!<=-1,!>=2}
+Line 104
+  ( always {!<=-1,!>=2}
+Line 105
+  return always {!<=-1,!>=2}
+  ! {!<=-1,!>=2,0}
+  fileName possible size=0
+  ( {!<=-1,!>=2,1}
+  && always {!<=-1,!>=2}
+  fileName always !size=0
+  ( always !<=-1
+  "?*" always "?*"
+  == always {!<=-1,!>=2}
+Line 108
+  ( always {!<=-1,!>=2}
+Line 109
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 110
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 111
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 112
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 113
+  hash always !<=-1
+  == always {!<=-1,!>=2}
+  . always !<=-1
+  hash always !<=-1
+  && always {!<=-1,!>=2}
+Line 114
+  thisAndNextLine always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  thisAndNextLine always {!<=-1,!>=2}
+Line 121
+  hash always !<=-1
+Line 122
+  thisAndNextLine always {!<=-1,!>=2}
+Line 123
+  matched always {!<=-1,!>=2}
+Line 124
+  checked always {!<=-1,!>=2}
+Line 126
+  NO_LINE always -1
+  = always -1
+  -1 always -1
+Line 178
+  ( always {!<=-1,!>=2}
+Line 185
+  ( always {!<=-1,!>=2}
+Line 197
+  unusedFunctionChecking always {!<=-1,!>=2}
+Line 203
+  unusedFunctionChecking always {!<=-1,!>=2}
+Line 28
+  Reset always 0
+  = always 0
+  0 always 0
+  , always 1
+Line 29
+  Bold always 1
+  = always 1
+  1 always 1
+  , always 2
+Line 30
+  Dim always 2
+  = always 2
+  2 always 2
+  , always 31
+Line 31
+  FgRed always 31
+  = always 31
+  31 always 31
+  , always 32
+Line 32
+  FgGreen always 32
+  = always 32
+  32 always 32
+  , always 34
+Line 33
+  FgBlue always 34
+  = always 34
+  34 always 34
+  , always 35
+Line 34
+  FgMagenta always 35
+  = always 35
+  35 always 35
+  , always 39
+Line 35
+  FgDefault always 39
+  = always 39
+  39 always 39
+  , always 41
+Line 36
+  BgRed always 41
+  = always 41
+  41 always 41
+  , always 42
+Line 37
+  BgGreen always 42
+  = always 42
+  42 always 42
+  , always 44
+Line 38
+  BgBlue always 44
+  = always 44
+  44 always 44
+  , always 49
+Line 39
+  BgDefault always 49
+  = always 49
+  49 always 49
+Line 40
+  457U always 457
+Line 41
+  476U always 476
+Line 42
+  676U always 676
+Line 43
+  682U always 682
+Line 44
+  825U always 825
+Line 70
+  fileIndex always !<=-1
+  0 always 0
+  0 always 0
+  column always !<=-1
+  0 always 0
+Line 72
+  column always !<=-1
+Line 73
+  fileIndex always !<=-1
+  0 always 0
+  column always !<=-1
+  column always !<=-1
+Line 75
+  column always !<=-1
+Line 76
+  fileIndex always !<=-1
+  0 always 0
+  column always !<=-1
+  column always !<=-1
+Line 86
+  convert always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 93
+  convert always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 106
+  fileIndex always !<=-1
+Line 108
+  column always !<=-1
+Line 175
+  verbose always {!<=-1,!>=2}
+Line 180
+  ( always {!<=-1,!>=2}
+Line 190
+  incomplete always {!<=-1,!>=2}
+Line 197
+  hash always !<=-1
+Line 243
+  ( always " </array>\r\n</dict>\r\n</plist>"
+Line 254
+  = always 0
+  :: always 0
+  Reset always 0
+  = always 0
+  0 always 0
+Line 262
+  = always 0
+  0 always 0
+Line 270
+  , always !<=-1
+  value always !<=-1
+Line 273
+  ( always !<=-1
+  value always !<=-1
+Line 289
+  ( always {!<=-1,!>=2}
+Line 303
+  " </array>\r\n</dict>\r\n</plist>" always " </array>\r\n</dict>\r\n</plist>"
+Line 77
+  ( always {!<=-1,!>=2}
+Line 111
+  ( always {!<=-1,!>=2}
+Line 134
+  ( always {!<=-1,!>=2}
+Line 136
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  extra always size=0
+Line 146
+  ( always {!<=-1,!>=2}
+Line 153
+  ( always {!<=-1,!>=2}
+Line 160
+  ( always {!<=-1,!>=2}
+Line 167
+  ( always {!<=-1,!>=2}
+Line 181
+  ( always {!<=-1,!>=2}
+Line 37
+  :: always !<=-1
+  pos1 always !<=-1
+  pos1 always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  "/\\" always "/\\"
+Line 38
+  pos1 always !<=-1
+  = {0,!<=-1}
+  pos1 always !<=-1
+  == always {!<=-1,!>=2}
+  ? {0,!<=-1}
+  0U always 0
+  : always !<=-1
+  pos1 always !<=-1
+  + always !<=0
+  1U always 1
+Line 39
+  :: always !<=-1
+  pos2 always !<=-1
+  pos2 always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  '.' always 46
+Line 40
+  pos2 always !<=-1
+  < always {!<=-1,!>=2}
+  pos1 {!<=-1,0}
+Line 41
+  pos2 always !<=-1
+  = always !<=-1
+Line 42
+  pos2 always !<=-1
+  != always {!<=-1,!>=2}
+Line 43
+  pos2 always !<=-1
+  = always !<=-1
+  pos2 always !<=-1
+  - always !<=-1
+  pos1 always !<=-1
+Line 44
+  pos1 always !<=-1
+  pos2 always !<=-1
+Line 51
+  "/files.txt" always "/files.txt"
+Line 55
+  afile always symbolic=(getFilename(f))
+  ".a" always ".a"
+  ++ always !<=-1
+  fileCount possible size=0
+  [ always !<=-1
+  afile always symbolic=(getFilename(f))
+  "::" always "::"
+  '\n' always 10
+Line 56
+  ! {!<=-1,!>=2,0}
+  userDefines possible size=0
+  ( {!<=-1,!>=2,1}
+Line 57
+  ".a" always ".a"
+  ++ always !<=-1
+  [ always !<=-1
+  ":" always ":"
+  userDefines always !size=0
+  ":" always ":"
+  '\n' always 10
+Line 62
+  afile always symbolic=(getFilename(fs.filename))
+  ".a" always ".a"
+  ++ always !<=-1
+  [ always !<=-1
+  afile always symbolic=(getFilename(fs.filename))
+  ":" always ":"
+  ":" always ":"
+Line 70
+  "</analyzerinfo>\n" always "</analyzerinfo>\n"
+Line 75
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  checksum always !<=-1
+Line 78
+  ( {lifetime[Object]=(analyzerInfoFile),!0}
+Line 79
+  != always {!<=-1,!>=2}
+Line 80
+  return always {!<=-1,!>=2}
+  false always 0
+Line 83
+  == always {!<=-1,!>=2}
+  nullptr always 0
+Line 84
+  return always {!<=-1,!>=2}
+  false always 0
+Line 86
+  rootNode always !0
+  "checksum" always "checksum"
+Line 87
+  ! always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  attr always !0
+  != always {!<=-1,!>=2}
+  checksum always !<=-1
+Line 88
+  return always {!<=-1,!>=2}
+  false always 0
+Line 90
+  rootNode always !0
+Line 91
+  "error" always "error"
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 95
+  return always {!<=-1,!>=2}
+  true always 1
+Line 100
+  "/files.txt" always "/files.txt"
+Line 104
+  ':' always 58
+  ':' always 58
+Line 105
+  line possible size=0
+Line 106
+  ( always !<=-1
+  <= always {!<=-1,!>=2}
+  ( always !<=-1
+  + always !<=1
+  2U always 2
+Line 108
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  ( {lifetime[Object]=(end),!0}
+  ( {!<=-1,!>=symbolic=(line.size()-2),<=symbolic=(line.size()-3)}
+Line 111
+  '/' always 47
+  0 always 0
+  ( always !<=-1
+  ':' always 58
+Line 117
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  '/' always 47
+Line 118
+  '/' always 47
+Line 119
+  pos always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  '/' always 47
+Line 120
+  pos always !<=-1
+  == always {!<=-1,!>=2}
+Line 123
+  pos always !<=-1
+  + always !<=0
+  1 always 1
+Line 124
+  ".analyzerinfo" always ".analyzerinfo"
+Line 125
+  filename always !<=size=12
+Line 128
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  checksum always !<=-1
+Line 130
+  ( always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 131
+  return always {!<=-1,!>=2}
+  true always 1
+Line 136
+  ( always {!<=-1,!>=2}
+  checksum always !<=-1
+Line 137
+  return always {!<=-1,!>=2}
+  false always 0
+Line 141
+  "<?xml version=\"1.0\"?>\n" always "<?xml version=\"1.0\"?>\n"
+Line 142
+  "<analyzerinfo checksum=\"" always "<analyzerinfo checksum=\""
+  checksum always !<=-1
+  "\">\n" always "\">\n"
+Line 147
+  return always {!<=-1,!>=2}
+  true always 1
+Line 153
+  '\n' always 10
+Line 158
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 159
+  "  <FileInfo check=\"" always "  <FileInfo check=\""
+  "\">\n" always "\">\n"
+  fileInfo always !size=0
+  "  </FileInfo>\n" always "  </FileInfo>\n"

@@ -1,0 +1,210 @@
+
+
+##file cppcheck-2.8/gui/helpdialog.h
+
+1:
+|
+24:
+25: class QHelpEngine ;
+26: class QObject ;
+27: class QUrl ;
+28: class QWidget ;
+29: namespace Ui {
+30: class HelpDialog ;
+31: }
+32:
+33: class HelpBrowser : public QTextBrowser {
+34: public:
+35: HelpBrowser ( QWidget * parent@var1 = nullptr ) : QTextBrowser ( parent@var1 ) , mHelpEngine@var5 ( nullptr ) { }
+36: void setHelpEngine ( QHelpEngine * helpEngine@var2 ) ;
+37: QVariant loadResource ( int type@var3 , const QUrl & name@var4 ) override ;
+38: private:
+39: QHelpEngine * mHelpEngine@var5 ;
+40: } ;
+41:
+42: class HelpDialog : public QDialog {
+43: Q_OBJECT
+44:
+45: public:
+46: explicit HelpDialog ( QWidget * parent@var6 = nullptr ) ;
+47: ~ HelpDialog ( ) override ;
+48:
+49: private:
+50: Ui :: HelpDialog * mUi@var7 ;
+51: QHelpEngine * mHelpEngine@var8 ;
+52: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type@var9 ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type@var10 , const QString & value@var11 ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters@var12 , bool addAllSupported@var13 = true , bool addAll@var14 = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/helpdialog.cpp
+
+1:
+|
+30:
+31: class QWidget ;
+32:
+33: void HelpBrowser :: setHelpEngine ( QHelpEngine * helpEngine@var15 )
+34: {
+35: mHelpEngine@var5 =@expr1073741851 helpEngine@var15 ;
+36: }
+37:
+38: QVariant HelpBrowser :: loadResource ( int type@var16 , const QUrl & name@var17 )
+39: {
+40: if (@expr1073741852 name@var17 .@expr1073741853 scheme (@expr1073741854 ) ==@expr1073741855 "qthelp" ) {
+41: QString url@var18 (@expr1073741856 name@var17 .@expr1073741857 toString (@expr1073741858 ) ) ;
+42: while (@expr1073741859 url@var18 .@expr36 indexOf (@expr37 "/./" ) >@expr1073741862 0 ) {
+43: url@var18 .@expr1073741863 remove (@expr1073741864 url@var18 .@expr36 indexOf (@expr37 "/./" ) , 2 ) ; }
+44: return QVariant (@expr1073741867 mHelpEngine@var5 .@expr1073741868 fileData (@expr1073741869 QUrl (@expr1073741870 url@var18 ) ) ) ;
+45: }
+46: return QTextBrowser ::@expr1073741871 loadResource (@expr1073741872 type@var16 , name@var17 ) ;
+47: }
+48:
+49: static QString getHelpFile ( )
+50: {
+51: const QString datadir@var19 =@expr1073741873 getDataDir (@expr1073741874 ) ;
+52:
+53: QStringList paths@var20 ;
+54: paths@var20 <<@expr1073741875 (@expr1073741876 datadir@var19 +@expr1073741877 "/help" )
+55: <<@expr1073741878 datadir@var19
+56: <<@expr1073741879 (@expr1073741880 QApplication ::@expr57 applicationDirPath (@expr58 ) +@expr1073741883 "/help" )
+57: <<@expr1073741884 QApplication ::@expr57 applicationDirPath (@expr58 ) ;
+58:
+|
+62:
+63: for (@expr1073741887 const QString &@expr1073741888 p@var21 :@expr1073741889 paths@var20 ) {
+64: QString filename@var22 ; filename@var22 =@expr1073741890 p@var21 +@expr1073741891 "/online-help.qhc" ;
+65: if (@expr1073741892 QFileInfo (@expr1073741893 filename@var22 ) .@expr1073741894 exists (@expr1073741895 ) ) {
+66: return filename@var22 ; }
+67: }
+68: return QString (@expr1073741896 ) ;
+69: }
+70:
+71: HelpDialog :: HelpDialog ( QWidget * parent@var23 ) :
+72: QDialog ( parent@var23 ) ,
+73: mUi@var7 ( new Ui :: HelpDialog )
+74: {
+75: mUi@var7 .@expr1073741897 setupUi (@expr1073741898 this@expr75 ) ;
+76:
+77: QString helpFile@var24 ; helpFile@var24 =@expr1073741900 getHelpFile (@expr1073741901 ) ;
+78: if (@expr1073741902 helpFile@var24 .@expr1073741903 isEmpty (@expr1073741904 ) ) {
+79: const QString msg@var25 =@expr1073741905 tr (@expr1073741906 "Helpfile '%1' was not found" ) .@expr1073741907 arg (@expr1073741908 "online-help.qhc" ) ;
+80: QMessageBox msgBox@var26 (@expr1073741909 QMessageBox ::@expr1073741910 Warning ,
+81: tr (@expr1073741911 "Cppcheck" ) ,
+82: msg@var25 ,
+83: QMessageBox ::@expr1073741912 Ok ,
+84: this@expr75 ) ;
+85: msgBox@var26 .@expr1073741913 exec (@expr1073741914 ) ;
+86: mHelpEngine@var8 =@expr1073741915 nullptr ;
+87: return ;
+88: }
+89:
+90: mHelpEngine@var8 =@expr1073741916 new QHelpEngine (@expr1073741917 helpFile@var24 ) ;
+91:
+92: mHelpEngine@var8 .@expr1073741918 setProperty (@expr1073741919 "_q_readonly" , QVariant ::@expr1073741920 fromValue < bool > (@expr1073741921 true ) ) ;
+93: mHelpEngine@var8 .@expr1073741922 setupData (@expr1073741923 ) ;
+94:
+95: mUi@var7 .@expr1073741924 contents@var27 .@expr1073741925 addWidget (@expr1073741926 mHelpEngine@var8 .@expr103 contentWidget (@expr104 ) ) ;
+96: mUi@var7 .@expr1073741929 index@var28 .@expr1073741930 addWidget (@expr1073741931 mHelpEngine@var8 .@expr108 indexWidget (@expr109 ) ) ;
+97:
+98: mUi@var7 .@expr110 textBrowser@var29 .@expr1073741935 setHelpEngine (@expr1073741936 mHelpEngine@var8 ) ;
+99:
+100: mUi@var7 .@expr110 textBrowser@var29 .@expr1073741938 setSource (@expr1073741939 QUrl (@expr1073741940 "qthelp://cppcheck.sourceforge.io/doc/index.html" ) ) ;
+101: connect (@expr1073741941 mHelpEngine@var8 .@expr103 contentWidget (@expr104 ) ,
+102: SIGNAL (@expr1073741944 linkActivated (@expr1073741945 QUrl ) ) ,
+103: mUi@var7 .@expr110 textBrowser@var29 ,
+104: SLOT (@expr123 setSource (@expr124 QUrl ) ) ) ;
+105:
+106: connect (@expr1073741949 mHelpEngine@var8 .@expr108 indexWidget (@expr109 ) ,
+107: SIGNAL (@expr1073741952 linkActivated (@expr1073741953 QUrl , QString ) ) ,
+108: mUi@var7 .@expr110 textBrowser@var29 ,
+109: SLOT (@expr123 setSource (@expr124 QUrl ) ) ) ;
+110: }
+111:
+112: HelpDialog :: ~ HelpDialog ( )
+113: {
+114: delete mUi@var7 ;
+115: }
+
+
+
+##Value flow
+Line 35
+  = always 0
+  nullptr always 0
+  nullptr always 0
+Line 46
+  = always 0
+  nullptr always 0
+Line 148
+  addAllSupported always {!<=-1,!>=2}
+  = always 1
+  true always 1
+  , always 1
+  addAll always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 40
+  == always {!<=-1,!>=2}
+  "qthelp" always "qthelp"
+Line 42
+  "/./" always "/./"
+  > always {!<=-1,!>=2}
+  0 always 0
+Line 43
+  "/./" always "/./"
+  2 always 2
+Line 54
+  "/help" always "/help"
+Line 56
+  "/help" always "/help"
+Line 64
+  "/online-help.qhc" always "/online-help.qhc"
+Line 65
+  filename always symbolic=(p+"/online-help.qhc")
+Line 75
+  this always !0
+Line 79
+  "Helpfile '%1' was not found" always "Helpfile '%1' was not found"
+  "online-help.qhc" always "online-help.qhc"
+Line 81
+  "Cppcheck" always "Cppcheck"
+Line 84
+  this always !0
+Line 86
+  = always 0
+  nullptr always 0
+Line 92
+  mHelpEngine always size=0
+  "_q_readonly" always "_q_readonly"
+  true always 1
+Line 93
+  mHelpEngine always size=0
+Line 95
+  mHelpEngine always size=0
+Line 96
+  mHelpEngine always size=0
+Line 98
+  mHelpEngine always size=0
+Line 100
+  "qthelp://cppcheck.sourceforge.io/doc/index.html" always "qthelp://cppcheck.sourceforge.io/doc/index.html"
+Line 101
+  mHelpEngine inconclusive size=0
+Line 106
+  mHelpEngine inconclusive size=0

@@ -1,0 +1,4339 @@
+
+
+##file cppcheck-2.8/gui/platforms.h
+
+1:
+|
+27:
+28: class QAction ;
+29:
+|
+35:
+36: struct Platform {
+37: QString mTitle ;
+38: Settings :: PlatformType mType ;
+39: QAction * mActMainWindow ;
+40: } ;
+41:
+|
+44:
+45: class Platforms : public QObject {
+46: Q_OBJECT
+47:
+48: public:
+49: explicit Platforms ( QObject * parent = nullptr ) ;
+50: void add ( const QString & title , Settings :: PlatformType platform ) ;
+51: int getCount ( ) const ;
+52: void init ( ) ;
+53: Platform & get ( Settings :: PlatformType platform ) ;
+54:
+55: QList < Platform > mPlatforms ;
+56: } ;
+
+##file cppcheck-2.8/gui/mainwindow.h
+
+1:
+|
+29:
+30: class ThreadHandler ;
+31: class TranslationHandler ;
+32: class ScratchPad ;
+33: class ProjectFile ;
+34: class ApplicationList ;
+35: class QAction ;
+36: class QActionGroup ;
+37: class QSettings ;
+38: class QTimer ;
+39: class QLineEdit ;
+40: class ImportProject ;
+41: class QCloseEvent ;
+42: class QObject ;
+43: namespace Ui {
+44: class MainWindow ;
+45: }
+46:
+|
+53:
+54: class MainWindow : public QMainWindow {
+55: Q_OBJECT
+56: public:
+57:
+|
+60:
+61: enum { MaxRecentProjects = 5 } ;
+62:
+63: MainWindow ( TranslationHandler * th , QSettings * settings ) ;
+64: MainWindow ( const MainWindow & ) = delete ;
+65: ~ MainWindow ( ) override ;
+66: MainWindow & operator = ( const MainWindow & ) = delete ;
+67:
+|
+70:
+71: Platforms mPlatforms ;
+72:
+|
+78:
+79: void analyzeCode ( const QString & code , const QString & filename ) ;
+80:
+81: public slots :
+82:
+83: void analyzeFiles ( ) ;
+84:
+85:
+86: void reAnalyzeAll ( ) ;
+87:
+88:
+89: void checkLibrary ( ) ;
+90:
+91:
+92: void checkConfiguration ( ) ;
+93:
+|
+97:
+98: void performSelectedFilesCheck ( const QStringList & selectedFilesList ) ;
+99:
+100:
+101: void reAnalyzeModified ( ) ;
+102:
+103:
+104: void clearResults ( ) ;
+105:
+106:
+107: void openResults ( ) ;
+108:
+|
+112:
+113: void showStyle ( bool checked ) ;
+114:
+|
+118:
+119: void showErrors ( bool checked ) ;
+120:
+|
+124:
+125: void showWarnings ( bool checked ) ;
+126:
+|
+130:
+131: void showPortability ( bool checked ) ;
+132:
+|
+136:
+137: void showPerformance ( bool checked ) ;
+138:
+|
+142:
+143: void showInformation ( bool checked ) ;
+144:
+145:
+146: void checkAll ( ) ;
+147:
+148:
+149: void uncheckAll ( ) ;
+150:
+151:
+152: void analyzeDirectory ( ) ;
+153:
+154:
+155: void programSettings ( ) ;
+156:
+157:
+158: void about ( ) ;
+159:
+160:
+161: void showLicense ( ) ;
+162:
+163:
+164: void showAuthors ( ) ;
+165:
+166:
+167: void save ( ) ;
+168:
+169:
+170: void newProjectFile ( ) ;
+171:
+172:
+173: void openProjectFile ( ) ;
+174:
+175:
+176: void showScratchpad ( ) ;
+177:
+178:
+179: void closeProjectFile ( ) ;
+180:
+181:
+182: void editProjectFile ( ) ;
+183:
+184:
+185: void showStatistics ( ) ;
+186:
+187:
+188: void showLibraryEditor ( ) ;
+189:
+190: protected slots :
+191:
+192:
+193: void analysisDone ( ) ;
+194:
+195:
+196: void checkLockDownUI ( ) ;
+197:
+198:
+199: void resultsAdded ( ) ;
+200:
+201:
+202: void toggleMainToolBar ( ) ;
+203:
+204:
+205: void toggleViewToolBar ( ) ;
+206:
+207:
+208: void toggleFilterToolBar ( ) ;
+209:
+210:
+211: void aboutToShowViewMenu ( ) ;
+212:
+213:
+214: void stopAnalysis ( ) ;
+215:
+216:
+217: void openHelpContents ( ) ;
+218:
+219:
+220: void filterResults ( ) ;
+221:
+222:
+223: void openRecentProject ( ) ;
+224:
+225:
+226: void selectPlatform ( ) ;
+227:
+228:
+229: void suppressIds ( QStringList ids ) ;
+230:
+231: private:
+232:
+233:
+234: QString getLastResults ( ) const ;
+235:
+236:
+237: void reAnalyze ( bool all ) ;
+238:
+|
+242:
+243: void reAnalyzeSelected ( QStringList files ) ;
+244:
+|
+250:
+251: void analyzeProject ( const ProjectFile * projectFile , const bool checkLibrary = false , const bool checkConfiguration = false ) ;
+252:
+|
+256:
+257: void setLanguage ( const QString & code ) ;
+258:
+259:
+260: void closeEvent ( QCloseEvent * event ) override ;
+261:
+|
+265:
+266: void toggleAllChecked ( bool checked ) ;
+267:
+268:
+269: void enableCheckButtons ( bool enable ) ;
+270:
+271:
+272: void enableResultsButtons ( ) ;
+273:
+|
+281:
+282: QStringList selectFilesToAnalyze ( QFileDialog :: FileMode mode ) ;
+283:
+|
+289:
+290: void doAnalyzeProject ( ImportProject p , const bool checkLibrary = false , const bool checkConfiguration = false ) ;
+291:
+|
+298:
+299: void doAnalyzeFiles ( const QStringList & files , const bool checkLibrary = false , const bool checkConfiguration = false ) ;
+300:
+|
+305:
+306: Settings getCppcheckSettings ( ) ;
+307:
+308:
+309: void loadSettings ( ) ;
+310:
+311:
+312: void saveSettings ( ) const ;
+313:
+|
+317:
+318: void formatAndSetTitle ( const QString & text = QString ( ) ) ;
+319:
+320:
+321: void openOnlineHelp ( ) ;
+322:
+|
+328:
+329: void enableProjectActions ( bool enable ) ;
+330:
+|
+335:
+336: void enableProjectOpenActions ( bool enable ) ;
+337:
+|
+342:
+343: void addIncludeDirs ( const QStringList & includeDirs , Settings & result ) ;
+344:
+|
+348:
+349: void handleCLIParams ( const QStringList & params ) ;
+350:
+|
+354:
+355: void loadResults ( const QString & selectedFile ) ;
+356:
+|
+361:
+362: void loadResults ( const QString & selectedFile , const QString & sourceDirectory ) ;
+363:
+|
+367:
+368: bool loadLastResults ( ) ;
+369:
+|
+373:
+374: void loadProjectFile ( const QString & filePath ) ;
+375:
+|
+381:
+382: Library :: Error loadLibrary ( Library * library , const QString & filename ) ;
+383:
+|
+389:
+390: bool tryLoadLibrary ( Library * library , const QString & filename ) ;
+391:
+|
+394:
+395: void updateMRUMenuItems ( ) ;
+396:
+|
+400:
+401: void addProjectMRU ( const QString & project ) ;
+402:
+|
+406:
+407: void removeProjectMRU ( const QString & project ) ;
+408:
+409:
+410: QSettings * mSettings ;
+411:
+412:
+413: ThreadHandler * mThread ;
+414:
+415:
+416: ApplicationList * mApplications ;
+417:
+418:
+419: TranslationHandler * mTranslation ;
+420:
+421:
+422: Ui :: MainWindow * mUI ;
+423:
+424:
+425: QString mCurrentDirectory ;
+426:
+427:
+428: ScratchPad * mScratchPad ;
+429:
+430:
+431: ProjectFile * mProjectFile ;
+432:
+433:
+434: QLineEdit * mLineEditFilter ;
+435:
+436:
+437: QTimer * mFilterTimer ;
+438:
+439:
+440: QActionGroup * mPlatformActions ;
+441:
+442:
+443: QActionGroup * mCStandardActions ; QActionGroup * mCppStandardActions ;
+444:
+445:
+446: QActionGroup * mSelectLanguageActions ;
+447:
+|
+452:
+453: bool mExiting ;
+454:
+455:
+456: bool mIsLogfileLoaded ;
+457:
+|
+461:
+462: QAction * mRecentProjectActs [ MaxRecentProjects + 1 ] ;
+463:
+464: QString mCppcheckCfgAbout ;
+465: QString mCppcheckCfgProductName ;
+466: } ;
+
+##file cppcheck-2.8/gui/application.h
+
+1:
+|
+42:
+43: class Application {
+44: public:
+45: Application ( ) { }
+46: Application ( const QString & name , const QString & path , const QString & params ) ;
+47:
+|
+51:
+52: QString getName ( ) const {
+53: return mName ;
+54: }
+55:
+|
+59:
+60: QString getPath ( ) const {
+61: return mPath ;
+62: }
+63:
+|
+67:
+68: QString getParameters ( ) const {
+69: return mParameters ;
+70: }
+71:
+|
+75:
+76: void setName ( const QString & name ) {
+77: mName = name ;
+78: }
+79:
+|
+83:
+84: void setPath ( const QString & path ) {
+85: mPath = path ;
+86: }
+87:
+|
+91:
+92: void setParameters ( const QString & parameters ) {
+93: mParameters = parameters ;
+94: }
+95:
+96: private:
+97:
+|
+100:
+101: QString mName ;
+102:
+|
+105:
+106: QString mPath ;
+107:
+|
+110:
+111: QString mParameters ;
+112: } ;
+
+##file cppcheck-2.8/gui/applicationlist.h
+
+1:
+|
+32:
+33: class ApplicationList : public QObject {
+34: Q_OBJECT
+35: public:
+36:
+37: explicit ApplicationList ( QObject * parent = nullptr ) ;
+38: ~ ApplicationList ( ) override ;
+39:
+|
+46:
+47: bool loadSettings ( ) ;
+48:
+|
+51:
+52: void saveSettings ( ) const ;
+53:
+|
+57:
+58: int getApplicationCount ( ) const ;
+59:
+|
+65:
+66: const Application & getApplication ( const int index ) const ;
+67: Application & getApplication ( const int index ) ;
+68:
+|
+72:
+73: int getDefaultApplication ( ) const {
+74: return mDefaultApplicationIndex ;
+75: }
+76:
+|
+81:
+82: void addApplication ( const Application & app ) ;
+83:
+|
+88:
+89: void removeApplication ( const int index ) ;
+90:
+|
+94:
+95: void setDefault ( const int index ) ;
+96:
+|
+101:
+102: void copy ( const ApplicationList * list ) ;
+103:
+104: protected:
+105:
+|
+109:
+110: void clear ( ) ;
+111:
+|
+119:
+120: private:
+121:
+122: bool checkAndAddApplication ( const QString & appPath , const QString & name , const QString & parameters ) ;
+123:
+|
+127:
+128: QList < Application > mApplications ;
+129:
+|
+133:
+134: int mDefaultApplicationIndex ;
+135: } ;
+
+##file cppcheck-2.8/gui/aboutdialog.h
+
+1:
+|
+24:
+25: class QObject ;
+26: class QWidget ;
+27: namespace Ui {
+28: class About ;
+29: }
+30:
+|
+37:
+38: class AboutDialog : public QDialog {
+39: Q_OBJECT
+40: public:
+41: AboutDialog ( const QString & version ,
+42: const QString & extraVersion ,
+43: QWidget * parent = nullptr ) ;
+44:
+45: ~ AboutDialog ( ) override ;
+46:
+47: private:
+48: Ui :: About * mUI ;
+49: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type , const QString & value ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters , bool addAllSupported = true , bool addAll = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/filelist.h
+
+1:
+|
+36:
+37: class FileList {
+38: public:
+39:
+|
+43:
+44: void addFile ( const QString & filepath ) ;
+45:
+|
+50:
+51: void addDirectory ( const QString & directory , bool recursive = false ) ;
+52:
+|
+56:
+57: void addPathList ( const QStringList & paths ) ;
+58:
+|
+62:
+63: QStringList getFileList ( ) const ;
+64:
+|
+68:
+69: void addExcludeList ( const QStringList & paths ) ;
+70:
+|
+74:
+75: static QStringList getDefaultFilters ( ) ;
+76:
+77: protected:
+78:
+|
+82:
+83: static bool filterMatches ( const QFileInfo & inf ) ;
+84:
+|
+91:
+92: QStringList applyExcludeList ( ) const ;
+93:
+94: private:
+95: QFileInfoList mFileList ;
+96: QStringList mExcludedPaths ;
+97: } ;
+
+##file cppcheck-2.8/gui/fileviewdialog.h
+
+1:
+|
+24:
+25: class QObject ;
+26: class QWidget ;
+27: class QTextEdit ;
+28: namespace Ui {
+29: class Fileview ;
+30: }
+31:
+|
+41:
+42: class FileViewDialog : public QDialog {
+43: Q_OBJECT
+44: public:
+45: FileViewDialog ( const QString & file ,
+46: const QString & title ,
+47: QWidget * parent = nullptr ) ;
+48:
+49: ~ FileViewDialog ( ) override ;
+50:
+51: protected:
+52:
+|
+58:
+59: void loadTextFile ( const QString & filename , QTextEdit * edit ) ;
+60:
+61: Ui :: Fileview * mUI ;
+62: } ;
+
+##file cppcheck-2.8/gui/helpdialog.h
+
+1:
+|
+24:
+25: class QHelpEngine ;
+26: class QObject ;
+27: class QUrl ;
+28: class QWidget ;
+29: namespace Ui {
+30: class HelpDialog ;
+31: }
+32:
+33: class HelpBrowser : public QTextBrowser {
+34: public:
+35: HelpBrowser ( QWidget * parent = nullptr ) : QTextBrowser ( parent ) , mHelpEngine ( nullptr ) { }
+36: void setHelpEngine ( QHelpEngine * helpEngine ) ;
+37: QVariant loadResource ( int type , const QUrl & name ) override ;
+38: private:
+39: QHelpEngine * mHelpEngine ;
+40: } ;
+41:
+42: class HelpDialog : public QDialog {
+43: Q_OBJECT
+44:
+45: public:
+46: explicit HelpDialog ( QWidget * parent = nullptr ) ;
+47: ~ HelpDialog ( ) override ;
+48:
+49: private:
+50: Ui :: HelpDialog * mUi ;
+51: QHelpEngine * mHelpEngine ;
+52: } ;
+
+##file cppcheck-2.8/gui/cppchecklibrarydata.h
+
+1:
+|
+25:
+26: class QIODevice ;
+27:
+28: class CppcheckLibraryData {
+29: public:
+30: CppcheckLibraryData ( ) ;
+31:
+32: struct Container {
+33: Container ( ) : access_arrayLike ( false ) , size_templateParameter ( -1 ) { }
+34:
+35: QString id ;
+36: QString inherits ;
+37: QString startPattern ;
+38: QString endPattern ;
+39: QString opLessAllowed ;
+40: QString itEndPattern ;
+41:
+42: bool access_arrayLike ;
+43: int size_templateParameter ;
+44:
+45: struct {
+46: QString templateParameter ;
+47: QString string ;
+48: } type ;
+49:
+50: struct Function {
+51: QString name ;
+52: QString yields ;
+53: QString action ;
+54: } ;
+55: QList < struct Function > accessFunctions ;
+56: QList < struct Function > otherFunctions ;
+57: QList < struct Function > sizeFunctions ;
+58: } ;
+59:
+60: struct Define {
+61: QString name ;
+62: QString value ;
+63: } ;
+64:
+65: struct Function {
+66: Function ( ) : noreturn ( Unknown ) , gccPure ( false ) , gccConst ( false ) ,
+67: leakignore ( false ) , useretval ( false ) { }
+68:
+69: QString comments ;
+70: QString name ;
+71: enum TrueFalseUnknown { False , True , Unknown } noreturn ;
+72: bool gccPure ;
+73: bool gccConst ;
+74: bool leakignore ;
+75: bool useretval ;
+76: struct ReturnValue {
+77: ReturnValue ( ) : container ( -1 ) { }
+78: QString type ;
+79: QString value ;
+80: int container ;
+81: bool empty ( ) const {
+82: return type . isNull ( ) && value . isNull ( ) && container < 0 ;
+83: }
+84: } returnValue ;
+85: struct {
+86: QString scan ;
+87: QString secure ;
+88: } formatstr ;
+89: struct Arg {
+90: Arg ( ) : nr ( 0 ) , notbool ( false ) , notnull ( false ) , notuninit ( false ) ,
+91: formatstr ( false ) , strz ( false ) { }
+92:
+93: QString name ;
+94: unsigned int nr ;
+95: static const unsigned int ANY ;
+96: static const unsigned int VARIADIC ;
+97: QString defaultValue ;
+98: bool notbool ;
+99: bool notnull ;
+100: bool notuninit ;
+101: bool formatstr ;
+102: bool strz ;
+103: QString valid ;
+104: struct MinSize {
+105: QString type ;
+106: QString arg ;
+107: QString arg2 ;
+108: } ;
+109: QList < struct MinSize > minsizes ;
+110: struct Iterator {
+111: Iterator ( ) : container ( -1 ) { }
+112: int container ;
+113: QString type ;
+114: } iterator ;
+115: } ;
+116: QList < struct Arg > args ;
+117:
+118: struct {
+119: QString severity ;
+120: QString cstd ;
+121: QString reason ;
+122: QString alternatives ;
+123: QString msg ;
+124:
+125: bool isEmpty ( ) const {
+126: return cstd . isEmpty ( ) &&
+127: severity . isEmpty ( ) &&
+128: reason . isEmpty ( ) &&
+129: alternatives . isEmpty ( ) &&
+130: msg . isEmpty ( ) ;
+131: }
+132: } warn ;
+133: } ;
+134:
+135: struct MemoryResource {
+136: QString type ;
+137: struct Alloc {
+138: Alloc ( ) :
+139: isRealloc ( false ) ,
+140: init ( false ) ,
+141: arg ( -1 ) ,
+142: reallocArg ( -1 )
+143: { }
+144:
+145: bool isRealloc ;
+146: bool init ;
+147: int arg ;
+148: int reallocArg ;
+149: QString bufferSize ;
+150: QString name ;
+151: } ;
+152: struct Dealloc {
+153: Dealloc ( ) :
+154: arg ( -1 )
+155: { }
+156:
+157: int arg ;
+158: QString name ;
+159: } ;
+160:
+161: QList < struct Alloc > alloc ;
+162: QList < struct Dealloc > dealloc ;
+163: QStringList use ;
+164: } ;
+165:
+166: struct PodType {
+167: QString name ;
+168: QString stdtype ;
+169: QString size ;
+170: QString sign ;
+171: } ;
+172:
+173: struct PlatformType {
+174: QString name ;
+175: QString value ;
+176: QStringList types ;
+177: QStringList platforms ;
+178: } ;
+179:
+180: using TypeChecks = QList < QPair < QString , QString > > ;
+181:
+182: struct Reflection {
+183: struct Call {
+184: Call ( ) :
+185: arg { -1 }
+186: { }
+187:
+188: int arg ;
+189: QString name ;
+190: } ;
+191:
+192: QList < struct Call > calls ;
+193: } ;
+194:
+195: struct Markup {
+196: struct CodeBlocks {
+197: CodeBlocks ( ) :
+198: offset { -1 }
+199: { }
+200:
+201: QStringList blocks ;
+202: int offset ;
+203: QString start ;
+204: QString end ;
+205: } ;
+206:
+207: struct Exporter {
+208: QString prefix ;
+209: QStringList prefixList ;
+210: QStringList suffixList ;
+211: } ;
+212:
+213: QString ext ;
+214: bool afterCode ;
+215: bool reportErrors ;
+216: QStringList keywords ;
+217: QStringList importer ;
+218: QList < CodeBlocks > codeBlocks ;
+219: QList < Exporter > exporter ;
+220: } ;
+221:
+222: void clear ( ) {
+223: containers . clear ( ) ;
+224: defines . clear ( ) ;
+225: undefines . clear ( ) ;
+226: functions . clear ( ) ;
+227: memoryresource . clear ( ) ;
+228: podtypes . clear ( ) ;
+229: smartPointers . clear ( ) ;
+230: typeChecks . clear ( ) ;
+231: platformTypes . clear ( ) ;
+232: reflections . clear ( ) ;
+233: markups . clear ( ) ;
+234: }
+235:
+236: void swap ( CppcheckLibraryData & other ) {
+237: containers . swap ( other . containers ) ;
+238: defines . swap ( other . defines ) ;
+239: undefines . swap ( other . undefines ) ;
+240: functions . swap ( other . functions ) ;
+241: memoryresource . swap ( other . memoryresource ) ;
+242: podtypes . swap ( other . podtypes ) ;
+243: smartPointers . swap ( other . smartPointers ) ;
+244: typeChecks . swap ( other . typeChecks ) ;
+245: platformTypes . swap ( other . platformTypes ) ;
+246: reflections . swap ( other . reflections ) ;
+247: markups . swap ( other . markups ) ;
+248: }
+249:
+250: QString open ( QIODevice & file ) ;
+251: QString toString ( ) const ;
+252:
+253: QList < struct Container > containers ;
+254: QList < struct Define > defines ;
+255: QList < struct Function > functions ;
+256: QList < struct MemoryResource > memoryresource ;
+257: QList < struct PodType > podtypes ;
+258: QList < TypeChecks > typeChecks ;
+259: QList < struct PlatformType > platformTypes ;
+260: QStringList undefines ;
+261: QStringList smartPointers ;
+262: QList < struct Reflection > reflections ;
+263: QList < struct Markup > markups ;
+264: } ;
+
+##file cppcheck-2.8/gui/librarydialog.h
+
+1:
+|
+25:
+26: class QListWidgetItem ;
+27: class QObject ;
+28: class QWidget ;
+29: namespace Ui {
+30: class LibraryDialog ;
+31: }
+32:
+33: class LibraryDialog : public QDialog {
+34: Q_OBJECT
+35:
+36: public:
+37: explicit LibraryDialog ( QWidget * parent = nullptr ) ;
+38: LibraryDialog ( const LibraryDialog & ) = delete ;
+39: ~ LibraryDialog ( ) override ;
+40: LibraryDialog & operator = ( const LibraryDialog & ) = delete ;
+41:
+42: private slots :
+43: void openCfg ( ) ;
+44: void saveCfg ( ) ;
+45: void saveCfgAs ( ) ;
+46: void addFunction ( ) ;
+47: void changeFunction ( ) ;
+48: void editArg ( ) ;
+49: void editFunctionName ( QListWidgetItem * ) ;
+50: void filterFunctions ( const QString & ) ;
+51: void selectFunction ( ) ;
+52: void sortFunctions ( bool ) ;
+53:
+54: private:
+55: Ui :: LibraryDialog * mUi ;
+56: CppcheckLibraryData mData ;
+57: QString mFileName ;
+58: bool mIgnoreChanges ;
+59:
+60: static QString getArgText ( const CppcheckLibraryData :: Function :: Arg & arg ) ;
+61: CppcheckLibraryData :: Function * currentFunction ( ) ;
+62: void updateArguments ( const CppcheckLibraryData :: Function & function ) ;
+63: } ;
+
+##file cppcheck-2.8/gui/projectfile.h
+
+1:
+|
+31:
+32: class QXmlStreamReader ;
+33: class QXmlStreamWriter ;
+34:
+|
+43:
+44: class ProjectFile : public QObject {
+45: Q_OBJECT
+46:
+47: public:
+48: explicit ProjectFile ( QObject * parent = nullptr ) ;
+49: explicit ProjectFile ( const QString & filename , QObject * parent = nullptr ) ;
+50: ~ ProjectFile ( ) override {
+51: if ( this == mActiveProject ) { mActiveProject = nullptr ; }
+52: }
+53:
+54: static ProjectFile * getActiveProject ( ) {
+55: return mActiveProject ;
+56: }
+57: void setActiveProject ( ) {
+58: mActiveProject = this ;
+59: }
+60:
+|
+64:
+65: bool read ( const QString & filename = QString ( ) ) ;
+66:
+|
+70:
+71: QString getRootPath ( ) const {
+72: return mRootPath ;
+73: }
+74:
+75: QString getBuildDir ( ) const {
+76: return mBuildDir ;
+77: }
+78:
+79: QString getImportProject ( ) const {
+80: return mImportProject ;
+81: }
+82:
+83: bool getAnalyzeAllVsConfigs ( ) const {
+84: return mAnalyzeAllVsConfigs ;
+85: }
+86:
+87: bool getCheckHeaders ( ) const {
+88: return mCheckHeaders ;
+89: }
+90:
+91: void setCheckHeaders ( bool b ) {
+92: mCheckHeaders = b ;
+93: }
+94:
+95: bool getCheckUnusedTemplates ( ) const {
+96: return mCheckUnusedTemplates ;
+97: }
+98:
+99: void setCheckUnusedTemplates ( bool b ) {
+100: mCheckUnusedTemplates = b ;
+101: }
+102:
+|
+106:
+107: QStringList getIncludeDirs ( ) const {
+108: return ProjectFile :: fromNativeSeparators ( mIncludeDirs ) ;
+109: }
+110:
+|
+114:
+115: QStringList getDefines ( ) const {
+116: return mDefines ;
+117: }
+118:
+|
+122:
+123: QStringList getUndefines ( ) const {
+124: return mUndefines ;
+125: }
+126:
+|
+130:
+131: QStringList getCheckPaths ( ) const {
+132: return ProjectFile :: fromNativeSeparators ( mPaths ) ;
+133: }
+134:
+|
+138:
+139: QStringList getExcludedPaths ( ) const {
+140: return ProjectFile :: fromNativeSeparators ( mExcludedPaths ) ;
+141: }
+142:
+|
+146:
+147: QStringList getVsConfigurations ( ) const {
+148: return mVsConfigurations ;
+149: }
+150:
+|
+154:
+155: QStringList getLibraries ( ) const {
+156: return mLibraries ;
+157: }
+158:
+|
+162:
+163: QString getPlatform ( ) const {
+164: return mPlatform ;
+165: }
+166:
+|
+170:
+171: QList < Suppressions :: Suppression > getSuppressions ( ) const {
+172: return mSuppressions ;
+173: }
+174:
+|
+178:
+179: QStringList getAddons ( ) const {
+180: return mAddons ;
+181: }
+182:
+|
+187:
+188: static QString getAddonFilePath ( QString filesDir , const QString & addon ) ;
+189:
+|
+193:
+194: QStringList getAddonsAndTools ( ) const ;
+195:
+196: bool getClangAnalyzer ( ) const {
+197: return false ;
+198: }
+199:
+200: void setClangAnalyzer ( bool c ) {
+201: mClangAnalyzer = c ;
+202: }
+203:
+204: bool getClangTidy ( ) const {
+205: return mClangTidy ;
+206: }
+207:
+208: void setClangTidy ( bool c ) {
+209: mClangTidy = c ;
+210: }
+211:
+212: QStringList getTags ( ) const {
+213: return mTags ;
+214: }
+215:
+216: int getMaxCtuDepth ( ) const {
+217: return mMaxCtuDepth ;
+218: }
+219:
+220: void setMaxCtuDepth ( int maxCtuDepth ) {
+221: mMaxCtuDepth = maxCtuDepth ;
+222: }
+223:
+224: int getMaxTemplateRecursion ( ) const {
+225: return mMaxTemplateRecursion ;
+226: }
+227:
+228: void setMaxTemplateRecursion ( int maxTemplateRecursion ) {
+229: mMaxTemplateRecursion = maxTemplateRecursion ;
+230: }
+231:
+|
+235:
+236: QString getFilename ( ) const {
+237: return mFilename ;
+238: }
+239:
+|
+243:
+244: void setRootPath ( const QString & rootpath ) {
+245: mRootPath = rootpath ;
+246: }
+247:
+248: void setBuildDir ( const QString & buildDir ) {
+249: mBuildDir = buildDir ;
+250: }
+251:
+252: void setImportProject ( const QString & importProject ) {
+253: mImportProject = importProject ;
+254: }
+255:
+256: void setAnalyzeAllVsConfigs ( bool b ) {
+257: mAnalyzeAllVsConfigs = b ;
+258: }
+259:
+|
+263:
+264: void setIncludes ( const QStringList & includes ) ;
+265:
+|
+269:
+270: void setDefines ( const QStringList & defines ) ;
+271:
+|
+275:
+276: void setUndefines ( const QStringList & undefines ) ;
+277:
+|
+281:
+282: void setCheckPaths ( const QStringList & paths ) ;
+283:
+|
+287:
+288: void setExcludedPaths ( const QStringList & paths ) ;
+289:
+|
+293:
+294: void setLibraries ( const QStringList & libraries ) ;
+295:
+|
+299:
+300: void setPlatform ( const QString & platform ) ;
+301:
+|
+305:
+306: void setSuppressions ( const QList < Suppressions :: Suppression > & suppressions ) ;
+307:
+308:
+309: void addSuppression ( const Suppressions :: Suppression & suppression ) ;
+310:
+|
+314:
+315: void setAddons ( const QStringList & addons ) ;
+316:
+|
+319:
+320: void setVSConfigurations ( const QStringList & vsConfigs ) ;
+321:
+|
+325:
+326: void setTags ( const QStringList & tags ) {
+327: mTags = tags ;
+328: }
+329:
+330:
+331: void setWarningTags ( std :: size_t hash , const QString & tags ) ;
+332:
+333:
+334: QString getWarningTags ( std :: size_t hash ) const ;
+335:
+|
+339:
+340: bool write ( const QString & filename = QString ( ) ) ;
+341:
+|
+345:
+346: void setFilename ( const QString & filename ) {
+347: mFilename = filename ;
+348: }
+349:
+350:
+351: class SafeChecks : public Settings :: SafeChecks {
+352: public:
+353: SafeChecks ( ) : Settings :: SafeChecks ( ) { }
+354:
+355: void loadFromXml ( QXmlStreamReader & xmlReader ) ;
+356: void saveToXml ( QXmlStreamWriter & xmlWriter ) const ;
+357: } ;
+358:
+359: SafeChecks safeChecks ;
+360:
+361:
+362: QStringList getCheckUnknownFunctionReturn ( ) const {
+363: return mCheckUnknownFunctionReturn ;
+364: }
+365: void setCheckUnknownFunctionReturn ( const QStringList & s ) {
+366: mCheckUnknownFunctionReturn = s ;
+367: }
+368:
+369:
+370: bool clangParser ;
+371:
+372: protected:
+373:
+|
+377:
+378: void readRootPath ( QXmlStreamReader & reader ) ;
+379:
+380: void readBuildDir ( QXmlStreamReader & reader ) ;
+381:
+|
+385:
+386: void readImportProject ( QXmlStreamReader & reader ) ;
+387:
+388: bool readBool ( QXmlStreamReader & reader ) ;
+389:
+390: int readInt ( QXmlStreamReader & reader , int defaultValue ) ;
+391:
+|
+395:
+396: void readIncludeDirs ( QXmlStreamReader & reader ) ;
+397:
+|
+401:
+402: void readDefines ( QXmlStreamReader & reader ) ;
+403:
+|
+407:
+408: void readCheckPaths ( QXmlStreamReader & reader ) ;
+409:
+|
+413:
+414: void readExcludes ( QXmlStreamReader & reader ) ;
+415:
+|
+419:
+420: void readVsConfigurations ( QXmlStreamReader & reader ) ;
+421:
+|
+425:
+426: void readPlatform ( QXmlStreamReader & reader ) ;
+427:
+|
+431:
+432: void readSuppressions ( QXmlStreamReader & reader ) ;
+433:
+|
+437:
+438: void readTagWarnings ( QXmlStreamReader & reader , const QString & tag ) ;
+439:
+|
+445:
+446: void readStringList ( QStringList & stringlist , QXmlStreamReader & reader , const char elementname [ ] ) ;
+447:
+|
+454:
+455: static void writeStringList ( QXmlStreamWriter & xmlWriter , const QStringList & stringlist , const char startelementname [ ] , const char stringelementname [ ] ) ;
+456:
+457: private:
+458:
+459: void clear ( ) ;
+460:
+|
+463:
+464: static QStringList fromNativeSeparators ( const QStringList & paths ) ;
+465:
+|
+468:
+469: QString mFilename ;
+470:
+|
+476:
+477: QString mRootPath ;
+478:
+479:
+480: QString mBuildDir ;
+481:
+482:
+483: QString mImportProject ;
+484:
+|
+489:
+490: bool mAnalyzeAllVsConfigs ;
+491:
+492:
+493: QStringList mVsConfigurations ;
+494:
+495:
+496: bool mCheckHeaders ;
+497:
+498:
+499: bool mCheckUnusedTemplates ;
+500:
+|
+503:
+504: QStringList mIncludeDirs ;
+505:
+|
+508:
+509: QStringList mDefines ;
+510:
+|
+513:
+514: QStringList mUndefines ;
+515:
+|
+518:
+519: QStringList mPaths ;
+520:
+|
+523:
+524: QStringList mExcludedPaths ;
+525:
+|
+528:
+529: QStringList mLibraries ;
+530:
+|
+533:
+534: QString mPlatform ;
+535:
+|
+538:
+539: QList < Suppressions :: Suppression > mSuppressions ;
+540:
+|
+543:
+544: QStringList mAddons ;
+545:
+546:
+547: bool mClangAnalyzer ;
+548:
+549:
+550: bool mClangTidy ;
+551:
+|
+554:
+555: QStringList mTags ;
+556:
+|
+559:
+560: std :: map < std :: size_t , QString > mWarningTags ;
+561:
+562:
+563: int mMaxCtuDepth ;
+564:
+565:
+566: int mMaxTemplateRecursion ;
+567:
+568: QStringList mCheckUnknownFunctionReturn ;
+569:
+570: static ProjectFile * mActiveProject ;
+571: } ;
+
+##file cppcheck-2.8/gui/projectfiledialog.h
+
+1:
+|
+27:
+28: class QModelIndex ;
+29: class QObject ;
+30: class QWidget ;
+31: namespace Ui {
+32: class ProjectFile ;
+33: }
+34:
+|
+38:
+39: class ProjectFile ;
+40:
+|
+43:
+44: class ProjectFileDialog : public QDialog {
+45: Q_OBJECT
+46: public:
+47: explicit ProjectFileDialog ( ProjectFile * projectFile , QWidget * parent = nullptr ) ;
+48: ~ ProjectFileDialog ( ) override ;
+49:
+50: private:
+51: void loadFromProjectFile ( const ProjectFile * projectFile ) ;
+52: void saveToProjectFile ( ProjectFile * projectFile ) const ;
+53:
+54:
+55: void updatePathsAndDefines ( ) ;
+56:
+|
+60:
+61: QString getRootPath ( ) const ;
+62:
+63: QStringList getProjectConfigurations ( ) const ;
+64: void setProjectConfigurations ( const QStringList & configs ) ;
+65:
+66: QString getImportProject ( ) const ;
+67:
+68:
+69: QString getBuildDir ( ) const ;
+70:
+|
+74:
+75: QStringList getIncludePaths ( ) const ;
+76:
+|
+80:
+81: QStringList getDefines ( ) const ;
+82:
+|
+86:
+87: QStringList getUndefines ( ) const ;
+88:
+|
+92:
+93: QStringList getCheckPaths ( ) const ;
+94:
+|
+98:
+99: QStringList getExcludedPaths ( ) const ;
+100:
+|
+104:
+105: QStringList getLibraries ( ) const ;
+106:
+|
+110:
+111: QList < Suppressions :: Suppression > getSuppressions ( ) const {
+112: return mSuppressions ;
+113: }
+114:
+|
+118:
+119: void setRootPath ( const QString & root ) ;
+120:
+121:
+122: void setBuildDir ( const QString & buildDir ) ;
+123:
+124: void setImportProject ( const QString & importProject ) ;
+125:
+|
+129:
+130: void setIncludepaths ( const QStringList & includes ) ;
+131:
+|
+135:
+136: void setDefines ( const QStringList & defines ) ;
+137:
+|
+141:
+142: void setUndefines ( const QStringList & undefines ) ;
+143:
+|
+147:
+148: void setCheckPaths ( const QStringList & paths ) ;
+149:
+|
+153:
+154: void setExcludedPaths ( const QStringList & paths ) ;
+155:
+|
+159:
+160: void setLibraries ( const QStringList & libraries ) ;
+161:
+|
+165:
+166: void addSingleSuppression ( const Suppressions :: Suppression & suppression ) ;
+167:
+|
+171:
+172: void setSuppressions ( const QList < Suppressions :: Suppression > & suppressions ) ;
+173:
+174: protected slots :
+175:
+176:
+177: void ok ( ) ;
+178:
+|
+181:
+182: void browseBuildDir ( ) ;
+183:
+|
+186:
+187: void clearImportProject ( ) ;
+188:
+|
+191:
+192: void browseImportProject ( ) ;
+193:
+|
+196:
+197: void addCheckPath ( ) ;
+198:
+|
+201:
+202: void editCheckPath ( ) ;
+203:
+|
+206:
+207: void removeCheckPath ( ) ;
+208:
+|
+212:
+213: void addIncludeDir ( ) ;
+214:
+|
+217:
+218: void removeIncludeDir ( ) ;
+219:
+|
+222:
+223: void editIncludeDir ( ) ;
+224:
+|
+227:
+228: void addExcludePath ( ) ;
+229:
+|
+232:
+233: void addExcludeFile ( ) ;
+234:
+|
+237:
+238: void editExcludePath ( ) ;
+239:
+|
+242:
+243: void removeExcludePath ( ) ;
+244:
+|
+247:
+248: void moveIncludePathUp ( ) ;
+249:
+|
+252:
+253: void moveIncludePathDown ( ) ;
+254:
+|
+257:
+258: void addSuppression ( ) ;
+259:
+|
+262:
+263: void removeSuppression ( ) ;
+264:
+|
+267:
+268: void editSuppression ( const QModelIndex & index ) ;
+269:
+|
+272:
+273: void browseMisraFile ( ) ;
+274:
+|
+277:
+278: void checkAllVSConfigs ( ) ;
+279:
+280: protected:
+281:
+|
+284:
+285: void loadSettings ( ) ;
+286:
+|
+289:
+290: void saveSettings ( ) const ;
+291:
+|
+295:
+296: void addIncludeDir ( const QString & dir ) ;
+297:
+|
+301:
+302: void addCheckPath ( const QString & path ) ;
+303:
+|
+307:
+308: void addExcludePath ( const QString & path ) ;
+309:
+|
+315:
+316: int getSuppressionIndex ( const QString & shortText ) const ;
+317:
+318: private:
+319: QStringList getProjectConfigs ( const QString & fileName ) ;
+320:
+321: Ui :: ProjectFile * mUI ;
+322:
+|
+325:
+326: ProjectFile * mProjectFile ;
+327:
+328: QString getExistingDirectory ( const QString & caption , bool trailingSlash ) ;
+329:
+330: QList < Suppressions :: Suppression > mSuppressions ;
+331: } ;
+
+##file cppcheck-2.8/gui/report.h
+
+1:
+|
+25:
+26: class ErrorItem ;
+27:
+|
+33:
+34: class Report : public QObject {
+35: public:
+36: enum Type {
+37: TXT ,
+38: XMLV2 ,
+39: CSV ,
+40: } ;
+41:
+42: explicit Report ( const QString & filename ) ;
+43: ~ Report ( ) override ;
+44:
+|
+48:
+49: virtual bool create ( ) ;
+50:
+|
+54:
+55: virtual bool open ( ) ;
+56:
+|
+59:
+60: void close ( ) ;
+61:
+|
+64:
+65: virtual void writeHeader ( ) = 0 ;
+66:
+|
+69:
+70: virtual void writeFooter ( ) = 0 ;
+71:
+|
+75:
+76: virtual void writeError ( const ErrorItem & error ) = 0 ;
+77:
+78: protected:
+79:
+|
+82:
+83: QFile * getFile ( ) ;
+84:
+85: private:
+86:
+|
+89:
+90: QString mFilename ;
+91:
+|
+94:
+95: QFile mFile ;
+96: } ;
+
+##file cppcheck-2.8/gui/showtypes.h
+
+1:
+|
+37:
+38: class ShowTypes {
+39: public:
+40:
+|
+43:
+44: enum ShowType {
+45: ShowStyle = 0 ,
+46: ShowWarnings ,
+47: ShowPerformance ,
+48: ShowPortability ,
+49: ShowInformation ,
+50: ShowErrors ,
+51: ShowNone
+52: } ;
+53:
+|
+57:
+58: ShowTypes ( ) ;
+59:
+|
+63:
+64: ~ ShowTypes ( ) ;
+65:
+|
+68:
+69: void load ( ) ;
+70:
+|
+73:
+74: void save ( ) const ;
+75:
+|
+80:
+81: bool isShown ( ShowTypes :: ShowType category ) const ;
+82:
+|
+87:
+88: bool isShown ( Severity :: SeverityType severity ) const ;
+89:
+|
+94:
+95: void show ( ShowTypes :: ShowType category , bool showing ) ;
+96:
+|
+101:
+102: static ShowTypes :: ShowType SeverityToShowType ( Severity :: SeverityType severity ) ;
+103:
+|
+108:
+109: static Severity :: SeverityType ShowTypeToSeverity ( ShowTypes :: ShowType type ) ;
+110:
+|
+116:
+117: static ShowTypes :: ShowType VariantToShowType ( const QVariant & data ) ;
+118:
+119: bool mVisible [ ShowNone ] ;
+120: } ;
+
+##file cppcheck-2.8/gui/resultsview.h
+
+1:
+|
+29:
+30: class ErrorItem ;
+31: class ApplicationList ;
+32: class ThreadHandler ;
+33: class QModelIndex ;
+34: class QPrinter ;
+35: class QSettings ;
+36: class CheckStatistics ;
+37: class QObject ;
+38: class QPoint ;
+39: namespace Ui {
+40: class ResultsView ;
+41: }
+42:
+|
+49:
+50: class ResultsView : public QWidget {
+51: Q_OBJECT
+52: public:
+53:
+54: explicit ResultsView ( QWidget * parent = nullptr ) ;
+55: void initialize ( QSettings * settings , ApplicationList * list , ThreadHandler * checkThreadHandler ) ;
+56: ResultsView ( const ResultsView & ) = delete ;
+57: ~ ResultsView ( ) override ;
+58: ResultsView & operator = ( const ResultsView & ) = delete ;
+59:
+|
+63:
+64: void clear ( bool results ) ;
+65:
+|
+68:
+69: void clear ( const QString & filename ) ;
+70:
+|
+73:
+74: void clearRecheckFile ( const QString & filename ) ;
+75:
+|
+80:
+81: void saveStatistics ( const QString & filename ) const ;
+82:
+|
+88:
+89: void save ( const QString & filename , Report :: Type type ) const ;
+90:
+|
+93:
+94: void updateFromOldReport ( const QString & filename ) const ;
+95:
+|
+105:
+106: void updateSettings ( bool showFullPath ,
+107: bool saveFullPath ,
+108: bool saveAllErrors ,
+109: bool showNoErrorsMessage ,
+110: bool showErrorId ,
+111: bool showInconclusive ) ;
+112:
+|
+120:
+121: void updateStyleSetting ( QSettings * settings ) ;
+122:
+|
+128:
+129: void setCheckDirectory ( const QString & dir ) ;
+130:
+|
+136:
+137: QString getCheckDirectory ( ) ;
+138:
+|
+143:
+144: void checkingStarted ( int count ) ;
+145:
+|
+149:
+150: void checkingFinished ( ) ;
+151:
+|
+156:
+157: bool hasVisibleResults ( ) const ;
+158:
+|
+163:
+164: bool hasResults ( ) const ;
+165:
+|
+170:
+171: void saveSettings ( QSettings * settings ) ;
+172:
+|
+176:
+177: void translate ( ) ;
+178:
+179: void disableProgressbar ( ) ;
+180:
+|
+185:
+186: void readErrorsXml ( const QString & filename ) ;
+187:
+|
+191:
+192: CheckStatistics * getStatistics ( ) const {
+193: return mStatistics ;
+194: }
+195:
+|
+199:
+200: ShowTypes * getShowTypes ( ) const ;
+201:
+202: signals :
+203:
+|
+207:
+208: void gotResults ( ) ;
+209:
+|
+214:
+215: void resultsHidden ( bool hidden ) ;
+216:
+|
+221:
+222: void checkSelected ( QStringList selectedFilesList ) ;
+223:
+224:
+225: void suppressIds ( QStringList ids ) ;
+226:
+|
+233:
+234: void showResults ( ShowTypes :: ShowType type , bool show ) ;
+235:
+|
+241:
+242: void showCppcheckResults ( bool show ) ;
+243:
+|
+249:
+250: void showClangResults ( bool show ) ;
+251:
+|
+254:
+255: void collapseAllResults ( ) ;
+256:
+|
+259:
+260: void expandAllResults ( ) ;
+261:
+|
+264:
+265: void showHiddenResults ( ) ;
+266:
+267: public slots :
+268:
+|
+274:
+275: void progress ( int value , const QString & description ) ;
+276:
+|
+281:
+282: void error ( const ErrorItem & item ) ;
+283:
+|
+286:
+287: void filterResults ( const QString & filter ) ;
+288:
+|
+293:
+294: void updateDetails ( const QModelIndex & index ) ;
+295:
+|
+298:
+299: void print ( ) ;
+300:
+|
+304:
+305: void print ( QPrinter * printer ) ;
+306:
+|
+309:
+310: void printPreview ( ) ;
+311:
+|
+314:
+315: void log ( const QString & str ) ;
+316:
+|
+319:
+320: void debugError ( const ErrorItem & item ) ;
+321:
+|
+324:
+325: void logClear ( ) ;
+326:
+|
+329:
+330: void logCopyEntry ( ) ;
+331:
+|
+334:
+335: void logCopyComplete ( ) ;
+336:
+337: protected:
+338:
+339:
+340:
+341: bool mShowNoErrorsMessage ;
+342:
+343: Ui :: ResultsView * mUI ;
+344:
+345: CheckStatistics * mStatistics ;
+346:
+347: private slots :
+348:
+|
+351:
+352: void on_mListLog_customContextMenuRequested ( const QPoint & pos ) ;
+353: } ;
+
+##file cppcheck-2.8/gui/scratchpad.h
+
+1:
+|
+23:
+24: class MainWindow ;
+25: class QObject ;
+26: namespace Ui {
+27: class ScratchPad ;
+28: }
+29:
+|
+35:
+36: class ScratchPad : public QDialog {
+37: Q_OBJECT
+38: public:
+39: explicit ScratchPad ( MainWindow & mainWindow ) ;
+40: ~ ScratchPad ( ) ;
+41:
+|
+44:
+45: void translate ( ) ;
+46:
+47: private slots :
+48:
+49:
+50:
+51: void checkButtonClicked ( ) ;
+52:
+53: private:
+54: Ui :: ScratchPad * mUI ;
+55: MainWindow & mMainWindow ;
+56: } ;
+
+##file cppcheck-2.8/gui/statsdialog.h
+
+1:
+|
+23:
+24: class ProjectFile ;
+25: class CheckStatistics ;
+26: class QObject ;
+27: class QWidget ;
+28: namespace Ui {
+29: class StatsDialog ;
+30: }
+31:
+|
+49:
+50: class StatsDialog : public QDialog {
+51: Q_OBJECT
+52: public:
+53: explicit StatsDialog ( QWidget * parent = nullptr ) ;
+54: ~ StatsDialog ( ) override ;
+55:
+|
+58:
+59: void setProject ( const ProjectFile * projectFile ) ;
+60:
+|
+63:
+64: void setPathSelected ( const QString & path ) ;
+65:
+|
+68:
+69: void setNumberOfFilesScanned ( int num ) ;
+70:
+|
+73:
+74: void setScanDuration ( double seconds ) ;
+75:
+|
+78:
+79: void setStatistics ( const CheckStatistics * stats ) ;
+80:
+81: private slots :
+82: void copyToClipboard ( ) ;
+83: void pdfExport ( ) ;
+84:
+|
+92:
+93: private:
+94: Ui :: StatsDialog * mUI ;
+95: const CheckStatistics * mStatistics ;
+96: } ;
+
+##file cppcheck-2.8/gui/settingsdialog.h
+
+1:
+|
+24:
+25: class QSettings ;
+26: class QWidget ;
+27: class ApplicationList ;
+28: class TranslationHandler ;
+29: class CodeEditorStyle ;
+30: class QCheckBox ;
+31: class QObject ;
+32: namespace Ui {
+33: class Settings ;
+34: }
+35:
+|
+42:
+43: class SettingsDialog : public QDialog {
+44: Q_OBJECT
+45: public:
+46: SettingsDialog ( ApplicationList * list ,
+47: TranslationHandler * translator ,
+48: QWidget * parent = nullptr ) ;
+49: SettingsDialog ( const SettingsDialog & ) = delete ;
+50: ~ SettingsDialog ( ) override ;
+51: SettingsDialog & operator = ( const SettingsDialog & ) = delete ;
+52:
+|
+56:
+57: void saveSettingValues ( ) const ;
+58:
+|
+63:
+64: bool showFullPath ( ) const ;
+65:
+|
+70:
+71: bool saveFullPath ( ) const ;
+72:
+|
+78:
+79: bool showNoErrorsMessage ( ) const ;
+80:
+|
+85:
+86: bool showErrorId ( ) const ;
+87:
+|
+93:
+94: bool showInconclusive ( ) const ;
+95:
+|
+100:
+101: bool saveAllErrors ( ) const ;
+102:
+103: protected slots :
+104:
+|
+107:
+108: void ok ( ) ;
+109:
+110:
+111: void validateEditPythonPath ( ) ;
+112:
+|
+116:
+117: void addApplication ( ) ;
+118:
+|
+122:
+123: void removeApplication ( ) ;
+124:
+|
+128:
+129: void editApplication ( ) ;
+130:
+|
+134:
+135: void defaultApplication ( ) ;
+136:
+137:
+138: void browsePythonPath ( ) ;
+139:
+140:
+141: void browseClangPath ( ) ;
+142:
+|
+145:
+146: void browseMisraFile ( ) ;
+147:
+|
+150:
+151: void setCodeEditorStyleDefault ( ) ;
+152:
+|
+155:
+156: void editCodeEditorStyle ( ) ;
+157:
+158: protected:
+159:
+|
+162:
+163: void populateApplicationList ( ) ;
+164:
+|
+169:
+170: void loadSettings ( ) ;
+171:
+|
+175:
+176: void saveSettings ( ) const ;
+177:
+|
+184:
+185: static void saveCheckboxValue ( QSettings * settings , QCheckBox * box , const QString & name ) ;
+186:
+|
+192:
+193: static Qt :: CheckState boolToCheckState ( bool yes ) ;
+194:
+|
+200:
+201: static bool checkStateToBool ( Qt :: CheckState state ) ;
+202:
+|
+205:
+206: void initTranslationsList ( ) ;
+207:
+|
+210:
+211: CodeEditorStyle * mCurrentStyle ;
+212:
+|
+216:
+217: ApplicationList * mApplications ;
+218:
+|
+223:
+224: ApplicationList * mTempApplications ;
+225:
+|
+229:
+230: TranslationHandler * mTranslator ;
+231:
+|
+235:
+236: Ui :: Settings * mUI ;
+237: private:
+238: void manageStyleControls ( ) ;
+239:
+240: static const int mLangCodeRole = Qt :: UserRole ;
+241: } ;
+
+##file cppcheck-2.8/gui/threadresult.h
+
+1:
+|
+33:
+34: class ErrorItem ;
+35:
+|
+42:
+43: class ThreadResult : public QObject , public ErrorLogger {
+44: Q_OBJECT
+45: public:
+46: ThreadResult ( ) ;
+47: ~ ThreadResult ( ) override ;
+48:
+|
+52:
+53: QString getNextFile ( ) ;
+54:
+55: ImportProject :: FileSettings getNextFileSettings ( ) ;
+56:
+|
+60:
+61: void setFiles ( const QStringList & files ) ;
+62:
+63: void setProject ( const ImportProject & prj ) ;
+64:
+|
+68:
+69: void clearFiles ( ) ;
+70:
+|
+74:
+75: int getFileCount ( ) const ;
+76:
+|
+79:
+80: void reportOut ( const std :: string & outmsg , Color c = Color :: Reset ) override ;
+81: void reportErr ( const ErrorMessage & msg ) override ;
+82:
+83: public slots :
+84:
+|
+88:
+89: void fileChecked ( const QString & file ) ;
+90: signals :
+91:
+|
+95:
+96: void progress ( int value , const QString & description ) ;
+97:
+|
+102:
+103: void error ( const ErrorItem & item ) ;
+104:
+|
+109:
+110: void log ( const QString & logline ) ;
+111:
+|
+116:
+117: void debugError ( const ErrorItem & item ) ;
+118:
+119: protected:
+120:
+|
+124:
+125: mutable QMutex mutex ;
+126:
+|
+130:
+131: QStringList mFiles ;
+132:
+133: std :: list < ImportProject :: FileSettings > mFileSettings ;
+134:
+|
+138:
+139: quint64 mMaxProgress ;
+140:
+|
+144:
+145: quint64 mProgress ;
+146:
+|
+150:
+151: unsigned long mFilesChecked ;
+152:
+|
+156:
+157: unsigned long mTotalFiles ;
+158: } ;
+
+##file cppcheck-2.8/gui/threadhandler.h
+
+1:
+|
+32:
+33: class ResultsView ;
+34: class CheckThread ;
+35: class QSettings ;
+36: class Settings ;
+37: class ImportProject ;
+38: class ErrorItem ;
+39:
+|
+47:
+48: class ThreadHandler : public QObject {
+49: Q_OBJECT
+50: public:
+51: explicit ThreadHandler ( QObject * parent = nullptr ) ;
+52: ~ ThreadHandler ( ) override ;
+53:
+|
+57:
+58: void setThreadCount ( const int count ) ;
+59:
+|
+64:
+65: void initialize ( ResultsView * view ) ;
+66:
+|
+70:
+71: void loadSettings ( const QSettings & settings ) ;
+72:
+|
+76:
+77: void saveSettings ( QSettings & settings ) const ;
+78:
+79: void setAddonsAndTools ( const QStringList & addonsAndTools ) {
+80: mAddonsAndTools = addonsAndTools ;
+81: }
+82:
+83: void setSuppressions ( const QList < Suppressions :: Suppression > & s ) {
+84: mSuppressions = s ;
+85: }
+86:
+87: void setClangIncludePaths ( const QStringList & s ) {
+88: mClangIncludePaths = s ;
+89: }
+90:
+|
+94:
+95: void clearFiles ( ) ;
+96:
+|
+101:
+102: void setFiles ( const QStringList & files ) ;
+103:
+|
+108:
+109: void setProject ( const ImportProject & prj ) ;
+110:
+|
+115:
+116: void check ( const Settings & settings ) ;
+117:
+|
+122:
+123: void setCheckFiles ( bool all ) ;
+124:
+|
+129:
+130: void setCheckFiles ( const QStringList & files ) ;
+131:
+|
+136:
+137: bool isChecking ( ) const ;
+138:
+|
+143:
+144: bool hasPreviousFiles ( ) const ;
+145:
+|
+150:
+151: int getPreviousFilesCount ( ) const ;
+152:
+|
+157:
+158: int getPreviousScanDuration ( ) const ;
+159:
+|
+163:
+164: QStringList getReCheckFiles ( bool all ) const ;
+165:
+|
+170:
+171: QDateTime getCheckStartTime ( ) const ;
+172:
+|
+177:
+178: void setCheckStartTime ( QDateTime checkStartTime ) ;
+179:
+180: signals :
+181:
+|
+184:
+185: void done ( ) ;
+186:
+187: void log ( const QString & msg ) ;
+188:
+189: void debugError ( const ErrorItem & item ) ;
+190:
+191: public slots :
+192:
+|
+196:
+197: void stop ( ) ;
+198: protected slots :
+199:
+|
+202:
+203: void threadDone ( ) ;
+204: protected:
+205:
+|
+208:
+209: QStringList mLastFiles ;
+210:
+211:
+212: QDateTime mCheckStartTime ;
+213:
+|
+216:
+217: QDateTime mLastCheckTime ;
+218:
+|
+222:
+223: QElapsedTimer mTimer ;
+224:
+|
+228:
+229: int mScanDuration ;
+230:
+|
+234:
+235: void removeThreads ( ) ;
+236:
+|
+240:
+241: ThreadResult mResults ;
+242:
+|
+246:
+247: QList < CheckThread * > mThreads ;
+248:
+|
+252:
+253: int mRunningThreadCount ;
+254:
+255: bool mAnalyseWholeProgram ;
+256:
+257: QStringList mAddonsAndTools ;
+258: QList < Suppressions :: Suppression > mSuppressions ;
+259: QStringList mClangIncludePaths ;
+260: private:
+261:
+|
+265:
+266: bool needsReCheck ( const QString & filename , std :: set < QString > & modified , std :: set < QString > & unmodified ) const ;
+267: } ;
+
+##file cppcheck-2.8/gui/translationhandler.h
+
+1:
+|
+24:
+25: class QTranslator ;
+26:
+|
+33:
+34: struct TranslationInfo {
+35:
+|
+38:
+39: QString mName ;
+40:
+|
+44:
+45: QString mFilename ;
+46:
+|
+50:
+51: QString mCode ;
+52: } ;
+53:
+|
+60:
+61: class TranslationHandler : QObject {
+62: Q_OBJECT
+63: public:
+64: explicit TranslationHandler ( QObject * parent = nullptr ) ;
+65: ~ TranslationHandler ( ) override ;
+66:
+|
+71:
+72: QList < TranslationInfo > getTranslations ( ) const {
+73: return mTranslations ;
+74: }
+75:
+|
+81:
+82: bool setLanguage ( const QString & code ) ;
+83:
+|
+88:
+89: QString getCurrentLanguage ( ) const ;
+90:
+|
+98:
+99: QString suggestLanguage ( ) const ;
+100:
+101: protected:
+102:
+|
+108:
+109: void addTranslation ( const char * name , const char * filename ) ;
+110:
+|
+116:
+117: int getLanguageIndexByCode ( const QString & code ) const ;
+118:
+119: private:
+120:
+|
+124:
+125: QString mCurrentLanguage ;
+126:
+|
+130:
+131: QList < TranslationInfo > mTranslations ;
+132:
+|
+136:
+137: QTranslator * mTranslator ;
+138: } ;
+
+##file cppcheck-2.8/gui/mainwindow.cpp
+
+1:
+|
+69:
+70: static const QString OnlineHelpURL ( "https://cppcheck.sourceforge.io/manual.html" ) ;
+71: static const QString compile_commands_json ( "compile_commands.json" ) ;
+72:
+73: MainWindow :: MainWindow ( TranslationHandler * th , QSettings * settings ) :
+74: mSettings ( settings ) ,
+75: mApplications ( new ApplicationList ( this ) ) ,
+76: mTranslation ( th ) ,
+77: mUI ( new Ui :: MainWindow ) ,
+78: mScratchPad ( nullptr ) ,
+79: mProjectFile ( nullptr ) ,
+80: mPlatformActions ( new QActionGroup ( this ) ) ,
+81: mCStandardActions ( new QActionGroup ( this ) ) ,
+82: mCppStandardActions ( new QActionGroup ( this ) ) ,
+83: mSelectLanguageActions ( new QActionGroup ( this ) ) ,
+84: mExiting ( false ) ,
+85: mIsLogfileLoaded ( false )
+86: {
+87: {
+88: Settings tempSettings ;
+89: tempSettings . loadCppcheckCfg ( ) ;
+90: mCppcheckCfgProductName = QString :: fromStdString ( tempSettings . cppcheckCfgProductName ) ;
+91: mCppcheckCfgAbout = QString :: fromStdString ( tempSettings . cppcheckCfgAbout ) ;
+92: }
+93:
+94: mUI . setupUi ( this ) ;
+95: mThread = new ThreadHandler ( this ) ;
+96: mUI . mResults . initialize ( mSettings , mApplications , mThread ) ;
+97:
+98:
+99: mFilterTimer = new QTimer ( this ) ;
+100: mFilterTimer . setInterval ( 500 ) ;
+101: mFilterTimer . setSingleShot ( true ) ;
+102: connect ( mFilterTimer , & QTimer :: timeout , this , & MainWindow :: filterResults ) ;
+103:
+104:
+105: mLineEditFilter = new QLineEdit ( mUI . mToolBarFilter ) ;
+106: mLineEditFilter . setPlaceholderText ( tr ( "Quick Filter:" ) ) ;
+107: mLineEditFilter . setClearButtonEnabled ( true ) ;
+108: mUI . mToolBarFilter . addWidget ( mLineEditFilter ) ;
+109: connect ( mLineEditFilter , SIGNAL ( textChanged ( const QString & ) ) , mFilterTimer , SLOT ( start ( ) ) ) ;
+110: connect ( mLineEditFilter , & QLineEdit :: returnPressed , this , & MainWindow :: filterResults ) ;
+111:
+112: connect ( mUI . mActionPrint , SIGNAL ( triggered ( ) ) , mUI . mResults , SLOT ( print ( ) ) ) ;
+113: connect ( mUI . mActionPrintPreview , SIGNAL ( triggered ( ) ) , mUI . mResults , SLOT ( printPreview ( ) ) ) ;
+114: connect ( mUI . mActionQuit , & QAction :: triggered , this , & MainWindow :: close ) ;
+115: connect ( mUI . mActionAnalyzeFiles , & QAction :: triggered , this , & MainWindow :: analyzeFiles ) ;
+116: connect ( mUI . mActionAnalyzeDirectory , & QAction :: triggered , this , & MainWindow :: analyzeDirectory ) ;
+117: connect ( mUI . mActionSettings , & QAction :: triggered , this , & MainWindow :: programSettings ) ;
+118: connect ( mUI . mActionClearResults , & QAction :: triggered , this , & MainWindow :: clearResults ) ;
+119: connect ( mUI . mActionOpenXML , & QAction :: triggered , this , & MainWindow :: openResults ) ;
+120:
+121: connect ( mUI . mActionShowStyle , & QAction :: toggled , this , & MainWindow :: showStyle ) ;
+122: connect ( mUI . mActionShowErrors , & QAction :: toggled , this , & MainWindow :: showErrors ) ;
+123: connect ( mUI . mActionShowWarnings , & QAction :: toggled , this , & MainWindow :: showWarnings ) ;
+124: connect ( mUI . mActionShowPortability , & QAction :: toggled , this , & MainWindow :: showPortability ) ;
+125: connect ( mUI . mActionShowPerformance , & QAction :: toggled , this , & MainWindow :: showPerformance ) ;
+126: connect ( mUI . mActionShowInformation , & QAction :: toggled , this , & MainWindow :: showInformation ) ;
+127: connect ( mUI . mActionShowCppcheck , & QAction :: toggled , mUI . mResults , & ResultsView :: showCppcheckResults ) ;
+128: connect ( mUI . mActionShowClang , & QAction :: toggled , mUI . mResults , & ResultsView :: showClangResults ) ;
+129: connect ( mUI . mActionCheckAll , & QAction :: triggered , this , & MainWindow :: checkAll ) ;
+130: connect ( mUI . mActionUncheckAll , & QAction :: triggered , this , & MainWindow :: uncheckAll ) ;
+131: connect ( mUI . mActionCollapseAll , & QAction :: triggered , mUI . mResults , & ResultsView :: collapseAllResults ) ;
+132: connect ( mUI . mActionExpandAll , & QAction :: triggered , mUI . mResults , & ResultsView :: expandAllResults ) ;
+133: connect ( mUI . mActionShowHidden , & QAction :: triggered , mUI . mResults , & ResultsView :: showHiddenResults ) ;
+134: connect ( mUI . mActionViewStats , & QAction :: triggered , this , & MainWindow :: showStatistics ) ;
+135: connect ( mUI . mActionLibraryEditor , & QAction :: triggered , this , & MainWindow :: showLibraryEditor ) ;
+136:
+137: connect ( mUI . mActionReanalyzeModified , & QAction :: triggered , this , & MainWindow :: reAnalyzeModified ) ;
+138: connect ( mUI . mActionReanalyzeAll , & QAction :: triggered , this , & MainWindow :: reAnalyzeAll ) ;
+139: connect ( mUI . mActionCheckLibrary , & QAction :: triggered , this , & MainWindow :: checkLibrary ) ;
+140: connect ( mUI . mActionCheckConfiguration , & QAction :: triggered , this , & MainWindow :: checkConfiguration ) ;
+141:
+142: connect ( mUI . mActionStop , & QAction :: triggered , this , & MainWindow :: stopAnalysis ) ;
+143: connect ( mUI . mActionSave , & QAction :: triggered , this , & MainWindow :: save ) ;
+144:
+145:
+146: connect ( mUI . mActionAbout , & QAction :: triggered , this , & MainWindow :: about ) ;
+147: connect ( mUI . mActionLicense , & QAction :: triggered , this , & MainWindow :: showLicense ) ;
+148:
+149:
+150: connect ( mUI . mActionToolBarMain , SIGNAL ( toggled ( bool ) ) , this , SLOT ( toggleMainToolBar ( ) ) ) ;
+151: connect ( mUI . mActionToolBarView , SIGNAL ( toggled ( bool ) ) , this , SLOT ( toggleViewToolBar ( ) ) ) ;
+152: connect ( mUI . mActionToolBarFilter , SIGNAL ( toggled ( bool ) ) , this , SLOT ( toggleFilterToolBar ( ) ) ) ;
+153:
+154: connect ( mUI . mActionAuthors , & QAction :: triggered , this , & MainWindow :: showAuthors ) ;
+155: connect ( mThread , & ThreadHandler :: done , this , & MainWindow :: analysisDone ) ;
+156: connect ( mThread , & ThreadHandler :: log , mUI . mResults , & ResultsView :: log ) ;
+157: connect ( mThread , & ThreadHandler :: debugError , mUI . mResults , & ResultsView :: debugError ) ;
+158: connect ( mUI . mResults , & ResultsView :: gotResults , this , & MainWindow :: resultsAdded ) ;
+159: connect ( mUI . mResults , & ResultsView :: resultsHidden , mUI . mActionShowHidden , & QAction :: setEnabled ) ;
+160: connect ( mUI . mResults , & ResultsView :: checkSelected , this , & MainWindow :: performSelectedFilesCheck ) ;
+161: connect ( mUI . mResults , & ResultsView :: suppressIds , this , & MainWindow :: suppressIds ) ;
+162: connect ( mUI . mMenuView , & QMenu :: aboutToShow , this , & MainWindow :: aboutToShowViewMenu ) ;
+163:
+164:
+165: connect ( mUI . mActionNewProjectFile , & QAction :: triggered , this , & MainWindow :: newProjectFile ) ;
+166: connect ( mUI . mActionOpenProjectFile , & QAction :: triggered , this , & MainWindow :: openProjectFile ) ;
+167: connect ( mUI . mActionShowScratchpad , & QAction :: triggered , this , & MainWindow :: showScratchpad ) ;
+168: connect ( mUI . mActionCloseProjectFile , & QAction :: triggered , this , & MainWindow :: closeProjectFile ) ;
+169: connect ( mUI . mActionEditProjectFile , & QAction :: triggered , this , & MainWindow :: editProjectFile ) ;
+170:
+171: connect ( mUI . mActionHelpContents , & QAction :: triggered , this , & MainWindow :: openHelpContents ) ;
+172:
+173: loadSettings ( ) ;
+174:
+175: mThread . initialize ( mUI . mResults ) ;
+176: if ( mProjectFile ) {
+177: formatAndSetTitle ( tr ( "Project:" ) + ' ' + mProjectFile . getFilename ( ) ) ; }
+178: else {
+179: formatAndSetTitle ( ) ; }
+180:
+181: enableCheckButtons ( true ) ;
+182:
+183: mUI . mActionPrint . setShortcut ( QKeySequence :: Print ) ;
+184: enableResultsButtons ( ) ;
+185: enableProjectOpenActions ( true ) ;
+186: enableProjectActions ( false ) ;
+187:
+188:
+189:
+190: for ( int i = 0 ; i < MaxRecentProjects ; ++ i ) {
+191: mRecentProjectActs [ i ] = new QAction ( this ) ;
+192: mRecentProjectActs [ i ] . setVisible ( false ) ;
+193: connect ( mRecentProjectActs [ i ] , SIGNAL ( triggered ( ) ) ,
+194: this , SLOT ( openRecentProject ( ) ) ) ;
+195: }
+196: mRecentProjectActs [ MaxRecentProjects ] = nullptr ;
+197: mUI . mActionProjectMRU . setVisible ( false ) ;
+198: updateMRUMenuItems ( ) ;
+199:
+200: QStringList args ; args = QCoreApplication :: arguments ( ) ;
+201:
+202: args . removeFirst ( ) ;
+203: if ( ! args . isEmpty ( ) ) {
+204: handleCLIParams ( args ) ;
+205: }
+206:
+207: mUI . mActionCloseProjectFile . setEnabled ( mProjectFile != nullptr ) ;
+208: mUI . mActionEditProjectFile . setEnabled ( mProjectFile != nullptr ) ;
+209:
+210: for ( int i = 0 ; i < mPlatforms . getCount ( ) ; i ++ ) {
+211: Platform platform ; platform = mPlatforms . mPlatforms [ i ] ;
+212: QAction * action ; action = new QAction ( this ) ;
+213: platform . mActMainWindow = action ;
+214: mPlatforms . mPlatforms [ i ] = platform ;
+215: action . setText ( platform . mTitle ) ;
+216: action . setData ( platform . mType ) ;
+217: action . setCheckable ( true ) ;
+218: action . setActionGroup ( mPlatformActions ) ;
+219: mUI . mMenuAnalyze . insertAction ( mUI . mActionPlatforms , action ) ;
+220: connect ( action , SIGNAL ( triggered ( ) ) , this , SLOT ( selectPlatform ( ) ) ) ;
+221: }
+222:
+223: mUI . mActionC89 . setActionGroup ( mCStandardActions ) ;
+224: mUI . mActionC99 . setActionGroup ( mCStandardActions ) ;
+225: mUI . mActionC11 . setActionGroup ( mCStandardActions ) ;
+226:
+227: mUI . mActionCpp03 . setActionGroup ( mCppStandardActions ) ;
+228: mUI . mActionCpp11 . setActionGroup ( mCppStandardActions ) ;
+229: mUI . mActionCpp14 . setActionGroup ( mCppStandardActions ) ;
+230: mUI . mActionCpp17 . setActionGroup ( mCppStandardActions ) ;
+231: mUI . mActionCpp20 . setActionGroup ( mCppStandardActions ) ;
+232:
+233:
+234: mUI . mActionEnforceC . setActionGroup ( mSelectLanguageActions ) ;
+235: mUI . mActionEnforceCpp . setActionGroup ( mSelectLanguageActions ) ;
+236: mUI . mActionAutoDetectLanguage . setActionGroup ( mSelectLanguageActions ) ;
+237:
+|
+243:
+244: const Settings :: PlatformType defaultPlatform = Settings :: Unspecified ;
+245:
+246: Platform & platform = mPlatforms . get ( ( Settings :: PlatformType ) mSettings . value ( $"Checked platform" , defaultPlatform ) . toInt ( ) ) ;
+247: platform . mActMainWindow . setChecked ( true ) ;
+248: }
+249:
+250: MainWindow :: ~ MainWindow ( )
+251: {
+252: delete mProjectFile ;
+253: delete mScratchPad ;
+254: delete mUI ;
+255: }
+256:
+257: void MainWindow :: handleCLIParams ( const QStringList & params )
+258: {
+259: int index ;
+260: if ( params . contains ( "-p" ) ) {
+261: index = params . indexOf ( "-p" ) ;
+262: if ( ( index + 1 ) < params . length ( ) ) {
+263: loadProjectFile ( params [ index + 1 ] ) ; }
+264: } else if ( params . contains ( "-l" ) ) {
+265: QString logFile ;
+266: index = params . indexOf ( "-l" ) ;
+267: if ( ( index + 1 ) < params . length ( ) ) {
+268: logFile = params [ index + 1 ] ; }
+269:
+270: if ( params . contains ( "-d" ) ) {
+271: QString checkedDir ;
+272: index = params . indexOf ( "-d" ) ;
+273: if ( ( index + 1 ) < params . length ( ) ) {
+274: checkedDir = params [ index + 1 ] ; }
+275:
+276: loadResults ( logFile , checkedDir ) ;
+277: } else {
+278: loadResults ( logFile ) ;
+279: }
+280: } else if ( ( index = params . indexOf ( QRegularExpression ( ".*\\.cppcheck$" , QRegularExpression :: CaseInsensitiveOption ) ) ) >= 0 && index < params . length ( ) && QFile ( params [ index ] ) . exists ( ) ) {
+281: loadProjectFile ( params [ index ] ) ;
+282: } else if ( ( index = params . indexOf ( QRegularExpression ( ".*\\.xml$" , QRegularExpression :: CaseInsensitiveOption ) ) ) >= 0 && index < params . length ( ) && QFile ( params [ index ] ) . exists ( ) ) {
+283: loadResults ( params [ index ] , QDir :: currentPath ( ) ) ;
+284: } else {
+285: doAnalyzeFiles ( params ) ; }
+286: }
+287:
+288: void MainWindow :: loadSettings ( )
+289: {
+290:
+291: if ( mSettings . value ( $"Window maximized" , false ) . toBool ( ) ) {
+292: showMaximized ( ) ;
+293: } else {
+294: resize ( mSettings . value ( $"Window width" , 800 ) . toInt ( ) ,
+295: mSettings . value ( $"Window height" , 600 ) . toInt ( ) ) ;
+296: }
+297:
+298: ShowTypes * types ; types = mUI . mResults . getShowTypes ( ) ;
+299: mUI . mActionShowStyle . setChecked ( types . isShown ( ShowTypes :: ShowStyle ) ) ;
+300: mUI . mActionShowErrors . setChecked ( types . isShown ( ShowTypes :: ShowErrors ) ) ;
+301: mUI . mActionShowWarnings . setChecked ( types . isShown ( ShowTypes :: ShowWarnings ) ) ;
+302: mUI . mActionShowPortability . setChecked ( types . isShown ( ShowTypes :: ShowPortability ) ) ;
+303: mUI . mActionShowPerformance . setChecked ( types . isShown ( ShowTypes :: ShowPerformance ) ) ;
+304: mUI . mActionShowInformation . setChecked ( types . isShown ( ShowTypes :: ShowInformation ) ) ;
+305: mUI . mActionShowCppcheck . setChecked ( true ) ;
+306: mUI . mActionShowClang . setChecked ( true ) ;
+307:
+308: Standards standards ;
+309: standards . setC ( mSettings . value ( $"Standard C" , QString ( ) ) . toString ( ) . toStdString ( ) ) ;
+310: mUI . mActionC89 . setChecked ( standards . c == Standards :: C89 ) ;
+311: mUI . mActionC99 . setChecked ( standards . c == Standards :: C99 ) ;
+312: mUI . mActionC11 . setChecked ( standards . c == Standards :: C11 ) ;
+313: standards . setCPP ( mSettings . value ( $"Standard CPP" , QString ( ) ) . toString ( ) . toStdString ( ) ) ;
+314: mUI . mActionCpp03 . setChecked ( standards . cpp == Standards :: CPP03 ) ;
+315: mUI . mActionCpp11 . setChecked ( standards . cpp == Standards :: CPP11 ) ;
+316: mUI . mActionCpp14 . setChecked ( standards . cpp == Standards :: CPP14 ) ;
+317: mUI . mActionCpp17 . setChecked ( standards . cpp == Standards :: CPP17 ) ;
+318: mUI . mActionCpp20 . setChecked ( standards . cpp == Standards :: CPP20 ) ;
+319:
+320:
+321:
+322: const bool showMainToolbar = mSettings . value ( $"Toolbars/ShowStandard" , true ) . toBool ( ) ;
+323: mUI . mActionToolBarMain . setChecked ( showMainToolbar ) ;
+324: mUI . mToolBarMain . setVisible ( showMainToolbar ) ;
+325:
+326: const bool showViewToolbar = mSettings . value ( $"Toolbars/ShowView" , true ) . toBool ( ) ;
+327: mUI . mActionToolBarView . setChecked ( showViewToolbar ) ;
+328: mUI . mToolBarView . setVisible ( showViewToolbar ) ;
+329:
+330: const bool showFilterToolbar = mSettings . value ( $"Toolbars/ShowFilter" , true ) . toBool ( ) ;
+331: mUI . mActionToolBarFilter . setChecked ( showFilterToolbar ) ;
+332: mUI . mToolBarFilter . setVisible ( showFilterToolbar ) ;
+333:
+334: Settings :: Language enforcedLanguage ; enforcedLanguage = ( Settings :: Language ) mSettings . value ( $"Enforced language" , 0 ) . toInt ( ) ;
+335: if ( enforcedLanguage == Settings :: CPP ) {
+336: mUI . mActionEnforceCpp . setChecked ( true ) ; }
+337: else if ( enforcedLanguage == Settings :: C ) {
+338: mUI . mActionEnforceC . setChecked ( true ) ; }
+339: else {
+340: mUI . mActionAutoDetectLanguage . setChecked ( true ) ; }
+341:
+342: bool succeeded ; succeeded = mApplications . loadSettings ( ) ;
+343: if ( ! succeeded ) {
+344: const QString msg = tr ( "There was a problem with loading the editor application settings.\n\nThis is probably because the settings were changed between the Cppcheck versions. Please check (and fix) the editor application settings, otherwise the editor program might not start correctly."
+345:
+346:
+347: ) ;
+348: QMessageBox msgBox ( QMessageBox :: Warning ,
+349: tr ( "Cppcheck" ) ,
+350: msg ,
+351: QMessageBox :: Ok ,
+352: this ) ;
+353: msgBox . exec ( ) ;
+354: }
+355:
+356: const QString projectFile = mSettings . value ( $"Open Project" , QString ( ) ) . toString ( ) ;
+357: if ( ! projectFile . isEmpty ( ) && QCoreApplication :: arguments ( ) . size ( ) == 1 ) {
+358: QFileInfo inf ( projectFile ) ;
+359: if ( inf . exists ( ) && inf . isReadable ( ) ) {
+360: setPath ( $"Last project path" , projectFile ) ;
+361: mProjectFile = new ProjectFile ( this ) ;
+362: mProjectFile . setActiveProject ( ) ;
+363: mProjectFile . read ( projectFile ) ;
+364: loadLastResults ( ) ;
+365: QDir :: setCurrent ( inf . absolutePath ( ) ) ;
+366: }
+367: }
+368: }
+369:
+370: void MainWindow :: saveSettings ( ) const
+371: {
+372:
+373: mSettings . setValue ( $"Window width" , size ( ) . width ( ) ) ;
+374: mSettings . setValue ( $"Window height" , size ( ) . height ( ) ) ;
+375: mSettings . setValue ( $"Window maximized" , isMaximized ( ) ) ;
+376:
+377:
+378: mSettings . setValue ( $"Show style" , mUI . mActionShowStyle . isChecked ( ) ) ;
+379: mSettings . setValue ( $"Show errors" , mUI . mActionShowErrors . isChecked ( ) ) ;
+380: mSettings . setValue ( $"Show warnings" , mUI . mActionShowWarnings . isChecked ( ) ) ;
+381: mSettings . setValue ( $"Show portability" , mUI . mActionShowPortability . isChecked ( ) ) ;
+382: mSettings . setValue ( $"Show performance" , mUI . mActionShowPerformance . isChecked ( ) ) ;
+383: mSettings . setValue ( $"Show information" , mUI . mActionShowInformation . isChecked ( ) ) ;
+384:
+385: if ( mUI . mActionC89 . isChecked ( ) ) {
+386: mSettings . setValue ( $"Standard C" , "C89" ) ; }
+387: if ( mUI . mActionC99 . isChecked ( ) ) {
+388: mSettings . setValue ( $"Standard C" , "C99" ) ; }
+389: if ( mUI . mActionC11 . isChecked ( ) ) {
+390: mSettings . setValue ( $"Standard C" , "C11" ) ; }
+391:
+392: if ( mUI . mActionCpp03 . isChecked ( ) ) {
+393: mSettings . setValue ( $"Standard CPP" , "C++03" ) ; }
+394: if ( mUI . mActionCpp11 . isChecked ( ) ) {
+395: mSettings . setValue ( $"Standard CPP" , "C++11" ) ; }
+396: if ( mUI . mActionCpp14 . isChecked ( ) ) {
+397: mSettings . setValue ( $"Standard CPP" , "C++14" ) ; }
+398: if ( mUI . mActionCpp17 . isChecked ( ) ) {
+399: mSettings . setValue ( $"Standard CPP" , "C++17" ) ; }
+400: if ( mUI . mActionCpp20 . isChecked ( ) ) {
+401: mSettings . setValue ( $"Standard CPP" , "C++20" ) ; }
+402:
+|
+405:
+406: mSettings . setValue ( $"Toolbars/ShowStandard" , mUI . mToolBarMain . isVisible ( ) ) ;
+407: mSettings . setValue ( $"Toolbars/ShowView" , mUI . mToolBarView . isVisible ( ) ) ;
+408: mSettings . setValue ( $"Toolbars/ShowFilter" , mUI . mToolBarFilter . isVisible ( ) ) ;
+409:
+410: if ( mUI . mActionEnforceCpp . isChecked ( ) ) {
+411: mSettings . setValue ( $"Enforced language" , Settings :: CPP ) ; }
+412: else if ( mUI . mActionEnforceC . isChecked ( ) ) {
+413: mSettings . setValue ( $"Enforced language" , Settings :: C ) ; }
+414: else {
+415: mSettings . setValue ( $"Enforced language" , Settings :: None ) ; }
+416:
+417: mApplications . saveSettings ( ) ;
+418:
+419: mSettings . setValue ( $"Application language" , mTranslation . getCurrentLanguage ( ) ) ;
+420:
+421: mSettings . setValue ( $"Open Project" , mProjectFile ? mProjectFile . getFilename ( ) : QString ( ) ) ;
+422:
+423: mUI . mResults . saveSettings ( mSettings ) ;
+424: }
+425:
+426: void MainWindow :: doAnalyzeProject ( ImportProject p , const bool checkLibrary , const bool checkConfiguration )
+427: {
+428: clearResults ( ) ;
+429:
+430: mIsLogfileLoaded = false ;
+431: if ( mProjectFile ) {
+432: std :: vector < std :: string > v ;
+433: for ( const QString & i : mProjectFile . getExcludedPaths ( ) ) {
+434: v . push_back ( i . toStdString ( ) ) ;
+435: }
+436: p . ignorePaths ( v ) ;
+437:
+438: if ( ! mProjectFile . getAnalyzeAllVsConfigs ( ) ) {
+439: Settings :: PlatformType platform ; platform = ( Settings :: PlatformType ) mSettings . value ( $"Checked platform" , 0 ) . toInt ( ) ;
+440: p . selectOneVsConfig ( platform ) ;
+441: }
+442: } else {
+443: enableProjectActions ( false ) ;
+444: }
+445:
+446: mUI . mResults . clear ( true ) ;
+447: mThread . clearFiles ( ) ;
+448:
+449: mUI . mResults . checkingStarted ( p . fileSettings . size ( ) ) ;
+450:
+451: QDir inf ( mCurrentDirectory ) ;
+452: const QString checkPath = inf . canonicalPath ( ) ;
+453: setPath ( $"Last check path" , checkPath ) ;
+454:
+455: checkLockDownUI ( ) ;
+456:
+457: mUI . mResults . setCheckDirectory ( checkPath ) ;
+458: Settings checkSettings ; checkSettings = getCppcheckSettings ( ) ;
+459: checkSettings . force = false ;
+460: checkSettings . checkLibrary = checkLibrary ;
+461: checkSettings . checkConfiguration = checkConfiguration ;
+462:
+463: if ( mProjectFile ) {
+464: qDebug ( ) << "Checking project file" << mProjectFile . getFilename ( ) ; }
+465:
+466: if ( ! checkSettings . buildDir . empty ( ) ) {
+467: checkSettings . loadSummaries ( ) ;
+468: std :: list < std :: string > sourcefiles ;
+469: AnalyzerInformation :: writeFilesTxt ( checkSettings . buildDir , sourcefiles , checkSettings . userDefines , p . fileSettings ) ;
+470: }
+471:
+472:
+473: if ( mProjectFile ) {
+474: mThread . setAddonsAndTools ( mProjectFile . getAddonsAndTools ( ) ) ;
+475: QString clangHeaders ; clangHeaders = mSettings . value ( $"VS include paths" ) . toString ( ) ;
+476: mThread . setClangIncludePaths ( clangHeaders . split ( ";" ) ) ;
+477: mThread . setSuppressions ( mProjectFile . getSuppressions ( ) ) ;
+478: }
+479: mThread . setProject ( p ) ;
+480: mThread . check ( checkSettings ) ;
+481: }
+482:
+483: void MainWindow :: doAnalyzeFiles ( const QStringList & files , const bool checkLibrary , const bool checkConfiguration )
+484: {
+485: if ( files . isEmpty ( ) ) {
+486: return ;
+487: }
+488: clearResults ( ) ;
+489:
+490: mIsLogfileLoaded = false ;
+491: FileList pathList ;
+492: pathList . addPathList ( files ) ;
+493: if ( mProjectFile ) {
+494: pathList . addExcludeList ( mProjectFile . getExcludedPaths ( ) ) ;
+495: } else {
+496: enableProjectActions ( false ) ;
+497: }
+498: QStringList fileNames ; fileNames = pathList . getFileList ( ) ;
+499:
+500: mUI . mResults . clear ( true ) ;
+501: mThread . clearFiles ( ) ;
+502:
+503: if ( fileNames . isEmpty ( ) ) {
+504: QMessageBox msg ( QMessageBox :: Warning ,
+505: tr ( "Cppcheck" ) ,
+506: tr ( "No suitable files found to analyze!" ) ,
+507: QMessageBox :: Ok ,
+508: this ) ;
+509: msg . exec ( ) ;
+510: return ;
+511: }
+512:
+513: mUI . mResults . checkingStarted ( fileNames . count ( ) ) ;
+514:
+515: mThread . setFiles ( fileNames ) ;
+516: if ( mProjectFile && ! checkConfiguration ) {
+517: mThread . setAddonsAndTools ( mProjectFile . getAddonsAndTools ( ) ) ; }
+518: mThread . setSuppressions ( mProjectFile ? mProjectFile . getSuppressions ( ) : QList < Suppressions :: Suppression > ( ) ) ;
+519: QDir inf ( mCurrentDirectory ) ;
+520: const QString checkPath = inf . canonicalPath ( ) ;
+521: setPath ( $"Last check path" , checkPath ) ;
+522:
+523: checkLockDownUI ( ) ;
+524:
+525: mUI . mResults . setCheckDirectory ( checkPath ) ;
+526: Settings checkSettings ; checkSettings = getCppcheckSettings ( ) ;
+527: checkSettings . checkLibrary = checkLibrary ;
+528: checkSettings . checkConfiguration = checkConfiguration ;
+529:
+530: if ( mProjectFile ) {
+531: qDebug ( ) << "Checking project file" << mProjectFile . getFilename ( ) ; }
+532:
+533: if ( ! checkSettings . buildDir . empty ( ) ) {
+534: checkSettings . loadSummaries ( ) ;
+535: std :: list < std :: string > sourcefiles ;
+536: for ( const QString & s : fileNames ) {
+537: sourcefiles . push_back ( s . toStdString ( ) ) ; }
+538: AnalyzerInformation :: writeFilesTxt ( checkSettings . buildDir , sourcefiles , checkSettings . userDefines , checkSettings . project . fileSettings ) ;
+539: }
+540:
+541: mThread . setCheckFiles ( true ) ;
+542: mThread . check ( checkSettings ) ;
+543: }
+544:
+545: void MainWindow :: analyzeCode ( const QString & code , const QString & filename )
+546: {
+547:
+548: ThreadResult result ;
+549: result . setFiles ( QStringList ( filename ) ) ;
+550: connect ( & result , SIGNAL ( progress ( int , const QString & ) ) ,
+551: mUI . mResults , SLOT ( progress ( int , const QString & ) ) ) ;
+552: connect ( & result , SIGNAL ( error ( const ErrorItem & ) ) ,
+553: mUI . mResults , SLOT ( error ( const ErrorItem & ) ) ) ;
+554: connect ( & result , SIGNAL ( log ( const QString & ) ) ,
+555: mUI . mResults , SLOT ( log ( const QString & ) ) ) ;
+556: connect ( & result , SIGNAL ( debugError ( const ErrorItem & ) ) ,
+557: mUI . mResults , SLOT ( debugError ( const ErrorItem & ) ) ) ;
+558:
+559:
+560: CppCheck cppcheck ( result , true , nullptr ) ;
+561: cppcheck . settings ( ) = getCppcheckSettings ( ) ;
+562:
+563:
+564: checkLockDownUI ( ) ;
+565: clearResults ( ) ;
+566: mUI . mResults . checkingStarted ( 1 ) ;
+567: cppcheck . check ( filename . toStdString ( ) , code . toStdString ( ) ) ;
+568: analysisDone ( ) ;
+569:
+570:
+571: if ( mUI . mResults . hasVisibleResults ( ) ) {
+572: mUI . mResults . expandAllResults ( ) ; }
+573: }
+574:
+575: QStringList MainWindow :: selectFilesToAnalyze ( QFileDialog :: FileMode mode )
+576: {
+577: if ( mProjectFile ) {
+578: QMessageBox msgBox ( this ) ;
+579: msgBox . setWindowTitle ( tr ( "Cppcheck" ) ) ;
+580: const QString msg ( tr ( "You must close the project file before selecting new files or directories!" ) ) ;
+581: msgBox . setText ( msg ) ;
+582: msgBox . setIcon ( QMessageBox :: Critical ) ;
+583: msgBox . exec ( ) ;
+584: return QStringList ( ) ;
+585: }
+586:
+587: QStringList selected ;
+588:
+|
+591:
+592: if ( mode == QFileDialog :: ExistingFiles ) {
+593: QMap < QString , QString > filters ;
+594: filters [ tr ( "C/C++ Source" ) ] = FileList :: getDefaultFilters ( ) . join ( " " ) ;
+595: filters [ tr ( "Compile database" ) ] = compile_commands_json ;
+596: filters [ tr ( "Visual Studio" ) ] = "*.sln *.vcxproj" ;
+597: filters [ tr ( "Borland C++ Builder 6" ) ] = "*.bpr" ;
+598: QString lastFilter ; lastFilter = mSettings . value ( $"Last analyze files filter" ) . toString ( ) ;
+599: selected = QFileDialog :: getOpenFileNames ( this ,
+600: tr ( "Select files to analyze" ) ,
+601: getPath ( $"Last check path" ) ,
+602: toFilterString ( filters ) ,
+603: & lastFilter ) ;
+604: mSettings . setValue ( $"Last analyze files filter" , lastFilter ) ;
+605:
+606: if ( selected . isEmpty ( ) ) {
+607: mCurrentDirectory . clear ( ) ; }
+608: else {
+609: QFileInfo inf ( selected [ 0 ] ) ;
+610: mCurrentDirectory = inf . absolutePath ( ) ;
+611: }
+612: formatAndSetTitle ( ) ;
+613: } else if ( mode == QFileDialog :: Directory ) {
+614: QString dir ; dir = QFileDialog :: getExistingDirectory ( this ,
+615: tr ( "Select directory to analyze" ) ,
+616: getPath ( $"Last check path" ) ) ;
+617: if ( ! dir . isEmpty ( ) ) {
+618: qDebug ( ) << "Setting current directory to: " << dir ;
+619: mCurrentDirectory = dir ;
+620: selected . append ( dir ) ;
+621: dir = QDir :: toNativeSeparators ( dir ) ;
+622: formatAndSetTitle ( dir ) ;
+623: }
+624: }
+625:
+626: setPath ( $"Last check path" , mCurrentDirectory ) ;
+627:
+628: return selected ;
+629: }
+630:
+631: void MainWindow :: analyzeFiles ( )
+632: {
+633: Settings :: terminate ( false ) ;
+634:
+635: QStringList selected ; selected = selectFilesToAnalyze ( QFileDialog :: ExistingFiles ) ;
+636:
+637: const QString file0 = ( selected . size ( ) ? selected [ 0 ] . toLower ( ) : QString ( ) ) ;
+638: if ( file0 . endsWith ( ".sln" )
+639: || file0 . endsWith ( ".vcxproj" )
+640: || file0 . endsWith ( compile_commands_json )
+641: || file0 . endsWith ( ".bpr" ) ) {
+642: ImportProject p ;
+643: p . import ( selected [ 0 ] . toStdString ( ) ) ;
+644:
+645: if ( file0 . endsWith ( ".sln" ) ) {
+646: QStringList configs ;
+647: for ( std :: list < ImportProject :: FileSettings > :: const_iterator it = p . fileSettings . begin ( ) ; it != p . fileSettings . end ( ) ; ++ it ) {
+648: const QString cfg ( QString :: fromStdString ( it . cfg ) ) ;
+649: if ( ! configs . contains ( cfg ) ) {
+650: configs . push_back ( cfg ) ; }
+651: }
+652: configs . sort ( ) ;
+653:
+654: bool ok ; ok = false ;
+655: const QString cfg = QInputDialog :: getItem ( this , tr ( "Select configuration" ) , tr ( "Select the configuration that will be analyzed" ) , configs , 0 , false , & ok ) ;
+656: if ( ! ok ) {
+657: return ; }
+658: p . ignoreOtherConfigs ( cfg . toStdString ( ) ) ;
+659: }
+660:
+661: doAnalyzeProject ( p ) ;
+662: return ;
+663: }
+664:
+665: doAnalyzeFiles ( selected ) ;
+666: }
+667:
+668: void MainWindow :: analyzeDirectory ( )
+669: {
+670: QStringList dir ; dir = selectFilesToAnalyze ( QFileDialog :: Directory ) ;
+671: if ( dir . isEmpty ( ) ) {
+672: return ; }
+673:
+674: QDir checkDir ( dir [ 0 ] ) ;
+675: QStringList filters ;
+676: filters << "*.cppcheck" ;
+677: checkDir . setFilter ( QDir :: Files | QDir :: Readable ) ;
+678: checkDir . setNameFilters ( filters ) ;
+679: QStringList projFiles ; projFiles = checkDir . entryList ( ) ;
+680: if ( ! projFiles . empty ( ) ) {
+681: if ( projFiles . size ( ) == 1 ) {
+682:
+683: QMessageBox msgBox ( this ) ;
+684: msgBox . setWindowTitle ( tr ( "Cppcheck" ) ) ;
+685: const QString msg ( tr ( "Found project file: %1\n\nDo you want to load this project file instead?"
+686: ) . arg ( projFiles [ 0 ] ) ) ;
+687: msgBox . setText ( msg ) ;
+688: msgBox . setIcon ( QMessageBox :: Warning ) ;
+689: msgBox . addButton ( QMessageBox :: Yes ) ;
+690: msgBox . addButton ( QMessageBox :: No ) ;
+691: msgBox . setDefaultButton ( QMessageBox :: Yes ) ;
+692: int dlgResult ; dlgResult = msgBox . exec ( ) ;
+693: if ( dlgResult == QMessageBox :: Yes ) {
+694: QString path ; path = checkDir . canonicalPath ( ) ;
+695: if ( ! path . endsWith ( "/" ) ) {
+696: path += "/" ; }
+697: path += projFiles [ 0 ] ;
+698: loadProjectFile ( path ) ;
+699: } else {
+700: doAnalyzeFiles ( dir ) ;
+701: }
+702: } else {
+703:
+704:
+705: QMessageBox msgBox ( this ) ;
+706: msgBox . setWindowTitle ( tr ( "Cppcheck" ) ) ;
+707: const QString msg ( tr ( "Found project files from the directory.\n\nDo you want to proceed analysis without using any of these project files?"
+708:
+709: ) ) ;
+710: msgBox . setText ( msg ) ;
+711: msgBox . setIcon ( QMessageBox :: Warning ) ;
+712: msgBox . addButton ( QMessageBox :: Yes ) ;
+713: msgBox . addButton ( QMessageBox :: No ) ;
+714: msgBox . setDefaultButton ( QMessageBox :: Yes ) ;
+715: int dlgResult ; dlgResult = msgBox . exec ( ) ;
+716: if ( dlgResult == QMessageBox :: Yes ) {
+717: doAnalyzeFiles ( dir ) ;
+718: }
+719: }
+720: } else {
+721: doAnalyzeFiles ( dir ) ;
+722: }
+723: }
+724:
+725: void MainWindow :: addIncludeDirs ( const QStringList & includeDirs , Settings & result )
+726: {
+727: for ( const QString & dir : includeDirs ) {
+728: QString incdir ;
+729: if ( ! QDir :: isAbsolutePath ( dir ) ) {
+730: incdir = mCurrentDirectory + "/" ; }
+731: incdir += dir ;
+732: incdir = QDir :: cleanPath ( incdir ) ;
+733:
+734:
+735: if ( ! incdir . endsWith ( "/" ) ) {
+736: incdir += "/" ; }
+737: result . includePaths . push_back ( incdir . toStdString ( ) ) ;
+738: }
+739: }
+740:
+741: Library :: Error MainWindow :: loadLibrary ( Library * library , const QString & filename )
+742: {
+743: Library :: Error ret ;
+744:
+745:
+746: if ( mProjectFile ) {
+747: QString path ; path = QFileInfo ( mProjectFile . getFilename ( ) ) . canonicalPath ( ) ;
+748: ret = library . load ( nullptr , ( path + "/" + filename ) . toLatin1 ( ) ) ;
+749: if ( ret . errorcode != Library :: ErrorCode :: FILE_NOT_FOUND ) {
+750: return ret ; }
+751: }
+752:
+753:
+754: const QString appPath = QFileInfo ( QCoreApplication :: applicationFilePath ( ) ) . canonicalPath ( ) ;
+755: ret = library . load ( nullptr , ( appPath + "/" + filename ) . toLatin1 ( ) ) ;
+756: if ( ret . errorcode != Library :: ErrorCode :: FILE_NOT_FOUND ) {
+757: return ret ; }
+758: ret = library . load ( nullptr , ( appPath + "/cfg/" + filename ) . toLatin1 ( ) ) ;
+759: if ( ret . errorcode != Library :: ErrorCode :: FILE_NOT_FOUND ) {
+760: return ret ; }
+761:
+|
+775:
+776: const QString datadir = getDataDir ( ) ;
+777: if ( ! datadir . isEmpty ( ) ) {
+778: ret = library . load ( nullptr , ( datadir + "/" + filename ) . toLatin1 ( ) ) ;
+779: if ( ret . errorcode != Library :: ErrorCode :: FILE_NOT_FOUND ) {
+780: return ret ; }
+781: ret = library . load ( nullptr , ( datadir + "/cfg/" + filename ) . toLatin1 ( ) ) ;
+782: if ( ret . errorcode != Library :: ErrorCode :: FILE_NOT_FOUND ) {
+783: return ret ; }
+784: }
+785:
+786: return ret ;
+787: }
+788:
+789: bool MainWindow :: tryLoadLibrary ( Library * library , const QString & filename )
+790: {
+791: const Library :: Error error = loadLibrary ( library , filename ) ;
+792: if ( error . errorcode != Library :: ErrorCode :: OK ) {
+793: if ( error . errorcode == Library :: ErrorCode :: UNKNOWN_ELEMENT ) {
+794: QMessageBox :: information ( this , tr ( "Information" ) , tr ( "The library '%1' contains unknown elements:\n%2" ) . arg ( filename ) . arg ( error . reason . c_str ( ) ) ) ;
+795: return true ;
+796: }
+797:
+798: QString errmsg ;
+799: switch ( error . errorcode ) {
+800: case Library :: ErrorCode :: OK : ;
+801: break ;
+802: case Library :: ErrorCode :: FILE_NOT_FOUND : ;
+803: errmsg = tr ( "File not found" ) ;
+804: break ;
+805: case Library :: ErrorCode :: BAD_XML : ;
+806: errmsg = tr ( "Bad XML" ) ;
+807: break ;
+808: case Library :: ErrorCode :: MISSING_ATTRIBUTE : ;
+809: errmsg = tr ( "Missing attribute" ) ;
+810: break ;
+811: case Library :: ErrorCode :: BAD_ATTRIBUTE_VALUE : ;
+812: errmsg = tr ( "Bad attribute value" ) ;
+813: break ;
+814: case Library :: ErrorCode :: UNSUPPORTED_FORMAT : ;
+815: errmsg = tr ( "Unsupported format" ) ;
+816: break ;
+817: case Library :: ErrorCode :: DUPLICATE_PLATFORM_TYPE : ;
+818: errmsg = tr ( "Duplicate platform type" ) ;
+819: break ;
+820: case Library :: ErrorCode :: PLATFORM_TYPE_REDEFINED : ;
+821: errmsg = tr ( "Platform type redefined" ) ;
+822: break ;
+823: case Library :: ErrorCode :: UNKNOWN_ELEMENT : ;
+824: errmsg = tr ( "Unknown element" ) ;
+825: break ;
+826: default : ;
+827: errmsg = tr ( "Unknown issue" ) ;
+828: break ;
+829: }
+830: if ( ! error . reason . empty ( ) ) {
+831: errmsg += " '" + QString :: fromStdString ( error . reason ) + "'" ; }
+832: QMessageBox :: information ( this , tr ( "Information" ) , tr ( "Failed to load the selected library '%1'.\n%2" ) . arg ( filename ) . arg ( errmsg ) ) ;
+833: return false ;
+834: }
+835: return true ;
+836: }
+837:
+838: Settings MainWindow :: getCppcheckSettings ( )
+839: {
+840: saveSettings ( ) ;
+841:
+842: Settings result ;
+843:
+844: result . exename = QCoreApplication :: applicationFilePath ( ) . toStdString ( ) ;
+845:
+846: const bool std = tryLoadLibrary ( & result . library , "std.cfg" ) ;
+847: if ( ! std ) {
+848: QMessageBox :: critical ( this , tr ( "Error" ) , tr ( "Failed to load %1. Your Cppcheck installation is broken. You can use --data-dir=<directory> at the command line to specify where this file is located. Please note that --data-dir is supposed to be used by installation scripts and therefore the GUI does not start when it is used, all that happens is that the setting is configured." ) . arg ( "std.cfg" ) ) ; }
+849:
+850: result . loadCppcheckCfg ( ) ;
+851:
+852:
+853: if ( mProjectFile ) {
+854: QStringList dirs ; dirs = mProjectFile . getIncludeDirs ( ) ;
+855: addIncludeDirs ( dirs , result ) ;
+856:
+857: const QStringList defines = mProjectFile . getDefines ( ) ;
+858: for ( const QString & define : defines ) {
+859: if ( ! result . userDefines . empty ( ) ) {
+860: result . userDefines += ";" ; }
+861: result . userDefines += define . toStdString ( ) ;
+862: }
+863:
+864: result . clang = mProjectFile . clangParser ;
+865:
+866: const QStringList undefines = mProjectFile . getUndefines ( ) ;
+867: for ( const QString & undefine : undefines ) {
+868: result . userUndefs . insert ( undefine . toStdString ( ) ) ; }
+869:
+870: const QStringList libraries = mProjectFile . getLibraries ( ) ;
+871: for ( const QString & library : libraries ) {
+872: result . libraries . emplace_back ( library . toStdString ( ) ) ;
+873: const QString filename = library + ".cfg" ;
+874: tryLoadLibrary ( & result . library , filename ) ;
+875: }
+876:
+877: for ( const Suppressions :: Suppression & suppression : mProjectFile . getSuppressions ( ) ) {
+878: result . nomsg . addSuppression ( suppression ) ;
+879: }
+880:
+881:
+882: if ( ! defines . isEmpty ( ) ) {
+883: result . maxConfigs = 1 ; }
+884:
+885:
+886: if ( ! mProjectFile . getImportProject ( ) . isEmpty ( ) ) {
+887: result . checkAllConfigurations = false ; }
+888:
+889: const QString & buildDir = mProjectFile . getBuildDir ( ) ;
+890: if ( ! buildDir . isEmpty ( ) ) {
+891: if ( QDir ( buildDir ) . isAbsolute ( ) ) {
+892: result . buildDir = buildDir . toStdString ( ) ;
+893: } else {
+894: QString prjpath ; prjpath = QFileInfo ( mProjectFile . getFilename ( ) ) . absolutePath ( ) ;
+895: result . buildDir = ( prjpath + '/' + buildDir ) . toStdString ( ) ;
+896: }
+897: }
+898:
+899: const QString platform = mProjectFile . getPlatform ( ) ;
+900: if ( platform . endsWith ( ".xml" ) ) {
+901: const QString applicationFilePath = QCoreApplication :: applicationFilePath ( ) ;
+902: result . loadPlatformFile ( applicationFilePath . toStdString ( ) . c_str ( ) , platform . toStdString ( ) ) ;
+903: } else {
+904: for ( int i = cppcheck :: Platform :: Native ; i <= cppcheck :: Platform :: Unix64 ; i ++ ) {
+905: const cppcheck :: Platform :: PlatformType p = ( cppcheck :: Platform :: PlatformType ) i ;
+906: if ( platform == cppcheck :: Platform :: platformString ( p ) ) {
+907: result . platform ( p ) ;
+908: break ;
+909: }
+910: }
+911: }
+912:
+913: result . maxCtuDepth = mProjectFile . getMaxCtuDepth ( ) ;
+914: result . maxTemplateRecursion = mProjectFile . getMaxTemplateRecursion ( ) ;
+915: result . checkHeaders = mProjectFile . getCheckHeaders ( ) ;
+916: result . checkUnusedTemplates = mProjectFile . getCheckUnusedTemplates ( ) ;
+917: result . safeChecks . classes = mProjectFile . safeChecks . classes ;
+918: result . safeChecks . externalFunctions = mProjectFile . safeChecks . externalFunctions ;
+919: result . safeChecks . internalFunctions = mProjectFile . safeChecks . internalFunctions ;
+920: result . safeChecks . externalVariables = mProjectFile . safeChecks . externalVariables ;
+921: for ( const QString & s : mProjectFile . getCheckUnknownFunctionReturn ( ) ) {
+922: result . checkUnknownFunctionReturn . insert ( s . toStdString ( ) ) ; }
+923:
+924: QString filesDir ( getDataDir ( ) ) ;
+925: const QString pythonCmd = mSettings . value ( $"Python path" ) . toString ( ) ;
+926: for ( const QString & addon : mProjectFile . getAddons ( ) ) {
+927: QString addonFilePath ; addonFilePath = ProjectFile :: getAddonFilePath ( filesDir , addon ) ;
+928: if ( addonFilePath . isEmpty ( ) ) {
+929: continue ; }
+930:
+931: addonFilePath . replace ( QChar ( '\\' ) , QChar ( '/' ) ) ;
+932:
+933: QString json ;
+934: json += "{ \"script\":\"" + addonFilePath + "\"" ;
+935: if ( ! pythonCmd . isEmpty ( ) ) {
+936: json += ", \"python\":\"" + pythonCmd + "\"" ; }
+937: QString misraFile ; misraFile = mSettings . value ( $"MISRA C 2012 file" ) . toString ( ) ;
+938: if ( addon == "misra" && ! misraFile . isEmpty ( ) ) {
+939: QString arg ;
+940: if ( misraFile . endsWith ( ".pdf" , Qt :: CaseInsensitive ) ) {
+941: arg = "--misra-pdf=" + misraFile ; }
+942: else {
+943: arg = "--rule-texts=" + misraFile ; }
+944: json += ", \"args\":[\"" + arg + "\"]" ;
+945: }
+946: json += " }" ;
+947: result . addons . push_back ( json . toStdString ( ) ) ;
+948: }
+949: }
+950:
+|
+953:
+954: const QString globalIncludes = mSettings . value ( $"Global include paths" ) . toString ( ) ;
+955: if ( ! globalIncludes . isEmpty ( ) ) {
+956: QStringList includes ; includes = globalIncludes . split ( ";" ) ;
+957: addIncludeDirs ( includes , result ) ;
+958: }
+959:
+960: result . severity . enable ( Severity :: warning ) ;
+961: result . severity . enable ( Severity :: style ) ;
+962: result . severity . enable ( Severity :: performance ) ;
+963: result . severity . enable ( Severity :: portability ) ;
+964: result . severity . enable ( Severity :: information ) ;
+965: result . checks . enable ( Checks :: missingInclude ) ;
+966: if ( ! result . buildDir . empty ( ) ) {
+967: result . checks . enable ( Checks :: unusedFunction ) ; }
+968: result . debugwarnings = mSettings . value ( $"Show debug warnings" , false ) . toBool ( ) ;
+969: result . quiet = false ;
+970: result . verbose = true ;
+971: result . force = mSettings . value ( $"Check force" , 1 ) . toBool ( ) ;
+972: result . xml = false ;
+973: result . jobs = mSettings . value ( $"Check threads" , 1 ) . toInt ( ) ;
+974: result . inlineSuppressions = mSettings . value ( $"Inline suppressions" , false ) . toBool ( ) ;
+975: result . certainty . setEnabled ( Certainty :: inconclusive , mSettings . value ( $"Inconclusive errors" , false ) . toBool ( ) ) ;
+976: if ( ! mProjectFile || result . platformType == cppcheck :: Platform :: Unspecified ) {
+977: result . platform ( ( cppcheck :: Platform :: PlatformType ) mSettings . value ( $"Checked platform" , 0 ) . toInt ( ) ) ; }
+978: result . standards . setCPP ( mSettings . value ( $"Standard CPP" , QString ( ) ) . toString ( ) . toStdString ( ) ) ;
+979: result . standards . setC ( mSettings . value ( $"Standard C" , QString ( ) ) . toString ( ) . toStdString ( ) ) ;
+980: result . enforcedLang = ( Settings :: Language ) mSettings . value ( $"Enforced language" , 0 ) . toInt ( ) ;
+981:
+982: if ( result . jobs <= 1 ) {
+983: result . jobs = 1 ;
+984: }
+985:
+986: Settings :: terminate ( false ) ;
+987:
+988: return result ;
+989: }
+990:
+991: void MainWindow :: analysisDone ( )
+992: {
+993: if ( mExiting ) {
+994: close ( ) ;
+995: return ;
+996: }
+997:
+998: mUI . mResults . checkingFinished ( ) ;
+999: enableCheckButtons ( true ) ;
+1000: mUI . mActionSettings . setEnabled ( true ) ;
+1001: mUI . mActionOpenXML . setEnabled ( true ) ;
+1002: if ( mProjectFile ) {
+1003: enableProjectActions ( true ) ;
+1004: } else if ( mIsLogfileLoaded ) {
+1005: mUI . mActionReanalyzeModified . setEnabled ( false ) ;
+1006: mUI . mActionReanalyzeAll . setEnabled ( false ) ;
+1007: }
+1008: enableProjectOpenActions ( true ) ;
+1009: mPlatformActions . setEnabled ( true ) ;
+1010: mCStandardActions . setEnabled ( true ) ;
+1011: mCppStandardActions . setEnabled ( true ) ;
+1012: mSelectLanguageActions . setEnabled ( true ) ;
+1013: mUI . mActionPosix . setEnabled ( true ) ;
+1014: if ( mScratchPad ) {
+1015: mScratchPad . setEnabled ( true ) ; }
+1016: mUI . mActionViewStats . setEnabled ( true ) ;
+1017:
+1018: if ( mProjectFile && ! mProjectFile . getBuildDir ( ) . isEmpty ( ) ) {
+1019: const QString prjpath = QFileInfo ( mProjectFile . getFilename ( ) ) . absolutePath ( ) ;
+1020: const QString buildDir = prjpath + '/' + mProjectFile . getBuildDir ( ) ;
+1021: if ( QDir ( buildDir ) . exists ( ) ) {
+1022: mUI . mResults . saveStatistics ( buildDir + "/statistics.txt" ) ;
+1023: mUI . mResults . updateFromOldReport ( buildDir + "/lastResults.xml" ) ;
+1024: mUI . mResults . save ( buildDir + "/lastResults.xml" , Report :: XMLV2 ) ;
+1025: }
+1026: }
+1027:
+1028: enableResultsButtons ( ) ;
+1029:
+1030: for ( QAction * recentProjectAct : mRecentProjectActs ) {
+1031: if ( recentProjectAct != nullptr ) {
+1032: recentProjectAct . setEnabled ( true ) ; }
+1033: }
+1034:
+1035:
+1036: QApplication :: alert ( this , 3000 ) ;
+1037: if ( mSettings . value ( $"Show statistics" , false ) . toBool ( ) ) {
+1038: showStatistics ( ) ; }
+1039: }
+1040:
+1041: void MainWindow :: checkLockDownUI ( )
+1042: {
+1043: enableCheckButtons ( false ) ;
+1044: mUI . mActionSettings . setEnabled ( false ) ;
+1045: mUI . mActionOpenXML . setEnabled ( false ) ;
+1046: enableProjectActions ( false ) ;
+1047: enableProjectOpenActions ( false ) ;
+1048: mPlatformActions . setEnabled ( false ) ;
+1049: mCStandardActions . setEnabled ( false ) ;
+1050: mCppStandardActions . setEnabled ( false ) ;
+1051: mSelectLanguageActions . setEnabled ( false ) ;
+1052: mUI . mActionPosix . setEnabled ( false ) ;
+1053: if ( mScratchPad ) {
+1054: mScratchPad . setEnabled ( false ) ; }
+1055:
+1056: for ( QAction * recentProjectAct : mRecentProjectActs ) {
+1057: if ( recentProjectAct != nullptr ) {
+1058: recentProjectAct . setEnabled ( false ) ; }
+1059: }
+1060: }
+1061:
+1062: void MainWindow :: programSettings ( )
+1063: {
+1064: SettingsDialog dialog ( mApplications , mTranslation , this ) ;
+1065: if ( dialog . exec ( ) == QDialog :: Accepted ) {
+1066: dialog . saveSettingValues ( ) ;
+1067: mSettings . sync ( ) ;
+1068: mUI . mResults . updateSettings ( dialog . showFullPath ( ) ,
+1069: dialog . saveFullPath ( ) ,
+1070: dialog . saveAllErrors ( ) ,
+1071: dialog . showNoErrorsMessage ( ) ,
+1072: dialog . showErrorId ( ) ,
+1073: dialog . showInconclusive ( ) ) ;
+1074: mUI . mResults . updateStyleSetting ( mSettings ) ;
+1075: const QString newLang = mSettings . value ( $"Application language" , "en" ) . toString ( ) ;
+1076: setLanguage ( newLang ) ;
+1077: }
+1078: }
+1079:
+1080: void MainWindow :: reAnalyzeModified ( )
+1081: {
+1082: reAnalyze ( false ) ;
+1083: }
+1084:
+1085: void MainWindow :: reAnalyzeAll ( )
+1086: {
+1087: if ( mProjectFile ) {
+1088: analyzeProject ( mProjectFile ) ; }
+1089: else {
+1090: reAnalyze ( true ) ; }
+1091: }
+1092:
+1093: void MainWindow :: checkLibrary ( )
+1094: {
+1095: if ( mProjectFile ) {
+1096: analyzeProject ( mProjectFile , true ) ; }
+1097: }
+1098:
+1099: void MainWindow :: checkConfiguration ( )
+1100: {
+1101: if ( mProjectFile ) {
+1102: analyzeProject ( mProjectFile , false , true ) ; }
+1103: }
+1104:
+1105: void MainWindow :: reAnalyzeSelected ( QStringList files )
+1106: {
+1107: if ( files . empty ( ) ) {
+1108: return ; }
+1109: if ( mThread . isChecking ( ) ) {
+1110: return ; }
+1111:
+1112:
+1113: mUI . mResults . clear ( false ) ;
+1114: for ( int i = 0 ; i < files . size ( ) ; ++ i ) {
+1115: mUI . mResults . clearRecheckFile ( files [ i ] ) ; }
+1116:
+1117: mCurrentDirectory = mUI . mResults . getCheckDirectory ( ) ;
+1118: FileList pathList ;
+1119: pathList . addPathList ( files ) ;
+1120: if ( mProjectFile ) {
+1121: pathList . addExcludeList ( mProjectFile . getExcludedPaths ( ) ) ; }
+1122: QStringList fileNames ; fileNames = pathList . getFileList ( ) ;
+1123: checkLockDownUI ( ) ;
+1124: mUI . mResults . checkingStarted ( fileNames . size ( ) ) ;
+1125: mThread . setCheckFiles ( fileNames ) ;
+1126:
+|
+1129:
+1130: QDateTime saveCheckStartTime ; saveCheckStartTime = mThread . getCheckStartTime ( ) ;
+1131: mThread . check ( getCppcheckSettings ( ) ) ;
+1132: mThread . setCheckStartTime ( saveCheckStartTime ) ;
+1133: }
+1134:
+1135: void MainWindow :: reAnalyze ( bool all )
+1136: {
+1137: const QStringList files = mThread . getReCheckFiles ( all ) ;
+1138: if ( files . empty ( ) ) {
+1139: return ; }
+1140:
+1141:
+1142: mUI . mResults . clear ( all ) ;
+1143:
+1144:
+1145: for ( int i = 0 ; i < files . size ( ) ; ++ i ) {
+1146: mUI . mResults . clear ( files [ i ] ) ; }
+1147:
+1148: checkLockDownUI ( ) ;
+1149: mUI . mResults . checkingStarted ( files . size ( ) ) ;
+1150:
+1151: if ( mProjectFile ) {
+1152: qDebug ( ) << "Rechecking project file" << mProjectFile . getFilename ( ) ; }
+1153:
+1154: mThread . setCheckFiles ( all ) ;
+1155: mThread . check ( getCppcheckSettings ( ) ) ;
+1156: }
+1157:
+1158: void MainWindow :: clearResults ( )
+1159: {
+1160: if ( mProjectFile && ! mProjectFile . getBuildDir ( ) . isEmpty ( ) ) {
+1161: QDir dir ( QFileInfo ( mProjectFile . getFilename ( ) ) . absolutePath ( ) + '/' + mProjectFile . getBuildDir ( ) ) ;
+1162: for ( const QString & f : dir . entryList ( QDir :: Files ) ) {
+1163: if ( ! f . endsWith ( "files.txt" ) ) {
+1164: static const QRegularExpression rx ( "^.*.s[0-9]+$" ) ;
+1165: if ( ! rx . match ( f ) . hasMatch ( ) ) {
+1166: dir . remove ( f ) ; }
+1167: }
+1168: }
+1169: }
+1170: mUI . mResults . clear ( true ) ;
+1171: Q_ASSERT ( false == mUI . mResults . hasResults ( ) ) ;
+1172: enableResultsButtons ( ) ;
+1173: }
+1174:
+1175: void MainWindow :: openResults ( )
+1176: {
+1177: if ( mUI . mResults . hasResults ( ) ) {
+1178: QMessageBox msgBox ( this ) ;
+1179: msgBox . setWindowTitle ( tr ( "Cppcheck" ) ) ;
+1180: const QString msg ( tr ( "Current results will be cleared.\n\nOpening a new XML file will clear current results.\nDo you want to proceed?"
+1181:
+1182: ) ) ;
+1183: msgBox . setText ( msg ) ;
+1184: msgBox . setIcon ( QMessageBox :: Warning ) ;
+1185: msgBox . addButton ( QMessageBox :: Yes ) ;
+1186: msgBox . addButton ( QMessageBox :: No ) ;
+1187: msgBox . setDefaultButton ( QMessageBox :: Yes ) ;
+1188: int dlgResult ; dlgResult = msgBox . exec ( ) ;
+1189: if ( dlgResult == QMessageBox :: No ) {
+1190: return ;
+1191: }
+1192: }
+1193:
+1194: QString selectedFilter ;
+1195: const QString filter ( tr ( "XML files (*.xml)" ) ) ;
+1196: QString selectedFile ; selectedFile = QFileDialog :: getOpenFileName ( this ,
+1197: tr ( "Open the report file" ) ,
+1198: getPath ( $"Last result path" ) ,
+1199: filter ,
+1200: & selectedFilter ) ;
+1201:
+1202: if ( ! selectedFile . isEmpty ( ) ) {
+1203: loadResults ( selectedFile ) ;
+1204: }
+1205: }
+1206:
+1207: void MainWindow :: loadResults ( const QString & selectedFile )
+1208: {
+1209: if ( selectedFile . isEmpty ( ) ) {
+1210: return ; }
+1211: if ( mProjectFile ) {
+1212: closeProjectFile ( ) ; }
+1213: mIsLogfileLoaded = true ;
+1214: mUI . mResults . clear ( true ) ;
+1215: mUI . mActionReanalyzeModified . setEnabled ( false ) ;
+1216: mUI . mActionReanalyzeAll . setEnabled ( false ) ;
+1217: mUI . mResults . readErrorsXml ( selectedFile ) ;
+1218: setPath ( $"Last result path" , selectedFile ) ;
+1219: formatAndSetTitle ( selectedFile ) ;
+1220: }
+1221:
+1222: void MainWindow :: loadResults ( const QString & selectedFile , const QString & sourceDirectory )
+1223: {
+1224: loadResults ( selectedFile ) ;
+1225: mUI . mResults . setCheckDirectory ( sourceDirectory ) ;
+1226: }
+1227:
+1228: void MainWindow :: enableCheckButtons ( bool enable )
+1229: {
+1230: mUI . mActionStop . setEnabled ( ! enable ) ;
+1231: mUI . mActionAnalyzeFiles . setEnabled ( enable ) ;
+1232:
+1233: if ( mProjectFile ) {
+1234: mUI . mActionReanalyzeModified . setEnabled ( false ) ;
+1235: mUI . mActionReanalyzeAll . setEnabled ( enable ) ;
+1236: } else if ( ! enable || mThread . hasPreviousFiles ( ) ) {
+1237: mUI . mActionReanalyzeModified . setEnabled ( enable ) ;
+1238: mUI . mActionReanalyzeAll . setEnabled ( enable ) ;
+1239: }
+1240:
+1241: mUI . mActionAnalyzeDirectory . setEnabled ( enable ) ;
+1242: }
+1243:
+1244: void MainWindow :: enableResultsButtons ( )
+1245: {
+1246: bool enabled ; enabled = mUI . mResults . hasResults ( ) ;
+1247: mUI . mActionClearResults . setEnabled ( enabled ) ;
+1248: mUI . mActionSave . setEnabled ( enabled ) ;
+1249: mUI . mActionPrint . setEnabled ( enabled ) ;
+1250: mUI . mActionPrintPreview . setEnabled ( enabled ) ;
+1251: }
+1252:
+1253: void MainWindow :: showStyle ( bool checked )
+1254: {
+1255: mUI . mResults . showResults ( ShowTypes :: ShowStyle , checked ) ;
+1256: }
+1257:
+1258: void MainWindow :: showErrors ( bool checked )
+1259: {
+1260: mUI . mResults . showResults ( ShowTypes :: ShowErrors , checked ) ;
+1261: }
+1262:
+1263: void MainWindow :: showWarnings ( bool checked )
+1264: {
+1265: mUI . mResults . showResults ( ShowTypes :: ShowWarnings , checked ) ;
+1266: }
+1267:
+1268: void MainWindow :: showPortability ( bool checked )
+1269: {
+1270: mUI . mResults . showResults ( ShowTypes :: ShowPortability , checked ) ;
+1271: }
+1272:
+1273: void MainWindow :: showPerformance ( bool checked )
+1274: {
+1275: mUI . mResults . showResults ( ShowTypes :: ShowPerformance , checked ) ;
+1276: }
+1277:
+1278: void MainWindow :: showInformation ( bool checked )
+1279: {
+1280: mUI . mResults . showResults ( ShowTypes :: ShowInformation , checked ) ;
+1281: }
+1282:
+1283: void MainWindow :: checkAll ( )
+1284: {
+1285: toggleAllChecked ( true ) ;
+1286: }
+1287:
+1288: void MainWindow :: uncheckAll ( )
+1289: {
+1290: toggleAllChecked ( false ) ;
+1291: }
+1292:
+1293: void MainWindow :: closeEvent ( QCloseEvent * event )
+1294: {
+1295:
+1296: if ( ! mThread . isChecking ( ) ) {
+1297: saveSettings ( ) ;
+1298: event . accept ( ) ;
+1299: } else {
+1300: const QString text ( tr ( "Analyzer is running.\n\nDo you want to stop the analysis and exit Cppcheck?" ) ) ;
+1301:
+1302:
+1303: QMessageBox msg ( QMessageBox :: Warning ,
+1304: tr ( "Cppcheck" ) ,
+1305: text ,
+1306: QMessageBox :: Yes | QMessageBox :: No ,
+1307: this ) ;
+1308:
+1309: msg . setDefaultButton ( QMessageBox :: No ) ;
+1310: int rv ; rv = msg . exec ( ) ;
+1311: if ( rv == QMessageBox :: Yes ) {
+1312:
+1313:
+1314: mThread . stop ( ) ;
+1315: saveSettings ( ) ;
+1316: mExiting = true ;
+1317: }
+1318: event . ignore ( ) ;
+1319: }
+1320: }
+1321:
+1322: void MainWindow :: toggleAllChecked ( bool checked )
+1323: {
+1324: mUI . mActionShowStyle . setChecked ( checked ) ;
+1325: showStyle ( checked ) ;
+1326: mUI . mActionShowErrors . setChecked ( checked ) ;
+1327: showErrors ( checked ) ;
+1328: mUI . mActionShowWarnings . setChecked ( checked ) ;
+1329: showWarnings ( checked ) ;
+1330: mUI . mActionShowPortability . setChecked ( checked ) ;
+1331: showPortability ( checked ) ;
+1332: mUI . mActionShowPerformance . setChecked ( checked ) ;
+1333: showPerformance ( checked ) ;
+1334: mUI . mActionShowInformation . setChecked ( checked ) ;
+1335: showInformation ( checked ) ;
+1336: }
+1337:
+1338: void MainWindow :: about ( )
+1339: {
+1340: if ( ! mCppcheckCfgAbout . isEmpty ( ) ) {
+1341: QMessageBox msg ( QMessageBox :: Information ,
+1342: tr ( "About" ) ,
+1343: mCppcheckCfgAbout ,
+1344: QMessageBox :: Ok ,
+1345: this ) ;
+1346: msg . exec ( ) ;
+1347: }
+1348: else {
+1349: AboutDialog * dlg ; dlg = new AboutDialog ( CppCheck :: version ( ) , CppCheck :: extraVersion ( ) , this ) ;
+1350: dlg . exec ( ) ;
+1351: }
+1352: }
+1353:
+1354: void MainWindow :: showLicense ( )
+1355: {
+1356: FileViewDialog * dlg ; dlg = new FileViewDialog ( ":COPYING" , tr ( "License" ) , this ) ;
+1357: dlg . resize ( 570 , 400 ) ;
+1358: dlg . exec ( ) ;
+1359: }
+1360:
+1361: void MainWindow :: showAuthors ( )
+1362: {
+1363: FileViewDialog * dlg ; dlg = new FileViewDialog ( ":AUTHORS" , tr ( "Authors" ) , this ) ;
+1364: dlg . resize ( 350 , 400 ) ;
+1365: dlg . exec ( ) ;
+1366: }
+1367:
+1368: void MainWindow :: performSelectedFilesCheck ( const QStringList & selectedFilesList )
+1369: {
+1370: reAnalyzeSelected ( selectedFilesList ) ;
+1371: }
+1372:
+1373: void MainWindow :: save ( )
+1374: {
+1375: QString selectedFilter ;
+1376: const QString filter ( tr ( "XML files (*.xml);;Text files (*.txt);;CSV files (*.csv)" ) ) ;
+1377: QString selectedFile ; selectedFile = QFileDialog :: getSaveFileName ( this ,
+1378: tr ( "Save the report file" ) ,
+1379: getPath ( $"Last result path" ) ,
+1380: filter ,
+1381: & selectedFilter ) ;
+1382:
+1383: if ( ! selectedFile . isEmpty ( ) ) {
+1384: Report :: Type type ; type = Report :: TXT ;
+1385: if ( selectedFilter == tr ( "XML files (*.xml)" ) ) {
+1386: type = Report :: XMLV2 ;
+1387: if ( ! selectedFile . endsWith ( ".xml" , Qt :: CaseInsensitive ) ) {
+1388: selectedFile += ".xml" ; }
+1389: } else if ( selectedFilter == tr ( "Text files (*.txt)" ) ) {
+1390: type = Report :: TXT ;
+1391: if ( ! selectedFile . endsWith ( ".txt" , Qt :: CaseInsensitive ) ) {
+1392: selectedFile += ".txt" ; }
+1393: } else if ( selectedFilter == tr ( "CSV files (*.csv)" ) ) {
+1394: type = Report :: CSV ;
+1395: if ( ! selectedFile . endsWith ( ".csv" , Qt :: CaseInsensitive ) ) {
+1396: selectedFile += ".csv" ; }
+1397: } else {
+1398: if ( selectedFile . endsWith ( ".xml" , Qt :: CaseInsensitive ) ) {
+1399: type = Report :: XMLV2 ; }
+1400: else if ( selectedFile . endsWith ( ".txt" , Qt :: CaseInsensitive ) ) {
+1401: type = Report :: TXT ; }
+1402: else if ( selectedFile . endsWith ( ".csv" , Qt :: CaseInsensitive ) ) {
+1403: type = Report :: CSV ; }
+1404: }
+1405:
+1406: mUI . mResults . save ( selectedFile , type ) ;
+1407: setPath ( $"Last result path" , selectedFile ) ;
+1408: }
+1409: }
+1410:
+1411: void MainWindow :: resultsAdded ( )
+1412: { }
+1413:
+1414: void MainWindow :: toggleMainToolBar ( )
+1415: {
+1416: mUI . mToolBarMain . setVisible ( mUI . mActionToolBarMain . isChecked ( ) ) ;
+1417: }
+1418:
+1419: void MainWindow :: toggleViewToolBar ( )
+1420: {
+1421: mUI . mToolBarView . setVisible ( mUI . mActionToolBarView . isChecked ( ) ) ;
+1422: }
+1423:
+1424: void MainWindow :: toggleFilterToolBar ( )
+1425: {
+1426: mUI . mToolBarFilter . setVisible ( mUI . mActionToolBarFilter . isChecked ( ) ) ;
+1427: mLineEditFilter . clear ( ) ;
+1428: }
+1429:
+1430: void MainWindow :: formatAndSetTitle ( const QString & text )
+1431: {
+1432: QString nameWithVersion ; nameWithVersion = QString ( "Cppcheck %1" ) . arg ( CppCheck :: version ( ) ) ;
+1433:
+1434: QString extraVersion ; extraVersion = CppCheck :: extraVersion ( ) ;
+1435: if ( ! extraVersion . isEmpty ( ) ) {
+1436: nameWithVersion += " (" + extraVersion + ")" ;
+1437: }
+1438:
+1439: if ( ! mCppcheckCfgProductName . isEmpty ( ) ) {
+1440: nameWithVersion = mCppcheckCfgProductName ; }
+1441:
+1442: QString title ;
+1443: if ( text . isEmpty ( ) ) {
+1444: title = nameWithVersion ; }
+1445: else {
+1446: title = QString ( "%1 - %2" ) . arg ( nameWithVersion , text ) ; }
+1447: setWindowTitle ( title ) ;
+1448: }
+1449:
+1450: void MainWindow :: setLanguage ( const QString & code )
+1451: {
+1452: const QString currentLang = mTranslation . getCurrentLanguage ( ) ;
+1453: if ( currentLang == code ) {
+1454: return ; }
+1455:
+1456: if ( mTranslation . setLanguage ( code ) ) {
+1457:
+1458: mUI . retranslateUi ( this ) ;
+1459: mUI . mResults . translate ( ) ;
+1460: mLineEditFilter . setPlaceholderText ( QCoreApplication :: translate ( "MainWindow" , "Quick Filter:" ) ) ;
+1461: if ( mProjectFile ) {
+1462: formatAndSetTitle ( tr ( "Project:" ) + ' ' + mProjectFile . getFilename ( ) ) ; }
+1463: if ( mScratchPad ) {
+1464: mScratchPad . translate ( ) ; }
+1465: }
+1466: }
+1467:
+1468: void MainWindow :: aboutToShowViewMenu ( )
+1469: {
+1470: mUI . mActionToolBarMain . setChecked ( mUI . mToolBarMain . isVisible ( ) ) ;
+1471: mUI . mActionToolBarView . setChecked ( mUI . mToolBarView . isVisible ( ) ) ;
+1472: mUI . mActionToolBarFilter . setChecked ( mUI . mToolBarFilter . isVisible ( ) ) ;
+1473: }
+1474:
+1475: void MainWindow :: stopAnalysis ( )
+1476: {
+1477: mThread . stop ( ) ;
+1478: mUI . mResults . disableProgressbar ( ) ;
+1479: const QString & lastResults = getLastResults ( ) ;
+1480: if ( ! lastResults . isEmpty ( ) ) {
+1481: mUI . mResults . updateFromOldReport ( lastResults ) ;
+1482: }
+1483: }
+1484:
+1485: void MainWindow :: openHelpContents ( )
+1486: {
+1487: openOnlineHelp ( ) ;
+1488: }
+1489:
+1490: void MainWindow :: openOnlineHelp ( )
+1491: {
+1492: HelpDialog * helpDialog ; helpDialog = new HelpDialog ;
+1493: helpDialog . showMaximized ( ) ;
+1494: }
+1495:
+1496: void MainWindow :: openProjectFile ( )
+1497: {
+1498: const QString filter = tr ( "Project files (*.cppcheck);;All files(*.*)" ) ;
+1499: const QString filepath = QFileDialog :: getOpenFileName ( this ,
+1500: tr ( "Select Project File" ) ,
+1501: getPath ( $"Last project path" ) ,
+1502: filter ) ;
+1503:
+1504: if ( ! filepath . isEmpty ( ) ) {
+1505: const QFileInfo fi ( filepath ) ;
+1506: if ( fi . exists ( ) && fi . isFile ( ) && fi . isReadable ( ) ) {
+1507: setPath ( $"Last project path" , filepath ) ;
+1508: loadProjectFile ( filepath ) ;
+1509: }
+1510: }
+1511: }
+1512:
+1513: void MainWindow :: showScratchpad ( )
+1514: {
+1515: if ( ! mScratchPad ) {
+1516: mScratchPad = new ScratchPad ( * this ) ; }
+1517:
+1518: mScratchPad . show ( ) ;
+1519:
+1520: if ( ! mScratchPad . isActiveWindow ( ) ) {
+1521: mScratchPad . activateWindow ( ) ; }
+1522: }
+1523:
+1524: void MainWindow :: loadProjectFile ( const QString & filePath )
+1525: {
+1526: QFileInfo inf ( filePath ) ;
+1527: const QString filename = inf . fileName ( ) ;
+1528: formatAndSetTitle ( tr ( "Project:" ) + ' ' + filename ) ;
+1529: addProjectMRU ( filePath ) ;
+1530:
+1531: mIsLogfileLoaded = false ;
+1532: mUI . mActionCloseProjectFile . setEnabled ( true ) ;
+1533: mUI . mActionEditProjectFile . setEnabled ( true ) ;
+1534: delete mProjectFile ;
+1535: mProjectFile = new ProjectFile ( filePath , this ) ;
+1536: mProjectFile . setActiveProject ( ) ;
+1537: if ( ! loadLastResults ( ) ) {
+1538: analyzeProject ( mProjectFile ) ; }
+1539: }
+1540:
+1541: QString MainWindow :: getLastResults ( ) const
+1542: {
+1543: if ( ! mProjectFile || mProjectFile . getBuildDir ( ) . isEmpty ( ) ) {
+1544: return QString ( ) ; }
+1545: return QFileInfo ( mProjectFile . getFilename ( ) ) . absolutePath ( ) + '/' + mProjectFile . getBuildDir ( ) + "/lastResults.xml" ;
+1546: }
+1547:
+1548: bool MainWindow :: loadLastResults ( )
+1549: {
+1550: const QString & lastResults = getLastResults ( ) ;
+1551: if ( lastResults . isEmpty ( ) ) {
+1552: return false ; }
+1553: if ( ! QFileInfo ( lastResults ) . exists ( ) ) {
+1554: return false ; }
+1555: mUI . mResults . readErrorsXml ( lastResults ) ;
+1556: mUI . mResults . setCheckDirectory ( mSettings . value ( $"Last check path" , QString ( ) ) . toString ( ) ) ;
+1557: mUI . mActionViewStats . setEnabled ( true ) ;
+1558: enableResultsButtons ( ) ;
+1559: return true ;
+1560: }
+1561:
+1562: void MainWindow :: analyzeProject ( const ProjectFile * projectFile , const bool checkLibrary , const bool checkConfiguration )
+1563: {
+1564: Settings :: terminate ( false ) ;
+1565:
+1566: QFileInfo inf ( projectFile . getFilename ( ) ) ;
+1567: const QString rootpath = projectFile . getRootPath ( ) ;
+1568:
+1569: QDir :: setCurrent ( inf . absolutePath ( ) ) ;
+1570:
+1571: mThread . setAddonsAndTools ( projectFile . getAddonsAndTools ( ) ) ;
+1572:
+1573:
+1574:
+1575: if ( rootpath . isEmpty ( ) || rootpath == "." ) {
+1576: mCurrentDirectory = inf . canonicalPath ( ) ; }
+1577: else if ( rootpath . startsWith ( "./" ) ) {
+1578: mCurrentDirectory = inf . canonicalPath ( ) + rootpath . mid ( 1 ) ; }
+1579: else {
+1580: mCurrentDirectory = rootpath ; }
+1581:
+1582: if ( ! projectFile . getBuildDir ( ) . isEmpty ( ) ) {
+1583: QString buildDir ; buildDir = projectFile . getBuildDir ( ) ;
+1584: if ( ! QDir :: isAbsolutePath ( buildDir ) ) {
+1585: buildDir = inf . canonicalPath ( ) + '/' + buildDir ; }
+1586: if ( ! QDir ( buildDir ) . exists ( ) ) {
+1587: QMessageBox msg ( QMessageBox :: Question ,
+1588: tr ( "Cppcheck" ) ,
+1589: tr ( "Build dir '%1' does not exist, create it?" ) . arg ( buildDir ) ,
+1590: QMessageBox :: Yes | QMessageBox :: No ,
+1591: this ) ;
+1592: if ( msg . exec ( ) == QMessageBox :: Yes ) {
+1593: QDir ( ) . mkpath ( buildDir ) ;
+1594: } else if ( ! projectFile . getAddons ( ) . isEmpty ( ) ) {
+1595: QMessageBox m ( QMessageBox :: Critical ,
+1596: tr ( "Cppcheck" ) ,
+1597: tr ( "To check the project using addons, you need a build directory." ) ,
+1598: QMessageBox :: Ok ,
+1599: this ) ;
+1600: m . exec ( ) ;
+1601: return ;
+1602: }
+1603: }
+1604: }
+1605:
+1606: if ( ! projectFile . getImportProject ( ) . isEmpty ( ) ) {
+1607: ImportProject p ;
+1608: QString prjfile ;
+1609:
+1610: if ( QFileInfo ( projectFile . getImportProject ( ) ) . isAbsolute ( ) ) {
+1611: prjfile = projectFile . getImportProject ( ) ;
+1612: } else {
+1613: prjfile = inf . canonicalPath ( ) + '/' + projectFile . getImportProject ( ) ;
+1614: }
+1615: try {
+1616: p . import ( prjfile . toStdString ( ) ) ;
+1617: } catch ( InternalError & e ) {
+1618: QMessageBox msg ( QMessageBox :: Critical ,
+1619: tr ( "Cppcheck" ) ,
+1620: tr ( "Failed to import '%1', analysis is stopped" ) . arg ( prjfile ) ,
+1621: QMessageBox :: Ok ,
+1622: this ) ;
+1623: msg . exec ( ) ;
+1624: return ;
+1625: }
+1626: doAnalyzeProject ( p , checkLibrary , checkConfiguration ) ;
+1627: return ;
+1628: }
+1629:
+1630: QStringList paths ; paths = projectFile . getCheckPaths ( ) ;
+1631:
+|
+1635:
+1636: if ( paths . isEmpty ( ) ) {
+1637: paths << mCurrentDirectory ;
+1638: }
+1639: doAnalyzeFiles ( paths , checkLibrary , checkConfiguration ) ;
+1640: }
+1641:
+1642: void MainWindow :: newProjectFile ( )
+1643: {
+1644: const QString filter = tr ( "Project files (*.cppcheck)" ) ;
+1645: QString filepath ; filepath = QFileDialog :: getSaveFileName ( this ,
+1646: tr ( "Select Project Filename" ) ,
+1647: getPath ( $"Last project path" ) ,
+1648: filter ) ;
+1649:
+1650: if ( filepath . isEmpty ( ) ) {
+1651: return ; }
+1652: if ( ! filepath . endsWith ( ".cppcheck" , Qt :: CaseInsensitive ) ) {
+1653: filepath += ".cppcheck" ; }
+1654:
+1655: setPath ( $"Last project path" , filepath ) ;
+1656:
+1657: QFileInfo inf ( filepath ) ;
+1658: const QString filename = inf . fileName ( ) ;
+1659: formatAndSetTitle ( tr ( "Project:" ) + QString ( " " ) + filename ) ;
+1660:
+1661: delete mProjectFile ;
+1662: mProjectFile = new ProjectFile ( this ) ;
+1663: mProjectFile . setActiveProject ( ) ;
+1664: mProjectFile . setFilename ( filepath ) ;
+1665: mProjectFile . setBuildDir ( filename . left ( filename . indexOf ( "." ) ) + "-cppcheck-build-dir" ) ;
+1666:
+1667: ProjectFileDialog dlg ( mProjectFile , this ) ;
+1668: if ( dlg . exec ( ) == QDialog :: Accepted ) {
+1669: addProjectMRU ( filepath ) ;
+1670: analyzeProject ( mProjectFile ) ;
+1671: } else {
+1672: closeProjectFile ( ) ;
+1673: }
+1674: }
+1675:
+1676: void MainWindow :: closeProjectFile ( )
+1677: {
+1678: delete mProjectFile ;
+1679: mProjectFile = nullptr ;
+1680: mUI . mResults . clear ( true ) ;
+1681: enableProjectActions ( false ) ;
+1682: enableProjectOpenActions ( true ) ;
+1683: formatAndSetTitle ( ) ;
+1684: }
+1685:
+1686: void MainWindow :: editProjectFile ( )
+1687: {
+1688: if ( ! mProjectFile ) {
+1689: QMessageBox msg ( QMessageBox :: Critical ,
+1690: tr ( "Cppcheck" ) ,
+1691: QString ( tr ( "No project file loaded" ) ) ,
+1692: QMessageBox :: Ok ,
+1693: this ) ;
+1694: msg . exec ( ) ;
+1695: return ;
+1696: }
+1697:
+1698: ProjectFileDialog dlg ( mProjectFile , this ) ;
+1699: if ( dlg . exec ( ) == QDialog :: Accepted ) {
+1700: mProjectFile . write ( ) ;
+1701: analyzeProject ( mProjectFile ) ;
+1702: }
+1703: }
+1704:
+1705: void MainWindow :: showStatistics ( )
+1706: {
+1707: StatsDialog statsDialog ( this ) ;
+1708:
+1709:
+1710: statsDialog . setProject ( mProjectFile ) ;
+1711: statsDialog . setPathSelected ( mCurrentDirectory ) ;
+1712: statsDialog . setNumberOfFilesScanned ( mThread . getPreviousFilesCount ( ) ) ;
+1713: statsDialog . setScanDuration ( mThread . getPreviousScanDuration ( ) / 1000.0 ) ;
+1714: statsDialog . setStatistics ( mUI . mResults . getStatistics ( ) ) ;
+1715:
+1716: statsDialog . exec ( ) ;
+1717: }
+1718:
+1719: void MainWindow :: showLibraryEditor ( )
+1720: {
+1721: LibraryDialog libraryDialog ( this ) ;
+1722: libraryDialog . exec ( ) ;
+1723: }
+1724:
+1725: void MainWindow :: filterResults ( )
+1726: {
+1727: mUI . mResults . filterResults ( mLineEditFilter . text ( ) ) ;
+1728: }
+1729:
+1730: void MainWindow :: enableProjectActions ( bool enable )
+1731: {
+1732: mUI . mActionCloseProjectFile . setEnabled ( enable ) ;
+1733: mUI . mActionEditProjectFile . setEnabled ( enable ) ;
+1734: mUI . mActionCheckLibrary . setEnabled ( enable ) ;
+1735: mUI . mActionCheckConfiguration . setEnabled ( enable ) ;
+1736: }
+1737:
+1738: void MainWindow :: enableProjectOpenActions ( bool enable )
+1739: {
+1740: mUI . mActionNewProjectFile . setEnabled ( enable ) ;
+1741: mUI . mActionOpenProjectFile . setEnabled ( enable ) ;
+1742: }
+1743:
+1744: void MainWindow :: openRecentProject ( )
+1745: {
+1746: QAction * action ; action = qobject_cast < QAction * > ( sender ( ) ) ;
+1747: if ( ! action ) {
+1748: return ; }
+1749: const QString project = action . data ( ) . toString ( ) ;
+1750: QFileInfo inf ( project ) ;
+1751: if ( inf . exists ( ) ) {
+1752: if ( inf . suffix ( ) == "xml" ) {
+1753: loadResults ( project ) ; }
+1754: else {
+1755: loadProjectFile ( project ) ;
+1756: loadLastResults ( ) ;
+1757: }
+1758: } else {
+1759: const QString text ( tr ( "The project file\n\n%1\n\n could not be found!\n\nDo you want to remove the file from the recently used projects -list?"
+1760:
+1761: ) . arg ( project ) ) ;
+1762:
+1763: QMessageBox msg ( QMessageBox :: Warning ,
+1764: tr ( "Cppcheck" ) ,
+1765: text ,
+1766: QMessageBox :: Yes | QMessageBox :: No ,
+1767: this ) ;
+1768:
+1769: msg . setDefaultButton ( QMessageBox :: No ) ;
+1770: int rv ; rv = msg . exec ( ) ;
+1771: if ( rv == QMessageBox :: Yes ) {
+1772: removeProjectMRU ( project ) ;
+1773: }
+1774: }
+1775: }
+1776:
+1777: void MainWindow :: updateMRUMenuItems ( )
+1778: {
+1779: for ( QAction * recentProjectAct : mRecentProjectActs ) {
+1780: if ( recentProjectAct != nullptr ) {
+1781: mUI . mMenuFile . removeAction ( recentProjectAct ) ; }
+1782: }
+1783:
+1784: QStringList projects ; projects = mSettings . value ( $"MRU Projects" ) . toStringList ( ) ;
+1785:
+1786:
+1787: int removed ; removed = projects . removeDuplicates ( ) ;
+1788: for ( int i = projects . size ( ) - 1 ; i >= 0 ; i -- ) {
+1789: if ( ! QFileInfo ( projects [ i ] ) . exists ( ) ) {
+1790: projects . removeAt ( i ) ;
+1791: removed ++ ;
+1792: }
+1793: }
+1794:
+1795: if ( removed ) {
+1796: mSettings . setValue ( $"MRU Projects" , projects ) ; }
+1797:
+1798: const int numRecentProjects = qMin ( projects . size ( ) , ( int ) MaxRecentProjects ) ;
+1799: for ( int i = 0 ; i < numRecentProjects ; i ++ ) {
+1800: const QString filename = QFileInfo ( projects [ i ] ) . fileName ( ) ;
+1801: const QString text = QString ( "&%1 %2" ) . arg ( i + 1 ) . arg ( filename ) ;
+1802: mRecentProjectActs [ i ] . setText ( text ) ;
+1803: mRecentProjectActs [ i ] . setData ( projects [ i ] ) ;
+1804: mRecentProjectActs [ i ] . setVisible ( true ) ;
+1805: mUI . mMenuFile . insertAction ( mUI . mActionProjectMRU , mRecentProjectActs [ i ] ) ;
+1806: }
+1807:
+1808: if ( numRecentProjects > 1 ) {
+1809: mRecentProjectActs [ numRecentProjects ] = mUI . mMenuFile . insertSeparator ( mUI . mActionProjectMRU ) ; }
+1810: }
+1811:
+1812: void MainWindow :: addProjectMRU ( const QString & project )
+1813: {
+1814: QStringList files ; files = mSettings . value ( $"MRU Projects" ) . toStringList ( ) ;
+1815: files . removeAll ( project ) ;
+1816: files . prepend ( project ) ;
+1817: while ( files . size ( ) > MaxRecentProjects ) {
+1818: files . removeLast ( ) ; }
+1819:
+1820: mSettings . setValue ( $"MRU Projects" , files ) ;
+1821: updateMRUMenuItems ( ) ;
+1822: }
+1823:
+1824: void MainWindow :: removeProjectMRU ( const QString & project )
+1825: {
+1826: QStringList files ; files = mSettings . value ( $"MRU Projects" ) . toStringList ( ) ;
+1827: files . removeAll ( project ) ;
+1828:
+1829: mSettings . setValue ( $"MRU Projects" , files ) ;
+1830: updateMRUMenuItems ( ) ;
+1831: }
+1832:
+1833: void MainWindow :: selectPlatform ( )
+1834: {
+1835: QAction * action ; action = qobject_cast < QAction * > ( sender ( ) ) ;
+1836: if ( action ) {
+1837: const Settings :: PlatformType platform = ( Settings :: PlatformType ) action . data ( ) . toInt ( ) ;
+1838: mSettings . setValue ( $"Checked platform" , platform ) ;
+1839: }
+1840: }
+1841:
+1842: void MainWindow :: suppressIds ( QStringList ids )
+1843: {
+1844: if ( ! mProjectFile ) {
+1845: return ; }
+1846: ids . removeDuplicates ( ) ;
+1847:
+1848: QList < Suppressions :: Suppression > suppressions ; suppressions = mProjectFile . getSuppressions ( ) ;
+1849: for ( const QString & id : ids ) {
+1850:
+1851: std :: string id2 ; id2 = id . toStdString ( ) ;
+1852: for ( int i = 0 ; i < suppressions . size ( ) ; ) {
+1853: if ( suppressions [ i ] . errorId == id2 ) {
+1854: suppressions . removeAt ( i ) ; }
+1855: else {
+1856: ++ i ; }
+1857: }
+1858:
+1859: Suppressions :: Suppression newSuppression ;
+1860: newSuppression . errorId = id2 ;
+1861: suppressions << newSuppression ;
+1862: }
+1863:
+1864: mProjectFile . setSuppressions ( suppressions ) ;
+1865: mProjectFile . write ( ) ;
+1866: }
+
+
+
+##Value flow

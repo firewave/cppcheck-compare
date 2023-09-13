@@ -1,0 +1,5760 @@
+
+
+##file cppcheck-2.8/lib/config.h
+
+1:
+|
+78:
+79: static const std :: string emptyString@var1 ;
+
+##file cppcheck-2.8/lib/errortypes.h
+
+1:
+|
+31:
+32: class Token ;
+33:
+34:
+35: struct InternalError {
+36: enum Type { AST , SYNTAX , UNKNOWN_MACRO , INTERNAL , LIMIT , INSTANTIATION } ;
+37: InternalError ( const Token * tok@var2 , const std :: string & errorMsg@var3 , Type type@var4 = INTERNAL ) ;
+38: const Token * token@var5 ;
+39: std :: string errorMessage@var6 ;
+40: Type type@var7 ;
+41: std :: string id@var8 ;
+42: } ;
+43:
+44: class Certainty {
+45: public:
+46: enum CertaintyLevel {
+47: normal , inconclusive , safe , experimental
+48: } ;
+49: } ;
+50:
+51: class Checks {
+52: public:
+53: enum CheckList {
+54: unusedFunction , missingInclude , internalCheck
+55: } ;
+56: } ;
+57:
+58:
+59: class Severity {
+60: public:
+61:
+62:
+63:
+64: enum SeverityType {
+65:
+66:
+67:
+68: none ,
+69:
+|
+73:
+74: error ,
+75:
+|
+79:
+80: warning ,
+81:
+|
+86:
+87: style ,
+88:
+|
+92:
+93: performance ,
+94:
+|
+100:
+101: portability ,
+102:
+|
+107:
+108: information ,
+109:
+|
+112:
+113: debug
+114: } ;
+115:
+116: static std :: string toString ( SeverityType severity@var9 ) ;
+117: static SeverityType fromString ( const std :: string & severity@var10 ) ;
+118: } ;
+119:
+120: struct CWE {
+121: explicit CWE ( unsigned short cweId@var11 ) : id@var12 ( cweId@var11 ) { }
+122: unsigned short id@var12 ;
+123: } ;
+
+##file cppcheck-2.8/lib/platform.h
+
+1:
+|
+31:
+32: namespace tinyxml2 {
+33: class XMLDocument ;
+34: }
+35:
+36: namespace cppcheck {
+37:
+|
+40:
+41: class Platform {
+42: private:
+43: static long long min_value ( int bit@var13 ) {
+44: if (@expr1073742815 bit@var13 >=@expr1073742816 64 ) {
+45: return LLONG_MIN ; }
+46: return -@expr1073742817 (@expr1073742818 1LL <<@expr1073742819 (@expr1073742820 bit@var13 -@expr1073742821 1 ) ) ;
+47: }
+48:
+49: static long long max_value ( int bit@var14 ) {
+50: if (@expr1073742822 bit@var14 >=@expr1073742823 64 ) {
+51: return (@expr1000 ~@expr1073742825 0ULL ) >>@expr1073742826 1 ; }
+52: return (@expr1000 1LL <<@expr1073742828 (@expr1000 bit@var14 -@expr1073742830 1 ) ) -@expr1073742831 1LL ;
+53: }
+54: public:
+55: Platform ( ) ;
+56: virtual ~ Platform ( ) { }
+57:
+58: bool isIntValue ( long long value@var15 ) const {
+59: return value@var15 >=@expr1073742832 min_value (@expr1073742833 int_bit@var25 ) &&@expr1073742834 value@var15 <=@expr1073742835 max_value (@expr1073742836 int_bit@var25 ) ;
+60: }
+61:
+62: bool isIntValue ( unsigned long long value@var16 ) const {
+63: unsigned long long intMax@var17 ; intMax@var17 =@expr1073742837 max_value (@expr1073742838 int_bit@var25 ) ;
+64: return value@var16 <=@expr1073742839 intMax@var17 ;
+65: }
+66:
+67: bool isLongValue ( long long value@var18 ) const {
+68: return value@var18 >=@expr1073742840 min_value (@expr1073742841 long_bit@var26 ) &&@expr1073742842 value@var18 <=@expr1073742843 max_value (@expr1073742844 long_bit@var26 ) ;
+69: }
+70:
+71: bool isLongValue ( unsigned long long value@var19 ) const {
+72: unsigned long long longMax@var20 ; longMax@var20 =@expr1073742845 max_value (@expr1073742846 long_bit@var26 ) ;
+73: return value@var19 <=@expr1073742847 longMax@var20 ;
+74: }
+75:
+76: bool isLongLongValue ( unsigned long long value@var21 ) const {
+77: unsigned long long longLongMax@var22 ; longLongMax@var22 =@expr1073742848 max_value (@expr1073742849 long_long_bit@var27 ) ;
+78: return value@var21 <=@expr1073742850 longLongMax@var22 ;
+79: }
+80:
+81: int char_bit@var23 ;
+82: int short_bit@var24 ;
+83: int int_bit@var25 ;
+84: int long_bit@var26 ;
+85: int long_long_bit@var27 ;
+86:
+87:
+88: int sizeof_bool@var28 ;
+89: int sizeof_short@var29 ;
+90: int sizeof_int@var30 ;
+91: int sizeof_long@var31 ;
+92: int sizeof_long_long@var32 ;
+93: int sizeof_float@var33 ;
+94: int sizeof_double@var34 ;
+95: int sizeof_long_double@var35 ;
+96: int sizeof_wchar_t@var36 ;
+97: int sizeof_size_t@var37 ;
+98: int sizeof_pointer@var38 ;
+99:
+100: char defaultSign@var39 ;
+101:
+102: enum PlatformType {
+103: Unspecified ,
+104: Native ,
+105: Win32A ,
+106: Win32W ,
+107: Win64 ,
+108: Unix32 ,
+109: Unix64 ,
+110: PlatformFile
+111: } ;
+112:
+113:
+114: PlatformType platformType@var40 ;
+115:
+116:
+117: bool platform ( PlatformType type@var41 ) ;
+118:
+|
+124:
+125: bool loadPlatformFile ( const char exename@var42 [ ] , const std :: string & filename@var43 ) ;
+126:
+127:
+128: bool loadFromXmlDocument ( const tinyxml2 :: XMLDocument * doc@var44 ) ;
+129:
+|
+133:
+134: bool isWindowsPlatform ( ) const {
+135: return platformType@var40 ==@expr1073742851 Win32A ||@expr1073742852
+136: platformType@var40 ==@expr1073742853 Win32W ||@expr1073742854
+137: platformType@var40 ==@expr1073742855 Win64 ;
+138: }
+139:
+140: const char * platformString ( ) const {
+141: return platformString (@expr1073742856 platformType@var40 ) ;
+142: }
+143:
+144: static const char * platformString ( PlatformType pt@var45 ) {
+145: switch (@expr1073742857 pt@var45 ) {
+146: case Unspecified :@expr1034 ;
+147: return "Unspecified" ;
+148: case Native :@expr1034 ;
+149: return "Native" ;
+150: case Win32A :@expr1034 ;
+151: return "win32A" ;
+152: case Win32W :@expr1034 ;
+153: return "win32W" ;
+154: case Win64 :@expr1034 ;
+155: return "win64" ;
+156: case Unix32 :@expr1034 ;
+157: return "unix32" ;
+158: case Unix64 :@expr1034 ;
+159: return "unix64" ;
+160: case PlatformFile :@expr1034 ;
+161: return "platformFile" ;
+162: default :@expr1034 ;
+163: return "unknown" ;
+164: }
+165: }
+166:
+167: long long unsignedCharMax ( ) const {
+168: return max_value (@expr1073742867 char_bit@var23 +@expr1073742868 1 ) ;
+169: }
+170:
+171: long long signedCharMax ( ) const {
+172: return max_value (@expr1073742869 char_bit@var23 ) ;
+173: }
+174:
+175: long long signedCharMin ( ) const {
+176: return min_value (@expr1073742870 char_bit@var23 ) ;
+177: }
+178: } ;
+179:
+180: }
+
+##file cppcheck-2.8/lib/utils.h
+
+1:
+|
+31:
+32: struct SelectMapKeys {
+33: template < class Pair >
+34: Pair :: first_type operator() ( const Pair & p@var46 ) const {
+35: return p@var46 .@expr1073742871 first@var47 ;
+36: }
+37: } ;
+38:
+39: struct SelectMapValues {
+40: template < class Pair >
+41: Pair :: second_type operator() ( const Pair & p@var48 ) const {
+42: return p@var48 .@expr1073742872 second@var49 ;
+43: }
+44: } ;
+45:
+46: template < class Range , class T >
+47: bool contains ( const Range & r@var50 , const T & x@var51 )
+48: {
+49: return std ::@expr1073742873 find (@expr1073742874 r@var50 .@expr1073742875 begin (@expr1073742876 ) , r@var50 .@expr1053 end (@expr1054 ) , x@var51 ) !=@expr1073742879 r@var50 .@expr1053 end (@expr1054 ) ;
+50: }
+51:
+52: template < class T >
+53: bool contains ( const std :: initializer_list < T > & r@var52 , const T & x@var53 )
+54: {
+55: return std ::@expr1073742882 find (@expr1073742883 r@var52 .@expr1073742884 begin (@expr1073742885 ) , r@var52 .@expr1062 end (@expr1063 ) , x@var53 ) !=@expr1073742888 r@var52 .@expr1062 end (@expr1063 ) ;
+56: }
+57:
+58: template < class T , class U >
+59: bool contains ( const std :: initializer_list < T > & r@var54 , const U & x@var55 )
+60: {
+61: return std ::@expr1073742891 find (@expr1073742892 r@var54 .@expr1073742893 begin (@expr1073742894 ) , r@var54 .@expr1071 end (@expr1072 ) , x@var55 ) !=@expr1073742897 r@var54 .@expr1071 end (@expr1072 ) ;
+62: }
+63:
+64:
+65: struct EnumClassHash {
+66: template < typename T >
+67: unsigned long operator() ( T t@var56 ) const
+68: {
+69: return static_cast < unsigned long > (@expr1073742900 t@var56 ) ;
+70: }
+71: } ;
+72:
+73: bool endsWith ( const std :: string & str@var57 , char c@var58 )
+74: {
+75: return !@expr1073742901 str@var57 .@expr1073742902 empty (@expr1073742903 ) &&@expr1073742904 str@var57 .@expr1073742905 back (@expr1073742906 ) ==@expr1073742907 c@var58 ;
+76: }
+77:
+78: bool endsWith ( const std :: string & str@var59 , const char end@var60 [ ] , unsigned long endlen@var61 )
+79: {
+80: return (@expr1084 str@var59 .@expr1085 size (@expr1086 ) >=@expr1073742911 endlen@var61 ) &&@expr1073742912 (@expr1084 str@var59 .@expr1073742914 compare (@expr1073742915 str@var59 .@expr1085 size (@expr1086 ) -@expr1073742918 endlen@var61 , endlen@var61 , end@var60 ) ==@expr1073742919 0 ) ;
+81: }
+82:
+83: template < unsigned long N >
+84: bool endsWith ( const std :: string & str@var62 , const char ( & end@var63 ) [ N ] )
+85: {
+86: return endsWith (@expr1073742921 str@var62 , end@var63 , N@expr1073742920 -@expr1073742922 1 ) ;
+87: }
+88:
+89: static bool isPrefixStringCharLiteral ( const std :: string & str@var64 , char q@var65 , const std :: string & p@var66 )
+90: {
+91: if (@expr1073742923 !@expr1073742924 endsWith (@expr1073742925 str@var64 , q@var65 ) ) {
+92: return false ; }
+93: if (@expr1073742926 (@expr1073742927 str@var64 .@expr1073742928 length (@expr1073742929 ) +@expr1073742930 1 ) >@expr1073742931 p@var66 .@expr1073742932 length (@expr1073742933 ) &&@expr1073742934 (@expr1073742935 str@var64 .@expr1073742936 compare (@expr1073742937 0 , p@var66 .@expr1073742938 size (@expr1073742939 ) +@expr1073742940 1 , p@var66 +@expr1073742941 q@var65 ) ==@expr1073742942 0 ) ) {
+94: return true ; }
+95: return false ;
+96: }
+97:
+98: static bool isStringCharLiteral ( const std :: string & str@var67 , char q@var68 )
+99: {
+100: static const std ::@expr1119 vector < std ::@expr1119 string > suffixes@var69 {@expr1073742945 "" , "u8" , "u" , "U" , "L" } ;
+101: for (@expr1073742946 const std ::@expr1119 string &@expr1073742948 p@var70 :@expr1073742949 suffixes@var69 ) {
+102: if (@expr1073742950 isPrefixStringCharLiteral (@expr1073742951 str@var67 , q@var68 , p@var70 ) ) {
+103: return true ; }
+104: }
+105: return false ;
+106: }
+107:
+108: static bool isStringLiteral ( const std :: string & str@var71 )
+109: {
+110: return isStringCharLiteral (@expr1073742952 str@var71 , '"' ) ;
+111: }
+112:
+113: static bool isCharLiteral ( const std :: string & str@var72 )
+114: {
+115: return isStringCharLiteral (@expr1073742953 str@var72 , '\'' ) ;
+116: }
+117:
+118: static std :: string getStringCharLiteral ( const std :: string & str@var73 , char q@var74 )
+119: {
+120: const unsigned long quotePos@var75 =@expr1073742954 str@var73 .@expr1073742955 find (@expr1073742956 q@var74 ) ;
+121: return str@var73 .@expr1073742957 substr (@expr1073742958 quotePos@var75 +@expr1073742959 1U , str@var73 .@expr1073742960 size (@expr1073742961 ) -@expr1073742962 quotePos@var75 -@expr1073742963 2U ) ;
+122: }
+123:
+124: static std :: string getStringLiteral ( const std :: string & str@var76 )
+125: {
+126: if (@expr1073742964 isStringLiteral (@expr1073742965 str@var76 ) ) {
+127: return getStringCharLiteral (@expr1073742966 str@var76 , '"' ) ; }
+128: return "" ;
+129: }
+130:
+131: static std :: string getCharLiteral ( const std :: string & str@var77 )
+132: {
+133: if (@expr1073742967 isCharLiteral (@expr1073742968 str@var77 ) ) {
+134: return getStringCharLiteral (@expr1073742969 str@var77 , '\'' ) ; }
+135: return "" ;
+136: }
+137:
+138: static const char * getOrdinalText ( int i@var78 )
+139: {
+140: if (@expr1073742970 i@var78 ==@expr1073742971 1 ) {
+141: return "st" ; }
+142: if (@expr1073742972 i@var78 ==@expr1073742973 2 ) {
+143: return "nd" ; }
+144: if (@expr1073742974 i@var78 ==@expr1073742975 3 ) {
+145: return "rd" ; }
+146: return "th" ;
+147: }
+148:
+149: int caseInsensitiveStringCompare ( const std :: string & lhs@var79 , const std :: string & rhs@var80 ) ;
+150:
+151: bool isValidGlobPattern ( const std :: string & pattern@var81 ) ;
+152:
+153: bool matchglob ( const std :: string & pattern@var82 , const std :: string & name@var83 ) ;
+154:
+155: bool matchglobs ( const std :: vector < std :: string > & patterns@var84 , const std :: string & name@var85 ) ;
+156:
+157: void strTolower ( std :: string & str@var86 ) ;
+
+##file cppcheck-2.8/lib/importproject.h
+
+1:
+|
+37:
+38: namespace cppcheck {
+39: struct stricmp {
+40: bool operator() ( const std :: string & lhs@var87 , const std :: string & rhs@var88 ) const {
+41: return caseInsensitiveStringCompare (@expr1073742976 lhs@var87 , rhs@var88 ) <@expr1073742977 0 ;
+42: }
+43: } ;
+44: }
+45:
+46: class Settings ;
+47:
+|
+50:
+51: class ImportProject {
+52: public:
+53: enum class Type {
+54: UNKNOWN ,
+55: MISSING ,
+56: FAILURE ,
+57: COMPILE_DB ,
+58: VS_SLN ,
+59: VS_VCXPROJ ,
+60: BORLAND ,
+61: CPPCHECK_GUI
+62: } ;
+63:
+64:
+65: struct FileSettings {
+66: FileSettings ( ) : platformType@var96 ( cppcheck :: Platform :: Unspecified ) , msc@var97 ( false ) , useMfc@var98 ( false ) { }
+67: std :: string cfg@var89 ;
+68: std :: string filename@var90 ;
+69: std :: string defines@var91 ;
+70: std :: string cppcheckDefines ( ) const {
+71: return defines@var91 +@expr1073742978 (@expr1073742979 msc@var97 ?@expr1073742980 ";_MSC_VER=1900" :@expr1073742981 "" ) +@expr1073742982 (@expr1073742983 useMfc@var98 ?@expr1073742984 ";__AFXWIN_H__=1" :@expr1073742985 "" ) ;
+72: }
+73: std :: set < std :: string > undefs@var92 ;
+74: std :: list < std :: string > includePaths@var93 ;
+75: std :: list < std :: string > systemIncludePaths@var94 ;
+76: std :: string standard@var95 ;
+77: cppcheck :: Platform :: PlatformType platformType@var96 ;
+78: bool msc@var97 ;
+79: bool useMfc@var98 ;
+80:
+81: void parseCommand ( std :: string command@var99 ) ;
+82: void setDefines ( std :: string defs@var100 ) ;
+83: void setIncludePaths ( const std :: string & basepath@var101 , const std :: list < std :: string > & in@var102 , std :: map < std :: string , std :: string , cppcheck :: stricmp > & variables@var103 ) ;
+84: } ;
+85: std :: list < FileSettings > fileSettings@var104 ;
+86: Type projectType@var105 ;
+87:
+88: ImportProject ( ) ;
+89:
+90: void selectOneVsConfig ( cppcheck :: Platform :: PlatformType platform@var106 ) ;
+91:
+92: std :: list < std :: string > getVSConfigs ( ) ;
+93:
+94:
+95: struct Anonymous0 {
+96: std :: string analyzeAllVsConfigs@var107 ;
+97: std :: vector < std :: string > pathNames@var108 ;
+98: std :: list < std :: string > libraries@var109 ;
+99: std :: list < std :: string > excludedPaths@var110 ;
+100: std :: list < std :: string > checkVsConfigs@var111 ;
+101: std :: string projectFile@var112 ;
+102: std :: string platform@var113 ;
+103: } ; struct Anonymous0 guiProject@var114 ;
+104:
+105: void ignorePaths ( const std :: vector < std :: string > & ipaths@var115 ) ;
+106: void ignoreOtherConfigs ( const std :: string & cfg@var116 ) ;
+107:
+108: Type import ( const std :: string & filename@var117 , Settings * settings@var118 = nullptr ) ;
+109: protected:
+110: bool importCompileCommands ( std :: istream & istr@var119 ) ;
+111: bool importCppcheckGuiProject ( std :: istream & istr@var120 , Settings * settings@var121 ) ;
+112: virtual bool sourceFileExists ( const std :: string & file@var122 ) ;
+113: private:
+114: bool importSln ( std :: istream & istr@var123 , const std :: string & path@var124 , const std :: vector < std :: string > & fileFilters@var125 ) ;
+115: bool importVcxproj ( const std :: string & filename@var126 , std :: map < std :: string , std :: string , cppcheck :: stricmp > & variables@var127 , const std :: string & additionalIncludeDirectories@var128 , const std :: vector < std :: string > & fileFilters@var129 ) ;
+116: bool importBcb6Prj ( const std :: string & projectFilename@var130 ) ;
+117:
+118: static void printError ( const std :: string & message@var131 ) ;
+119:
+120: void setRelativePaths ( const std :: string & filename@var132 ) ;
+121:
+122: std :: string mPath@var133 ;
+123: std :: set < std :: string > mAllVSConfigs@var134 ;
+124: } ;
+125:
+126:
+127: namespace CppcheckXml {
+128: const char ProjectElementName@var135 [ 8 ] = "project" ;
+129: const char ProjectVersionAttrib@var136 [ 8 ] = "version" ;
+130: const char ProjectFileVersion@var137 [ 2 ] = "1" ;
+131: const char BuildDirElementName@var138 [ 9 ] = "builddir" ;
+132: const char ImportProjectElementName@var139 [ 14 ] = "importproject" ;
+133: const char AnalyzeAllVsConfigsElementName@var140 [ 23 ] = "analyze-all-vs-configs" ;
+134: const char Parser@var141 [ 7 ] = "parser" ;
+135: const char BugHunting@var142 [ 12 ] = "bug-hunting" ;
+136: const char IncludeDirElementName@var143 [ 11 ] = "includedir" ;
+137: const char DirElementName@var144 [ 4 ] = "dir" ;
+138: const char DirNameAttrib@var145 [ 5 ] = "name" ;
+139: const char DefinesElementName@var146 [ 8 ] = "defines" ;
+140: const char DefineName@var147 [ 7 ] = "define" ;
+141: const char DefineNameAttrib@var148 [ 5 ] = "name" ;
+142: const char UndefinesElementName@var149 [ 10 ] = "undefines" ;
+143: const char UndefineName@var150 [ 9 ] = "undefine" ;
+144: const char PathsElementName@var151 [ 6 ] = "paths" ;
+145: const char PathName@var152 [ 4 ] = "dir" ;
+146: const char PathNameAttrib@var153 [ 5 ] = "name" ;
+147: const char RootPathName@var154 [ 5 ] = "root" ;
+148: const char RootPathNameAttrib@var155 [ 5 ] = "name" ;
+149: const char IgnoreElementName@var156 [ 7 ] = "ignore" ;
+150: const char IgnorePathName@var157 [ 5 ] = "path" ;
+151: const char IgnorePathNameAttrib@var158 [ 5 ] = "name" ;
+152: const char ExcludeElementName@var159 [ 8 ] = "exclude" ;
+153: const char ExcludePathName@var160 [ 5 ] = "path" ;
+154: const char ExcludePathNameAttrib@var161 [ 5 ] = "name" ;
+155: const char FunctionContracts@var162 [ 19 ] = "function-contracts" ;
+156: const char VariableContractsElementName@var163 [ 19 ] = "variable-contracts" ;
+157: const char LibrariesElementName@var164 [ 10 ] = "libraries" ;
+158: const char LibraryElementName@var165 [ 8 ] = "library" ;
+159: const char PlatformElementName@var166 [ 9 ] = "platform" ;
+160: const char SuppressionsElementName@var167 [ 13 ] = "suppressions" ;
+161: const char SuppressionElementName@var168 [ 12 ] = "suppression" ;
+162: const char AddonElementName@var169 [ 6 ] = "addon" ;
+163: const char AddonsElementName@var170 [ 7 ] = "addons" ;
+164: const char ToolElementName@var171 [ 5 ] = "tool" ;
+165: const char ToolsElementName@var172 [ 6 ] = "tools" ;
+166: const char TagsElementName@var173 [ 5 ] = "tags" ;
+167: const char TagElementName@var174 [ 4 ] = "tag" ;
+168: const char TagWarningsElementName@var175 [ 13 ] = "tag-warnings" ;
+169: const char TagAttributeName@var176 [ 4 ] = "tag" ;
+170: const char WarningElementName@var177 [ 8 ] = "warning" ;
+171: const char HashAttributeName@var178 [ 5 ] = "hash" ;
+172: const char CheckHeadersElementName@var179 [ 14 ] = "check-headers" ;
+173: const char CheckUnusedTemplatesElementName@var180 [ 23 ] = "check-unused-templates" ;
+174: const char MaxCtuDepthElementName@var181 [ 14 ] = "max-ctu-depth" ;
+175: const char MaxTemplateRecursionElementName@var182 [ 23 ] = "max-template-recursion" ;
+176: const char CheckUnknownFunctionReturn@var183 [ 37 ] = "check-unknown-function-return-values" ;
+177: const char ClangTidy@var184 [ 11 ] = "clang-tidy" ;
+178: const char Name@var185 [ 5 ] = "name" ;
+179: const char VSConfigurationElementName@var186 [ 18 ] = "vs-configurations" ;
+180: const char VSConfigurationName@var187 [ 7 ] = "config" ;
+181: }
+
+##file cppcheck-2.8/lib/mathlib.h
+
+1:
+|
+33:
+34: class MathLib {
+35: friend class TestMathLib ;
+36:
+37: public:
+38:
+39: class value {
+40: private:
+41: long long mIntValue@var188 ;
+42: double mDoubleValue@var189 ;
+43: enum class Type { INT , LONG , LONGLONG , FLOAT } ; enum Type mType@var190 ;
+44: bool mIsUnsigned@var191 ;
+45:
+46: void promote ( const value & v@var192 ) ;
+47:
+48: public:
+49: explicit value ( const std :: string & s@var193 ) ;
+50: std :: string str ( ) const ;
+51: bool isInt ( ) const {
+52: return mType@var190 !=@expr1073742986 Type ::@expr1073742987 FLOAT ;
+53: }
+54: bool isFloat ( ) const {
+55: return mType@var190 ==@expr1073742988 Type ::@expr1073742989 FLOAT ;
+56: }
+57:
+58: double getDoubleValue ( ) const {
+59: return isFloat (@expr1073742990 ) ?@expr1073742991 mDoubleValue@var189 :@expr1073742992 (@expr1073742993 double ) mIntValue@var188 ;
+60: }
+61:
+62: static value calc ( char op@var194 , const value & v1@var195 , const value & v2@var196 ) ;
+63: int compare ( const value & v@var197 ) const ;
+64: value add ( int v@var198 ) const ;
+65: value shiftLeft ( const value & v@var199 ) const ;
+66: value shiftRight ( const value & v@var200 ) const ;
+67: } ;
+68:
+69:
+70:
+71: static const int bigint_bits@var201 ;
+72:
+73: static long long toLongNumber ( const std :: string & str@var202 ) ;
+74: static unsigned long long toULongNumber ( const std :: string & str@var203 ) ;
+75:
+76: template < class T > static std :: string toString ( T value@var204 ) {
+77: std ::@expr1073742994 ostringstream result@var205 ;
+78: result@var205 <<@expr1073742995 value@var204 ;
+79: return result@var205 .@expr1073742996 str (@expr1073742997 ) ;
+80: }
+81: static double toDoubleNumber ( const std :: string & str@var206 ) ;
+82:
+83: static bool isInt ( const std :: string & str@var207 ) ;
+84: static bool isFloat ( const std :: string & str@var208 ) ;
+85: static bool isDecimalFloat ( const std :: string & str@var209 ) ;
+86: static bool isNegative ( const std :: string & str@var210 ) ;
+87: static bool isPositive ( const std :: string & str@var211 ) ;
+88: static bool isDec ( const std :: string & str@var212 ) ;
+89: static bool isFloatHex ( const std :: string & str@var213 ) ;
+90: static bool isIntHex ( const std :: string & str@var214 ) ;
+91: static bool isOct ( const std :: string & str@var215 ) ;
+92: static bool isBin ( const std :: string & str@var216 ) ;
+93:
+94: static std :: string getSuffix ( const std :: string & value@var217 ) ;
+95:
+|
+101:
+102: static bool isValidIntegerSuffix ( const std :: string & str@var218 , bool supportMicrosoftExtensions@var219 = true ) ;
+103:
+104: static std :: string add ( const std :: string & first@var220 , const std :: string & second@var221 ) ;
+105: static std :: string subtract ( const std :: string & first@var222 , const std :: string & second@var223 ) ;
+106: static std :: string multiply ( const std :: string & first@var224 , const std :: string & second@var225 ) ;
+107: static std :: string divide ( const std :: string & first@var226 , const std :: string & second@var227 ) ;
+108: static std :: string mod ( const std :: string & first@var228 , const std :: string & second@var229 ) ;
+109: static std :: string incdec ( const std :: string & var@var230 , const std :: string & op@var231 ) ;
+110: static std :: string calculate ( const std :: string & first@var232 , const std :: string & second@var233 , char action@var234 ) ;
+111:
+112: static std :: string sin ( const std :: string & tok@var235 ) ;
+113: static std :: string cos ( const std :: string & tok@var236 ) ;
+114: static std :: string tan ( const std :: string & tok@var237 ) ;
+115: static std :: string abs ( const std :: string & tok@var238 ) ;
+116: static bool isEqual ( const std :: string & first@var239 , const std :: string & second@var240 ) ;
+117: static bool isNotEqual ( const std :: string & first@var241 , const std :: string & second@var242 ) ;
+118: static bool isGreater ( const std :: string & first@var243 , const std :: string & second@var244 ) ;
+119: static bool isGreaterEqual ( const std :: string & first@var245 , const std :: string & second@var246 ) ;
+120: static bool isLess ( const std :: string & first@var247 , const std :: string & second@var248 ) ;
+121: static bool isLessEqual ( const std :: string & first@var249 , const std :: string & second@var250 ) ;
+122: static bool isNullValue ( const std :: string & str@var251 ) ;
+123:
+|
+127:
+128: static bool isOctalDigit ( char c@var252 ) ;
+129:
+130: static unsigned int encodeMultiChar ( const std :: string & str@var253 ) ;
+131:
+|
+136:
+137: static bool isDigitSeparator ( const std :: string & iCode@var254 , std :: string :: size_type iPos@var255 ) ;
+138: } ;
+139:
+140: MathLib :: value operator+ ( const MathLib :: value & v1@var256 , const MathLib :: value & v2@var257 ) ;
+141: MathLib :: value operator- ( const MathLib :: value & v1@var258 , const MathLib :: value & v2@var259 ) ;
+142: MathLib :: value operator* ( const MathLib :: value & v1@var260 , const MathLib :: value & v2@var261 ) ;
+143: MathLib :: value operator/ ( const MathLib :: value & v1@var262 , const MathLib :: value & v2@var263 ) ;
+144: MathLib :: value operator% ( const MathLib :: value & v1@var264 , const MathLib :: value & v2@var265 ) ;
+145: MathLib :: value operator& ( const MathLib :: value & v1@var266 , const MathLib :: value & v2@var267 ) ;
+146: MathLib :: value operator| ( const MathLib :: value & v1@var268 , const MathLib :: value & v2@var269 ) ;
+147: MathLib :: value operator^ ( const MathLib :: value & v1@var270 , const MathLib :: value & v2@var271 ) ;
+148: MathLib :: value operator<< ( const MathLib :: value & v1@var272 , const MathLib :: value & v2@var273 ) ;
+149: MathLib :: value operator>> ( const MathLib :: value & v1@var274 , const MathLib :: value & v2@var275 ) ;
+150:
+151: template < > std :: string MathLib :: toString < double > ( double value@var276 ) ;
+
+##file cppcheck-2.8/lib/standards.h
+
+1:
+|
+35:
+36: struct Standards {
+37:
+38: enum cstd_t { C89 , C99 , C11 , CLatest = C11 } ; enum cstd_t c@var277 ;
+39:
+40:
+41: enum cppstd_t { CPP03 , CPP11 , CPP14 , CPP17 , CPP20 , CPP23 , CPPLatest = CPP23 } ; enum cppstd_t cpp@var278 ;
+42:
+43:
+44: std :: string stdValue@var279 ;
+45:
+46:
+47: Standards ( ) : c@var277 ( CLatest ) , cpp@var278 ( CPPLatest ) { }
+48:
+49: bool setC ( const std :: string & str@var280 ) {
+50: stdValue@var279 =@expr1073742998 str@var280 ;
+51: if (@expr1073742999 str@var280 ==@expr1073743000 "c89" ||@expr1073743001 str@var280 ==@expr1073743002 "C89" ) {
+52: c@var277 =@expr1073743003 C89 ;
+53: return true ;
+54: }
+55: if (@expr1073743004 str@var280 ==@expr1073743005 "c99" ||@expr1073743006 str@var280 ==@expr1073743007 "C99" ) {
+56: c@var277 =@expr1073743008 C99 ;
+57: return true ;
+58: }
+59: if (@expr1073743009 str@var280 ==@expr1073743010 "c11" ||@expr1073743011 str@var280 ==@expr1073743012 "C11" ) {
+60: c@var277 =@expr1073743013 C11 ;
+61: return true ;
+62: }
+63: return false ;
+64: }
+65: const std :: string getC ( ) const {
+66: switch (@expr1073743014 c@var277 ) {
+67: case C89 :@expr1191 ;
+68: return "c89" ;
+69: case C99 :@expr1191 ;
+70: return "c99" ;
+71: case C11 :@expr1191 ;
+72: return "c11" ;
+73: }
+74: return "" ;
+75: }
+76: static cstd_t getC ( const std :: string & std@var281 ) {
+77: if (@expr1073743018 std@var281 ==@expr1073743019 "c89" ) {
+78: return Standards ::@expr1073743020 C89 ;
+79: }
+80: if (@expr1073743021 std@var281 ==@expr1073743022 "c99" ) {
+81: return Standards ::@expr1073743023 C99 ;
+82: }
+83: if (@expr1073743024 std@var281 ==@expr1073743025 "c11" ) {
+84: return Standards ::@expr1073743026 C11 ;
+85: }
+86: return Standards ::@expr1073743027 CLatest ;
+87: }
+88: bool setCPP ( std :: string str@var282 ) {
+89: stdValue@var279 =@expr1073743028 str@var282 ;
+90: strTolower (@expr1073743029 str@var282 ) ;
+91: cpp@var278 =@expr1073743030 getCPP (@expr1073743031 str@var282 ) ;
+92: return !@expr1073743032 stdValue@var279 .@expr1073743033 empty (@expr1073743034 ) &&@expr1073743035 str@var282 ==@expr1073743036 getCPP (@expr1073743037 ) ;
+93: }
+94: std :: string getCPP ( ) const {
+95: return getCPP (@expr1073743038 cpp@var278 ) ;
+96: }
+97: static std :: string getCPP ( cppstd_t std@var283 ) {
+98: switch (@expr1073743039 std@var283 ) {
+99: case CPP03 :@expr1216 ;
+100: return "c++03" ;
+101: case CPP11 :@expr1216 ;
+102: return "c++11" ;
+103: case CPP14 :@expr1216 ;
+104: return "c++14" ;
+105: case CPP17 :@expr1216 ;
+106: return "c++17" ;
+107: case CPP20 :@expr1216 ;
+108: return "c++20" ;
+109: case CPP23 :@expr1216 ;
+110: return "c++23" ;
+111: }
+112: return "" ;
+113: }
+114: static cppstd_t getCPP ( const std :: string & std@var284 ) {
+115: if (@expr1073743046 std@var284 ==@expr1073743047 "c++03" ) {
+116: return Standards ::@expr1073743048 CPP03 ;
+117: }
+118: if (@expr1073743049 std@var284 ==@expr1073743050 "c++11" ) {
+119: return Standards ::@expr1073743051 CPP11 ;
+120: }
+121: if (@expr1073743052 std@var284 ==@expr1073743053 "c++14" ) {
+122: return Standards ::@expr1073743054 CPP14 ;
+123: }
+124: if (@expr1073743055 std@var284 ==@expr1073743056 "c++17" ) {
+125: return Standards ::@expr1073743057 CPP17 ;
+126: }
+127: if (@expr1073743058 std@var284 ==@expr1073743059 "c++20" ) {
+128: return Standards ::@expr1073743060 CPP20 ;
+129: }
+130: if (@expr1073743061 std@var284 ==@expr1073743062 "c++23" ) {
+131: return Standards ::@expr1073743063 CPP23 ;
+132: }
+133: return Standards ::@expr1073743064 CPPLatest ;
+134: }
+135: } ;
+
+##file cppcheck-2.8/lib/library.h
+
+1:
+|
+37:
+38: class Token ;
+39: class Settings ;
+40:
+41: namespace tinyxml2 {
+42: class XMLDocument ;
+43: class XMLElement ;
+44: }
+45:
+|
+51:
+52: class Library {
+53: friend class TestSymbolDatabase ;
+54:
+55: public:
+56: Library ( ) ;
+57:
+58: enum class ErrorCode { OK , FILE_NOT_FOUND , BAD_XML , UNKNOWN_ELEMENT , MISSING_ATTRIBUTE , BAD_ATTRIBUTE_VALUE , UNSUPPORTED_FORMAT , DUPLICATE_PLATFORM_TYPE , PLATFORM_TYPE_REDEFINED } ;
+59:
+60: class Error {
+61: public:
+62: Error ( ) : errorcode@var288 ( ErrorCode :: OK ) { }
+63: explicit Error ( ErrorCode e@var285 ) : errorcode@var288 ( e@var285 ) { }
+64: template < typename T >
+65: Error ( ErrorCode e@var286 , T && r@var287 ) : errorcode@var288 ( e@var286 ) , reason@var289 ( r@var287 ) { }
+66: ErrorCode errorcode@var288 ;
+67: std :: string reason@var289 ;
+68: } ;
+69:
+70: Error load ( const char exename@var290 [ ] , const char path@var291 [ ] ) ;
+71: Error load ( const tinyxml2 :: XMLDocument & doc@var292 ) ;
+72:
+73:
+74: bool loadxmldata ( const char xmldata@var293 [ ] , unsigned long len@var294 ) ;
+75:
+76: struct AllocFunc {
+77: int groupId@var295 ;
+78: int arg@var296 ;
+79: enum class BufferSize { none , malloc , calloc , strdup } ;
+80: BufferSize bufferSize@var297 ;
+81: int bufferSizeArg1@var298 ;
+82: int bufferSizeArg2@var299 ;
+83: int reallocArg@var300 ;
+84: bool initData@var301 ;
+85: } ;
+86:
+87:
+88: const AllocFunc * getAllocFuncInfo ( const Token * tok@var302 ) const ;
+89:
+90:
+91: const AllocFunc * getDeallocFuncInfo ( const Token * tok@var303 ) const ;
+92:
+93:
+94: const AllocFunc * getReallocFuncInfo ( const Token * tok@var304 ) const ;
+95:
+96:
+97: int getAllocId ( const Token * tok@var305 , int arg@var306 ) const ;
+98:
+99:
+100: int getDeallocId ( const Token * tok@var307 , int arg@var308 ) const ;
+101:
+102:
+103: int getReallocId ( const Token * tok@var309 , int arg@var310 ) const ;
+104:
+105:
+106: const AllocFunc * getAllocFuncInfo ( const char name@var311 [ ] ) const {
+107: return getAllocDealloc (@expr1073743065 mAlloc@var577 , name@var311 ) ;
+108: }
+109:
+110:
+111: const AllocFunc * getDeallocFuncInfo ( const char name@var312 [ ] ) const {
+112: return getAllocDealloc (@expr1073743066 mDealloc@var578 , name@var312 ) ;
+113: }
+114:
+115:
+116: int allocId ( const char name@var313 [ ] ) const {
+117: const AllocFunc * af@var314 ; af@var314 =@expr1073743067 getAllocDealloc (@expr1073743068 mAlloc@var577 , name@var313 ) ;
+118: return af@var314 ?@expr1073743069 af@var314 .@expr1073743070 groupId@var315 :@expr1073743071 0 ;
+119: }
+120:
+121:
+122: int deallocId ( const char name@var316 [ ] ) const {
+123: const AllocFunc * af@var317 ; af@var317 =@expr1073743072 getAllocDealloc (@expr1073743073 mDealloc@var578 , name@var316 ) ;
+124: return af@var317 ?@expr1073743074 af@var317 .@expr1073743075 groupId@var318 :@expr1073743076 0 ;
+125: }
+126:
+127:
+128: void setalloc ( const std :: string & functionname@var319 , int id@var320 , int arg@var321 ) {
+129: mAlloc@var577 [@expr1253 functionname@var319 ] .@expr1073743078 groupId@var991 =@expr1073743079 id@var320 ;
+130: mAlloc@var577 [@expr1253 functionname@var319 ] .@expr1073743081 arg@var992 =@expr1073743082 arg@var321 ;
+131: }
+132:
+133: void setdealloc ( const std :: string & functionname@var322 , int id@var323 , int arg@var324 ) {
+134: mDealloc@var578 [@expr1259 functionname@var322 ] .@expr1073743084 groupId@var993 =@expr1073743085 id@var323 ;
+135: mDealloc@var578 [@expr1259 functionname@var322 ] .@expr1073743087 arg@var994 =@expr1073743088 arg@var324 ;
+136: }
+137:
+138: void setrealloc ( const std :: string & functionname@var325 , int id@var326 , int arg@var327 , int reallocArg@var328 = 1 ) {
+139: mRealloc@var579 [@expr1265 functionname@var325 ] .@expr1073743090 groupId@var995 =@expr1073743091 id@var326 ;
+140: mRealloc@var579 [@expr1265 functionname@var325 ] .@expr1073743093 arg@var996 =@expr1073743094 arg@var327 ;
+141: mRealloc@var579 [@expr1265 functionname@var325 ] .@expr1073743096 reallocArg@var997 =@expr1073743097 reallocArg@var328 ;
+142: }
+143:
+144:
+145: void setnoreturn ( const std :: string & funcname@var329 , bool noreturn@var330 ) {
+146: mNoReturn@var580 [@expr1073743098 funcname@var329 ] =@expr1073743099 noreturn@var330 ?@expr1073743100 FalseTrueMaybe ::@expr1073743101 True :@expr1073743102 FalseTrueMaybe ::@expr1073743103 False ;
+147: }
+148:
+149: static bool isCompliantValidationExpression ( const char * p@var331 ) ;
+150:
+151:
+152: static bool ismemory ( const int id@var332 ) {
+153: return (@expr1280 (@expr1280 id@var332 >@expr1073743106 0 ) &&@expr1073743107 (@expr1280 (@expr1280 id@var332 &@expr1073743110 1 ) ==@expr1073743111 0 ) ) ;
+154: }
+155: static bool ismemory ( const AllocFunc * const func@var333 ) {
+156: return (@expr1288 (@expr1288 func@var333 .@expr1290 groupId@var334 >@expr1073743115 0 ) &&@expr1073743116 (@expr1288 (@expr1288 func@var333 .@expr1290 groupId@var334 &@expr1073743120 1 ) ==@expr1073743121 0 ) ) ;
+157: }
+158:
+159:
+160: static bool isresource ( const int id@var335 ) {
+161: return (@expr1298 (@expr1298 id@var335 >@expr1073743124 0 ) &&@expr1073743125 (@expr1298 (@expr1298 id@var335 &@expr1073743128 1 ) ==@expr1073743129 1 ) ) ;
+162: }
+163: static bool isresource ( const AllocFunc * const func@var336 ) {
+164: return (@expr1306 (@expr1306 func@var336 .@expr1308 groupId@var337 >@expr1073743133 0 ) &&@expr1073743134 (@expr1306 (@expr1306 func@var336 .@expr1308 groupId@var337 &@expr1073743138 1 ) ==@expr1073743139 1 ) ) ;
+165: }
+166:
+167: bool formatstr_function ( const Token * ftok@var338 ) const ;
+168: int formatstr_argno ( const Token * ftok@var339 ) const ;
+169: bool formatstr_scan ( const Token * ftok@var340 ) const ;
+170: bool formatstr_secure ( const Token * ftok@var341 ) const ;
+171:
+172: struct NonOverlappingData {
+173: int ptr1Arg@var342 ;
+174: int ptr2Arg@var343 ;
+175: int sizeArg@var344 ;
+176: int strlenArg@var345 ;
+177: } ;
+178: const NonOverlappingData * getNonOverlappingData ( const Token * ftok@var346 ) const ;
+179:
+180: struct WarnInfo {
+181: std :: string message@var347 ;
+182: Standards standards@var348 ;
+183: Severity :: SeverityType severity@var349 ;
+184: } ;
+185: std :: map < std :: string , WarnInfo > functionwarn@var350 ;
+186:
+187: const WarnInfo * getWarnInfo ( const Token * ftok@var351 ) const ;
+188:
+189:
+190: bool isNotLibraryFunction ( const Token * ftok@var352 ) const ;
+191: bool matchArguments ( const Token * ftok@var353 , const std :: string & functionName@var354 ) const ;
+192:
+193: enum class UseRetValType { NONE , DEFAULT , ERROR_CODE } ;
+194: UseRetValType getUseRetValType ( const Token * ftok@var355 ) const ;
+195:
+196: const std :: string & returnValue ( const Token * ftok@var356 ) const ;
+197: const std :: string & returnValueType ( const Token * ftok@var357 ) const ;
+198: int returnValueContainer ( const Token * ftok@var358 ) const ;
+199: std :: vector < long long > unknownReturnValues ( const Token * ftok@var359 ) const ;
+200:
+201: bool isnoreturn ( const Token * ftok@var360 ) const ;
+202: bool isnotnoreturn ( const Token * ftok@var361 ) const ;
+203:
+204: bool isScopeNoReturn ( const Token * end@var362 , std :: string * unknownFunc@var363 ) const ;
+205:
+206: class Container {
+207: public:
+208: Container ( )
+209: : type_templateArgNo@var373 ( -1 ) ,
+210: size_templateArgNo@var375 ( -1 ) ,
+211: arrayLike_indexOp@var376 ( false ) ,
+212: stdStringLike@var377 ( false ) ,
+213: stdAssociativeLike@var378 ( false ) ,
+214: opLessAllowed@var379 ( true ) ,
+215: hasInitializerListConstructor@var380 ( false ) ,
+216: unstableErase@var381 ( false ) ,
+217: unstableInsert@var382 ( false ) ,
+218: view@var383 ( false )
+219: { }
+220:
+221: enum class Action {
+222: RESIZE ,
+223: CLEAR ,
+224: PUSH ,
+225: POP ,
+226: FIND ,
+227: INSERT ,
+228: ERASE ,
+229: CHANGE_CONTENT ,
+230: CHANGE ,
+231: CHANGE_INTERNAL ,
+232: NO_ACTION
+233: } ;
+234: enum class Yield {
+235: AT_INDEX ,
+236: ITEM ,
+237: BUFFER ,
+238: BUFFER_NT ,
+239: START_ITERATOR ,
+240: END_ITERATOR ,
+241: ITERATOR ,
+242: SIZE ,
+243: EMPTY ,
+244: NO_YIELD
+245: } ;
+246: struct Function {
+247: Action action@var364 ;
+248: Yield yield@var365 ;
+249: } ;
+250: struct RangeItemRecordTypeItem {
+251: std :: string name@var366 ;
+252: int templateParameter@var367 ;
+253: } ;
+254: std :: string startPattern@var368 ; std :: string startPattern2@var369 ; std :: string endPattern@var370 ; std :: string itEndPattern@var371 ;
+255: std :: map < std :: string , Function > functions@var372 ;
+256: int type_templateArgNo@var373 ;
+257: std :: vector < RangeItemRecordTypeItem > rangeItemRecordType@var374 ;
+258: int size_templateArgNo@var375 ;
+259: bool arrayLike_indexOp@var376 ;
+260: bool stdStringLike@var377 ;
+261: bool stdAssociativeLike@var378 ;
+262: bool opLessAllowed@var379 ;
+263: bool hasInitializerListConstructor@var380 ;
+264: bool unstableErase@var381 ;
+265: bool unstableInsert@var382 ;
+266: bool view@var383 ;
+267:
+268: Action getAction ( const std :: string & function@var384 ) const {
+269: const std ::@expr1073743140 map < std ::@expr1073743141 string , Function > ::@expr1073743142 const_iterator i@var385 =@expr1073743143 functions@var372 .@expr1073743144 find (@expr1073743145 function@var384 ) ;
+270: if (@expr1073743146 i@var385 !=@expr1073743147 functions@var372 .@expr1073743148 end (@expr1073743149 ) ) {
+271: return i@var385 .@expr1073743150 second@var386 .@expr1073743151 action@var387 ; }
+272: return Action ::@expr1073743152 NO_ACTION ;
+273: }
+274:
+275: Yield getYield ( const std :: string & function@var388 ) const {
+276: const std ::@expr1073743153 map < std ::@expr1073743154 string , Function > ::@expr1073743155 const_iterator i@var389 =@expr1073743156 functions@var372 .@expr1073743157 find (@expr1073743158 function@var388 ) ;
+277: if (@expr1073743159 i@var389 !=@expr1073743160 functions@var372 .@expr1073743161 end (@expr1073743162 ) ) {
+278: return i@var389 .@expr1073743163 second@var390 .@expr1073743164 yield@var391 ; }
+279: return Yield ::@expr1073743165 NO_YIELD ;
+280: }
+281:
+282: static Yield yieldFrom ( const std :: string & yieldName@var392 ) ;
+283: static Action actionFrom ( const std :: string & actionName@var393 ) ;
+284: } ;
+285: std :: map < std :: string , Container > containers@var394 ;
+286: const Container * detectContainer ( const Token * typeStart@var395 , bool iterator@var396 = false ) const ;
+287: const Container * detectContainerOrIterator ( const Token * typeStart@var397 , bool * isIterator@var398 = nullptr ) const ;
+288:
+289: class ArgumentChecks {
+290: public:
+291: ArgumentChecks ( ) :
+292: notbool@var399 ( false ) ,
+293: notnull@var400 ( false ) ,
+294: notuninit@var401 ( -1 ) ,
+295: formatstr@var402 ( false ) ,
+296: strz@var403 ( false ) ,
+297: optional@var404 ( false ) ,
+298: variadic@var405 ( false ) ,
+299: iteratorInfo@var411 ( ) ,
+300: direction@var419 ( Direction :: DIR_UNKNOWN ) { }
+301:
+302: bool notbool@var399 ;
+303: bool notnull@var400 ;
+304: int notuninit@var401 ;
+305: bool formatstr@var402 ;
+306: bool strz@var403 ;
+307: bool optional@var404 ;
+308: bool variadic@var405 ;
+309: std :: string valid@var406 ;
+310:
+311: class IteratorInfo {
+312: public:
+313: IteratorInfo ( ) : container@var407 ( 0 ) , it@var408 ( false ) , first@var409 ( false ) , last@var410 ( false ) { }
+314:
+315: int container@var407 ;
+316: bool it@var408 ;
+317: bool first@var409 ;
+318: bool last@var410 ;
+319: } ;
+320: IteratorInfo iteratorInfo@var411 ;
+321:
+322: class MinSize {
+323: public:
+324: enum class Type { NONE , STRLEN , ARGVALUE , SIZEOF , MUL , VALUE } ;
+325: MinSize ( Type t@var412 , int a@var413 ) : type@var414 ( t@var412 ) , arg@var415 ( a@var413 ) , arg2@var416 ( 0 ) , value@var417 ( 0 ) { }
+326: Type type@var414 ;
+327: int arg@var415 ;
+328: int arg2@var416 ;
+329: long long value@var417 ;
+330: } ;
+331: std :: vector < MinSize > minsizes@var418 ;
+332:
+333: enum class Direction {
+334: DIR_IN ,
+335: DIR_OUT ,
+336: DIR_INOUT ,
+337: DIR_UNKNOWN
+338: } ;
+339: Direction direction@var419 ;
+340: } ;
+341:
+342: struct Function {
+343: std :: map < int , ArgumentChecks > argumentChecks@var420 ;
+344: bool use@var421 ;
+345: bool leakignore@var422 ;
+346: bool isconst@var423 ;
+347: bool ispure@var424 ;
+348: UseRetValType useretval@var425 ;
+349: bool ignore@var426 ;
+350: bool formatstr@var427 ;
+351: bool formatstr_scan@var428 ;
+352: bool formatstr_secure@var429 ;
+353: Container :: Action containerAction@var430 ;
+354: Container :: Yield containerYield@var431 ;
+355: Function ( )
+356: : use@var421 ( false ) ,
+357: leakignore@var422 ( false ) ,
+358: isconst@var423 ( false ) ,
+359: ispure@var424 ( false ) ,
+360: useretval@var425 ( UseRetValType :: NONE ) ,
+361: ignore@var426 ( false ) ,
+362: formatstr@var427 ( false ) ,
+363: formatstr_scan@var428 ( false ) ,
+364: formatstr_secure@var429 ( false ) ,
+365: containerAction@var430 ( Container :: Action :: NO_ACTION ) ,
+366: containerYield@var431 ( Container :: Yield :: NO_YIELD )
+367: { }
+368: } ;
+369:
+370: const Function * getFunction ( const Token * ftok@var432 ) const ;
+371: std :: unordered_map < std :: string , Function > functions@var433 ;
+372: bool isUse ( const std :: string & functionName@var434 ) const ;
+373: bool isLeakIgnore ( const std :: string & functionName@var435 ) const ;
+374: bool isFunctionConst ( const std :: string & functionName@var436 , bool pure@var437 ) const ;
+375: bool isFunctionConst ( const Token * ftok@var438 ) const ;
+376:
+377: bool isboolargbad ( const Token * ftok@var439 , int argnr@var440 ) const {
+378: const ArgumentChecks * arg@var441 ; arg@var441 =@expr1073743166 getarg (@expr1073743167 ftok@var439 , argnr@var440 ) ;
+379: return arg@var441 &&@expr1073743168 arg@var441 .@expr1073743169 notbool@var442 ;
+380: }
+381:
+382: bool isnullargbad ( const Token * ftok@var443 , int argnr@var444 ) const ;
+383: bool isuninitargbad ( const Token * ftok@var445 , int argnr@var446 , int indirect@var447 = 0 , bool * hasIndirect@var448 = nullptr ) const ;
+384:
+385: bool isargformatstr ( const Token * ftok@var449 , int argnr@var450 ) const {
+386: const ArgumentChecks * arg@var451 ; arg@var451 =@expr1073743170 getarg (@expr1073743171 ftok@var449 , argnr@var450 ) ;
+387: return arg@var451 &&@expr1073743172 arg@var451 .@expr1073743173 formatstr@var452 ;
+388: }
+389:
+390: bool isargstrz ( const Token * ftok@var453 , int argnr@var454 ) const {
+391: const ArgumentChecks * arg@var455 ; arg@var455 =@expr1073743174 getarg (@expr1073743175 ftok@var453 , argnr@var454 ) ;
+392: return arg@var455 &&@expr1073743176 arg@var455 .@expr1073743177 strz@var456 ;
+393: }
+394:
+395: bool isIntArgValid ( const Token * ftok@var457 , int argnr@var458 , const long long argvalue@var459 ) const ;
+396: bool isFloatArgValid ( const Token * ftok@var460 , int argnr@var461 , double argvalue@var462 ) const ;
+397:
+398: const std :: string & validarg ( const Token * ftok@var463 , int argnr@var464 ) const {
+399: const ArgumentChecks * arg@var465 ; arg@var465 =@expr1073743178 getarg (@expr1073743179 ftok@var463 , argnr@var464 ) ;
+400: return arg@var465 ?@expr1073743180 arg@var465 .@expr1073743181 valid@var466 :@expr1073743182 emptyString@var1 ;
+401: }
+402:
+403: struct InvalidArgValue {
+404: enum class Type { le , lt , eq , ge , gt , range } ; enum Type type@var467 ;
+405: std :: string op1@var468 ;
+406: std :: string op2@var469 ;
+407: bool isInt ( ) const {
+408: return MathLib ::@expr1073743183 isInt (@expr1073743184 op1@var468 ) ;
+409: }
+410: } ;
+411:
+412: const ArgumentChecks :: IteratorInfo * getArgIteratorInfo ( const Token * ftok@var470 , int argnr@var471 ) const {
+413: const ArgumentChecks * arg@var472 ; arg@var472 =@expr1073743185 getarg (@expr1073743186 ftok@var470 , argnr@var471 ) ;
+414: return arg@var472 &&@expr1073743187 arg@var472 .@expr1364 iteratorInfo@var473 .@expr1073743189 it@var474 ?@expr1073743190 &@expr1073743191 arg@var472 .@expr1364 iteratorInfo@var473 :@expr1073743193 nullptr ;
+415: }
+416:
+417: bool hasminsize ( const Token * ftok@var475 ) const ;
+418:
+419: const std :: vector < ArgumentChecks :: MinSize > * argminsizes ( const Token * ftok@var476 , int argnr@var477 ) const {
+420: const ArgumentChecks * arg@var478 ; arg@var478 =@expr1073743194 getarg (@expr1073743195 ftok@var476 , argnr@var477 ) ;
+421: return arg@var478 ?@expr1073743196 &@expr1073743197 arg@var478 .@expr1073743198 minsizes@var479 :@expr1073743199 nullptr ;
+422: }
+423:
+424: ArgumentChecks :: Direction getArgDirection ( const Token * ftok@var480 , int argnr@var481 ) const ;
+425:
+426: bool markupFile ( const std :: string & path@var482 ) const ;
+427:
+428: bool processMarkupAfterCode ( const std :: string & path@var483 ) const ;
+429:
+430: const std :: set < std :: string > & markupExtensions ( ) const {
+431: return mMarkupExtensions@var587 ;
+432: }
+433:
+434: bool reportErrors ( const std :: string & path@var484 ) const ;
+435:
+436: bool ignorefunction ( const std :: string & functionName@var485 ) const ;
+437:
+438: bool isexecutableblock ( const std :: string & file@var486 , const std :: string & token@var487 ) const ;
+439:
+440: int blockstartoffset ( const std :: string & file@var488 ) const ;
+441:
+442: const std :: string & blockstart ( const std :: string & file@var489 ) const ;
+443: const std :: string & blockend ( const std :: string & file@var490 ) const ;
+444:
+445: bool iskeyword ( const std :: string & file@var491 , const std :: string & keyword@var492 ) const ;
+446:
+447: bool isexporter ( const std :: string & prefix@var493 ) const {
+448: return mExporters@var590 .@expr1073743200 find (@expr1073743201 prefix@var493 ) !=@expr1073743202 mExporters@var590 .@expr1073743203 end (@expr1073743204 ) ;
+449: }
+450:
+451: bool isexportedprefix ( const std :: string & prefix@var494 , const std :: string & token@var495 ) const {
+452: const std ::@expr1073743205 map < std ::@expr1073743206 string , ExportedFunctions > ::@expr1073743207 const_iterator it@var496 =@expr1073743208 mExporters@var590 .@expr1073743209 find (@expr1073743210 prefix@var494 ) ;
+453: return (@expr1073743211 it@var496 !=@expr1073743212 mExporters@var590 .@expr1073743213 end (@expr1073743214 ) &&@expr1073743215 it@var496 .@expr1073743216 second@var497 .@expr1073743217 isPrefix (@expr1073743218 token@var495 ) ) ;
+454: }
+455:
+456: bool isexportedsuffix ( const std :: string & prefix@var498 , const std :: string & token@var499 ) const {
+457: const std ::@expr1073743219 map < std ::@expr1073743220 string , ExportedFunctions > ::@expr1073743221 const_iterator it@var500 =@expr1073743222 mExporters@var590 .@expr1073743223 find (@expr1073743224 prefix@var498 ) ;
+458: return (@expr1073743225 it@var500 !=@expr1073743226 mExporters@var590 .@expr1073743227 end (@expr1073743228 ) &&@expr1073743229 it@var500 .@expr1073743230 second@var501 .@expr1073743231 isSuffix (@expr1073743232 token@var499 ) ) ;
+459: }
+460:
+461: bool isimporter ( const std :: string & file@var502 , const std :: string & importer@var503 ) const ;
+462:
+463: const Token * getContainerFromYield ( const Token * tok@var504 , Container :: Yield yield@var505 ) const ;
+464: const Token * getContainerFromAction ( const Token * tok@var506 , Container :: Action action@var507 ) const ;
+465:
+466: bool isreflection ( const std :: string & token@var508 ) const {
+467: return mReflection@var592 .@expr1073743233 find (@expr1073743234 token@var508 ) !=@expr1073743235 mReflection@var592 .@expr1073743236 end (@expr1073743237 ) ;
+468: }
+469:
+470: int reflectionArgument ( const std :: string & token@var509 ) const {
+471: const std ::@expr1073743238 map < std ::@expr1073743239 string , int > ::@expr1073743240 const_iterator it@var510 =@expr1073743241 mReflection@var592 .@expr1073743242 find (@expr1073743243 token@var509 ) ;
+472: if (@expr1073743244 it@var510 !=@expr1073743245 mReflection@var592 .@expr1073743246 end (@expr1073743247 ) ) {
+473: return it@var510 .@expr1073743248 second@var511 ; }
+474: return -1 ;
+475: }
+476:
+477: std :: vector < std :: string > defines@var512 ;
+478:
+479: struct SmartPointer {
+480: std :: string name@var513 ; name@var513 = "" ;
+481: bool unique@var514 ; unique@var514 = false ;
+482: } ;
+483:
+484: std :: map < std :: string , SmartPointer > smartPointers@var515 ;
+485: bool isSmartPointer ( const Token * tok@var516 ) const ;
+486: const SmartPointer * detectSmartPointer ( const Token * tok@var517 ) const ;
+487:
+488: struct PodType {
+489: unsigned int size@var518 ;
+490: char sign@var519 ;
+491: enum class Type { NO , BOOL , CHAR , SHORT , INT , LONG , LONGLONG } ; enum Type stdtype@var520 ;
+492: } ;
+493: const struct PodType * podtype ( const std :: string & name@var521 ) const {
+494: const std ::@expr1073743249 unordered_map < std ::@expr1073743250 string , PodType > ::@expr1073743251 const_iterator it@var522 =@expr1073743252 mPodTypes@var593 .@expr1073743253 find (@expr1073743254 name@var521 ) ;
+495: return (@expr1431 it@var522 !=@expr1073743256 mPodTypes@var593 .@expr1073743257 end (@expr1073743258 ) ) ?@expr1073743259 &@expr1073743260 (@expr1431 it@var522 .@expr1073743262 second@var523 ) :@expr1073743263 nullptr ;
+496: }
+497:
+498: struct PlatformType {
+499: PlatformType ( )
+500: : mSigned@var534 ( false )
+501: , mUnsigned@var535 ( false )
+502: , mLong@var536 ( false )
+503: , mPointer@var537 ( false )
+504: , mPtrPtr@var538 ( false )
+505: , mConstPtr@var539 ( false ) { }
+506: bool operator== ( const PlatformType & type@var524 ) const {
+507: return (@expr1073743264 mSigned@var534 ==@expr1073743265 type@var524 .@expr1073743266 mSigned@var525 &&@expr1073743267
+508: mUnsigned@var535 ==@expr1073743268 type@var524 .@expr1073743269 mUnsigned@var526 &&@expr1073743270
+509: mLong@var536 ==@expr1073743271 type@var524 .@expr1073743272 mLong@var527 &&@expr1073743273
+510: mPointer@var537 ==@expr1073743274 type@var524 .@expr1073743275 mPointer@var528 &&@expr1073743276
+511: mPtrPtr@var538 ==@expr1073743277 type@var524 .@expr1073743278 mPtrPtr@var529 &&@expr1073743279
+512: mConstPtr@var539 ==@expr1073743280 type@var524 .@expr1073743281 mConstPtr@var530 &&@expr1073743282
+513: mType@var533 ==@expr1073743283 type@var524 .@expr1073743284 mType@var531 ) ;
+514: }
+515: bool operator!= ( const PlatformType & type@var532 ) const {
+516: return !@expr1073743285 (@expr1073743286 *@expr1073743287 this@expr1073743288 ==@expr1073743289 type@var532 ) ;
+517: }
+518: std :: string mType@var533 ;
+519: bool mSigned@var534 ;
+520: bool mUnsigned@var535 ;
+521: bool mLong@var536 ;
+522: bool mPointer@var537 ;
+523: bool mPtrPtr@var538 ;
+524: bool mConstPtr@var539 ;
+525: } ;
+526:
+527: struct Platform {
+528: const PlatformType * platform_type ( const std :: string & name@var540 ) const {
+529: const std ::@expr1073743290 map < std ::@expr1073743291 string , PlatformType > ::@expr1073743292 const_iterator it@var541 =@expr1073743293 mPlatformTypes@var543 .@expr1073743294 find (@expr1073743295 name@var540 ) ;
+530: return (@expr1472 it@var541 !=@expr1073743297 mPlatformTypes@var543 .@expr1073743298 end (@expr1073743299 ) ) ?@expr1073743300 &@expr1073743301 (@expr1472 it@var541 .@expr1073743303 second@var542 ) :@expr1073743304 nullptr ;
+531: }
+532: std :: map < std :: string , PlatformType > mPlatformTypes@var543 ;
+533: } ;
+534:
+535: const PlatformType * platform_type ( const std :: string & name@var544 , const std :: string & platform@var545 ) const {
+536: const std ::@expr1073743305 map < std ::@expr1482 string , Platform > ::@expr1073743307 const_iterator it@var546 =@expr1073743308 mPlatforms@var595 .@expr1073743309 find (@expr1073743310 platform@var545 ) ;
+537: if (@expr1073743311 it@var546 !=@expr1073743312 mPlatforms@var595 .@expr1073743313 end (@expr1073743314 ) ) {
+538: const PlatformType * const type@var547 ; type@var547 =@expr1073743315 it@var546 .@expr1073743316 second@var548 .@expr1073743317 platform_type (@expr1073743318 name@var544 ) ;
+539: if (@expr1073743319 type@var547 ) {
+540: return type@var547 ; }
+541: }
+542:
+543: const std ::@expr1073743320 map < std ::@expr1482 string , PlatformType > ::@expr1073743322 const_iterator it2@var549 =@expr1073743323 mPlatformTypes@var594 .@expr1073743324 find (@expr1073743325 name@var544 ) ;
+544: return (@expr1502 it2@var549 !=@expr1073743327 mPlatformTypes@var594 .@expr1073743328 end (@expr1073743329 ) ) ?@expr1073743330 &@expr1073743331 (@expr1502 it2@var549 .@expr1073743333 second@var550 ) :@expr1073743334 nullptr ;
+545: }
+546:
+|
+549:
+550: std :: string getFunctionName ( const Token * ftok@var551 ) const ;
+551:
+552: static bool isContainerYield ( const Token * const cond@var552 , Library :: Container :: Yield y@var553 , const std :: string & fallback@var554 = "" ) ;
+553:
+554:
+555: enum class TypeCheck { def , check , suppress } ;
+556: TypeCheck getTypeCheck ( const std :: string & check@var555 , const std :: string & typeName@var556 ) const ;
+557:
+558: private:
+559:
+560: Error loadFunction ( const tinyxml2 :: XMLElement * const node@var557 , const std :: string & name@var558 , std :: set < std :: string > & unknown_elements@var559 ) ;
+561:
+562: class ExportedFunctions {
+563: public:
+564: void addPrefix ( const std :: string & prefix@var560 ) {
+565: mPrefixes@var564 .@expr1073743335 insert (@expr1073743336 prefix@var560 ) ;
+566: }
+567: void addSuffix ( const std :: string & suffix@var561 ) {
+568: mSuffixes@var565 .@expr1073743337 insert (@expr1073743338 suffix@var561 ) ;
+569: }
+570: bool isPrefix ( const std :: string & prefix@var562 ) const {
+571: return (@expr1073743339 mPrefixes@var564 .@expr1073743340 find (@expr1073743341 prefix@var562 ) !=@expr1073743342 mPrefixes@var564 .@expr1073743343 end (@expr1073743344 ) ) ;
+572: }
+573: bool isSuffix ( const std :: string & suffix@var563 ) const {
+574: return (@expr1073743345 mSuffixes@var565 .@expr1073743346 find (@expr1073743347 suffix@var563 ) !=@expr1073743348 mSuffixes@var565 .@expr1073743349 end (@expr1073743350 ) ) ;
+575: }
+576:
+577: private:
+578: std :: set < std :: string > mPrefixes@var564 ;
+579: std :: set < std :: string > mSuffixes@var565 ;
+580: } ;
+581: class CodeBlock {
+582: public:
+583: CodeBlock ( ) : mOffset@var573 ( 0 ) { }
+584:
+585: void setStart ( const char * s@var566 ) {
+586: mStart@var571 =@expr1073743351 s@var566 ;
+587: }
+588: void setEnd ( const char * e@var567 ) {
+589: mEnd@var572 =@expr1073743352 e@var567 ;
+590: }
+591: void setOffset ( const int o@var568 ) {
+592: mOffset@var573 =@expr1073743353 o@var568 ;
+593: }
+594: void addBlock ( const char * blockName@var569 ) {
+595: mBlocks@var574 .@expr1073743354 insert (@expr1073743355 blockName@var569 ) ;
+596: }
+597: const std :: string & start ( ) const {
+598: return mStart@var571 ;
+599: }
+600: const std :: string & end ( ) const {
+601: return mEnd@var572 ;
+602: }
+603: int offset ( ) const {
+604: return mOffset@var573 ;
+605: }
+606: bool isBlock ( const std :: string & blockName@var570 ) const {
+607: return mBlocks@var574 .@expr1073743356 find (@expr1073743357 blockName@var570 ) !=@expr1073743358 mBlocks@var574 .@expr1073743359 end (@expr1073743360 ) ;
+608: }
+609:
+610: private:
+611: std :: string mStart@var571 ;
+612: std :: string mEnd@var572 ;
+613: int mOffset@var573 ;
+614: std :: set < std :: string > mBlocks@var574 ;
+615: } ;
+616: enum class FalseTrueMaybe { False , True , Maybe } ;
+617: int mAllocId@var575 ;
+618: std :: set < std :: string > mFiles@var576 ;
+619: std :: map < std :: string , AllocFunc > mAlloc@var577 ;
+620: std :: map < std :: string , AllocFunc > mDealloc@var578 ;
+621: std :: map < std :: string , AllocFunc > mRealloc@var579 ;
+622: std :: unordered_map < std :: string , FalseTrueMaybe > mNoReturn@var580 ;
+623: std :: map < std :: string , std :: string > mReturnValue@var581 ;
+624: std :: map < std :: string , std :: string > mReturnValueType@var582 ;
+625: std :: map < std :: string , int > mReturnValueContainer@var583 ;
+626: std :: map < std :: string , std :: vector < long long > > mUnknownReturnValues@var584 ;
+627: std :: map < std :: string , bool > mReportErrors@var585 ;
+628: std :: map < std :: string , bool > mProcessAfterCode@var586 ;
+629: std :: set < std :: string > mMarkupExtensions@var587 ;
+630: std :: map < std :: string , std :: set < std :: string > > mKeywords@var588 ;
+631: std :: map < std :: string , CodeBlock > mExecutableBlocks@var589 ;
+632: std :: map < std :: string , ExportedFunctions > mExporters@var590 ;
+633: std :: map < std :: string , std :: set < std :: string > > mImporters@var591 ;
+634: std :: map < std :: string , int > mReflection@var592 ;
+635: std :: unordered_map < std :: string , PodType > mPodTypes@var593 ;
+636: std :: map < std :: string , PlatformType > mPlatformTypes@var594 ;
+637: std :: map < std :: string , Platform > mPlatforms@var595 ;
+638: std :: map < std :: pair < std :: string , std :: string > , TypeCheck > mTypeChecks@var596 ;
+639: std :: unordered_map < std :: string , NonOverlappingData > mNonOverlappingData@var597 ;
+640:
+641: const ArgumentChecks * getarg ( const Token * ftok@var598 , int argnr@var599 ) const ;
+642:
+643: std :: string getFunctionName ( const Token * ftok@var600 , bool * error@var601 ) const ;
+644:
+645: static const AllocFunc * getAllocDealloc ( const std :: map < std :: string , AllocFunc > & data@var602 , const std :: string & name@var603 ) {
+646: const std ::@expr1073743361 map < std ::@expr1073743362 string , AllocFunc > ::@expr1073743363 const_iterator it@var604 =@expr1073743364 data@var602 .@expr1073743365 find (@expr1073743366 name@var603 ) ;
+647: return (@expr1073743367 it@var604 ==@expr1073743368 data@var602 .@expr1073743369 end (@expr1073743370 ) ) ?@expr1073743371 nullptr :@expr1073743372 &@expr1073743373 it@var604 .@expr1073743374 second@var605 ;
+648: }
+649: } ;
+650:
+651: const Library :: Container * getLibraryContainer ( const Token * tok@var606 ) ;
+652:
+653: std :: shared_ptr < Token > createTokenFromExpression ( const std :: string & returnValue@var607 ,
+654: const Settings * settings@var608 ,
+655: std :: unordered_map < int , const Token * > * lookupVarId@var609 = nullptr ) ;
+
+##file cppcheck-2.8/lib/suppressions.h
+
+1:
+|
+34:
+35: class Tokenizer ;
+36:
+37:
+38: class Suppressions {
+39: public:
+40:
+41: struct ErrorMessage {
+42: unsigned long hash@var610 ;
+43: std :: string errorId@var611 ;
+44: void setFileName ( const std :: string & s@var612 ) ;
+45: const std :: string & getFileName ( ) const {
+46: return mFileName@var616 ;
+47: }
+48: int lineNumber@var613 ;
+49: Certainty :: CertaintyLevel certainty@var614 ;
+50: std :: string symbolNames@var615 ;
+51: private:
+52: std :: string mFileName@var616 ;
+53: } ;
+54:
+55: struct Suppression {
+56: Suppression ( ) : lineNumber@var650 ( NO_LINE ) , hash@var652 ( 0 ) , thisAndNextLine@var653 ( false ) , matched@var654 ( false ) , checked@var655 ( false ) { }
+57: Suppression ( const Suppression & other@var617 ) {
+58: *@expr1073743375 this@expr1073743376 =@expr1073743377 other@var617 ;
+59: }
+60: Suppression ( const std :: string & id@var618 , const std :: string & file@var619 , int line@var620 = NO_LINE ) : errorId@var648 ( id@var618 ) , fileName@var649 ( file@var619 ) , lineNumber@var650 ( line@var620 ) , hash@var652 ( 0 ) , thisAndNextLine@var653 ( false ) , matched@var654 ( false ) , checked@var655 ( false ) { }
+61:
+62: Suppression & operator= ( const Suppression & other@var621 ) {
+63: errorId@var648 =@expr1073743378 other@var621 .@expr1073743379 errorId@var622 ;
+64: fileName@var649 =@expr1073743380 other@var621 .@expr1073743381 fileName@var623 ;
+65: lineNumber@var650 =@expr1073743382 other@var621 .@expr1073743383 lineNumber@var624 ;
+66: symbolName@var651 =@expr1073743384 other@var621 .@expr1073743385 symbolName@var625 ;
+67: hash@var652 =@expr1073743386 other@var621 .@expr1073743387 hash@var626 ;
+68: thisAndNextLine@var653 =@expr1073743388 other@var621 .@expr1073743389 thisAndNextLine@var627 ;
+69: matched@var654 =@expr1073743390 other@var621 .@expr1073743391 matched@var628 ;
+70: checked@var655 =@expr1073743392 other@var621 .@expr1073743393 checked@var629 ;
+71: return *@expr1073743394 this@expr1073743395 ;
+72: }
+73:
+74: bool operator< ( const Suppression & other@var630 ) const {
+75: if (@expr1073743396 errorId@var648 !=@expr1073743397 other@var630 .@expr1574 errorId@var631 ) {
+76: return errorId@var648 <@expr1073743399 other@var630 .@expr1574 errorId@var631 ; }
+77: if (@expr1073743401 lineNumber@var650 <@expr1073743402 other@var630 .@expr1073743403 lineNumber@var632 ) {
+78: return true ; }
+79: if (@expr1073743404 fileName@var649 !=@expr1073743405 other@var630 .@expr1582 fileName@var633 ) {
+80: return fileName@var649 <@expr1073743407 other@var630 .@expr1582 fileName@var633 ; }
+81: if (@expr1073743409 symbolName@var651 !=@expr1073743410 other@var630 .@expr1587 symbolName@var634 ) {
+82: return symbolName@var651 <@expr1073743412 other@var630 .@expr1587 symbolName@var634 ; }
+83: if (@expr1073743414 hash@var652 !=@expr1073743415 other@var630 .@expr1592 hash@var635 ) {
+84: return hash@var652 <@expr1073743417 other@var630 .@expr1592 hash@var635 ; }
+85: if (@expr1073743419 thisAndNextLine@var653 !=@expr1073743420 other@var630 .@expr1073743421 thisAndNextLine@var636 ) {
+86: return thisAndNextLine@var653 ; }
+87: return false ;
+88: }
+89:
+|
+95:
+96: bool parseComment ( std :: string comment@var637 , std :: string * errorMessage@var638 ) ;
+97:
+98: bool isSuppressed ( const ErrorMessage & errmsg@var639 ) const ;
+99:
+100: bool isMatch ( const ErrorMessage & errmsg@var640 ) ;
+101:
+102: std :: string getText ( ) const ;
+103:
+104: bool isLocal ( ) const {
+105: return !@expr1073743423 fileName@var649 .@expr1073743424 empty (@expr1073743425 ) &&@expr1073743426 fileName@var649 .@expr1073743427 find_first_of (@expr1073743428 "?*" ) ==@expr1073743429 std ::@expr1073743430 string ::@expr1073743431 npos@expr1073743422 ;
+106: }
+107:
+108: bool isSameParameters ( const Suppression & other@var641 ) const {
+109: return errorId@var648 ==@expr1073743432 other@var641 .@expr1073743433 errorId@var642 &&@expr1073743434
+110: fileName@var649 ==@expr1073743435 other@var641 .@expr1073743436 fileName@var643 &&@expr1073743437
+111: lineNumber@var650 ==@expr1073743438 other@var641 .@expr1073743439 lineNumber@var644 &&@expr1073743440
+112: symbolName@var651 ==@expr1073743441 other@var641 .@expr1073743442 symbolName@var645 &&@expr1073743443
+113: hash@var652 ==@expr1073743444 other@var641 .@expr1073743445 hash@var646 &&@expr1073743446
+114: thisAndNextLine@var653 ==@expr1073743447 other@var641 .@expr1073743448 thisAndNextLine@var647 ;
+115: }
+116:
+117: std :: string errorId@var648 ;
+118: std :: string fileName@var649 ;
+119: int lineNumber@var650 ;
+120: std :: string symbolName@var651 ;
+121: unsigned long hash@var652 ;
+122: bool thisAndNextLine@var653 ;
+123: bool matched@var654 ;
+124: bool checked@var655 ;
+125:
+126: enum Anonymous1 { NO_LINE = -1 } ;
+127: } ;
+128:
+|
+133:
+134: std :: string parseFile ( std :: istream & istr@var656 ) ;
+135:
+|
+140:
+141: std :: string parseXmlFile ( const char * filename@var657 ) ;
+142:
+|
+148:
+149: static std :: vector < Suppression > parseMultiSuppressComment ( const std :: string & comment@var658 , std :: string * errorMessage@var659 ) ;
+150:
+|
+155:
+156: std :: string addSuppressionLine ( const std :: string & line@var660 ) ;
+157:
+|
+163:
+164: std :: string addSuppression ( const Suppression & suppression@var661 ) ;
+165:
+|
+170:
+171: std :: string addSuppressions ( const std :: list < Suppression > & suppressions@var662 ) ;
+172:
+|
+177:
+178: bool isSuppressed ( const ErrorMessage & errmsg@var663 ) ;
+179:
+|
+184:
+185: bool isSuppressedLocal ( const ErrorMessage & errmsg@var664 ) ;
+186:
+|
+190:
+191: void dump ( std :: ostream & out@var665 ) const ;
+192:
+|
+196:
+197: std :: list < Suppression > getUnmatchedLocalSuppressions ( const std :: string & file@var666 , const bool unusedFunctionChecking@var667 ) const ;
+198:
+|
+202:
+203: std :: list < Suppression > getUnmatchedGlobalSuppressions ( const bool unusedFunctionChecking@var668 ) const ;
+204:
+|
+208:
+209: const std :: list < Suppression > & getSuppressions ( ) const ;
+210:
+|
+213:
+214: void markUnmatchedInlineSuppressionsAsChecked ( const Tokenizer & tokenizer@var669 ) ;
+215:
+216: private:
+217:
+218: std :: list < Suppression > mSuppressions@var670 ;
+219: } ;
+
+##file cppcheck-2.8/lib/timer.h
+
+1:
+|
+28:
+29: enum class SHOWTIME_MODES {
+30: SHOWTIME_NONE = 0 ,
+31: SHOWTIME_FILE ,
+32: SHOWTIME_SUMMARY ,
+33: SHOWTIME_TOP5
+34: } ;
+35:
+36: class TimerResultsIntf {
+37: public:
+38: virtual ~ TimerResultsIntf ( ) { }
+39:
+40: virtual void addResults ( const std :: string & str@var671 , std :: clock_t clocks@var672 ) = 0 ;
+41: } ;
+42:
+43: struct TimerResultsData {
+44: std :: clock_t mClocks@var673 ;
+45: long mNumberOfResults@var674 ;
+46:
+47: TimerResultsData ( )
+48: : mClocks@var673 ( 0 )
+49: , mNumberOfResults@var674 ( 0 ) { }
+50:
+51: double seconds ( ) const {
+52: const double ret@var675 =@expr1073743450 (@expr1073743451 double ) (@expr1073743452 (@expr1073743453 unsigned long ) mClocks@var673 ) /@expr1073743454 (@expr1073743455 double ) CLOCKS_PER_SEC@expr1073743449 ;
+53: return ret@var675 ;
+54: }
+55: } ;
+56:
+57: class TimerResults : public TimerResultsIntf {
+58: public:
+59: TimerResults ( ) { }
+60:
+61: void showResults ( SHOWTIME_MODES mode@var676 ) const ;
+62: void addResults ( const std :: string & str@var677 , std :: clock_t clocks@var678 ) override ;
+63:
+64: private:
+65: std :: map < std :: string , TimerResultsData > mResults@var679 ;
+66: } ;
+67:
+68: class Timer {
+69: public:
+70: Timer ( const std :: string & str@var680 , SHOWTIME_MODES showtimeMode@var681 , TimerResultsIntf * timerResults@var682 = nullptr ) ;
+71: ~ Timer ( ) ;
+72: void stop ( ) ;
+73:
+74: private:
+75: Timer ( const Timer & other@var683 ) ;
+76: Timer & operator= ( const Timer & ) ;
+77:
+78: const std :: string mStr@var684 ;
+79: TimerResultsIntf * mTimerResults@var685 ;
+80: std :: clock_t mStart@var686 ;
+81: const SHOWTIME_MODES mShowTimeMode@var687 ;
+82: bool mStopped@var688 ;
+83: } ;
+
+##file cppcheck-2.8/lib/settings.h
+
+1:
+|
+40:
+41: namespace ValueFlow {
+42: class Value ;
+43: }
+44:
+|
+47:
+48: class SimpleEnableGroup<Severity::SeverityType> ; class SimpleEnableGroup<Certainty::CertaintyLevel> ; class SimpleEnableGroup<Checks::CheckList> ;
+49:
+|
+89:
+90: class Settings : public cppcheck :: Platform {
+91: private:
+92:
+93:
+94: static std :: atomic < bool > mTerminated@var689 ;
+95:
+96: public:
+97: Settings ( ) ;
+98:
+99: void loadCppcheckCfg ( ) ;
+100:
+101:
+102: std :: list < std :: string > addons@var690 ;
+103:
+104:
+105: std :: string addonPython@var691 ;
+106:
+107:
+108: std :: vector < std :: string > basePaths@var692 ;
+109:
+110:
+111: std :: string buildDir@var693 ;
+112:
+113:
+114: bool checkAllConfigurations@var694 ;
+115:
+116:
+117: bool checkConfiguration@var695 ;
+118:
+|
+121:
+122: bool checkHeaders@var696 ;
+123:
+124:
+125: bool checkLibrary@var697 ;
+126:
+127:
+128: std :: set < std :: string > checkUnknownFunctionReturn@var698 ;
+129:
+130:
+131: bool checkUnusedTemplates@var699 ;
+132:
+133:
+134: bool clang@var700 ;
+135:
+136:
+137: std :: string clangExecutable@var701 ;
+138:
+139:
+140: bool clangTidy@var702 ;
+141:
+142:
+143: std :: set < std :: string > configExcludePaths@var703 ;
+144:
+145:
+146: std :: string cppcheckCfgProductName@var704 ;
+147:
+148:
+149: std :: string cppcheckCfgAbout@var705 ;
+150:
+151:
+152: bool daca@var706 ;
+153:
+154:
+155: bool debugnormal@var707 ;
+156:
+157:
+158: bool debugSimplified@var708 ;
+159:
+160:
+161: bool debugtemplate@var709 ;
+162:
+163:
+164: bool debugwarnings@var710 ;
+165:
+166:
+167: bool dump@var711 ;
+168: std :: string dumpFile@var712 ;
+169:
+170: enum Language {
+171: None , C , CPP
+172: } ;
+173:
+174:
+175: Language enforcedLang@var713 ;
+176:
+177:
+178: bool exceptionHandling@var714 ;
+179:
+180:
+181: std :: string exename@var715 ;
+182:
+183:
+184:
+185: int exitCode@var716 ;
+186:
+187:
+188: std :: vector < std :: string > fileFilters@var717 ;
+189:
+190:
+191: bool force@var718 ;
+192:
+193:
+194:
+195: std :: list < std :: string > includePaths@var719 ;
+196:
+197:
+198: bool inlineSuppressions@var720 ;
+199:
+200:
+201:
+202: unsigned int jobs@var721 ;
+203:
+|
+206:
+207: bool jointSuppressionReport@var722 ;
+208:
+209:
+210: std :: list < std :: string > libraries@var723 ;
+211:
+212:
+213: Library library@var724 ;
+214:
+215:
+216:
+217: int loadAverage@var725 ;
+218:
+|
+221:
+222: int maxConfigs@var726 ;
+223:
+224:
+225: int maxCtuDepth@var727 ;
+226:
+227:
+228: int maxTemplateRecursion@var728 ;
+229:
+230:
+231: Suppressions nofail@var729 ;
+232:
+233:
+234: Suppressions nomsg@var730 ;
+235:
+236:
+237: std :: string outputFile@var731 ;
+238:
+239:
+240: std :: string plistOutput@var732 ;
+241:
+242:
+243: bool preprocessOnly@var733 ;
+244:
+245: ImportProject project@var734 ;
+246:
+247:
+248: bool quiet@var735 ;
+249:
+250:
+251: bool relativePaths@var736 ;
+252:
+253:
+254: bool reportProgress@var737 ;
+255:
+256:
+257: class Rule {
+258: public:
+259: Rule ( )
+260: : tokenlist@var738 ( "simple" )
+261: , id@var740 ( "rule" )
+262: , severity@var742 ( Severity :: style ) {
+263: }
+264:
+265: std :: string tokenlist@var738 ;
+266: std :: string pattern@var739 ;
+267: std :: string id@var740 ;
+268: std :: string summary@var741 ;
+269: Severity :: SeverityType severity@var742 ;
+270: } ;
+271:
+|
+274:
+275: std :: list < Rule > rules@var743 ;
+276:
+277:
+278: class SafeChecks {
+279: public:
+280: SafeChecks ( ) : classes@var749 ( false ) , externalFunctions@var750 ( false ) , internalFunctions@var751 ( false ) , externalVariables@var752 ( false ) { }
+281:
+282: static const char XmlRootName@var744 [ ] ;
+283: static const char XmlClasses@var745 [ ] ;
+284: static const char XmlExternalFunctions@var746 [ ] ;
+285: static const char XmlInternalFunctions@var747 [ ] ;
+286: static const char XmlExternalVariables@var748 [ ] ;
+287:
+288: void clear ( ) {
+289: classes@var749 =@expr1073743456 externalFunctions@var750 =@expr1073743457 internalFunctions@var751 =@expr1073743458 externalVariables@var752 =@expr1073743459 false ;
+290: }
+291:
+|
+297:
+298: bool classes@var749 ;
+299:
+|
+304:
+305: bool externalFunctions@var750 ;
+306:
+|
+310:
+311: bool internalFunctions@var751 ;
+312:
+|
+316:
+317: bool externalVariables@var752 ;
+318: } ;
+319:
+320: SafeChecks safeChecks@var753 ;
+321:
+322: SimpleEnableGroup<Severity::SeverityType> severity@var754 ;
+323: SimpleEnableGroup<Certainty::CertaintyLevel> certainty@var755 ;
+324: SimpleEnableGroup<Checks::CheckList> checks@var756 ;
+325:
+326:
+327: SHOWTIME_MODES showtime@var757 ;
+328:
+329:
+330: Standards standards@var758 ;
+331:
+332:
+333:
+334: std :: string templateFormat@var759 ;
+335:
+336:
+337:
+338: std :: string templateLocation@var760 ;
+339:
+340:
+341: std :: string userDefines@var761 ;
+342:
+343:
+344: std :: set < std :: string > userUndefs@var762 ;
+345:
+346:
+347: std :: list < std :: string > userIncludes@var763 ;
+348:
+349:
+350: bool verbose@var764 ;
+351:
+352:
+353: bool xml@var765 ;
+354:
+355:
+356: int xml_version@var766 ;
+357:
+|
+361:
+362: bool configurationExcluded ( const std :: string & file@var767 ) const {
+363: for (@expr1073743460 const std ::@expr1073743461 string &@expr1073743462 configExcludePath@var768 :@expr1073743463 configExcludePaths@var703 ) {
+364: if (@expr1073743464 file@var767 .@expr1073743465 length (@expr1073743466 ) >=@expr1073743467 configExcludePath@var768 .@expr1644 length (@expr1645 ) &&@expr1073743470 file@var767 .@expr1073743471 compare (@expr1073743472 0 , configExcludePath@var768 .@expr1644 length (@expr1645 ) , configExcludePath@var768 ) ==@expr1073743475 0 ) {
+365: return true ;
+366: }
+367: }
+368: return false ;
+369: }
+370:
+|
+376:
+377: std :: string addEnabled ( const std :: string & str@var769 ) ;
+378:
+|
+382:
+383: bool isEnabled ( const ValueFlow :: Value * value@var770 , bool inconclusiveCheck@var771 = false ) const ;
+384:
+385:
+386: bool posix ( ) const {
+387: return std ::@expr1073743476 find (@expr1073743477 libraries@var723 .@expr1073743478 begin (@expr1073743479 ) , libraries@var723 .@expr1656 end (@expr1657 ) , "posix" ) !=@expr1073743482 libraries@var723 .@expr1656 end (@expr1657 ) ;
+388: }
+389:
+390:
+391: static void terminate ( bool t@var772 = true ) {
+392: Settings ::@expr1073743485 mTerminated@var689 =@expr1073743486 t@var772 ;
+393: }
+394:
+395:
+396: static bool terminated ( ) {
+397: return Settings ::@expr1073743487 mTerminated@var689 ;
+398: }
+399:
+400: std :: set < std :: string > summaryReturn@var773 ;
+401:
+402: void loadSummaries ( ) ;
+403: } ;
+
+##file cppcheck-2.8/lib/path.h
+
+1:
+|
+39:
+40: class Path {
+41: public:
+42:
+|
+46:
+47: static std :: string toNativeSeparators ( std :: string path@var774 ) ;
+48:
+|
+53:
+54: static std :: string fromNativeSeparators ( std :: string path@var775 ) ;
+55:
+|
+60:
+61: static std :: string simplifyPath ( std :: string originalPath@var776 ) ;
+62:
+|
+67:
+68: static std :: string getPathFromFilename ( const std :: string & filename@var777 ) ;
+69:
+|
+76:
+77: static bool sameFileName ( const std :: string & fname1@var778 , const std :: string & fname2@var779 ) ;
+78:
+|
+83:
+84: static std :: string removeQuotationMarks ( std :: string path@var780 ) ;
+85:
+|
+90:
+91: static std :: string getFilenameExtension ( const std :: string & path@var781 ) ;
+92:
+|
+97:
+98: static std :: string getFilenameExtensionInLowerCase ( const std :: string & path@var782 ) ;
+99:
+|
+103:
+104: static std :: string getCurrentPath ( ) ;
+105:
+|
+110:
+111: static bool isAbsolute ( const std :: string & path@var783 ) ;
+112:
+|
+118:
+119: static std :: string getRelativePath ( const std :: string & absolutePath@var784 , const std :: vector < std :: string > & basePaths@var785 ) ;
+120:
+|
+125:
+126: static std :: string getAbsoluteFilePath ( const std :: string & filePath@var786 ) ;
+127:
+|
+133:
+134: static bool acceptFile ( const std :: string & filename@var787 ) {
+135: const std ::@expr1073743488 set < std ::@expr1073743489 string > extra@var788 ;
+136: return acceptFile (@expr1073743490 filename@var787 , extra@var788 ) ;
+137: }
+138:
+|
+145:
+146: static bool acceptFile ( const std :: string & path@var789 , const std :: set < std :: string > & extra@var790 ) ;
+147:
+|
+152:
+153: static bool isC ( const std :: string & path@var791 ) ;
+154:
+|
+159:
+160: static bool isCPP ( const std :: string & path@var792 ) ;
+161:
+|
+166:
+167: static bool isHeader ( const std :: string & path@var793 ) ;
+168:
+|
+173:
+174: static std :: string stripDirectoryPart ( const std :: string & file@var794 ) ;
+175:
+|
+180:
+181: static bool fileExists ( const std :: string & file@var795 ) ;
+182: } ;
+
+##file cppcheck-2.8/lib/summaries.h
+
+1:
+|
+28:
+29: class Tokenizer ;
+30:
+31: namespace Summaries {
+32: std :: string create ( const Tokenizer * tokenizer@var796 , const std :: string & cfg@var797 ) ;
+33: void loadReturn ( const std :: string & buildDir@var798 , std :: set < std :: string > & summaryReturn@var799 ) ;
+34: }
+
+##file cppcheck-2.8/lib/valueflow.h
+
+1:
+|
+36:
+37: class ErrorLogger ;
+38: struct InferModel ;
+39: class Settings ;
+40: class SymbolDatabase ;
+41: class Token ;
+42: class TokenList ;
+43: class ValueType ;
+44: class Variable ;
+45: class Scope ;
+46:
+47: template < class T >
+48: class ValuePtr ;
+49:
+50: namespace ValueFlow {
+51: struct increment {
+52: template < class T >
+53: void operator() ( T & x@var800 ) const {
+54: x@var800 ++@expr1073743491 ;
+55: }
+56: } ;
+57: struct decrement {
+58: template < class T >
+59: void operator() ( T & x@var801 ) const {
+60: x@var801 --@expr1073743492 ;
+61: }
+62: } ;
+63:
+64: struct less {
+65: template < class T , class U >
+66: bool operator() ( const T & x@var802 , const U & y@var803 ) const {
+67: return x@var802 <@expr1073743493 y@var803 ;
+68: }
+69: } ;
+70:
+71: struct adjacent {
+72: template < class T , class U >
+73: bool operator() ( const T & x@var804 , const U & y@var805 ) const {
+74: return std ::@expr1073743494 abs (@expr1073743495 x@var804 -@expr1073743496 y@var805 ) ==@expr1073743497 1 ;
+75: }
+76: } ;
+77:
+78: struct equalVisitor {
+79: template < class T , class U >
+80: void operator() ( bool & result@var806 , T x@var807 , U y@var808 ) const {
+81: result@var806 =@expr1073743498 !@expr1073743499 (@expr1073743500 x@var807 >@expr1073743501 y@var808 ||@expr1073743502 x@var807 <@expr1073743503 y@var808 ) ;
+82: }
+83: } ;
+84: class Value {
+85: public:
+86:
+87:
+88: enum class Bound { Upper , Lower , Point } ;
+89:
+90: explicit Value ( long long val@var809 = 0 , Bound b@var810 = Bound :: Point )
+91: : valueType@var850 ( ValueType :: INT ) ,
+92: bound@var851 ( b@var810 ) ,
+93: intvalue@var852 ( val@var809 ) ,
+94: tokvalue@var853 ( nullptr ) ,
+95: floatValue@var854 ( 0.0 ) ,
+96: moveKind@var855 ( MoveKind :: NonMovedVariable ) ,
+97: varvalue@var856 ( val@var809 ) ,
+98: condition@var857 ( nullptr ) ,
+99: varId@var859 ( 0U ) ,
+100: safe@var860 ( false ) ,
+101: conditional@var861 ( false ) ,
+102: macro@var862 ( false ) ,
+103: defaultArg@var863 ( false ) ,
+104: indirect@var864 ( 0 ) ,
+105: path@var865 ( 0 ) ,
+106: wideintvalue@var866 ( val@var809 ) ,
+107: subexpressions@var867 ( ) ,
+108: capturetok@var868 ( nullptr ) ,
+109: lifetimeKind@var869 ( LifetimeKind :: Object ) ,
+110: lifetimeScope@var870 ( LifetimeScope :: Local ) ,
+111: valueKind@var875 ( ValueKind :: Possible )
+112: { }
+113: Value ( const Token * c@var811 , long long val@var812 , Bound b@var813 = Bound :: Point ) ;
+114:
+115: static Value unknown ( ) ;
+116:
+117: bool equalValue ( const ValueFlow :: Value & rhs@var814 ) const {
+118: if (@expr1073743504 valueType@var850 !=@expr1073743505 rhs@var814 .@expr1073743506 valueType@var815 ) {
+119: return false ; }
+120: switch (@expr1073743507 valueType@var850 ) {
+121: case ValueType ::@expr1073743508 INT :@expr1685
+122: case ValueType ::@expr1073743510 CONTAINER_SIZE :@expr1685
+123: case ValueType ::@expr1073743512 BUFFER_SIZE :@expr1685
+124: case ValueType ::@expr1073743514 ITERATOR_START :@expr1685
+125: case ValueType ::@expr1073743516 ITERATOR_END :@expr1685 ;
+126: if (@expr1694 intvalue@var852 !=@expr1695 rhs@var814 .@expr1696 intvalue@var816 ) {
+127: return false ; }
+128: break ;
+129: case ValueType ::@expr1073743521 TOK :@expr1685 ;
+130: if (@expr1699 tokvalue@var853 !=@expr1700 rhs@var814 .@expr1701 tokvalue@var817 ) {
+131: return false ; }
+132: break ;
+133: case ValueType ::@expr1073743526 FLOAT :@expr1685 ;
+134:
+135: if (@expr1073743528 floatValue@var854 >@expr1073743529 rhs@var814 .@expr1706 floatValue@var818 ||@expr1073743531 floatValue@var854 <@expr1073743532 rhs@var814 .@expr1706 floatValue@var818 ) {
+136: return false ; }
+137: break ;
+138: case ValueType ::@expr1073743534 MOVED :@expr1685 ;
+139: if (@expr1073743536 moveKind@var855 !=@expr1073743537 rhs@var814 .@expr1073743538 moveKind@var819 ) {
+140: return false ; }
+141: break ;
+142: case ValueType ::@expr1073743539 UNINIT :@expr1685 ;
+143: break ;
+144: case ValueType ::@expr1073743541 LIFETIME :@expr1685 ;
+145: if (@expr1699 tokvalue@var853 !=@expr1700 rhs@var814 .@expr1701 tokvalue@var817 ) {
+146: return false ; }
+147: break ;
+148: case ValueType ::@expr1073743546 SYMBOLIC :@expr1685 ;
+149: if (@expr1073743548 !@expr1073743549 sameToken (@expr1073743550 tokvalue@var853 , rhs@var814 .@expr1701 tokvalue@var817 ) ) {
+150: return false ; }
+151: if (@expr1694 intvalue@var852 !=@expr1695 rhs@var814 .@expr1696 intvalue@var816 ) {
+152: return false ; }
+153: break ;
+154: }
+155: return true ;
+156: }
+157:
+158: template < class T , class F >
+159: static void visitValue ( T & self@var820 , F f@var821 ) {
+160: switch (@expr1073743555 self@var820 .@expr1073743556 valueType@var822 ) {
+161: case ValueType ::@expr1073743557 INT :@expr1734
+162: case ValueType ::@expr1073743559 SYMBOLIC :@expr1734
+163: case ValueType ::@expr1073743561 BUFFER_SIZE :@expr1734
+164: case ValueType ::@expr1073743563 CONTAINER_SIZE :@expr1734
+165: case ValueType ::@expr1073743565 ITERATOR_START :@expr1734
+166: case ValueType ::@expr1073743567 ITERATOR_END :@expr1734 ; {
+167: f@var821 (@expr1073743569 self@var820 .@expr1073743570 intvalue@var823 ) ;
+168: break ;
+169: }
+170: case ValueType ::@expr1073743571 FLOAT :@expr1734 ; {
+171: f@var821 (@expr1073743573 self@var820 .@expr1073743574 floatValue@var824 ) ;
+172: break ;
+173: }
+174: case ValueType ::@expr1073743575 UNINIT :@expr1734
+175: case ValueType ::@expr1073743577 TOK :@expr1734
+176: case ValueType ::@expr1073743579 LIFETIME :@expr1734
+177: case ValueType ::@expr1073743581 MOVED :@expr1734 ;
+178: break ;
+179: }
+180: }
+181:
+182: struct compareVisitor {
+183: struct innerVisitor {
+184: template < class Compare , class T , class U >
+185: void operator() ( bool & result@var825 , Compare compare@var826 , T x@var827 , U y@var828 ) const {
+186: result@var825 =@expr1073743583 compare@var826 (@expr1073743584 x@var827 , y@var828 ) ;
+187: }
+188: } ;
+189: template < class Compare , class T >
+190: void operator() ( bool & result@var829 , const Value & rhs@var830 , Compare compare@var831 , T x@var832 ) const {
+191: visitValue (@expr1073743586 rhs@var830 ,
+192: std ::@expr1073743587 bind (@expr1073743588 innerVisitor {@expr1073743589 } , std ::@expr1073743590 ref (@expr1073743591 result@var829 ) , std ::@expr1073743592 move (@expr1073743593 compare@var831 ) , x@var832 , std ::@expr1073743594 placeholders ::@expr1073743595 _1@expr1073743585 ) ) ;
+193: }
+194: } ;
+195:
+196: template < class Compare >
+197: bool compareValue ( const Value & rhs@var833 , Compare compare@var834 ) const {
+198: assert (@expr1073743597 (@expr1073743598 !@expr1073743599 this@expr1776 .@expr1073743601 isSymbolicValue (@expr1073743602 ) &&@expr1073743603 !@expr1073743604 rhs@var833 .@expr1073743605 isSymbolicValue (@expr1073743606 ) ) ||@expr1073743607
+199: (@expr1073743608 this@expr1776 .@expr1073743609 valueType@var850 ==@expr1073743610 rhs@var833 .@expr1073743611 valueType@var835 &&@expr1073743612 sameToken (@expr1073743613 this@expr1776 .@expr1073743614 tokvalue@var853 , rhs@var833 .@expr1073743615 tokvalue@var836 ) ) ) ;
+200: bool result@var837 ; result@var837 =@expr1073743616 false ;
+201: visitValue (@expr1073743617
+202: *@expr1073743618 this@expr1776 ,
+203: std ::@expr1073743619 bind (@expr1073743620 compareVisitor {@expr1073743621 } , std ::@expr1798 ref (@expr1073743623 result@var837 ) , std ::@expr1798 ref (@expr1073743625 rhs@var833 ) , std ::@expr1073743626 move (@expr1073743627 compare@var834 ) , std ::@expr1073743628 placeholders ::@expr1073743629 _1@expr1073743596 ) ) ;
+204: return result@var837 ;
+205: }
+206:
+207: bool operator== ( const Value & rhs@var838 ) const {
+208: if (@expr1073743630 !@expr1073743631 equalValue (@expr1073743632 rhs@var838 ) ) {
+209: return false ; }
+210:
+211: return varvalue@var856 ==@expr1073743633 rhs@var838 .@expr1073743634 varvalue@var839 &&@expr1073743635
+212: condition@var857 ==@expr1073743636 rhs@var838 .@expr1073743637 condition@var840 &&@expr1073743638
+213: varId@var859 ==@expr1073743639 rhs@var838 .@expr1073743640 varId@var841 &&@expr1073743641
+214: conditional@var861 ==@expr1073743642 rhs@var838 .@expr1073743643 conditional@var842 &&@expr1073743644
+215: defaultArg@var863 ==@expr1073743645 rhs@var838 .@expr1073743646 defaultArg@var843 &&@expr1073743647
+216: indirect@var864 ==@expr1073743648 rhs@var838 .@expr1073743649 indirect@var844 &&@expr1073743650
+217: valueKind@var875 ==@expr1073743651 rhs@var838 .@expr1073743652 valueKind@var845 ;
+218: }
+219:
+220: bool operator!= ( const Value & rhs@var846 ) const {
+221: return !@expr1073743653 (@expr1073743654 *@expr1073743655 this@expr1073743656 ==@expr1073743657 rhs@var846 ) ;
+222: }
+223:
+224: template < class T , $class $= $typename $std $:: $enable_if $< std :: is_arithmetic < T > $:: $value $> $:: $type >
+225: bool equalTo ( const T & x@var847 ) const {
+226: bool result@var848 ; result@var848 =@expr1073743659 false ;
+227: visitValue (@expr1073743660 *@expr1073743661 this@expr1073743662 , std ::@expr1073743663 bind (@expr1073743664 equalVisitor {@expr1073743665 } , std ::@expr1073743666 ref (@expr1073743667 result@var848 ) , x@var847 , std ::@expr1073743668 placeholders ::@expr1073743669 _1@expr1073743658 ) ) ;
+228: return result@var848 ;
+229: }
+230:
+231: void decreaseRange ( ) {
+232: if (@expr1073743670 bound@var851 ==@expr1073743671 Bound ::@expr1073743672 Lower ) {
+233: visitValue (@expr1073743673 *@expr1850 this@expr1851 , increment {@expr1073743676 } ) ; }
+234: else { if (@expr1073743677 bound@var851 ==@expr1073743678 Bound ::@expr1073743679 Upper ) {
+235: visitValue (@expr1073743680 *@expr1850 this@expr1851 , decrement {@expr1073743682 } ) ; } }
+236: }
+237:
+238: void invertBound ( ) {
+239: if (@expr1073743683 bound@var851 ==@expr1073743684 Bound ::@expr1861 Lower ) {
+240: bound@var851 =@expr1073743686 Bound ::@expr1863 Upper ; }
+241: else { if (@expr1073743688 bound@var851 ==@expr1073743689 Bound ::@expr1863 Upper ) {
+242: bound@var851 =@expr1073743691 Bound ::@expr1861 Lower ; } }
+243: }
+244:
+245: void invertRange ( ) {
+246: invertBound (@expr1073743693 ) ;
+247: decreaseRange (@expr1073743694 ) ;
+248: }
+249:
+250: void assumeCondition ( const Token * tok@var849 ) ;
+251:
+252: std :: string infoString ( ) const ;
+253:
+254: enum class ValueType {
+255: INT ,
+256: TOK ,
+257: FLOAT ,
+258: MOVED ,
+259: UNINIT ,
+260: CONTAINER_SIZE ,
+261: LIFETIME ,
+262: BUFFER_SIZE ,
+263: ITERATOR_START ,
+264: ITERATOR_END ,
+265: SYMBOLIC
+266: } ; enum ValueType valueType@var850 ;
+267: bool isIntValue ( ) const {
+268: return valueType@var850 ==@expr1073743696 ValueType ::@expr1073743697 INT@expr1073743695 ;
+269: }
+270: bool isTokValue ( ) const {
+271: return valueType@var850 ==@expr1073743698 ValueType ::@expr1073743699 TOK ;
+272: }
+273: bool isFloatValue ( ) const {
+274: return valueType@var850 ==@expr1073743700 ValueType ::@expr1073743701 FLOAT ;
+275: }
+276: bool isMovedValue ( ) const {
+277: return valueType@var850 ==@expr1073743702 ValueType ::@expr1073743703 MOVED ;
+278: }
+279: bool isUninitValue ( ) const {
+280: return valueType@var850 ==@expr1073743704 ValueType ::@expr1073743705 UNINIT ;
+281: }
+282: bool isContainerSizeValue ( ) const {
+283: return valueType@var850 ==@expr1073743706 ValueType ::@expr1073743707 CONTAINER_SIZE ;
+284: }
+285: bool isLifetimeValue ( ) const {
+286: return valueType@var850 ==@expr1073743708 ValueType ::@expr1073743709 LIFETIME ;
+287: }
+288: bool isBufferSizeValue ( ) const {
+289: return valueType@var850 ==@expr1073743710 ValueType ::@expr1073743711 BUFFER_SIZE ;
+290: }
+291: bool isIteratorValue ( ) const {
+292: return valueType@var850 ==@expr1073743712 ValueType ::@expr1073743713 ITERATOR_START ||@expr1073743714 valueType@var850 ==@expr1073743715 ValueType ::@expr1073743716 ITERATOR_END ;
+293: }
+294: bool isIteratorStartValue ( ) const {
+295: return valueType@var850 ==@expr1073743717 ValueType ::@expr1073743718 ITERATOR_START ;
+296: }
+297: bool isIteratorEndValue ( ) const {
+298: return valueType@var850 ==@expr1073743719 ValueType ::@expr1073743720 ITERATOR_END ;
+299: }
+300: bool isSymbolicValue ( ) const {
+301: return valueType@var850 ==@expr1073743721 ValueType ::@expr1073743722 SYMBOLIC ;
+302: }
+303:
+304: bool isLocalLifetimeValue ( ) const {
+305: return valueType@var850 ==@expr1073743724 ValueType ::@expr1073743725 LIFETIME &&@expr1073743726 lifetimeScope@var870 ==@expr1073743727 LifetimeScope ::@expr1073743728 Local@expr1073743723 ;
+306: }
+307:
+308: bool isArgumentLifetimeValue ( ) const {
+309: return valueType@var850 ==@expr1073743729 ValueType ::@expr1073743730 LIFETIME &&@expr1073743731 lifetimeScope@var870 ==@expr1073743732 LifetimeScope ::@expr1073743733 Argument ;
+310: }
+311:
+312: bool isSubFunctionLifetimeValue ( ) const {
+313: return valueType@var850 ==@expr1073743734 ValueType ::@expr1073743735 LIFETIME &&@expr1073743736 lifetimeScope@var870 ==@expr1073743737 LifetimeScope ::@expr1073743738 SubFunction ;
+314: }
+315:
+316: bool isNonValue ( ) const {
+317: return isMovedValue (@expr1073743739 ) ||@expr1073743740 isUninitValue (@expr1073743741 ) ||@expr1073743742 isLifetimeValue (@expr1073743743 ) ;
+318: }
+319:
+320:
+321: Bound bound@var851 ;
+322:
+323:
+324: long long intvalue@var852 ;
+325:
+326:
+327: const Token * tokvalue@var853 ;
+328:
+329:
+330: double floatValue@var854 ;
+331:
+332:
+333: enum class MoveKind { NonMovedVariable , MovedVariable , ForwardedVariable } ; enum MoveKind moveKind@var855 ;
+334:
+335:
+336: long long varvalue@var856 ;
+337:
+338:
+339: const Token * condition@var857 ;
+340:
+341: std :: list < std :: pair < const Token * , std :: string > > errorPath@var858 ;
+342:
+343:
+344: int varId@var859 ;
+345:
+346:
+347: bool safe@var860 ;
+348:
+349:
+350: bool conditional@var861 ;
+351:
+352:
+353: bool macro@var862 ;
+354:
+355:
+356: bool defaultArg@var863 ;
+357:
+358: int indirect@var864 ;
+359:
+360:
+361: long long path@var865 ;
+362:
+363:
+364: long long wideintvalue@var866 ;
+365:
+366: std :: vector < std :: string > subexpressions@var867 ;
+367:
+368:
+369: const Token * capturetok@var868 ;
+370:
+371: enum class LifetimeKind {
+372:
+373: Object ,
+374:
+375: SubObject ,
+376:
+377: Lambda ,
+378:
+379: Iterator ,
+380:
+381: Address
+382: } ; enum LifetimeKind lifetimeKind@var869 ;
+383:
+384: enum class LifetimeScope { Local , Argument , SubFunction , ThisPointer , ThisValue } ; enum LifetimeScope lifetimeScope@var870 ;
+385:
+386: static const char * toString ( MoveKind moveKind@var871 ) ;
+387: static const char * toString ( LifetimeKind lifetimeKind@var872 ) ;
+388: static const char * toString ( LifetimeScope lifetimeScope@var873 ) ;
+389: static const char * toString ( Bound bound@var874 ) ;
+390:
+391:
+392: enum class ValueKind {
+393:
+394: Possible ,
+395:
+396: Known ,
+397:
+398: Inconclusive ,
+399:
+400: Impossible
+401: } ; enum ValueKind valueKind@var875 ;
+402:
+403: void setKnown ( ) {
+404: valueKind@var875 =@expr1073743744 ValueKind ::@expr1073743745 Known ;
+405: }
+406:
+407: bool isKnown ( ) const {
+408: return valueKind@var875 ==@expr1073743746 ValueKind ::@expr1073743747 Known ;
+409: }
+410:
+411: void setPossible ( ) {
+412: valueKind@var875 =@expr1073743749 ValueKind ::@expr1073743750 Possible@expr1073743748 ;
+413: }
+414:
+415: bool isPossible ( ) const {
+416: return valueKind@var875 ==@expr1073743752 ValueKind ::@expr1073743753 Possible@expr1073743751 ;
+417: }
+418:
+419: bool isImpossible ( ) const {
+420: return valueKind@var875 ==@expr1073743754 ValueKind ::@expr1073743755 Impossible ;
+421: }
+422:
+423: void setImpossible ( ) {
+424: valueKind@var875 =@expr1073743756 ValueKind ::@expr1073743757 Impossible ;
+425: }
+426:
+427: void setInconclusive ( bool inconclusive@var876 = true ) {
+428: if (@expr1073743758 inconclusive@var876 ) {
+429: valueKind@var875 =@expr1073743759 ValueKind ::@expr1073743760 Inconclusive ; }
+430: }
+431:
+432: bool isInconclusive ( ) const {
+433: return valueKind@var875 ==@expr1073743761 ValueKind ::@expr1073743762 Inconclusive ;
+434: }
+435:
+436: void changeKnownToPossible ( ) {
+437: if (@expr1073743764 isKnown (@expr1073743765 ) ) {
+438: valueKind@var875 =@expr1073743766 ValueKind ::@expr1073743767 Possible@expr1073743763 ; }
+439: }
+440:
+441: bool errorSeverity ( ) const {
+442: return !@expr1073743768 condition@var857 &&@expr1073743769 !@expr1073743770 defaultArg@var863 ;
+443: }
+444:
+445: static bool sameToken ( const Token * tok1@var877 , const Token * tok2@var878 ) ;
+446: } ;
+447:
+448:
+449: const ValueFlow :: Value * valueFlowConstantFoldAST ( Token * expr@var879 , const Settings * settings@var880 ) ;
+450:
+451:
+452: void setValues ( TokenList * tokenlist@var881 , SymbolDatabase * symboldatabase@var882 , ErrorLogger * errorLogger@var883 , const Settings * settings@var884 ) ;
+453:
+454: std :: string eitherTheConditionIsRedundant ( const Token * condition@var885 ) ;
+455:
+456: unsigned long getSizeOf ( const ValueType & vt@var886 , const Settings * settings@var887 ) ;
+457:
+458: const ValueFlow :: Value * findValue ( const std :: list < ValueFlow :: Value > & values@var888 ,
+459: const Settings * settings@var889 ,
+460: std :: function < bool ( const ValueFlow :: Value & ) > pred@var890 ) ;
+461:
+462: std :: vector < ValueFlow :: Value > isOutOfBounds ( const Value & size@var891 , const Token * indexTok@var892 , bool possible@var893 = true ) ;
+463: }
+464:
+465: ValueFlow :: Value asImpossible ( ValueFlow :: Value v@var894 ) ;
+466:
+467: bool isContainerSizeChanged ( const Token * tok@var895 , const Settings * settings@var896 = nullptr , int depth@var897 = 20 ) ;
+468:
+469: struct LifetimeToken {
+470: const Token * token@var898 ;
+471: bool addressOf@var899 ;
+472: std :: list < std :: pair < const Token * , std :: string > > errorPath@var900 ;
+473: bool inconclusive@var901 ;
+474:
+475: LifetimeToken ( ) : token@var898 ( nullptr ) , addressOf@var899 ( false ) , errorPath@var900 ( ) , inconclusive@var901 ( false ) { }
+476:
+477: LifetimeToken ( const Token * token@var902 , std :: list < std :: pair < const Token * , std :: string > > errorPath@var903 )
+478: : token@var898 ( token@var902 ) , addressOf@var899 ( false ) , errorPath@var900 ( std :: move ( errorPath@var903 ) ) , inconclusive@var901 ( false )
+479: { }
+480:
+481: LifetimeToken ( const Token * token@var904 , bool addressOf@var905 , std :: list < std :: pair < const Token * , std :: string > > errorPath@var906 )
+482: : token@var898 ( token@var904 ) , addressOf@var899 ( addressOf@var905 ) , errorPath@var900 ( std :: move ( errorPath@var906 ) ) , inconclusive@var901 ( false )
+483: { }
+484:
+485: static std :: vector < LifetimeToken > setAddressOf ( std :: vector < LifetimeToken > v@var907 , bool b@var908 ) {
+486: for (@expr1073743771 LifetimeToken &@expr1073743772 x@var909 :@expr1073743773 v@var907 ) {
+487: x@var909 .@expr1073743774 addressOf@var910 =@expr1073743775 b@var908 ; }
+488: return v@var907 ;
+489: }
+490:
+491: static std :: vector < LifetimeToken > setInconclusive ( std :: vector < LifetimeToken > v@var911 , bool b@var912 ) {
+492: for (@expr1073743776 LifetimeToken &@expr1073743777 x@var913 :@expr1073743778 v@var911 ) {
+493: x@var913 .@expr1073743779 inconclusive@var914 =@expr1073743780 b@var912 ; }
+494: return v@var911 ;
+495: }
+496: } ;
+497:
+498: const Token * parseCompareInt ( const Token * tok@var915 , ValueFlow :: Value & true_value@var916 , ValueFlow :: Value & false_value@var917 , const std :: function < std :: vector < long long > ( const Token * ) > & evaluate@var918 ) ;
+499: const Token * parseCompareInt ( const Token * tok@var919 , ValueFlow :: Value & true_value@var920 , ValueFlow :: Value & false_value@var921 ) ;
+500:
+501: ValueFlow :: Value inferCondition ( std :: string op@var922 , long long val@var923 , const Token * varTok@var924 ) ;
+502: ValueFlow :: Value inferCondition ( const std :: string & op@var925 , const Token * varTok@var926 , long long val@var927 ) ;
+503:
+504: ValuePtr < InferModel > makeIntegralInferModel ( ) ;
+505:
+506: const Token * solveExprValue ( const Token * expr@var928 ,
+507: const std :: function < std :: vector < long long > ( const Token * ) > & eval@var929 ,
+508: ValueFlow :: Value & value@var930 ) ;
+509:
+510: std :: vector < LifetimeToken > getLifetimeTokens ( const Token * tok@var931 ,
+511: bool escape@var932 = false ,
+512: std :: list < std :: pair < const Token * , std :: string > > errorPath@var933 = std :: list < std :: pair < const Token * , std :: string > > { } ) ;
+513:
+514: bool hasLifetimeToken ( const Token * tok@var934 , const Token * lifetime@var935 ) ;
+515:
+516: const Variable * getLifetimeVariable ( const Token * tok@var936 , std :: list < std :: pair < const Token * , std :: string > > & errorPath@var937 , bool * addressOf@var938 = nullptr ) ;
+517:
+518: const Variable * getLifetimeVariable ( const Token * tok@var939 ) ;
+519:
+520: bool isLifetimeBorrowed ( const Token * tok@var940 , const Settings * settings@var941 ) ;
+521:
+522: std :: string lifetimeType ( const Token * tok@var942 , const ValueFlow :: Value * val@var943 ) ;
+523:
+524: std :: string lifetimeMessage ( const Token * tok@var944 , const ValueFlow :: Value * val@var945 , std :: list < std :: pair < const Token * , std :: string > > & errorPath@var946 ) ;
+525:
+526: ValueFlow :: Value getLifetimeObjValue ( const Token * tok@var947 , bool inconclusive@var948 = false ) ;
+527:
+528: std :: vector < ValueFlow :: Value > getLifetimeObjValues ( const Token * tok@var949 ,
+529: bool inconclusive@var950 = false ,
+530: long long path@var951 = 0 ) ;
+531:
+532: const Token * getEndOfExprScope ( const Token * tok@var952 , const Scope * defaultScope@var953 = nullptr , bool smallest@var954 = true ) ;
+
+##file cppcheck-2.8/lib/settings.cpp
+
+1:
+|
+28:
+29: std :: atomic < bool > Settings :: mTerminated@var689 ;
+30:
+31: const char Settings :: SafeChecks :: XmlRootName@var744 [ 12 ] = "safe-checks" ;
+32: const char Settings :: SafeChecks :: XmlClasses@var745 [ 13 ] = "class-public" ;
+33: const char Settings :: SafeChecks :: XmlExternalFunctions@var746 [ 19 ] = "external-functions" ;
+34: const char Settings :: SafeChecks :: XmlInternalFunctions@var747 [ 19 ] = "internal-functions" ;
+35: const char Settings :: SafeChecks :: XmlExternalVariables@var748 [ 19 ] = "external-variables" ;
+36:
+37: Settings :: Settings ( )
+38: : checkAllConfigurations@var694 ( true ) ,
+39: checkConfiguration@var695 ( false ) ,
+40: checkHeaders@var696 ( true ) ,
+41: checkLibrary@var697 ( false ) ,
+42: checkUnusedTemplates@var699 ( true ) ,
+43: clang@var700 ( false ) ,
+44: clangExecutable@var701 ( "clang" ) ,
+45: clangTidy@var702 ( false ) ,
+46: daca@var706 ( false ) ,
+47: debugnormal@var707 ( false ) ,
+48: debugSimplified@var708 ( false ) ,
+49: debugtemplate@var709 ( false ) ,
+50: debugwarnings@var710 ( false ) ,
+51: dump@var711 ( false ) ,
+52: enforcedLang@var713 ( None ) ,
+53: exceptionHandling@var714 ( false ) ,
+54: exitCode@var716 ( 0 ) ,
+55: force@var718 ( false ) ,
+56: inlineSuppressions@var720 ( false ) ,
+57: jobs@var721 ( 1 ) ,
+58: jointSuppressionReport@var722 ( false ) ,
+59:
+60: loadAverage@var725 ( 0 ) ,
+61:
+62: maxConfigs@var726 ( 12 ) ,
+63: maxCtuDepth@var727 ( 2 ) ,
+64: maxTemplateRecursion@var728 ( 100 ) ,
+65: preprocessOnly@var733 ( false ) ,
+66: quiet@var735 ( false ) ,
+67: relativePaths@var736 ( false ) ,
+68: reportProgress@var737 ( false ) ,
+69: showtime@var757 ( SHOWTIME_MODES :: SHOWTIME_NONE ) ,
+70: verbose@var764 ( false ) ,
+71: xml@var765 ( false ) ,
+72: xml_version@var766 ( 2 )
+73: {
+74: severity@var754 .@expr1073743781 setEnabled (@expr1073743782 Severity ::@expr1073743783 error , true ) ;
+75: certainty@var755 .@expr1073743784 setEnabled (@expr1073743785 Certainty ::@expr1073743786 normal , true ) ;
+76: }
+77:
+78: void Settings :: loadCppcheckCfg ( )
+79: {
+80: std ::@expr1073743787 string fileName@var955 ; fileName@var955 =@expr1073743788 Path ::@expr1965 getPathFromFilename (@expr1073743790 exename@var715 ) +@expr1073743791 "cppcheck.cfg" ;
+81:
+|
+85:
+86: std ::@expr1073743792 ifstream fin@var956 (@expr1073743793 fileName@var955 ) ;
+87: if (@expr1073743794 !@expr1073743795 fin@var956 .@expr1073743796 is_open (@expr1073743797 ) ) {
+88: return ; }
+89: picojson ::@expr1073743798 value json@var957 ;
+90: fin@var956 >>@expr1073743799 json@var957 ;
+91: if (@expr1073743800 !@expr1073743801 picojson ::@expr1073743802 get_last_error (@expr1073743803 ) .@expr1073743804 empty (@expr1073743805 ) ) {
+92: return ; }
+93: picojson ::@expr1073743806 object obj@var958 ; obj@var958 =@expr1073743807 json@var957 .@expr1073743808 get < picojson ::@expr1985 object > (@expr1073743810 ) ;
+94: if (@expr1073743811 obj@var958 .@expr1988 count (@expr1073743813 "productName" ) &&@expr1073743814 obj@var958 [@expr1991 "productName" ] .@expr1073743816 is < std ::@expr1985 string > (@expr1073743818 ) ) {
+95: cppcheckCfgProductName@var704 =@expr1073743819 obj@var958 [@expr1991 "productName" ] .@expr1073743821 get < std ::@expr1985 string > (@expr1073743823 ) ; }
+96: if (@expr1073743824 obj@var958 .@expr1988 count (@expr1073743826 "about" ) &&@expr1073743827 obj@var958 [@expr2004 "about" ] .@expr1073743829 is < std ::@expr1985 string > (@expr1073743831 ) ) {
+97: cppcheckCfgAbout@var705 =@expr1073743832 obj@var958 [@expr2004 "about" ] .@expr1073743834 get < std ::@expr1985 string > (@expr1073743836 ) ; }
+98: if (@expr1073743837 obj@var958 .@expr1988 count (@expr1073743839 "addons" ) &&@expr1073743840 obj@var958 [@expr2017 "addons" ] .@expr1073743842 is < picojson ::@expr1985 array > (@expr1073743844 ) ) {
+99: for (@expr1073743845 const picojson ::@expr1985 value &@expr2023 v@var959 :@expr1073743848 obj@var958 [@expr2017 "addons" ] .@expr1073743850 get < picojson ::@expr1985 array > (@expr1073743852 ) ) {
+100: const std ::@expr1985 string &@expr2023 s@var960 =@expr1073743855 v@var959 .@expr1073743856 get < std ::@expr1985 string > (@expr1073743858 ) ;
+101: if (@expr1073743859 !@expr1073743860 Path ::@expr1073743861 isAbsolute (@expr1073743862 s@var960 ) ) {
+102: addons@var690 .@expr2039 push_back (@expr1073743864 Path ::@expr1965 getPathFromFilename (@expr1073743866 fileName@var955 ) +@expr1073743867 s@var960 ) ; }
+103: else {
+104: addons@var690 .@expr2039 push_back (@expr1073743869 s@var960 ) ; }
+105: }
+106: }
+107: if (@expr1073743870 obj@var958 .@expr1988 count (@expr1073743872 "suppressions" ) &&@expr1073743873 obj@var958 [@expr2050 "suppressions" ] .@expr1073743875 is < picojson ::@expr1985 array > (@expr1073743877 ) ) {
+108: for (@expr1073743878 const picojson ::@expr1985 value &@expr2023 v@var961 :@expr1073743881 obj@var958 [@expr2050 "suppressions" ] .@expr1073743883 get < picojson ::@expr1985 array > (@expr1073743885 ) ) {
+109: nomsg@var730 .@expr1073743886 addSuppressionLine (@expr1073743887 v@var961 .@expr1073743888 get < std ::@expr1985 string > (@expr1073743890 ) ) ; }
+110: }
+111: }
+112:
+113: std :: string Settings :: addEnabled ( const std :: string & str@var962 )
+114: {
+115:
+116: if (@expr1073743892 str@var962 .@expr2069 find (@expr1073743894 ',' ) !=@expr1073743895 std ::@expr2072 string ::@expr2073 npos@expr2067 ) {
+117: std ::@expr2072 string ::@expr1073743899 size_type prevPos@var963 ; prevPos@var963 =@expr1073743900 0 ;
+118: std ::@expr2072 string ::@expr1073743902 size_type pos@var964 ; pos@var964 =@expr1073743903 0 ;
+119: while (@expr1073743904 (@expr1073743905 pos@var964 =@expr1073743906 str@var962 .@expr2069 find (@expr1073743908 ',' , pos@var964 ) ) !=@expr1073743909 std ::@expr2072 string ::@expr2073 npos@expr2067 ) {
+120: if (@expr1073743912 pos@var964 ==@expr1073743913 prevPos@var963 ) {
+121: return std ::@expr2072 string (@expr2091 "--enable parameter is empty" ) ; }
+122: const std ::@expr1073743916 string errmsg@var965 (@expr1073743917 addEnabled (@expr1073743918 str@var962 .@expr2095 substr (@expr1073743920 prevPos@var963 , pos@var964 -@expr1073743921 prevPos@var963 ) ) ) ;
+123: if (@expr1073743922 !@expr1073743923 errmsg@var965 .@expr1073743924 empty (@expr1073743925 ) ) {
+124: return errmsg@var965 ; }
+125: ++@expr1073743926 pos@var964 ;
+126: prevPos@var963 =@expr1073743927 pos@var964 ;
+127: }
+128: if (@expr1073743928 prevPos@var963 >=@expr1073743929 str@var962 .@expr1073743930 length (@expr1073743931 ) ) {
+129: return std ::@expr2072 string (@expr2091 "--enable parameter is empty" ) ; }
+130: return addEnabled (@expr1073743934 str@var962 .@expr2095 substr (@expr1073743936 prevPos@var963 ) ) ;
+131: }
+132:
+133: if (@expr1073743937 str@var962 ==@expr1073743938 "all" ) {
+134: severity@var754 .@expr1073743939 fill (@expr1073743940 ) ;
+135: checks@var756 .@expr2117 enable (@expr2118 Checks ::@expr2119 missingInclude ) ;
+136: checks@var756 .@expr2117 enable (@expr2121 Checks ::@expr2122 unusedFunction ) ;
+137: } else { if (@expr1073743947 str@var962 ==@expr1073743948 "warning" ) {
+138: severity@var754 .@expr2125 enable (@expr1073743950 Severity ::@expr1073743951 warning ) ;
+139: } else { if (@expr1073743952 str@var962 ==@expr1073743953 "style" ) {
+140: severity@var754 .@expr2125 enable (@expr1073743955 Severity ::@expr1073743956 style ) ;
+141: } else { if (@expr1073743957 str@var962 ==@expr1073743958 "performance" ) {
+142: severity@var754 .@expr2125 enable (@expr1073743960 Severity ::@expr1073743961 performance ) ;
+143: } else { if (@expr1073743962 str@var962 ==@expr1073743963 "portability" ) {
+144: severity@var754 .@expr2125 enable (@expr1073743965 Severity ::@expr1073743966 portability ) ;
+145: } else { if (@expr1073743967 str@var962 ==@expr1073743968 "information" ) {
+146: severity@var754 .@expr2125 enable (@expr1073743970 Severity ::@expr1073743971 information ) ;
+147: checks@var756 .@expr2117 enable (@expr2118 Checks ::@expr2119 missingInclude ) ;
+148: } else { if (@expr1073743975 str@var962 ==@expr1073743976 "unusedFunction" ) {
+149: checks@var756 .@expr2117 enable (@expr2121 Checks ::@expr2122 unusedFunction ) ;
+150: } else { if (@expr1073743980 str@var962 ==@expr1073743981 "missingInclude" ) {
+151: checks@var756 .@expr2117 enable (@expr2118 Checks ::@expr2119 missingInclude ) ;
+152: }
+153:
+|
+157:
+158: else {
+159: if (@expr1073743985 str@var962 .@expr1073743986 empty (@expr1073743987 ) ) {
+160: return std ::@expr2072 string (@expr1073743989 "cppcheck: --enable parameter is empty" ) ; }
+161: else {
+162: return std ::@expr2072 string (@expr1073743991 "cppcheck: there is no --enable parameter with the name '" +@expr1073743992 str@var962 +@expr1073743993 "'" ) ; }
+163: } } } } } } } }
+164:
+165: return std ::@expr2072 string (@expr1073743995 ) ;
+166: }
+167:
+168: bool Settings :: isEnabled ( const ValueFlow :: Value * value@var966 , bool inconclusiveCheck@var967 ) const
+169: {
+170: if (@expr1073743996 !@expr1073743997 severity@var754 .@expr1073743998 isEnabled (@expr1073743999 Severity ::@expr1073744000 warning ) &&@expr1073744001 (@expr1073744002 value@var966 .@expr1073744003 condition@var968 ||@expr1073744004 value@var966 .@expr1073744005 defaultArg@var969 ) ) {
+171: return false ; }
+172: if (@expr1073744006 !@expr1073744007 certainty@var755 .@expr1073744008 isEnabled (@expr1073744009 Certainty ::@expr1073744010 inconclusive ) &&@expr1073744011 (@expr1073744012 inconclusiveCheck@var967 ||@expr1073744013 value@var966 .@expr1073744014 isInconclusive (@expr1073744015 ) ) ) {
+173: return false ; }
+174: return true ;
+175: }
+176:
+177: void Settings :: loadSummaries ( )
+178: {
+179: Summaries ::@expr1073744016 loadReturn (@expr1073744017 buildDir@var693 , summaryReturn@var773 ) ;
+180: }
+
+##file cppcheck-2.8/lib/settings.h
+
+3:
+|
+48:
+49: class SimpleEnableGroup<Severity::SeverityType> {
+50: uint32_t mFlags@var970 ; mFlags@var970 = 0 ;
+51: public:
+52: uint32_t intValue ( ) const {
+53: return mFlags@var970 ;
+54: }
+55: void clear ( ) {
+56: mFlags@var970 =@expr1073744018 0 ;
+57: }
+58: void fill ( ) {
+59: mFlags@var970 =@expr1073744019 0xFFFFFFFF ;
+60: }
+61: void setEnabledAll ( bool enabled@var971 ) {
+62: if (@expr1073744020 enabled@var971 ) {
+63: fill (@expr1073744021 ) ; }
+64: else {
+65: clear (@expr1073744022 ) ; }
+66: }
+67: bool isEnabled ( Severity :: SeverityType flag@var972 ) const {
+68: return (@expr2199 mFlags@var970 &@expr1073744024 (@expr2199 1U <<@expr1073744026 (@expr1073744027 uint32_t ) flag@var972 ) ) !=@expr1073744028 0 ;
+69: }
+70: void enable ( Severity :: SeverityType flag@var973 ) {
+71: mFlags@var970 |=@expr1073744029 (@expr1073744030 1U <<@expr1073744031 (@expr1073744032 uint32_t ) flag@var973 ) ;
+72: }
+73: void disable ( Severity :: SeverityType flag@var974 ) {
+74: mFlags@var970 &=@expr1073744033 ~@expr1073744034 (@expr1073744035 1U <<@expr1073744036 (@expr1073744037 uint32_t ) flag@var974 ) ;
+75: }
+76: void setEnabled ( Severity :: SeverityType flag@var975 , bool enabled@var976 ) {
+77: if (@expr1073744038 enabled@var976 ) {
+78: enable (@expr1073744039 flag@var975 ) ; }
+79: else {
+80: disable (@expr1073744040 flag@var975 ) ; }
+81: }
+82: } ;
+49: class SimpleEnableGroup<Certainty::CertaintyLevel> {
+50: uint32_t mFlags@var977 ; mFlags@var977 = 0 ;
+51: public:
+52: uint32_t intValue ( ) const {
+53: return mFlags@var977 ;
+54: }
+55: void clear ( ) {
+56: mFlags@var977 =@expr1073744041 0 ;
+57: }
+58: void fill ( ) {
+59: mFlags@var977 =@expr1073744042 0xFFFFFFFF ;
+60: }
+61: void setEnabledAll ( bool enabled@var978 ) {
+62: if (@expr1073744043 enabled@var978 ) {
+63: fill (@expr1073744044 ) ; }
+64: else {
+65: clear (@expr1073744045 ) ; }
+66: }
+67: bool isEnabled ( Certainty :: CertaintyLevel flag@var979 ) const {
+68: return (@expr2222 mFlags@var977 &@expr1073744047 (@expr2222 1U <<@expr1073744049 (@expr1073744050 uint32_t ) flag@var979 ) ) !=@expr1073744051 0 ;
+69: }
+70: void enable ( Certainty :: CertaintyLevel flag@var980 ) {
+71: mFlags@var977 |=@expr1073744052 (@expr1073744053 1U <<@expr1073744054 (@expr1073744055 uint32_t ) flag@var980 ) ;
+72: }
+73: void disable ( Certainty :: CertaintyLevel flag@var981 ) {
+74: mFlags@var977 &=@expr1073744056 ~@expr1073744057 (@expr1073744058 1U <<@expr1073744059 (@expr1073744060 uint32_t ) flag@var981 ) ;
+75: }
+76: void setEnabled ( Certainty :: CertaintyLevel flag@var982 , bool enabled@var983 ) {
+77: if (@expr1073744061 enabled@var983 ) {
+78: enable (@expr1073744062 flag@var982 ) ; }
+79: else {
+80: disable (@expr1073744063 flag@var982 ) ; }
+81: }
+82: } ;
+49: class SimpleEnableGroup<Checks::CheckList> {
+50: uint32_t mFlags@var984 ; mFlags@var984 = 0 ;
+51: public:
+52: uint32_t intValue ( ) const {
+53: return mFlags@var984 ;
+54: }
+55: void clear ( ) {
+56: mFlags@var984 =@expr1073744064 0 ;
+57: }
+58: void fill ( ) {
+59: mFlags@var984 =@expr1073744065 0xFFFFFFFF ;
+60: }
+61: void setEnabledAll ( bool enabled@var985 ) {
+62: if (@expr1073744066 enabled@var985 ) {
+63: fill (@expr1073744067 ) ; }
+64: else {
+65: clear (@expr1073744068 ) ; }
+66: }
+67: bool isEnabled ( Checks :: CheckList flag@var986 ) const {
+68: return (@expr2245 mFlags@var984 &@expr1073744070 (@expr2245 1U <<@expr1073744072 (@expr1073744073 uint32_t ) flag@var986 ) ) !=@expr1073744074 0 ;
+69: }
+70: void enable ( Checks :: CheckList flag@var987 ) {
+71: mFlags@var984 |=@expr1073744075 (@expr1073744076 1U <<@expr1073744077 (@expr1073744078 uint32_t ) flag@var987 ) ;
+72: }
+73: void disable ( Checks :: CheckList flag@var988 ) {
+74: mFlags@var984 &=@expr1073744079 ~@expr1073744080 (@expr1073744081 1U <<@expr1073744082 (@expr1073744083 uint32_t ) flag@var988 ) ;
+75: }
+76: void setEnabled ( Checks :: CheckList flag@var989 , bool enabled@var990 ) {
+77: if (@expr1073744084 enabled@var990 ) {
+78: enable (@expr1073744085 flag@var989 ) ; }
+79: else {
+80: disable (@expr1073744086 flag@var989 ) ; }
+81: }
+82: } ;
+
+
+
+##Value flow
+Line 36
+  AST always 0
+  SYNTAX always 1
+  UNKNOWN_MACRO always 2
+  INTERNAL always 3
+  LIMIT always 4
+  INSTANTIATION always 5
+Line 37
+  = always 3
+  INTERNAL always 3
+Line 47
+  normal always 0
+  inconclusive always 1
+  safe always 2
+  experimental always 3
+Line 54
+  unusedFunction always 0
+  missingInclude always 1
+  internalCheck always 2
+Line 68
+  none always 0
+Line 74
+  error always 1
+Line 80
+  warning always 2
+Line 87
+  style always 3
+Line 93
+  performance always 4
+Line 101
+  portability always 5
+Line 108
+  information always 6
+Line 113
+  debug always 7
+Line 121
+  ( possible lifetime[SubObject]=(cweId)
+  cweId always !<=-1
+  id always !<=-1
+  cweId always !<=-1
+Line 122
+  id always !<=-1
+Line 44
+  >= always {!<=-1,!>=2}
+  64 always 64
+Line 46
+  - possible >=-4611686018427387904
+  1LL always 1
+  << possible <=4611686018427387904
+  bit {!>=64,<=63}
+  - {!>=63,<=62}
+  1 always 1
+Line 50
+  >= always {!<=-1,!>=2}
+  64 always 64
+Line 51
+  ~ always !<=-1
+  0ULL always 0
+  >> always !<=-1
+  1 always 1
+Line 52
+  1LL always 1
+  << possible <=4611686018427387904
+  bit {!>=64,<=63}
+  - {!>=63,<=62}
+  1 always 1
+  - {<=4611686018427387903,!>=4611686018427387904}
+  1LL always 1
+Line 58
+  ( always {!<=-1,!>=2}
+Line 59
+  return always {!<=-1,!>=2}
+  >= always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  <= always {!<=-1,!>=2}
+Line 62
+  ( always {!<=-1,!>=2}
+  value always !<=-1
+Line 63
+  intMax always !<=-1
+  intMax always !<=-1
+  = always !<=-1
+Line 64
+  return always {!<=-1,!>=2}
+  value always !<=-1
+  <= always {!<=-1,!>=2}
+  intMax always !<=-1
+Line 67
+  ( always {!<=-1,!>=2}
+Line 68
+  return always {!<=-1,!>=2}
+  >= always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  <= always {!<=-1,!>=2}
+Line 71
+  ( always {!<=-1,!>=2}
+  value always !<=-1
+Line 72
+  longMax always !<=-1
+  longMax always !<=-1
+  = always !<=-1
+Line 73
+  return always {!<=-1,!>=2}
+  value always !<=-1
+  <= always {!<=-1,!>=2}
+  longMax always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  value always !<=-1
+Line 77
+  longLongMax always !<=-1
+  longLongMax always !<=-1
+  = always !<=-1
+Line 78
+  return always {!<=-1,!>=2}
+  value always !<=-1
+  <= always {!<=-1,!>=2}
+  longLongMax always !<=-1
+Line 103
+  Unspecified always 0
+Line 104
+  Native always 1
+Line 105
+  Win32A always 2
+Line 106
+  Win32W always 3
+Line 107
+  Win64 always 4
+Line 108
+  Unix32 always 5
+Line 109
+  Unix64 always 6
+Line 110
+  PlatformFile always 7
+Line 117
+  ( always {!<=-1,!>=2}
+Line 125
+  ( always {!<=-1,!>=2}
+Line 128
+  ( always {!<=-1,!>=2}
+Line 134
+  ( always {!<=-1,!>=2}
+Line 135
+  return always {!<=-1,!>=2}
+  platformType possible {3,4}
+  == {!<=-1,!>=2,0}
+  Win32A always 2
+  || always {!<=-1,!>=2}
+Line 136
+  platformType {4,!2}
+  == {!<=-1,!>=2,0}
+  Win32W always 3
+  || always {!<=-1,!>=2}
+Line 137
+  platformType always {!2,!3}
+  == always {!<=-1,!>=2}
+  Win64 always 4
+Line 146
+  Unspecified always 0
+Line 147
+  "Unspecified" always "Unspecified"
+Line 148
+  Native always 1
+Line 149
+  "Native" always "Native"
+Line 150
+  Win32A always 2
+Line 151
+  "win32A" always "win32A"
+Line 152
+  Win32W always 3
+Line 153
+  "win32W" always "win32W"
+Line 154
+  Win64 always 4
+Line 155
+  "win64" always "win64"
+Line 156
+  Unix32 always 5
+Line 157
+  "unix32" always "unix32"
+Line 158
+  Unix64 always 6
+Line 159
+  "unix64" always "unix64"
+Line 160
+  PlatformFile always 7
+Line 161
+  "platformFile" always "platformFile"
+Line 163
+  "unknown" always "unknown"
+Line 168
+  1 always 1
+Line 47
+  ( always {!<=-1,!>=2}
+Line 49
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+Line 53
+  ( always {!<=-1,!>=2}
+Line 55
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+Line 59
+  ( always {!<=-1,!>=2}
+Line 61
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+Line 67
+  ( always !<=-1
+Line 69
+  return always !<=-1
+  ( always !<=-1
+Line 73
+  ( always {!<=-1,!>=2}
+Line 75
+  return always {!<=-1,!>=2}
+  ! {!<=-1,!>=2,0}
+  str possible size=0
+  ( {!<=-1,!>=2,1}
+  && always {!<=-1,!>=2}
+  str always !size=0
+  == always {!<=-1,!>=2}
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  endlen always !<=-1
+Line 80
+  return always {!<=-1,!>=2}
+  ( always !<=-1
+  >= always {!<=-1,!>=2}
+  endlen always !<=-1
+  && always {!<=-1,!>=2}
+  ( {!<=-1,>=symbolic=(endlen),!<=symbolic=(endlen-1)}
+  - always !<=-1
+  endlen {!<=-1,<=symbolic=(str.size()),!>=symbolic=(str.size()+1)}
+  endlen {!<=-1,<=symbolic=(str.size()),!>=symbolic=(str.size()+1)}
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 84
+  ( always {!<=-1,!>=2}
+  ( always !0
+  & always !0
+Line 86
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  1 always 1
+Line 89
+  ( always {!<=-1,!>=2}
+Line 91
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  q possible {39@14394,34@14650}
+Line 92
+  return always {!<=-1,!>=2}
+  false always 0
+Line 93
+  ( always !<=-1
+  + always !<=0
+  1 always 1
+  > always {!<=-1,!>=2}
+  ( always !<=-1
+  && always {!<=-1,!>=2}
+  0 always 0
+  ( always !<=-1
+  + always !<=0
+  1 always 1
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 94
+  return always {!<=-1,!>=2}
+  true always 1
+Line 95
+  return always {!<=-1,!>=2}
+  false always 0
+Line 98
+  ( always {!<=-1,!>=2}
+Line 100
+  "" always ""
+  "u8" always "u8"
+  "u" always "u"
+  "U" always "U"
+  "L" always "L"
+Line 102
+  ( always {!<=-1,!>=2}
+  q possible {39@56,34@57}
+Line 103
+  return always {!<=-1,!>=2}
+  true always 1
+Line 105
+  return always {!<=-1,!>=2}
+  false always 0
+Line 108
+  ( always {!<=-1,!>=2}
+Line 110
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  '"' always 34
+Line 113
+  ( always {!<=-1,!>=2}
+Line 115
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  '\'' always 39
+Line 120
+  quotePos always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  q possible {39@53,34@55}
+Line 121
+  quotePos {symbolic=(str.find(q)),!<=-1}
+  + always !<=0
+  1U always 1
+  ( always !<=-1
+  - always !<=-1
+  quotePos {symbolic=(str.find(q)),!<=-1}
+  - always !<=-1
+  2U always 2
+Line 126
+  ( always {!<=-1,!>=2}
+Line 127
+  '"' always 34
+Line 128
+  "" always ""
+Line 133
+  ( always {!<=-1,!>=2}
+Line 134
+  '\'' always 39
+Line 135
+  "" always ""
+Line 140
+  i possible {2,3}
+  == {!<=-1,!>=2,0}
+  1 always 1
+Line 141
+  "st" always "st"
+Line 142
+  i {3,!1}
+  == {!<=-1,!>=2,0}
+  2 always 2
+Line 143
+  "nd" always "nd"
+Line 144
+  i always {!1,!2}
+  == always {!<=-1,!>=2}
+  3 always 3
+Line 145
+  "rd" always "rd"
+Line 146
+  "th" always "th"
+Line 151
+  ( always {!<=-1,!>=2}
+Line 153
+  ( always {!<=-1,!>=2}
+Line 155
+  ( always {!<=-1,!>=2}
+Line 40
+  ( always {!<=-1,!>=2}
+Line 41
+  return always {!<=-1,!>=2}
+  < always {!<=-1,!>=2}
+  0 always 0
+Line 54
+  UNKNOWN always 0
+Line 55
+  MISSING always 1
+Line 56
+  FAILURE always 2
+Line 57
+  COMPILE_DB always 3
+Line 58
+  VS_SLN always 4
+Line 59
+  VS_VCXPROJ always 5
+Line 60
+  BORLAND always 6
+Line 61
+  CPPCHECK_GUI always 7
+Line 66
+  :: always 0
+  Unspecified always 0
+  msc always {!<=-1,!>=2}
+  false always 0
+  useMfc always {!<=-1,!>=2}
+  false always 0
+Line 71
+  msc always {!<=-1,!>=2}
+  ? possible {";_MSC_VER=1900",""}
+  ";_MSC_VER=1900" always ";_MSC_VER=1900"
+  : always ""
+  "" always ""
+  useMfc always {!<=-1,!>=2}
+  ? possible {";__AFXWIN_H__=1",""}
+  ";__AFXWIN_H__=1" always ";__AFXWIN_H__=1"
+  : always ""
+  "" always ""
+Line 78
+  msc always {!<=-1,!>=2}
+Line 79
+  useMfc always {!<=-1,!>=2}
+Line 108
+  , always 0
+  = always 0
+  nullptr always 0
+Line 110
+  ( always {!<=-1,!>=2}
+Line 111
+  ( always {!<=-1,!>=2}
+Line 112
+  ( always {!<=-1,!>=2}
+Line 114
+  ( always {!<=-1,!>=2}
+Line 115
+  ( always {!<=-1,!>=2}
+Line 116
+  ( always {!<=-1,!>=2}
+Line 128
+  8 always 8
+  = always "project"
+  "project" always "project"
+Line 129
+  8 always 8
+  = always "version"
+  "version" always "version"
+Line 130
+  2 always 2
+  = always "1"
+  "1" always "1"
+Line 131
+  9 always 9
+  = always "builddir"
+  "builddir" always "builddir"
+Line 132
+  14 always 14
+  = always "importproject"
+  "importproject" always "importproject"
+Line 133
+  23 always 23
+  = always "analyze-all-vs-configs"
+  "analyze-all-vs-configs" always "analyze-all-vs-configs"
+Line 134
+  7 always 7
+  = always "parser"
+  "parser" always "parser"
+Line 135
+  12 always 12
+  = always "bug-hunting"
+  "bug-hunting" always "bug-hunting"
+Line 136
+  11 always 11
+  = always "includedir"
+  "includedir" always "includedir"
+Line 137
+  4 always 4
+  = always "dir"
+  "dir" always "dir"
+Line 138
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 139
+  8 always 8
+  = always "defines"
+  "defines" always "defines"
+Line 140
+  7 always 7
+  = always "define"
+  "define" always "define"
+Line 141
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 142
+  10 always 10
+  = always "undefines"
+  "undefines" always "undefines"
+Line 143
+  9 always 9
+  = always "undefine"
+  "undefine" always "undefine"
+Line 144
+  6 always 6
+  = always "paths"
+  "paths" always "paths"
+Line 145
+  4 always 4
+  = always "dir"
+  "dir" always "dir"
+Line 146
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 147
+  5 always 5
+  = always "root"
+  "root" always "root"
+Line 148
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 149
+  7 always 7
+  = always "ignore"
+  "ignore" always "ignore"
+Line 150
+  5 always 5
+  = always "path"
+  "path" always "path"
+Line 151
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 152
+  8 always 8
+  = always "exclude"
+  "exclude" always "exclude"
+Line 153
+  5 always 5
+  = always "path"
+  "path" always "path"
+Line 154
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 155
+  19 always 19
+  = always "function-contracts"
+  "function-contracts" always "function-contracts"
+Line 156
+  19 always 19
+  = always "variable-contracts"
+  "variable-contracts" always "variable-contracts"
+Line 157
+  10 always 10
+  = always "libraries"
+  "libraries" always "libraries"
+Line 158
+  8 always 8
+  = always "library"
+  "library" always "library"
+Line 159
+  9 always 9
+  = always "platform"
+  "platform" always "platform"
+Line 160
+  13 always 13
+  = always "suppressions"
+  "suppressions" always "suppressions"
+Line 161
+  12 always 12
+  = always "suppression"
+  "suppression" always "suppression"
+Line 162
+  6 always 6
+  = always "addon"
+  "addon" always "addon"
+Line 163
+  7 always 7
+  = always "addons"
+  "addons" always "addons"
+Line 164
+  5 always 5
+  = always "tool"
+  "tool" always "tool"
+Line 165
+  6 always 6
+  = always "tools"
+  "tools" always "tools"
+Line 166
+  5 always 5
+  = always "tags"
+  "tags" always "tags"
+Line 167
+  4 always 4
+  = always "tag"
+  "tag" always "tag"
+Line 168
+  13 always 13
+  = always "tag-warnings"
+  "tag-warnings" always "tag-warnings"
+Line 169
+  4 always 4
+  = always "tag"
+  "tag" always "tag"
+Line 170
+  8 always 8
+  = always "warning"
+  "warning" always "warning"
+Line 171
+  5 always 5
+  = always "hash"
+  "hash" always "hash"
+Line 172
+  14 always 14
+  = always "check-headers"
+  "check-headers" always "check-headers"
+Line 173
+  23 always 23
+  = always "check-unused-templates"
+  "check-unused-templates" always "check-unused-templates"
+Line 174
+  14 always 14
+  = always "max-ctu-depth"
+  "max-ctu-depth" always "max-ctu-depth"
+Line 175
+  23 always 23
+  = always "max-template-recursion"
+  "max-template-recursion" always "max-template-recursion"
+Line 176
+  37 always 37
+  = always "check-unknown-function-return-values"
+  "check-unknown-function-return-values" always "check-unknown-function-return-values"
+Line 177
+  11 always 11
+  = always "clang-tidy"
+  "clang-tidy" always "clang-tidy"
+Line 178
+  5 always 5
+  = always "name"
+  "name" always "name"
+Line 179
+  18 always 18
+  = always "vs-configurations"
+  "vs-configurations" always "vs-configurations"
+Line 180
+  7 always 7
+  = always "config"
+  "config" always "config"
+Line 43
+  INT always 0
+  LONG always 1
+  LONGLONG always 2
+  FLOAT always 3
+Line 44
+  mIsUnsigned always {!<=-1,!>=2}
+Line 51
+  ( always {!<=-1,!>=2}
+Line 52
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+  :: always 3
+  FLOAT always 3
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 3
+  FLOAT always 3
+Line 59
+  ( always {!<=-1,!>=2}
+Line 74
+  ( always !<=-1
+Line 83
+  ( always {!<=-1,!>=2}
+Line 84
+  ( always {!<=-1,!>=2}
+Line 85
+  ( always {!<=-1,!>=2}
+Line 86
+  ( always {!<=-1,!>=2}
+Line 87
+  ( always {!<=-1,!>=2}
+Line 88
+  ( always {!<=-1,!>=2}
+Line 89
+  ( always {!<=-1,!>=2}
+Line 90
+  ( always {!<=-1,!>=2}
+Line 91
+  ( always {!<=-1,!>=2}
+Line 92
+  ( always {!<=-1,!>=2}
+Line 102
+  ( always {!<=-1,!>=2}
+  , always 1
+  supportMicrosoftExtensions always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 115
+  ( always !<=-1
+Line 116
+  ( always {!<=-1,!>=2}
+Line 117
+  ( always {!<=-1,!>=2}
+Line 118
+  ( always {!<=-1,!>=2}
+Line 119
+  ( always {!<=-1,!>=2}
+Line 120
+  ( always {!<=-1,!>=2}
+Line 121
+  ( always {!<=-1,!>=2}
+Line 122
+  ( always {!<=-1,!>=2}
+Line 128
+  ( always {!<=-1,!>=2}
+Line 130
+  ( always !<=-1
+Line 137
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  :: always !<=-1
+  iPos always !<=-1
+Line 38
+  C89 always 0
+  C99 always 1
+  C11 always 2
+  CLatest always 2
+  = always 2
+  C11 always 2
+Line 41
+  CPP03 always 0
+  CPP11 always 1
+  CPP14 always 2
+  CPP17 always 3
+  CPP20 always 4
+  CPP23 always 5
+  CPPLatest always 5
+  = always 5
+  CPP23 always 5
+Line 47
+  CLatest always 2
+  CPPLatest always 5
+Line 49
+  ( always {!<=-1,!>=2}
+Line 50
+  = possible size=3
+  str possible size=3
+Line 51
+  str possible size=3
+  == always {!<=-1,!>=2}
+  "c89" always "c89"
+  || always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "C89" always "C89"
+Line 52
+  = always 0
+  C89 always 0
+Line 53
+  return always {!<=-1,!>=2}
+  true always 1
+Line 55
+  str possible size=3
+  == always {!<=-1,!>=2}
+  "c99" always "c99"
+  || always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "C99" always "C99"
+Line 56
+  = always 1
+  C99 always 1
+Line 57
+  return always {!<=-1,!>=2}
+  true always 1
+Line 59
+  str possible size=3
+  == always {!<=-1,!>=2}
+  "c11" always "c11"
+  || always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "C11" always "C11"
+Line 60
+  = always 2
+  C11 always 2
+Line 61
+  return always {!<=-1,!>=2}
+  true always 1
+Line 63
+  return always {!<=-1,!>=2}
+  false always 0
+Line 67
+  C89 always 0
+Line 68
+  "c89" always "c89"
+Line 69
+  C99 always 1
+Line 70
+  "c99" always "c99"
+Line 71
+  C11 always 2
+Line 72
+  "c11" always "c11"
+Line 74
+  "" always ""
+Line 77
+  std possible size=3
+  == always {!<=-1,!>=2}
+  "c89" always "c89"
+Line 78
+  :: always 0
+  C89 always 0
+Line 80
+  std possible size=3
+  == always {!<=-1,!>=2}
+  "c99" always "c99"
+Line 81
+  :: always 1
+  C99 always 1
+Line 83
+  == always {!<=-1,!>=2}
+  "c11" always "c11"
+Line 84
+  :: always 2
+  C11 always 2
+Line 86
+  :: always 2
+  CLatest always 2
+Line 88
+  ( always {!<=-1,!>=2}
+Line 92
+  return always {!<=-1,!>=2}
+  ! {!<=-1,!>=2,0}
+  stdValue possible size=0
+  ( {!<=-1,!>=2,1}
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 99
+  CPP03 always 0
+Line 100
+  "c++03" always "c++03"
+Line 101
+  CPP11 always 1
+Line 102
+  "c++11" always "c++11"
+Line 103
+  CPP14 always 2
+Line 104
+  "c++14" always "c++14"
+Line 105
+  CPP17 always 3
+Line 106
+  "c++17" always "c++17"
+Line 107
+  CPP20 always 4
+Line 108
+  "c++20" always "c++20"
+Line 109
+  CPP23 always 5
+Line 110
+  "c++23" always "c++23"
+Line 112
+  "" always ""
+Line 115
+  std possible size=5
+  == always {!<=-1,!>=2}
+  "c++03" always "c++03"
+Line 116
+  :: always 0
+  CPP03 always 0
+Line 118
+  std possible size=5
+  == always {!<=-1,!>=2}
+  "c++11" always "c++11"
+Line 119
+  :: always 1
+  CPP11 always 1
+Line 121
+  std possible size=5
+  == always {!<=-1,!>=2}
+  "c++14" always "c++14"
+Line 122
+  :: always 2
+  CPP14 always 2
+Line 124
+  std possible size=5
+  == always {!<=-1,!>=2}
+  "c++17" always "c++17"
+Line 125
+  :: always 3
+  CPP17 always 3
+Line 127
+  std possible size=5
+  == always {!<=-1,!>=2}
+  "c++20" always "c++20"
+Line 128
+  :: always 4
+  CPP20 always 4
+Line 130
+  == always {!<=-1,!>=2}
+  "c++23" always "c++23"
+Line 131
+  :: always 5
+  CPP23 always 5
+Line 133
+  :: always 5
+  CPPLatest always 5
+Line 58
+  OK always 0
+  FILE_NOT_FOUND always 1
+  BAD_XML always 2
+  UNKNOWN_ELEMENT always 3
+  MISSING_ATTRIBUTE always 4
+  BAD_ATTRIBUTE_VALUE always 5
+  UNSUPPORTED_FORMAT always 6
+  DUPLICATE_PLATFORM_TYPE always 7
+  PLATFORM_TYPE_REDEFINED always 8
+Line 62
+  :: always 0
+  OK always 0
+Line 63
+  ( possible lifetime[SubObject]=(e)
+Line 65
+  ( possible lifetime[SubObject]=(e)
+  && always {!<=-1,!>=2}
+Line 74
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  len always !<=-1
+Line 79
+  none always 0
+  malloc always 1
+  calloc always 2
+  strdup always 3
+Line 84
+  initData always {!<=-1,!>=2}
+Line 118
+  ? possible 0
+  af always !0
+  : always 0
+  0 always 0
+Line 124
+  ? possible 0
+  af always !0
+  : always 0
+  0 always 0
+Line 138
+  , always 1
+  = always 1
+  1 always 1
+Line 141
+  = possible 1
+  reallocArg possible 1
+Line 145
+  , always {!<=-1,!>=2}
+  noreturn always {!<=-1,!>=2}
+Line 146
+  = possible {1,0}
+  noreturn always {!<=-1,!>=2}
+  ? possible {1,0}
+  :: always 1
+  True always 1
+  : always 0
+  :: always 0
+  False always 0
+Line 149
+  ( always {!<=-1,!>=2}
+Line 152
+  ( always {!<=-1,!>=2}
+Line 153
+  return always {!<=-1,!>=2}
+  > always {!<=-1,!>=2}
+  0 always 0
+  && always {!<=-1,!>=2}
+  id {>=1,!<=0}
+  & possible {0,1}
+  1 always 1
+  == {1,0,!<=-1,!>=2}
+  0 always 0
+Line 155
+  ( always {!<=-1,!>=2}
+Line 156
+  return always {!<=-1,!>=2}
+  > always {!<=-1,!>=2}
+  0 always 0
+  && always {!<=-1,!>=2}
+  . {>=1,!<=0}
+  & possible {0,1}
+  1 always 1
+  == {1,0,!<=-1,!>=2}
+  0 always 0
+Line 160
+  ( always {!<=-1,!>=2}
+Line 161
+  return always {!<=-1,!>=2}
+  > always {!<=-1,!>=2}
+  0 always 0
+  && always {!<=-1,!>=2}
+  id {>=1,!<=0}
+  & possible {0,1}
+  1 always 1
+  == {0,1,!<=-1,!>=2}
+  1 always 1
+Line 163
+  ( always {!<=-1,!>=2}
+Line 164
+  return always {!<=-1,!>=2}
+  > always {!<=-1,!>=2}
+  0 always 0
+  && always {!<=-1,!>=2}
+  . {>=1,!<=0}
+  & possible {0,1}
+  1 always 1
+  == {0,1,!<=-1,!>=2}
+  1 always 1
+Line 167
+  ( always {!<=-1,!>=2}
+Line 169
+  ( always {!<=-1,!>=2}
+Line 170
+  ( always {!<=-1,!>=2}
+Line 190
+  ( always {!<=-1,!>=2}
+Line 191
+  ( always {!<=-1,!>=2}
+Line 193
+  NONE always 0
+  DEFAULT always 1
+  ERROR_CODE always 2
+Line 201
+  ( always {!<=-1,!>=2}
+Line 202
+  ( always {!<=-1,!>=2}
+Line 204
+  ( always {!<=-1,!>=2}
+Line 209
+  -1 always -1
+Line 210
+  -1 always -1
+Line 211
+  arrayLike_indexOp always {!<=-1,!>=2}
+  false always 0
+Line 212
+  stdStringLike always {!<=-1,!>=2}
+  false always 0
+Line 213
+  stdAssociativeLike always {!<=-1,!>=2}
+  false always 0
+Line 214
+  opLessAllowed always {!<=-1,!>=2}
+  true always 1
+Line 215
+  hasInitializerListConstructor always {!<=-1,!>=2}
+  false always 0
+Line 216
+  unstableErase always {!<=-1,!>=2}
+  false always 0
+Line 217
+  unstableInsert always {!<=-1,!>=2}
+  false always 0
+Line 218
+  view always {!<=-1,!>=2}
+  false always 0
+Line 222
+  RESIZE always 0
+Line 223
+  CLEAR always 1
+Line 224
+  PUSH always 2
+Line 225
+  POP always 3
+Line 226
+  FIND always 4
+Line 227
+  INSERT always 5
+Line 228
+  ERASE always 6
+Line 229
+  CHANGE_CONTENT always 7
+Line 230
+  CHANGE always 8
+Line 231
+  CHANGE_INTERNAL always 9
+Line 232
+  NO_ACTION always 10
+Line 235
+  AT_INDEX always 0
+Line 236
+  ITEM always 1
+Line 237
+  BUFFER always 2
+Line 238
+  BUFFER_NT always 3
+Line 239
+  START_ITERATOR always 4
+Line 240
+  END_ITERATOR always 5
+Line 241
+  ITERATOR always 6
+Line 242
+  SIZE always 7
+Line 243
+  EMPTY always 8
+Line 244
+  NO_YIELD always 9
+Line 259
+  arrayLike_indexOp always {!<=-1,!>=2}
+Line 260
+  stdStringLike always {!<=-1,!>=2}
+Line 261
+  stdAssociativeLike always {!<=-1,!>=2}
+Line 262
+  opLessAllowed always {!<=-1,!>=2}
+Line 263
+  hasInitializerListConstructor always {!<=-1,!>=2}
+Line 264
+  unstableErase always {!<=-1,!>=2}
+Line 265
+  unstableInsert always {!<=-1,!>=2}
+Line 266
+  view always {!<=-1,!>=2}
+Line 269
+  :: possible {symbolic=(functions.end()),end=0}
+  i possible {symbolic=(functions.end()),end=0}
+  = possible lifetime[Iterator]=(functions)
+  ( possible lifetime[Iterator]=(functions)
+Line 270
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(functions),end=0}
+Line 271
+  i always {!symbolic=(functions.end()),!end=0}
+Line 272
+  :: always 10
+  NO_ACTION always 10
+Line 276
+  :: possible {symbolic=(functions.end()),end=0}
+  i possible {symbolic=(functions.end()),end=0}
+  = possible lifetime[Iterator]=(functions)
+  ( possible lifetime[Iterator]=(functions)
+Line 277
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(functions),end=0}
+Line 278
+  i always {!symbolic=(functions.end()),!end=0}
+Line 279
+  :: always 9
+  NO_YIELD always 9
+Line 286
+  , always 0
+  iterator always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 287
+  , always 0
+  = always 0
+  nullptr always 0
+Line 292
+  notbool always {!<=-1,!>=2}
+  false always 0
+Line 293
+  notnull always {!<=-1,!>=2}
+  false always 0
+Line 294
+  -1 always -1
+Line 295
+  formatstr always {!<=-1,!>=2}
+  false always 0
+Line 296
+  strz always {!<=-1,!>=2}
+  false always 0
+Line 297
+  optional always {!<=-1,!>=2}
+  false always 0
+Line 298
+  variadic always {!<=-1,!>=2}
+  false always 0
+Line 302
+  notbool always {!<=-1,!>=2}
+Line 303
+  notnull always {!<=-1,!>=2}
+Line 305
+  formatstr always {!<=-1,!>=2}
+Line 306
+  strz always {!<=-1,!>=2}
+Line 307
+  optional always {!<=-1,!>=2}
+Line 308
+  variadic always {!<=-1,!>=2}
+Line 313
+  0 always 0
+  it always {!<=-1,!>=2}
+  false always 0
+  first always {!<=-1,!>=2}
+  false always 0
+  last always {!<=-1,!>=2}
+  false always 0
+Line 316
+  it always {!<=-1,!>=2}
+Line 317
+  first always {!<=-1,!>=2}
+Line 318
+  last always {!<=-1,!>=2}
+Line 324
+  NONE always 0
+  STRLEN always 1
+  ARGVALUE always 2
+  SIZEOF always 3
+  MUL always 4
+  VALUE always 5
+Line 325
+  ( possible lifetime[SubObject]=(t)
+  0 always 0
+  0 always 0
+Line 334
+  DIR_IN always 0
+Line 335
+  DIR_OUT always 1
+Line 336
+  DIR_INOUT always 2
+Line 337
+  DIR_UNKNOWN always 3
+Line 344
+  use always {!<=-1,!>=2}
+Line 345
+  leakignore always {!<=-1,!>=2}
+Line 346
+  isconst always {!<=-1,!>=2}
+Line 347
+  ispure always {!<=-1,!>=2}
+Line 349
+  ignore always {!<=-1,!>=2}
+Line 350
+  formatstr always {!<=-1,!>=2}
+Line 351
+  formatstr_scan always {!<=-1,!>=2}
+Line 352
+  formatstr_secure always {!<=-1,!>=2}
+Line 356
+  use always {!<=-1,!>=2}
+  false always 0
+Line 357
+  leakignore always {!<=-1,!>=2}
+  false always 0
+Line 358
+  isconst always {!<=-1,!>=2}
+  false always 0
+Line 359
+  ispure always {!<=-1,!>=2}
+  false always 0
+Line 360
+  :: always 0
+  NONE always 0
+Line 361
+  ignore always {!<=-1,!>=2}
+  false always 0
+Line 362
+  formatstr always {!<=-1,!>=2}
+  false always 0
+Line 363
+  formatstr_scan always {!<=-1,!>=2}
+  false always 0
+Line 364
+  formatstr_secure always {!<=-1,!>=2}
+  false always 0
+Line 365
+  :: always 10
+  NO_ACTION always 10
+Line 366
+  :: always 9
+  NO_YIELD always 9
+Line 372
+  ( always {!<=-1,!>=2}
+Line 373
+  ( always {!<=-1,!>=2}
+Line 374
+  ( always {!<=-1,!>=2}
+  , always {!<=-1,!>=2}
+  pure always {!<=-1,!>=2}
+Line 375
+  ( always {!<=-1,!>=2}
+Line 377
+  ( always {!<=-1,!>=2}
+Line 379
+  return always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  arg always !0
+  . always {!<=-1,!>=2}
+  notbool always {!<=-1,!>=2}
+Line 382
+  ( always {!<=-1,!>=2}
+Line 383
+  ( always {!<=-1,!>=2}
+  , always 0
+  = always 0
+  0 always 0
+  , always 0
+  = always 0
+  nullptr always 0
+Line 385
+  ( always {!<=-1,!>=2}
+Line 387
+  return always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  arg always !0
+  . always {!<=-1,!>=2}
+  formatstr always {!<=-1,!>=2}
+Line 390
+  ( always {!<=-1,!>=2}
+Line 392
+  return always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  arg always !0
+  . always {!<=-1,!>=2}
+  strz always {!<=-1,!>=2}
+Line 395
+  ( always {!<=-1,!>=2}
+Line 396
+  ( always {!<=-1,!>=2}
+Line 400
+  arg always !0
+Line 404
+  le always 0
+  lt always 1
+  eq always 2
+  ge always 3
+  gt always 4
+  range always 5
+Line 407
+  ( always {!<=-1,!>=2}
+Line 408
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 414
+  && always {!<=-1,!>=2}
+  arg always !0
+  . always {!<=-1,!>=2}
+  it always {!<=-1,!>=2}
+  & {lifetime[Address]=(arg->iteratorInfo),!0}
+  arg always !0
+  nullptr always 0
+Line 417
+  ( always {!<=-1,!>=2}
+Line 421
+  ? possible 0
+  & {lifetime[Address]=(arg->minsizes),!0}
+  arg always !0
+  nullptr always 0
+Line 426
+  ( always {!<=-1,!>=2}
+Line 428
+  ( always {!<=-1,!>=2}
+Line 434
+  ( always {!<=-1,!>=2}
+Line 436
+  ( always {!<=-1,!>=2}
+Line 438
+  ( always {!<=-1,!>=2}
+Line 445
+  ( always {!<=-1,!>=2}
+Line 447
+  ( always {!<=-1,!>=2}
+Line 448
+  return always {!<=-1,!>=2}
+  ( possible lifetime[Iterator]=(mExporters)
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mExporters),end=0}
+Line 451
+  ( always {!<=-1,!>=2}
+Line 452
+  = possible lifetime[Iterator]=(mExporters)
+  ( possible lifetime[Iterator]=(mExporters)
+Line 453
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mExporters),end=0}
+  && always {!<=-1,!>=2}
+  it always {!symbolic=(mExporters.end()),!end=0}
+Line 456
+  ( always {!<=-1,!>=2}
+Line 457
+  = possible lifetime[Iterator]=(mExporters)
+  ( possible lifetime[Iterator]=(mExporters)
+Line 458
+  return always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mExporters),end=0}
+  && always {!<=-1,!>=2}
+  it always {!symbolic=(mExporters.end()),!end=0}
+Line 461
+  ( always {!<=-1,!>=2}
+Line 466
+  ( always {!<=-1,!>=2}
+Line 467
+  return always {!<=-1,!>=2}
+  ( possible lifetime[Iterator]=(mReflection)
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mReflection),end=0}
+Line 471
+  :: possible {symbolic=(mReflection.end()),end=0}
+  it possible {symbolic=(mReflection.end()),end=0}
+  = possible lifetime[Iterator]=(mReflection)
+  ( possible lifetime[Iterator]=(mReflection)
+Line 472
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mReflection),end=0}
+Line 473
+  it always {!symbolic=(mReflection.end()),!end=0}
+Line 474
+  -1 always -1
+Line 480
+  = always ""
+  "" always ""
+Line 481
+  unique always {!<=-1,!>=2}
+  unique always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 485
+  ( always {!<=-1,!>=2}
+Line 489
+  size always !<=-1
+Line 491
+  NO always 0
+  BOOL always 1
+  CHAR always 2
+  SHORT always 3
+  INT always 4
+  LONG always 5
+  LONGLONG always 6
+Line 494
+  = possible lifetime[Iterator]=(mPodTypes)
+  ( possible lifetime[Iterator]=(mPodTypes)
+Line 495
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mPodTypes),end=0}
+  & {lifetime[Address]=(it->second),!0}
+  it always {!symbolic=(mPodTypes.end()),!end=0}
+  nullptr always 0
+Line 500
+  mSigned always {!<=-1,!>=2}
+  false always 0
+Line 501
+  mUnsigned always {!<=-1,!>=2}
+  false always 0
+Line 502
+  mLong always {!<=-1,!>=2}
+  false always 0
+Line 503
+  mPointer always {!<=-1,!>=2}
+  false always 0
+Line 504
+  mPtrPtr always {!<=-1,!>=2}
+  false always 0
+Line 505
+  mConstPtr always {!<=-1,!>=2}
+  false always 0
+Line 506
+  ( always {!<=-1,!>=2}
+Line 507
+  return always {!<=-1,!>=2}
+  mSigned always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  mSigned always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 508
+  mUnsigned always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  mUnsigned always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 509
+  mLong always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  mLong always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 510
+  mPointer always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  mPointer always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 511
+  mPtrPtr always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  mPtrPtr always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 512
+  mConstPtr always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  mConstPtr always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 513
+  == always {!<=-1,!>=2}
+Line 515
+  ( always {!<=-1,!>=2}
+Line 516
+  return always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  this always !0
+  == always {!<=-1,!>=2}
+Line 519
+  mSigned always {!<=-1,!>=2}
+Line 520
+  mUnsigned always {!<=-1,!>=2}
+Line 521
+  mLong always {!<=-1,!>=2}
+Line 522
+  mPointer always {!<=-1,!>=2}
+Line 523
+  mPtrPtr always {!<=-1,!>=2}
+Line 524
+  mConstPtr always {!<=-1,!>=2}
+Line 529
+  = possible lifetime[Iterator]=(mPlatformTypes)
+  ( possible lifetime[Iterator]=(mPlatformTypes)
+Line 530
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mPlatformTypes),end=0}
+  & {lifetime[Address]=(it->second),!0}
+  it always {!symbolic=(mPlatformTypes.end()),!end=0}
+  nullptr always 0
+Line 536
+  :: possible {symbolic=(mPlatforms.end()),end=0}
+  it possible {symbolic=(mPlatforms.end()),end=0}
+  = possible lifetime[Iterator]=(mPlatforms)
+  ( possible lifetime[Iterator]=(mPlatforms)
+Line 537
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mPlatforms),end=0}
+Line 538
+  it always {!symbolic=(mPlatforms.end()),!end=0}
+Line 540
+  type always !0
+Line 543
+  = possible lifetime[Iterator]=(mPlatformTypes)
+  ( possible lifetime[Iterator]=(mPlatformTypes)
+Line 544
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mPlatformTypes),end=0}
+  & {lifetime[Address]=(it2->second),!0}
+  it2 always {!symbolic=(mPlatformTypes.end()),!end=0}
+  nullptr always 0
+Line 552
+  ( always {!<=-1,!>=2}
+  , always ""
+  = always ""
+  "" always ""
+Line 555
+  def always 0
+  check always 1
+  suppress always 2
+Line 570
+  ( always {!<=-1,!>=2}
+Line 571
+  return always {!<=-1,!>=2}
+  ( possible lifetime[Iterator]=(mPrefixes)
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mPrefixes),end=0}
+Line 573
+  ( always {!<=-1,!>=2}
+Line 574
+  return always {!<=-1,!>=2}
+  ( possible lifetime[Iterator]=(mSuffixes)
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mSuffixes),end=0}
+Line 583
+  0 always 0
+Line 606
+  ( always {!<=-1,!>=2}
+Line 607
+  return always {!<=-1,!>=2}
+  ( possible lifetime[Iterator]=(mBlocks)
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(mBlocks),end=0}
+Line 616
+  False always 0
+  True always 1
+  Maybe always 2
+Line 646
+  = possible lifetime[Iterator]=(data)
+  ( possible lifetime[Iterator]=(data)
+Line 647
+  == always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(data),end=0}
+  nullptr always 0
+  & {lifetime[Address]=(it->second),!0}
+  it always {!symbolic=(data.end()),!end=0}
+Line 655
+  = always 0
+  nullptr always 0
+Line 42
+  hash always !<=-1
+Line 56
+  NO_LINE always -1
+  hash always !<=-1
+  0 always 0
+  thisAndNextLine always {!<=-1,!>=2}
+  false always 0
+  matched always {!<=-1,!>=2}
+  false always 0
+  checked always {!<=-1,!>=2}
+  false always 0
+Line 58
+  this always !0
+Line 60
+  = always -1
+  NO_LINE always -1
+  hash always !<=-1
+  0 always 0
+  thisAndNextLine always {!<=-1,!>=2}
+  false always 0
+  matched always {!<=-1,!>=2}
+  false always 0
+  checked always {!<=-1,!>=2}
+  false always 0
+Line 67
+  hash always !<=-1
+  = always !<=-1
+  . always !<=-1
+  hash always !<=-1
+Line 68
+  thisAndNextLine always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  thisAndNextLine always {!<=-1,!>=2}
+Line 69
+  matched always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  matched always {!<=-1,!>=2}
+Line 70
+  checked always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  checked always {!<=-1,!>=2}
+Line 71
+  this always !0
+Line 74
+  ( always {!<=-1,!>=2}
+Line 75
+  != always {!<=-1,!>=2}
+Line 76
+  return always {!<=-1,!>=2}
+  errorId always !symbolic=(other.errorId)
+  < always {!<=-1,!>=2}
+  . always !symbolic=(errorId)
+Line 77
+  < always {!<=-1,!>=2}
+Line 78
+  return always {!<=-1,!>=2}
+  true always 1
+Line 79
+  != always {!<=-1,!>=2}
+Line 80
+  return always {!<=-1,!>=2}
+  fileName always !symbolic=(other.fileName)
+  < always {!<=-1,!>=2}
+  . always !symbolic=(fileName)
+Line 81
+  != always {!<=-1,!>=2}
+Line 82
+  return always {!<=-1,!>=2}
+  symbolName always !symbolic=(other.symbolName)
+  < always {!<=-1,!>=2}
+  . always !symbolic=(symbolName)
+Line 83
+  hash always !<=-1
+  != always {!<=-1,!>=2}
+  . always !<=-1
+  hash always !<=-1
+Line 84
+  return always {!<=-1,!>=2}
+  hash always {!<=-1,!symbolic=(other.hash)}
+  < always {!<=-1,!>=2}
+  . always {!<=-1,!symbolic=(hash)}
+  hash always !<=-1
+Line 85
+  thisAndNextLine always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  thisAndNextLine always {!<=-1,!>=2}
+Line 86
+  return always {!<=-1,!>=2}
+  thisAndNextLine always {!<=-1,!>=2,!symbolic=(other.thisAndNextLine)}
+Line 87
+  return always {!<=-1,!>=2}
+  false always 0
+Line 96
+  ( always {!<=-1,!>=2}
+Line 98
+  ( always {!<=-1,!>=2}
+Line 100
+  ( always {!<=-1,!>=2}
+Line 104
+  ( always {!<=-1,!>=2}
+Line 105
+  return always {!<=-1,!>=2}
+  ! {!<=-1,!>=2,0}
+  fileName possible size=0
+  ( {!<=-1,!>=2,1}
+  && always {!<=-1,!>=2}
+  fileName always !size=0
+  ( always !<=-1
+  "?*" always "?*"
+  == always {!<=-1,!>=2}
+Line 108
+  ( always {!<=-1,!>=2}
+Line 109
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 110
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 111
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 112
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 113
+  hash always !<=-1
+  == always {!<=-1,!>=2}
+  . always !<=-1
+  hash always !<=-1
+  && always {!<=-1,!>=2}
+Line 114
+  thisAndNextLine always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  thisAndNextLine always {!<=-1,!>=2}
+Line 121
+  hash always !<=-1
+Line 122
+  thisAndNextLine always {!<=-1,!>=2}
+Line 123
+  matched always {!<=-1,!>=2}
+Line 124
+  checked always {!<=-1,!>=2}
+Line 126
+  NO_LINE always -1
+  = always -1
+  -1 always -1
+Line 178
+  ( always {!<=-1,!>=2}
+Line 185
+  ( always {!<=-1,!>=2}
+Line 197
+  unusedFunctionChecking always {!<=-1,!>=2}
+Line 203
+  unusedFunctionChecking always {!<=-1,!>=2}
+Line 30
+  SHOWTIME_NONE always 0
+  = always 0
+  0 always 0
+  , always 1
+Line 31
+  SHOWTIME_FILE always 1
+  , always 2
+Line 32
+  SHOWTIME_SUMMARY always 2
+  , always 3
+Line 33
+  SHOWTIME_TOP5 always 3
+Line 40
+  = always 0
+  0 always 0
+Line 48
+  0 always 0
+Line 49
+  0 always 0
+Line 52
+  ( always !<=-1
+  ( always !<=-1
+Line 70
+  , always 0
+  = always 0
+  nullptr always 0
+Line 82
+  mStopped always {!<=-1,!>=2}
+Line 114
+  checkAllConfigurations always {!<=-1,!>=2}
+Line 117
+  checkConfiguration always {!<=-1,!>=2}
+Line 122
+  checkHeaders always {!<=-1,!>=2}
+Line 125
+  checkLibrary always {!<=-1,!>=2}
+Line 131
+  checkUnusedTemplates always {!<=-1,!>=2}
+Line 134
+  clang always {!<=-1,!>=2}
+Line 140
+  clangTidy always {!<=-1,!>=2}
+Line 152
+  daca always {!<=-1,!>=2}
+Line 155
+  debugnormal always {!<=-1,!>=2}
+Line 158
+  debugSimplified always {!<=-1,!>=2}
+Line 161
+  debugtemplate always {!<=-1,!>=2}
+Line 164
+  debugwarnings always {!<=-1,!>=2}
+Line 167
+  dump always {!<=-1,!>=2}
+Line 171
+  None always 0
+  C always 1
+  CPP always 2
+Line 178
+  exceptionHandling always {!<=-1,!>=2}
+Line 191
+  force always {!<=-1,!>=2}
+Line 198
+  inlineSuppressions always {!<=-1,!>=2}
+Line 202
+  jobs always !<=-1
+Line 207
+  jointSuppressionReport always {!<=-1,!>=2}
+Line 243
+  preprocessOnly always {!<=-1,!>=2}
+Line 248
+  quiet always {!<=-1,!>=2}
+Line 251
+  relativePaths always {!<=-1,!>=2}
+Line 254
+  reportProgress always {!<=-1,!>=2}
+Line 260
+  "simple" always "simple"
+Line 261
+  "rule" always "rule"
+Line 262
+  :: always 3
+  style always 3
+Line 280
+  classes always {!<=-1,!>=2}
+  false always 0
+  externalFunctions always {!<=-1,!>=2}
+  false always 0
+  internalFunctions always {!<=-1,!>=2}
+  false always 0
+  externalVariables always {!<=-1,!>=2}
+  false always 0
+Line 289
+  classes always {!<=-1,!>=2}
+  = always 0
+  externalFunctions always {!<=-1,!>=2}
+  = always 0
+  internalFunctions always {!<=-1,!>=2}
+  = always 0
+  externalVariables always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 298
+  classes always {!<=-1,!>=2}
+Line 305
+  externalFunctions always {!<=-1,!>=2}
+Line 311
+  internalFunctions always {!<=-1,!>=2}
+Line 317
+  externalVariables always {!<=-1,!>=2}
+Line 350
+  verbose always {!<=-1,!>=2}
+Line 353
+  xml always {!<=-1,!>=2}
+Line 362
+  ( always {!<=-1,!>=2}
+Line 364
+  ( always !<=-1
+  >= always {!<=-1,!>=2}
+  ( always !<=-1
+  && always {!<=-1,!>=2}
+  0 always 0
+  ( {!<=-1,<=symbolic=(file.length()),!>=symbolic=(file.length()+1)}
+  == always {!<=-1,!>=2}
+  0 always 0
+Line 365
+  return always {!<=-1,!>=2}
+  true always 1
+Line 368
+  return always {!<=-1,!>=2}
+  false always 0
+Line 383
+  ( always {!<=-1,!>=2}
+  , always 0
+  = always 0
+  false always 0
+Line 386
+  ( always {!<=-1,!>=2}
+Line 387
+  return always {!<=-1,!>=2}
+  ( possible lifetime[Iterator]=(libraries)
+  ( {lifetime[Iterator]=(libraries),start=0}
+  ( {lifetime[Iterator]=(libraries),end=0}
+  "posix" always "posix"
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(libraries),end=0}
+Line 391
+  t always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 392
+  = always {!<=-1,!>=2}
+  t always {!<=-1,!>=2}
+Line 396
+  ( always {!<=-1,!>=2}
+Line 397
+  return always {!<=-1,!>=2}
+Line 77
+  ( always {!<=-1,!>=2}
+Line 111
+  ( always {!<=-1,!>=2}
+Line 134
+  ( always {!<=-1,!>=2}
+Line 136
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  extra always size=0
+Line 146
+  ( always {!<=-1,!>=2}
+Line 153
+  ( always {!<=-1,!>=2}
+Line 160
+  ( always {!<=-1,!>=2}
+Line 167
+  ( always {!<=-1,!>=2}
+Line 181
+  ( always {!<=-1,!>=2}
+Line 66
+  ( always {!<=-1,!>=2}
+Line 67
+  return always {!<=-1,!>=2}
+  < always {!<=-1,!>=2}
+Line 73
+  ( always {!<=-1,!>=2}
+Line 74
+  return always {!<=-1,!>=2}
+  ( always !<=-1
+  == always {!<=-1,!>=2}
+  1 always 1
+Line 80
+  result always {!<=-1,!>=2}
+Line 81
+  result always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  > always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  x {!>=symbolic=(y+1),<=symbolic=(y)}
+  < always {!<=-1,!>=2}
+  y {!<=symbolic=(x-1),>=symbolic=(x)}
+Line 88
+  Upper always 0
+  Lower always 1
+  Point always 2
+Line 90
+  = always 0
+  0 always 0
+Line 94
+  nullptr always 0
+Line 95
+  0.0 always 0
+Line 98
+  nullptr always 0
+Line 99
+  0U always 0
+Line 100
+  safe always {!<=-1,!>=2}
+  false always 0
+Line 101
+  conditional always {!<=-1,!>=2}
+  false always 0
+Line 102
+  macro always {!<=-1,!>=2}
+  false always 0
+Line 103
+  defaultArg always {!<=-1,!>=2}
+  false always 0
+Line 104
+  0 always 0
+Line 105
+  0 always 0
+Line 108
+  nullptr always 0
+Line 117
+  ( always {!<=-1,!>=2}
+Line 118
+  != always {!<=-1,!>=2}
+Line 119
+  return always {!<=-1,!>=2}
+  false always 0
+Line 120
+  valueType always symbolic=(rhs.valueType)
+Line 122
+  :: always 5
+  CONTAINER_SIZE always 5
+Line 123
+  :: always 7
+  BUFFER_SIZE always 7
+Line 124
+  :: always 8
+  ITERATOR_START always 8
+Line 125
+  :: always 9
+  ITERATOR_END always 9
+Line 126
+  != always {!<=-1,!>=2}
+Line 127
+  return always {!<=-1,!>=2}
+  false always 0
+Line 129
+  :: always 1
+  TOK always 1
+Line 130
+  != always {!<=-1,!>=2}
+Line 131
+  return always {!<=-1,!>=2}
+  false always 0
+Line 133
+  :: always 2
+  FLOAT always 2
+Line 135
+  > always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  floatValue possible <=symbolic=(rhs.floatValue)
+  < always {!<=-1,!>=2}
+  . possible >=symbolic=(floatValue)
+Line 136
+  return always {!<=-1,!>=2}
+  false always 0
+Line 138
+  :: always 3
+  MOVED always 3
+Line 139
+  != always {!<=-1,!>=2}
+Line 140
+  return always {!<=-1,!>=2}
+  false always 0
+Line 142
+  :: always 4
+  UNINIT always 4
+Line 144
+  :: always 6
+  LIFETIME always 6
+Line 145
+  != always {!<=-1,!>=2}
+Line 146
+  return always {!<=-1,!>=2}
+  false always 0
+Line 148
+  :: always 10
+  SYMBOLIC always 10
+Line 149
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 150
+  return always {!<=-1,!>=2}
+  false always 0
+Line 151
+  != always {!<=-1,!>=2}
+Line 152
+  return always {!<=-1,!>=2}
+  false always 0
+Line 155
+  return always {!<=-1,!>=2}
+  true always 1
+Line 162
+  :: always 10
+  SYMBOLIC always 10
+Line 163
+  :: always 7
+  BUFFER_SIZE always 7
+Line 164
+  :: always 5
+  CONTAINER_SIZE always 5
+Line 165
+  :: always 8
+  ITERATOR_START always 8
+Line 166
+  :: always 9
+  ITERATOR_END always 9
+Line 170
+  :: always 2
+  FLOAT always 2
+Line 174
+  :: always 4
+  UNINIT always 4
+Line 175
+  :: always 1
+  TOK always 1
+Line 176
+  :: always 6
+  LIFETIME always 6
+Line 177
+  :: always 3
+  MOVED always 3
+Line 185
+  result always {!<=-1,!>=2}
+Line 186
+  result always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+Line 190
+  result always {!<=-1,!>=2}
+Line 192
+  ( possible {lifetime[Object]=(x),lifetime[Object]=(result),lifetime[Object]=(compare)}
+  ( possible lifetime[Object]=(result)
+  result always {!<=-1,!>=2}
+  ( possible lifetime[Object]=(compare)
+Line 197
+  ( always {!<=-1,!>=2}
+Line 198
+  ! always {!<=-1,!>=2}
+  this always !0
+  ( always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+Line 199
+  this always !0
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  this always !0
+Line 200
+  result always {!<=-1,!>=2}
+  result always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 202
+  this always !0
+Line 203
+  ( possible {lifetime[Object]=(result),lifetime[Object]=(rhs),lifetime[Object]=(compare)}
+  ( possible lifetime[Object]=(result)
+  result always 0
+  ( possible lifetime[Object]=(rhs)
+  ( possible lifetime[Object]=(compare)
+Line 204
+  return always {!<=-1,!>=2}
+  result {!<=-1,!>=2,0}
+Line 207
+  ( always {!<=-1,!>=2}
+Line 208
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 209
+  return always {!<=-1,!>=2}
+  false always 0
+Line 211
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 212
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 213
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 214
+  conditional always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  conditional always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 215
+  defaultArg always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  defaultArg always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 216
+  == always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 217
+  == always {!<=-1,!>=2}
+Line 220
+  ( always {!<=-1,!>=2}
+Line 221
+  return always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  this always !0
+  == always {!<=-1,!>=2}
+Line 225
+  ( always {!<=-1,!>=2}
+Line 226
+  result always {!<=-1,!>=2}
+  result always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 227
+  this always !0
+  ( possible {lifetime[Object]=(x),lifetime[Object]=(result)}
+  ( possible lifetime[Object]=(result)
+  result always 0
+Line 228
+  return always {!<=-1,!>=2}
+  result {!<=-1,!>=2,0}
+Line 232
+  bound possible 0
+  == {!<=-1,!>=2,0}
+  :: always 1
+  Lower always 1
+Line 233
+  this always !0
+Line 234
+  bound always !1
+  == always {!<=-1,!>=2}
+  :: always 0
+  Upper always 0
+Line 235
+  this always !0
+Line 239
+  bound possible 0
+  == {!<=-1,!>=2,0}
+  :: always 1
+  Lower always 1
+Line 240
+  = always 0
+  :: always 0
+  Upper always 0
+Line 241
+  bound always !1
+  == always {!<=-1,!>=2}
+  :: always 0
+  Upper always 0
+Line 242
+  = always 1
+  :: always 1
+  Lower always 1
+Line 255
+  INT always 0
+Line 256
+  TOK always 1
+Line 257
+  FLOAT always 2
+Line 258
+  MOVED always 3
+Line 259
+  UNINIT always 4
+Line 260
+  CONTAINER_SIZE always 5
+Line 261
+  LIFETIME always 6
+Line 262
+  BUFFER_SIZE always 7
+Line 263
+  ITERATOR_START always 8
+Line 264
+  ITERATOR_END always 9
+Line 265
+  SYMBOLIC always 10
+Line 267
+  ( always {!<=-1,!>=2}
+Line 268
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 270
+  ( always {!<=-1,!>=2}
+Line 271
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 1
+  TOK always 1
+Line 273
+  ( always {!<=-1,!>=2}
+Line 274
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 2
+  FLOAT always 2
+Line 276
+  ( always {!<=-1,!>=2}
+Line 277
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 3
+  MOVED always 3
+Line 279
+  ( always {!<=-1,!>=2}
+Line 280
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 4
+  UNINIT always 4
+Line 282
+  ( always {!<=-1,!>=2}
+Line 283
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 5
+  CONTAINER_SIZE always 5
+Line 285
+  ( always {!<=-1,!>=2}
+Line 286
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 6
+  LIFETIME always 6
+Line 288
+  ( always {!<=-1,!>=2}
+Line 289
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 7
+  BUFFER_SIZE always 7
+Line 291
+  ( always {!<=-1,!>=2}
+Line 292
+  return always {!<=-1,!>=2}
+  valueType possible 9
+  == {!<=-1,!>=2,0}
+  :: always 8
+  ITERATOR_START always 8
+  || always {!<=-1,!>=2}
+  valueType always !8
+  == always {!<=-1,!>=2}
+  :: always 9
+  ITERATOR_END always 9
+Line 294
+  ( always {!<=-1,!>=2}
+Line 295
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 8
+  ITERATOR_START always 8
+Line 297
+  ( always {!<=-1,!>=2}
+Line 298
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 9
+  ITERATOR_END always 9
+Line 300
+  ( always {!<=-1,!>=2}
+Line 301
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 10
+  SYMBOLIC always 10
+Line 304
+  ( always {!<=-1,!>=2}
+Line 305
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 6
+  LIFETIME always 6
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 308
+  ( always {!<=-1,!>=2}
+Line 309
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 6
+  LIFETIME always 6
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 1
+  Argument always 1
+Line 312
+  ( always {!<=-1,!>=2}
+Line 313
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 6
+  LIFETIME always 6
+  && always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 2
+  SubFunction always 2
+Line 316
+  ( always {!<=-1,!>=2}
+Line 317
+  return always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 333
+  NonMovedVariable always 0
+  MovedVariable always 1
+  ForwardedVariable always 2
+Line 347
+  safe always {!<=-1,!>=2}
+Line 350
+  conditional always {!<=-1,!>=2}
+Line 353
+  macro always {!<=-1,!>=2}
+Line 356
+  defaultArg always {!<=-1,!>=2}
+Line 373
+  Object always 0
+Line 375
+  SubObject always 1
+Line 377
+  Lambda always 2
+Line 379
+  Iterator always 3
+Line 381
+  Address always 4
+Line 384
+  Local always 0
+  Argument always 1
+  SubFunction always 2
+  ThisPointer always 3
+  ThisValue always 4
+Line 394
+  Possible always 0
+Line 396
+  Known always 1
+Line 398
+  Inconclusive always 2
+Line 400
+  Impossible always 3
+Line 404
+  = always 1
+  :: always 1
+  Known always 1
+Line 407
+  ( always {!<=-1,!>=2}
+Line 408
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 1
+  Known always 1
+Line 415
+  ( always {!<=-1,!>=2}
+Line 416
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 419
+  ( always {!<=-1,!>=2}
+Line 420
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 3
+  Impossible always 3
+Line 424
+  = always 3
+  :: always 3
+  Impossible always 3
+Line 427
+  inconclusive always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 428
+  inconclusive always {!<=-1,!>=2}
+Line 429
+  = always 2
+  :: always 2
+  Inconclusive always 2
+Line 432
+  ( always {!<=-1,!>=2}
+Line 433
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  :: always 2
+  Inconclusive always 2
+Line 437
+  ( always {!<=-1,!>=2}
+Line 441
+  ( always {!<=-1,!>=2}
+Line 442
+  return always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  defaultArg always {!<=-1,!>=2}
+Line 445
+  ( always {!<=-1,!>=2}
+Line 456
+  ( always !<=-1
+Line 460
+  ( always {!<=-1,!>=2}
+Line 462
+  possible always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 467
+  ( always {!<=-1,!>=2}
+  , always 0
+  = always 0
+  nullptr always 0
+  , always 20
+  = always 20
+  20 always 20
+Line 471
+  addressOf always {!<=-1,!>=2}
+Line 473
+  inconclusive always {!<=-1,!>=2}
+Line 475
+  nullptr always 0
+  addressOf always {!<=-1,!>=2}
+  false always 0
+  inconclusive always {!<=-1,!>=2}
+  false always 0
+Line 478
+  addressOf always {!<=-1,!>=2}
+  false always 0
+  ( possible lifetime[Object]=(errorPath)
+  inconclusive always {!<=-1,!>=2}
+  false always 0
+Line 481
+  addressOf always {!<=-1,!>=2}
+Line 482
+  addressOf always {!<=-1,!>=2}
+  addressOf always {!<=-1,!>=2}
+  ( possible lifetime[Object]=(errorPath)
+  inconclusive always {!<=-1,!>=2}
+  false always 0
+Line 485
+  b always {!<=-1,!>=2}
+Line 487
+  . always {!<=-1,!>=2}
+  addressOf always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  b always {!<=-1,!>=2}
+Line 491
+  b always {!<=-1,!>=2}
+Line 493
+  . always {!<=-1,!>=2}
+  inconclusive always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  b always {!<=-1,!>=2}
+Line 511
+  escape always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 514
+  ( always {!<=-1,!>=2}
+Line 516
+  , always 0
+  = always 0
+  nullptr always 0
+Line 520
+  ( always {!<=-1,!>=2}
+Line 526
+  , always 0
+  inconclusive always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 529
+  inconclusive always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 530
+  = always 0
+  0 always 0
+Line 532
+  , always 0
+  = always 0
+  nullptr always 0
+  , always 1
+  smallest always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 31
+  12 always 12
+  = always "safe-checks"
+  "safe-checks" always "safe-checks"
+Line 32
+  13 always 13
+  = always "class-public"
+  "class-public" always "class-public"
+Line 33
+  19 always 19
+  = always "external-functions"
+  "external-functions" always "external-functions"
+Line 34
+  19 always 19
+  = always "internal-functions"
+  "internal-functions" always "internal-functions"
+Line 35
+  19 always 19
+  = always "external-variables"
+  "external-variables" always "external-variables"
+Line 38
+  checkAllConfigurations always {!<=-1,!>=2}
+  true always 1
+Line 39
+  checkConfiguration always {!<=-1,!>=2}
+  false always 0
+Line 40
+  checkHeaders always {!<=-1,!>=2}
+  true always 1
+Line 41
+  checkLibrary always {!<=-1,!>=2}
+  false always 0
+Line 42
+  checkUnusedTemplates always {!<=-1,!>=2}
+  true always 1
+Line 43
+  clang always {!<=-1,!>=2}
+  false always 0
+Line 44
+  "clang" always "clang"
+Line 45
+  clangTidy always {!<=-1,!>=2}
+  false always 0
+Line 46
+  daca always {!<=-1,!>=2}
+  false always 0
+Line 47
+  debugnormal always {!<=-1,!>=2}
+  false always 0
+Line 48
+  debugSimplified always {!<=-1,!>=2}
+  false always 0
+Line 49
+  debugtemplate always {!<=-1,!>=2}
+  false always 0
+Line 50
+  debugwarnings always {!<=-1,!>=2}
+  false always 0
+Line 51
+  dump always {!<=-1,!>=2}
+  false always 0
+Line 53
+  exceptionHandling always {!<=-1,!>=2}
+  false always 0
+Line 54
+  0 always 0
+Line 55
+  force always {!<=-1,!>=2}
+  false always 0
+Line 56
+  inlineSuppressions always {!<=-1,!>=2}
+  false always 0
+Line 57
+  jobs always !<=-1
+  1 always 1
+Line 58
+  jointSuppressionReport always {!<=-1,!>=2}
+  false always 0
+Line 60
+  0 always 0
+Line 62
+  12 always 12
+Line 63
+  2 always 2
+Line 64
+  100 always 100
+Line 65
+  preprocessOnly always {!<=-1,!>=2}
+  false always 0
+Line 66
+  quiet always {!<=-1,!>=2}
+  false always 0
+Line 67
+  relativePaths always {!<=-1,!>=2}
+  false always 0
+Line 68
+  reportProgress always {!<=-1,!>=2}
+  false always 0
+Line 70
+  verbose always {!<=-1,!>=2}
+  false always 0
+Line 71
+  xml always {!<=-1,!>=2}
+  false always 0
+Line 72
+  2 always 2
+Line 74
+  :: always 1
+  error always 1
+  true always 1
+Line 75
+  :: always 0
+  normal always 0
+  true always 1
+Line 80
+  "cppcheck.cfg" always "cppcheck.cfg"
+Line 87
+  ! always {!<=-1,!>=2}
+Line 91
+  ! always {!<=-1,!>=2}
+Line 94
+  obj always symbolic=(json.get<picojson::object>())
+  "productName" always "productName"
+  && always {!<=-1,!>=2}
+  "productName" always "productName"
+Line 95
+  "productName" always "productName"
+Line 96
+  "about" always "about"
+  && always {!<=-1,!>=2}
+  "about" always "about"
+Line 97
+  "about" always "about"
+Line 98
+  "addons" always "addons"
+  && always {!<=-1,!>=2}
+  "addons" always "addons"
+Line 99
+  "addons" always "addons"
+Line 101
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  s always symbolic=(v.get<std::string>())
+Line 102
+  s always symbolic=(v.get<std::string>())
+Line 104
+  s always symbolic=(v.get<std::string>())
+Line 107
+  "suppressions" always "suppressions"
+  && always {!<=-1,!>=2}
+  "suppressions" always "suppressions"
+Line 108
+  "suppressions" always "suppressions"
+Line 116
+  ( always !<=-1
+  ',' always 44
+  != always {!<=-1,!>=2}
+Line 117
+  :: always !<=-1
+  prevPos always !<=-1
+  prevPos always !<=-1
+  = always 0
+  0 always 0
+Line 118
+  :: always !<=-1
+  pos always !<=-1
+  pos always !<=-1
+  = always 0
+  0 always 0
+Line 119
+  pos always !<=-1
+  = always !<=-1
+  ( always !<=-1
+  ',' always 44
+  pos {symbolic=(prevPos),!<=-1,0}
+  != always {!<=-1,!>=2}
+Line 120
+  pos always !<=-1
+  == always {!<=-1,!>=2}
+  prevPos always !<=-1
+Line 121
+  "--enable parameter is empty" always "--enable parameter is empty"
+Line 122
+  errmsg possible size=0
+  prevPos always {!<=-1,!symbolic=(pos)}
+  pos always {!<=-1,!symbolic=(prevPos)}
+  - always !<=-1
+  prevPos always {!<=-1,!symbolic=(pos)}
+Line 123
+  ! {!<=-1,!>=2,0}
+  errmsg possible size=0
+  ( {!<=-1,!>=2,1}
+Line 124
+  errmsg always !size=0
+Line 125
+  ++ always {!<=0,!symbolic=(prevPos+1)}
+  pos always {!<=-1,!symbolic=(prevPos)}
+Line 126
+  prevPos always !<=-1
+  = always {!<=-1,!symbolic=(prevPos+1)}
+  pos always {!<=-1,!symbolic=(prevPos+1)}
+Line 128
+  prevPos {!<=-1,0}
+  >= always {!<=-1,!>=2}
+  ( always !<=-1
+Line 129
+  "--enable parameter is empty" always "--enable parameter is empty"
+Line 130
+  prevPos {!<=-1,!>=symbolic=(str.length()),<=symbolic=(str.length()-1)}
+Line 133
+  str possible {size=7,size=5,size=11,size=14,size=0}
+  == {!<=-1,!>=2,0}
+  "all" always "all"
+Line 135
+  :: always 1
+  missingInclude always 1
+Line 136
+  :: always 0
+  unusedFunction always 0
+Line 137
+  str possible {size=5,size=11,size=14,size=0}
+  == {!<=-1,!>=2,0}
+  "warning" always "warning"
+Line 138
+  :: always 2
+  warning always 2
+Line 139
+  str possible {size=11,size=14,size=0}
+  == {!<=-1,!>=2,0}
+  "style" always "style"
+Line 140
+  :: always 3
+  style always 3
+Line 141
+  str possible {size=11,size=14,size=0}
+  == {!<=-1,!>=2,0}
+  "performance" always "performance"
+Line 142
+  :: always 4
+  performance always 4
+Line 143
+  str possible {size=11,size=14,size=0}
+  == {!<=-1,!>=2,0}
+  "portability" always "portability"
+Line 144
+  :: always 5
+  portability always 5
+Line 145
+  str possible {size=14,size=0}
+  == {!<=-1,!>=2,0}
+  "information" always "information"
+Line 146
+  :: always 6
+  information always 6
+Line 147
+  :: always 1
+  missingInclude always 1
+Line 148
+  str possible {size=14,size=0}
+  == {!<=-1,!>=2,0}
+  "unusedFunction" always "unusedFunction"
+Line 149
+  :: always 0
+  unusedFunction always 0
+Line 150
+  str possible size=0
+  == {!<=-1,!>=2,0}
+  "missingInclude" always "missingInclude"
+Line 151
+  :: always 1
+  missingInclude always 1
+Line 159
+  ( always {!<=-1,!>=2}
+Line 160
+  "cppcheck: --enable parameter is empty" always "cppcheck: --enable parameter is empty"
+Line 162
+  "cppcheck: there is no --enable parameter with the name '" always "cppcheck: there is no --enable parameter with the name '"
+  str always !size=0
+  "'" always "'"
+Line 168
+  ( always {!<=-1,!>=2}
+  , always {!<=-1,!>=2}
+  inconclusiveCheck always {!<=-1,!>=2}
+Line 170
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  :: always 2
+  warning always 2
+  && always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  defaultArg always {!<=-1,!>=2}
+Line 171
+  return always {!<=-1,!>=2}
+  false always 0
+Line 172
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  :: always 1
+  inconclusive always 1
+  && always {!<=-1,!>=2}
+  inconclusiveCheck always {!<=-1,!>=2}
+  || always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 173
+  return always {!<=-1,!>=2}
+  false always 0
+Line 174
+  return always {!<=-1,!>=2}
+  true always 1
+Line 50
+  mFlags always !<=-1
+  mFlags always !<=-1
+  = always 0
+  0 always 0
+Line 52
+  ( always !<=-1
+Line 53
+  return always !<=-1
+  mFlags always !<=-1
+Line 56
+  mFlags always !<=-1
+  = always 0
+  0 always 0
+Line 59
+  mFlags always !<=-1
+  = always 4294967295
+  0xFFFFFFFF always 4294967295
+Line 61
+  enabled always {!<=-1,!>=2}
+Line 62
+  enabled always {!<=-1,!>=2}
+Line 67
+  ( always {!<=-1,!>=2}
+Line 68
+  return always {!<=-1,!>=2}
+  mFlags always !<=-1
+  & always !<=-1
+  1U always 1
+  << always !<=0
+  ( {!<=-1,2@13}
+  flag possible 2@13
+  != always {!<=-1,!>=2}
+  0 always 0
+Line 71
+  mFlags always !<=-1
+  |= always !<=-1
+  1U always 1
+  << always !<=0
+  ( {!<=-1,2@21,3@22,4@23,5@24,6@25,1@7433}
+  flag possible {2@21,3@22,4@23,5@24,6@25,1@7433}
+Line 74
+  mFlags always !<=-1
+  &= always !<=-1
+  ~ always !<=4294967295
+  1U always 1
+  << always !<=0
+  ( always !<=-1
+Line 76
+  , always {!<=-1,!>=2}
+  enabled always {!<=-1,!>=2}
+Line 77
+  enabled {!<=-1,!>=2,1@29}
+Line 78
+  flag possible 1@29
+Line 50
+  mFlags always !<=-1
+  mFlags always !<=-1
+  = always 0
+  0 always 0
+Line 52
+  ( always !<=-1
+Line 53
+  return always !<=-1
+  mFlags always !<=-1
+Line 56
+  mFlags always !<=-1
+  = always 0
+  0 always 0
+Line 59
+  mFlags always !<=-1
+  = always 4294967295
+  0xFFFFFFFF always 4294967295
+Line 61
+  enabled always {!<=-1,!>=2}
+Line 62
+  enabled always {!<=-1,!>=2}
+Line 67
+  ( always {!<=-1,!>=2}
+Line 68
+  return always {!<=-1,!>=2}
+  mFlags always !<=-1
+  & always !<=-1
+  1U always 1
+  << always !<=0
+  ( {!<=-1,1@14}
+  flag possible 1@14
+  != always {!<=-1,!>=2}
+  0 always 0
+Line 71
+  mFlags always !<=-1
+  |= always !<=-1
+  1U always 1
+  << always !<=0
+  ( {!<=-1,0@7685}
+  flag possible 0@7685
+Line 74
+  mFlags always !<=-1
+  &= always !<=-1
+  ~ always !<=4294967295
+  1U always 1
+  << always !<=0
+  ( always !<=-1
+Line 76
+  , always {!<=-1,!>=2}
+  enabled always {!<=-1,!>=2}
+Line 77
+  enabled {!<=-1,!>=2,1@30}
+Line 78
+  flag possible 0@30
+Line 50
+  mFlags always !<=-1
+  mFlags always !<=-1
+  = always 0
+  0 always 0
+Line 52
+  ( always !<=-1
+Line 53
+  return always !<=-1
+  mFlags always !<=-1
+Line 56
+  mFlags always !<=-1
+  = always 0
+  0 always 0
+Line 59
+  mFlags always !<=-1
+  = always 4294967295
+  0xFFFFFFFF always 4294967295
+Line 61
+  enabled always {!<=-1,!>=2}
+Line 62
+  enabled always {!<=-1,!>=2}
+Line 67
+  ( always {!<=-1,!>=2}
+Line 68
+  return always {!<=-1,!>=2}
+  mFlags always !<=-1
+  & always !<=-1
+  1U always 1
+  << always !<=0
+  ( always !<=-1
+  != always {!<=-1,!>=2}
+  0 always 0
+Line 71
+  mFlags always !<=-1
+  |= always !<=-1
+  1U always 1
+  << always !<=0
+  ( {!<=-1,1@19,0@20}
+  flag possible {1@19,0@20}
+Line 74
+  mFlags always !<=-1
+  &= always !<=-1
+  ~ always !<=4294967295
+  1U always 1
+  << always !<=0
+  ( always !<=-1
+Line 76
+  , always {!<=-1,!>=2}
+  enabled always {!<=-1,!>=2}
+Line 77
+  enabled always {!<=-1,!>=2}

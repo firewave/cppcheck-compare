@@ -1,0 +1,83 @@
+
+
+##file cppcheck-2.8/gui/aboutdialog.h
+
+1:
+|
+24:
+25: class QObject ;
+26: class QWidget ;
+27: namespace Ui {
+28: class About ;
+29: }
+30:
+|
+37:
+38: class AboutDialog : public QDialog {
+39: Q_OBJECT
+40: public:
+41: AboutDialog ( const QString & version@var1 ,
+42: const QString & extraVersion@var2 ,
+43: QWidget * parent@var3 = nullptr ) ;
+44:
+45: ~ AboutDialog ( ) override ;
+46:
+47: private:
+48: Ui :: About * mUI@var4 ;
+49: } ;
+
+##file cppcheck-2.8/gui/aboutdialog.cpp
+
+1:
+|
+25:
+26: AboutDialog :: AboutDialog ( const QString & version@var5 , const QString & extraVersion@var6 , QWidget * parent@var7 )
+27: : QDialog ( parent@var7 )
+28: , mUI@var4 ( new Ui :: About )
+29: {
+30: mUI@var4 .@expr12 setupUi (@expr13 this@expr14 ) ;
+31:
+32: QString fmtVersion@var8 (@expr1073741839 version@var5 ) ;
+33: if (@expr1073741840 !@expr1073741841 extraVersion@var6 .@expr1073741842 isEmpty (@expr1073741843 ) ) {
+34: fmtVersion@var8 +=@expr1073741844 " (" +@expr1073741845 extraVersion@var6 +@expr1073741846 ")" ;
+35: }
+36: mUI@var4 .@expr23 mVersion@var11 .@expr1073741848 setText (@expr1073741849 mUI@var4 .@expr23 mVersion@var11 .@expr1073741851 text (@expr1073741852 ) .@expr1073741853 arg (@expr1073741854 fmtVersion@var8 ) ) ;
+37: QString date@var9 ; date@var9 =@expr1073741855 $"Sep 13 2023" ;
+38: mUI@var4 .@expr32 mCopyright@var12 .@expr1073741857 setText (@expr1073741858 mUI@var4 .@expr32 mCopyright@var12 .@expr1073741860 text (@expr1073741861 ) .@expr1073741862 arg (@expr1073741863 date@var9 .@expr1073741864 right (@expr1073741865 4 ) ) ) ;
+39: QString url@var10 ; url@var10 =@expr1073741866 "<a href=\"https://cppcheck.sourceforge.io/\">https://cppcheck.sourceforge.io/</a>" ;
+40: mUI@var4 .@expr43 mHomepage@var13 .@expr1073741868 setText (@expr1073741869 mUI@var4 .@expr43 mHomepage@var13 .@expr1073741871 text (@expr1073741872 ) .@expr1073741873 arg (@expr1073741874 url@var10 ) ) ;
+41: connect (@expr1073741875 mUI@var4 .@expr1073741876 mButtons@var14 , &@expr1073741877 QDialogButtonBox ::@expr1073741878 accepted , this@expr14 , &@expr1073741879 AboutDialog ::@expr1073741880 accept@expr11 ) ;
+42: }
+43:
+44: AboutDialog :: ~ AboutDialog ( )
+45: {
+46: delete mUI@var4 ;
+47: }
+
+
+
+##Value flow
+Line 42
+  , always 0
+Line 43
+  = always 0
+  nullptr always 0
+Line 30
+  this always !0
+Line 33
+  ! always {!<=-1,!>=2}
+Line 34
+  " (" always " ("
+  ")" always ")"
+Line 37
+  = always "Sep 13 2023"
+  "Sep 13 2023" always "Sep 13 2023"
+Line 38
+  4 always 4
+Line 39
+  = always "<a href=\"https://cppcheck.sourceforge.io/\">https://cppcheck.sourceforge.io/</a>"
+  "<a href=\"https://cppcheck.sourceforge.io/\">https://cppcheck.sourceforge.io/</a>" always "<a href=\"https://cppcheck.sourceforge.io/\">https://cppcheck.sourceforge.io/</a>"
+Line 41
+  & {lifetime[Address]=(accepted),!0}
+  this always !0
+  & {lifetime[Address]=(accept),!0}

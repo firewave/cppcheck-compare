@@ -1,0 +1,491 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741965 expected@var22 !=@expr1073741966 actual@var23 ) {
+62: std ::@expr1073741967 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741968 expected@var22 ;
+64: std ::@expr1073741969 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741970 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741971 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741972 str (@expr1073741973 ) , actualStr@var26 .@expr1073741974 str (@expr1073741975 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741976 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741977 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741978 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741979 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testtokenrange.cpp
+
+1:
+|
+33:
+34: class TestTokenRange : public TestFixture {
+35: public:
+36: TestTokenRange ( ) : TestFixture ( "TestTokenRange" ) { }
+37:
+38: private:
+39: void run ( ) override {
+40: $do ${ $if $(@expr1073741980 $prepareTest $(@expr1073741981 "enumerationToEnd" $) $) ${ $setVerbose $(@expr1073741982 $false $) $; enumerationToEnd $(@expr1073741983 $) $; $} $} $while $(@expr1073741984 $false $) ;
+41: $do ${ $if $(@expr1073741985 $prepareTest $(@expr1073741986 "untilHelperToEnd" $) $) ${ $setVerbose $(@expr1073741987 $false $) $; untilHelperToEnd $(@expr1073741988 $) $; $} $} $while $(@expr1073741989 $false $) ;
+42: $do ${ $if $(@expr1073741990 $prepareTest $(@expr1073741991 "untilHelperPartWay" $) $) ${ $setVerbose $(@expr1073741992 $false $) $; untilHelperPartWay $(@expr1073741993 $) $; $} $} $while $(@expr1073741994 $false $) ;
+43: $do ${ $if $(@expr1073741995 $prepareTest $(@expr1073741996 "partialEnumeration" $) $) ${ $setVerbose $(@expr1073741997 $false $) $; partialEnumeration $(@expr1073741998 $) $; $} $} $while $(@expr1073741999 $false $) ;
+44: $do ${ $if $(@expr1073742000 $prepareTest $(@expr1073742001 "scopeExample" $) $) ${ $setVerbose $(@expr1073742002 $false $) $; scopeExample $(@expr1073742003 $) $; $} $} $while $(@expr1073742004 $false $) ;
+45: $do ${ $if $(@expr1073742005 $prepareTest $(@expr1073742006 "exampleAlgorithms" $) $) ${ $setVerbose $(@expr1073742007 $false $) $; exampleAlgorithms $(@expr1073742008 $) $; $} $} $while $(@expr1073742009 $false $) ;
+46: }
+47:
+48: static std :: string testTokenRange ( ConstTokenRange range@var102 , const Token * start@var103 , const Token * end@var104 ) {
+49: auto tokenToString@var105 ; tokenToString@var105 =@expr1073742010 [@expr1073742011 ] (@expr1073742012 const Token *@expr189 t@var106 ) {
+50: return t@var106 ?@expr1073742014 t@var106 .@expr1073742015 str (@expr1073742016 ) :@expr1073742017 "<null>" ;
+51: } ;
+52: int index@var107 ; index@var107 =@expr1073742018 0 ;
+53: const Token * expected@var108 ; expected@var108 =@expr1073742019 start@var103 ;
+54: for (@expr1073742020 const Token *@expr189 t@var109 :@expr1073742022 range@var102 ) {
+55: if (@expr1073742023 expected@var108 !=@expr1073742024 t@var109 ) {
+56: std ::@expr1073742025 ostringstream message@var110 ;
+57: message@var110 <<@expr1073742026 "Failed to match token " <<@expr1073742027 tokenToString@var105 (@expr204 expected@var108 ) <<@expr1073742029 " at position " <<@expr1073742030 index@var107 <<@expr1073742031 ". Got " <<@expr1073742032 tokenToString@var105 (@expr1073742033 t@var109 ) <<@expr1073742034 " instead" ;
+58: return message@var110 .@expr1073742035 str (@expr1073742036 ) ;
+59: }
+60: index@var107 ++@expr1073742037 ;
+61: expected@var108 =@expr1073742038 expected@var108 .@expr1073742039 next (@expr1073742040 ) ;
+62: }
+63: if (@expr1073742041 expected@var108 !=@expr1073742042 end@var104 ) {
+64: std ::@expr1073742043 ostringstream message@var111 ;
+65: message@var111 <<@expr1073742044 "Failed to terminate on " <<@expr1073742045 tokenToString@var105 (@expr1073742046 end@var104 ) <<@expr1073742047 ". Instead terminated on " <<@expr1073742048 tokenToString@var105 (@expr204 expected@var108 ) <<@expr1073742050 " at position " <<@expr1073742051 index@var107 <<@expr1073742052 "." ;
+66: return message@var111 .@expr1073742053 str (@expr1073742054 ) ;
+67: }
+68: return "" ;
+69: }
+70:
+71: void enumerationToEnd ( ) const {
+72: std ::@expr1073742055 istringstream istr@var112 (@expr1073742056 "void a(){} void main(){ if(true){a();} }" ) ;
+73: TokenList tokenList@var113 (@expr1073742057 nullptr ) ;
+74: tokenList@var113 .@expr1073742058 createTokens (@expr1073742059 istr@var112 , "test.cpp" ) ;
+75: $if $(@expr1073742060 $!@expr1073742061 $assertEquals $(@expr1073742062 "cppcheck-2.8/test/testtokenrange.cpp" $, 75 $, "" $, testTokenRange (@expr1073742063 ConstTokenRange {@expr1073742064 tokenList@var113 .@expr241 front (@expr242 ) , nullptr } , tokenList@var113 .@expr241 front (@expr242 ) , nullptr ) $) $) { $return ; }
+76: }
+77:
+78: void untilHelperToEnd ( ) const {
+79: std ::@expr1073742069 istringstream istr@var114 (@expr1073742070 "void a(){} void main(){ if(true){a();} }" ) ;
+80: TokenList tokenList@var115 (@expr1073742071 nullptr ) ;
+81: tokenList@var115 .@expr1073742072 createTokens (@expr1073742073 istr@var114 , "test.cpp" ) ;
+82: $if $(@expr1073742074 $!@expr1073742075 $assertEquals $(@expr1073742076 "cppcheck-2.8/test/testtokenrange.cpp" $, 82 $, "" $, testTokenRange (@expr1073742077 tokenList@var115 .@expr254 front (@expr255 ) .@expr1073742080 until (@expr1073742081 nullptr ) , tokenList@var115 .@expr254 front (@expr255 ) , nullptr ) $) $) { $return ; }
+83: }
+84:
+85: void untilHelperPartWay ( ) const {
+86: std ::@expr1073742084 istringstream istr@var116 (@expr1073742085 "void a(){} void main(){ if(true){a();} }" ) ;
+87: TokenList tokenList@var117 (@expr1073742086 nullptr ) ;
+88: tokenList@var117 .@expr1073742087 createTokens (@expr1073742088 istr@var116 , "test.cpp" ) ;
+89: const Token * start@var118 ; start@var118 =@expr1073742089 tokenList@var117 .@expr1073742090 front (@expr1073742091 ) .@expr1073742092 tokAt (@expr1073742093 4 ) ;
+90: const Token * end@var119 ; end@var119 =@expr1073742094 start@var118 .@expr1073742095 tokAt (@expr1073742096 8 ) ;
+91: $if $(@expr1073742097 $!@expr1073742098 $assertEquals $(@expr1073742099 "cppcheck-2.8/test/testtokenrange.cpp" $, 91 $, "" $, testTokenRange (@expr1073742100 start@var118 .@expr1073742101 until (@expr1073742102 end@var119 ) , start@var118 , end@var119 ) $) $) { $return ; }
+92: }
+93:
+94: void partialEnumeration ( ) const {
+95: std ::@expr1073742103 istringstream istr@var120 (@expr1073742104 "void a(){} void main(){ if(true){a();} }" ) ;
+96: TokenList tokenList@var121 (@expr1073742105 nullptr ) ;
+97: tokenList@var121 .@expr1073742106 createTokens (@expr1073742107 istr@var120 , "test.cpp" ) ;
+98: const Token * start@var122 ; start@var122 =@expr1073742108 tokenList@var121 .@expr285 front (@expr286 ) .@expr287 tokAt (@expr1073742112 4 ) ;
+99: const Token * end@var123 ; end@var123 =@expr1073742113 tokenList@var121 .@expr285 front (@expr286 ) .@expr287 tokAt (@expr1073742117 10 ) ;
+100: $if $(@expr1073742118 $!@expr1073742119 $assertEquals $(@expr1073742120 "cppcheck-2.8/test/testtokenrange.cpp" $, 100 $, "" $, testTokenRange (@expr1073742121 ConstTokenRange {@expr1073742122 start@var122 , end@var123 } , start@var122 , end@var123 ) $) $) { $return ; }
+101: }
+102:
+103: void scopeExample ( ) const {
+104: Settings settings@var124 ;
+105: Tokenizer tokenizer@var125 {@expr1073742123 &@expr1073742124 settings@var124 , nullptr } ;
+106: std ::@expr1073742125 istringstream sample@var126 (@expr1073742126 "void a(){} void main(){ if(true){a();} }" ) ;
+107: $if $(@expr1073742127 $!@expr1073742128 $assert_ $(@expr1073742129 "cppcheck-2.8/test/testtokenrange.cpp" $, 107 $, $(@expr1073742130 tokenizer@var125 .@expr1073742131 tokenize (@expr1073742132 sample@var126 , "test.cpp" ) $) $) $) { $return ; }
+108:
+109: const SymbolDatabase * sd@var127 ; sd@var127 =@expr1073742133 tokenizer@var125 .@expr1073742134 getSymbolDatabase (@expr1073742135 ) ;
+110: const Scope &@expr1073742136 scope@var128 =@expr1073742137 *@expr1073742138 std ::@expr1073742139 next (@expr1073742140 sd@var127 .@expr1073742141 scopeList@var129 .@expr1073742142 begin (@expr1073742143 ) , 3 ) ;
+111:
+112: std ::@expr1073742144 ostringstream contents@var130 ;
+113: for (@expr1073742145 const Token *@expr1073742146 t@var131 :@expr1073742147 ConstTokenRange {@expr1073742148 scope@var128 .@expr1073742149 bodyStart@var132 .@expr1073742150 next (@expr1073742151 ) , scope@var128 .@expr1073742152 bodyEnd@var133 } ) {
+114: contents@var130 <<@expr1073742153 t@var131 .@expr1073742154 str (@expr1073742155 ) ;
+115: }
+116: $if $(@expr1073742156 $!@expr1073742157 $assertEquals $(@expr1073742158 "cppcheck-2.8/test/testtokenrange.cpp" $, 116 $, "a();" $, contents@var130 .@expr1073742159 str (@expr1073742160 ) $) $) { $return ; }
+117: }
+118:
+119: void exampleAlgorithms ( ) const {
+120: std ::@expr1073742161 istringstream istr@var134 (@expr1073742162 "void a(){} void main(){ if(true){a();} }" ) ;
+121: TokenList tokenList@var135 (@expr1073742163 nullptr ) ;
+122: tokenList@var135 .@expr1073742164 createTokens (@expr1073742165 istr@var134 , "test.cpp" ) ;
+123: ConstTokenRange range@var136 {@expr1073742166 tokenList@var135 .@expr1073742167 front (@expr1073742168 ) , nullptr } ;
+124: $if $(@expr1073742169 $!@expr1073742170 $assertEquals $(@expr1073742171 "cppcheck-2.8/test/testtokenrange.cpp" $, 124 $, true $, $(@expr1073742172 std ::@expr1073742173 all_of (@expr1073742174 range@var136 .@expr351 begin (@expr352 ) , range@var136 .@expr353 end (@expr354 ) , [@expr1073742179 ] (@expr1073742180 const Token *@expr357 ) { return true ; } ) $) $) $) { $return
+125:
+126: ; }
+127: $if $(@expr1073742182 $!@expr1073742183 $assertEquals $(@expr1073742184 "cppcheck-2.8/test/testtokenrange.cpp" $, 127 $, true $, $(@expr1073742185 std ::@expr1073742186 any_of (@expr1073742187 range@var136 .@expr351 begin (@expr352 ) , range@var136 .@expr353 end (@expr354 ) , [@expr1073742192 ] (@expr1073742193 const Token *@expr357 t@var137 ) { return t@var137 .@expr1073742195 str (@expr1073742196 ) ==@expr1073742197 "true" ; } ) $) $) $) { $return
+128:
+129: ; }
+130: $if $(@expr1073742198 $!@expr1073742199 $assertEquals $(@expr1073742200 "cppcheck-2.8/test/testtokenrange.cpp" $, 130 $, "true" $, $(@expr1073742201 (@expr1073742202 *@expr1073742203 std ::@expr1073742204 find_if (@expr1073742205 range@var136 .@expr351 begin (@expr352 ) , range@var136 .@expr353 end (@expr354 ) , [@expr1073742210 ] (@expr1073742211 const Token *@expr357 t@var138 ) { return t@var138 .@expr1073742213 str (@expr1073742214 ) ==@expr1073742215 "true" ; } ) ) .@expr1073742216 str (@expr1073742217 ) $) $) $) { $return
+131:
+132: ; }
+133: $if $(@expr1073742218 $!@expr1073742219 $assertEquals $(@expr1073742220 "cppcheck-2.8/test/testtokenrange.cpp" $, 133 $, 3 $, $(@expr1073742221 std ::@expr1073742222 count_if (@expr1073742223 range@var136 .@expr351 begin (@expr352 ) , range@var136 .@expr353 end (@expr354 ) , [@expr1073742228 ] (@expr1073742229 const Token *@expr357 t@var139 ) { return t@var139 .@expr1073742231 str (@expr1073742232 ) ==@expr1073742233 "{" ; } ) $) $) $) { $return
+134:
+135: ; }
+136: }
+137: } ;
+138:
+139: $namespace ${ TestTokenRange instance_TestTokenRange@var140 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@5}
+  v {!<=-1,!>=2,0@5}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 36
+  "TestTokenRange" always "TestTokenRange"
+Line 40
+  ( always {!<=-1,!>=2}
+  "enumerationToEnd" always "enumerationToEnd"
+  false always 0
+  false always 0
+Line 41
+  ( always {!<=-1,!>=2}
+  "untilHelperToEnd" always "untilHelperToEnd"
+  false always 0
+  false always 0
+Line 42
+  ( always {!<=-1,!>=2}
+  "untilHelperPartWay" always "untilHelperPartWay"
+  false always 0
+  false always 0
+Line 43
+  ( always {!<=-1,!>=2}
+  "partialEnumeration" always "partialEnumeration"
+  false always 0
+  false always 0
+Line 44
+  ( always {!<=-1,!>=2}
+  "scopeExample" always "scopeExample"
+  false always 0
+  false always 0
+Line 45
+  ( always {!<=-1,!>=2}
+  "exampleAlgorithms" always "exampleAlgorithms"
+  false always 0
+  false always 0
+Line 50
+  ? possible "<null>"
+  t always !0
+  : always "<null>"
+  "<null>" always "<null>"
+Line 52
+  = always 0
+  0 always 0
+Line 55
+  expected inconclusive symbolic=(start)
+  != always {!<=-1,!>=2}
+Line 57
+  "Failed to match token " always "Failed to match token "
+  expected always !symbolic=(t)
+  " at position " always " at position "
+  ". Got " always ". Got "
+  " instead" always " instead"
+Line 63
+  != always {!<=-1,!>=2}
+Line 65
+  "Failed to terminate on " always "Failed to terminate on "
+  end always !symbolic=(expected)
+  ". Instead terminated on " always ". Instead terminated on "
+  " at position " always " at position "
+  "." always "."
+Line 68
+  "" always ""
+Line 72
+  "void a(){} void main(){ if(true){a();} }" always "void a(){} void main(){ if(true){a();} }"
+Line 73
+  nullptr always 0
+Line 74
+  "test.cpp" always "test.cpp"
+Line 75
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenrange.cpp" always "cppcheck-2.8/test/testtokenrange.cpp"
+  75 always 75
+  "" always ""
+  nullptr always 0
+  nullptr always 0
+Line 79
+  "void a(){} void main(){ if(true){a();} }" always "void a(){} void main(){ if(true){a();} }"
+Line 80
+  nullptr always 0
+Line 81
+  "test.cpp" always "test.cpp"
+Line 82
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenrange.cpp" always "cppcheck-2.8/test/testtokenrange.cpp"
+  82 always 82
+  "" always ""
+  nullptr always 0
+  nullptr always 0
+Line 86
+  "void a(){} void main(){ if(true){a();} }" always "void a(){} void main(){ if(true){a();} }"
+Line 87
+  nullptr always 0
+Line 88
+  "test.cpp" always "test.cpp"
+Line 89
+  4 always 4
+Line 90
+  8 always 8
+Line 91
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenrange.cpp" always "cppcheck-2.8/test/testtokenrange.cpp"
+  91 always 91
+  "" always ""
+Line 95
+  "void a(){} void main(){ if(true){a();} }" always "void a(){} void main(){ if(true){a();} }"
+Line 96
+  nullptr always 0
+Line 97
+  "test.cpp" always "test.cpp"
+Line 98
+  4 always 4
+Line 99
+  10 always 10
+Line 100
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenrange.cpp" always "cppcheck-2.8/test/testtokenrange.cpp"
+  100 always 100
+  "" always ""
+Line 105
+  & {lifetime[Address]=(settings),!0}
+  nullptr always 0
+Line 106
+  "void a(){} void main(){ if(true){a();} }" always "void a(){} void main(){ if(true){a();} }"
+Line 107
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenrange.cpp" always "cppcheck-2.8/test/testtokenrange.cpp"
+  107 always 107
+  "test.cpp" always "test.cpp"
+Line 110
+  3 always 3
+Line 116
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenrange.cpp" always "cppcheck-2.8/test/testtokenrange.cpp"
+  116 always 116
+  "a();" always "a();"
+Line 120
+  "void a(){} void main(){ if(true){a();} }" always "void a(){} void main(){ if(true){a();} }"
+Line 121
+  nullptr always 0
+Line 122
+  "test.cpp" always "test.cpp"
+Line 123
+  nullptr always 0
+Line 124
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenrange.cpp" always "cppcheck-2.8/test/testtokenrange.cpp"
+  124 always 124
+  true always 1
+  ( always {!<=-1,!>=2}
+  true always 1
+Line 127
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenrange.cpp" always "cppcheck-2.8/test/testtokenrange.cpp"
+  127 always 127
+  true always 1
+  ( always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+  "true" always "true"
+Line 130
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenrange.cpp" always "cppcheck-2.8/test/testtokenrange.cpp"
+  130 always 130
+  "true" always "true"
+  == always {!<=-1,!>=2}
+  "true" always "true"
+Line 133
+  ! always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testtokenrange.cpp" always "cppcheck-2.8/test/testtokenrange.cpp"
+  133 always 133
+  3 always 3
+  == always {!<=-1,!>=2}
+  "{" always "{"

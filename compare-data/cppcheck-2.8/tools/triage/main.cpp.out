@@ -1,0 +1,68 @@
+
+
+##file cppcheck-2.8/tools/triage/mainwindow.h
+
+1:
+|
+26:
+27: class QListWidgetItem ;
+28: class QTextStream ;
+29: namespace Ui {
+30: class MainWindow ;
+31: }
+32:
+33: class MainWindow : public QMainWindow {
+34: Q_OBJECT
+35:
+36: public:
+37: explicit MainWindow ( QWidget * parent = nullptr ) ;
+38: MainWindow ( const MainWindow & ) = delete ;
+39: MainWindow & operator = ( const MainWindow & ) = delete ;
+40: ~ MainWindow ( ) override ;
+41:
+42: public slots :
+43: void loadFile ( ) ;
+44: void loadFromClipboard ( ) ;
+45: void filter ( const QString & filter ) ;
+46: void showResult ( QListWidgetItem * item ) ;
+47: void refreshResults ( ) ;
+48: void fileTreeFilter ( const QString & str ) ;
+49: void findInFilesClicked ( ) ;
+50: void directorytreeDoubleClick ( ) ;
+51: void searchResultsDoubleClick ( ) ;
+52: void resultsContextMenu ( const QPoint & pos ) ;
+53:
+54: private:
+55: Ui :: MainWindow * ui ;
+56:
+57: void load ( QTextStream & textStream ) ;
+58: bool runProcess ( const QString & programName , const QStringList & arguments ) ;
+59: bool wget ( const QString & url ) ;
+60: bool unpackArchive ( const QString & archiveName ) ;
+61: void showSrcFile ( const QString & fileName , const QString & url , const int lineNumber ) ;
+62:
+63: QStringList mAllErrors ;
+64: QFileSystemModel mFSmodel ;
+65: const QRegularExpression mVersionRe ;
+66:
+67: const QStringList hFiles ;
+68: const QStringList srcFiles ;
+69: } ;
+
+##file cppcheck-2.8/tools/triage/main.cpp
+
+1:
+|
+22:
+23: int main ( int argc , char * argv [ ] )
+24: {
+25: QApplication a ( argc , argv ) ;
+26: MainWindow w ;
+27: w . show ( ) ;
+28:
+29: return QApplication :: exec ( ) ;
+30: }
+
+
+
+##Value flow

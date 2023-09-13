@@ -1,0 +1,202 @@
+
+
+##file cppcheck-2.8/gui/applicationdialog.h
+
+1:
+|
+24:
+25: class QObject ;
+26: class QWidget ;
+27: class Application ;
+28: namespace Ui {
+29: class ApplicationDialog ;
+30: }
+31:
+|
+40:
+41: class ApplicationDialog : public QDialog {
+42: Q_OBJECT
+43:
+44: public:
+45:
+|
+50:
+51: ApplicationDialog ( const QString & title ,
+52: Application & app ,
+53: QWidget * parent = nullptr ) ;
+54: ~ ApplicationDialog ( ) override ;
+55:
+56: protected slots :
+57:
+58: void ok ( ) ;
+59:
+|
+63:
+64: void browse ( ) ;
+65:
+66: protected:
+67:
+|
+71:
+72: Ui :: ApplicationDialog * mUI ;
+73:
+74: private:
+75:
+|
+78:
+79: Application & mApplication ;
+80: } ;
+
+##file cppcheck-2.8/gui/application.h
+
+1:
+|
+42:
+43: class Application {
+44: public:
+45: Application ( ) { }
+46: Application ( const QString & name , const QString & path , const QString & params ) ;
+47:
+|
+51:
+52: QString getName ( ) const {
+53: return mName ;
+54: }
+55:
+|
+59:
+60: QString getPath ( ) const {
+61: return mPath ;
+62: }
+63:
+|
+67:
+68: QString getParameters ( ) const {
+69: return mParameters ;
+70: }
+71:
+|
+75:
+76: void setName ( const QString & name ) {
+77: mName = name ;
+78: }
+79:
+|
+83:
+84: void setPath ( const QString & path ) {
+85: mPath = path ;
+86: }
+87:
+|
+91:
+92: void setParameters ( const QString & parameters ) {
+93: mParameters = parameters ;
+94: }
+95:
+96: private:
+97:
+|
+100:
+101: QString mName ;
+102:
+|
+105:
+106: QString mPath ;
+107:
+|
+110:
+111: QString mParameters ;
+112: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type , const QString & value ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters , bool addAllSupported = true , bool addAll = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/applicationdialog.cpp
+
+1:
+|
+31:
+32: ApplicationDialog :: ApplicationDialog ( const QString & title ,
+33: Application & app ,
+34: QWidget * parent ) :
+35: QDialog ( parent ) ,
+36: mUI ( new Ui :: ApplicationDialog ) ,
+37: mApplication ( app )
+38: {
+39: mUI . setupUi ( this ) ;
+40:
+41: connect ( mUI . mButtonBrowse , & QPushButton :: clicked , this , & ApplicationDialog :: browse ) ;
+42: connect ( mUI . mButtons , & QDialogButtonBox :: accepted , this , & ApplicationDialog :: ok ) ;
+43: connect ( mUI . mButtons , & QDialogButtonBox :: rejected , this , & ApplicationDialog :: reject ) ;
+44: mUI . mPath . setText ( app . getPath ( ) ) ;
+45: mUI . mName . setText ( app . getName ( ) ) ;
+46: mUI . mParameters . setText ( app . getParameters ( ) ) ;
+47: setWindowTitle ( title ) ;
+48: adjustSize ( ) ;
+49: }
+50:
+51:
+52: ApplicationDialog :: ~ ApplicationDialog ( )
+53: {
+54: delete mUI ;
+55: }
+56:
+57: void ApplicationDialog :: browse ( )
+58: {
+59: QString filter ;
+60:
+|
+64:
+65: QString selectedFile ; selectedFile = QFileDialog :: getOpenFileName ( this ,
+66: tr ( "Select viewer application" ) ,
+67: getPath ( $"Last application path" ) ,
+68: filter ) ;
+69:
+70: if ( ! selectedFile . isEmpty ( ) ) {
+71: setPath ( $"Last application path" , selectedFile ) ;
+72: QString path ( QDir :: toNativeSeparators ( selectedFile ) ) ;
+73: mUI . mPath . setText ( path ) ;
+74: }
+75: }
+76:
+77: void ApplicationDialog :: ok ( )
+78: {
+79: if ( mUI . mName . text ( ) . isEmpty ( ) || mUI . mPath . text ( ) . isEmpty ( ) ) {
+80: QMessageBox msg ( QMessageBox :: Warning ,
+81: tr ( "Cppcheck" ) ,
+82: tr ( "You must specify a name, a path and optionally parameters for the application!" ) ,
+83: QMessageBox :: Ok ,
+84: this ) ;
+85:
+86: msg . exec ( ) ;
+87:
+88: reject ( ) ;
+89: } else {
+90:
+91: mApplication . setName ( mUI . mName . text ( ) ) ;
+92: mApplication . setPath ( QDir :: fromNativeSeparators ( mUI . mPath . text ( ) ) ) ;
+93: mApplication . setParameters ( mUI . mParameters . text ( ) ) ;
+94:
+95: accept ( ) ;
+96: }
+97: }
+
+
+
+##Value flow

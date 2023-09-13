@@ -1,0 +1,1688 @@
+
+
+##file cppcheck-2.8/gui/report.h
+
+1:
+|
+25:
+26: class ErrorItem ;
+27:
+|
+33:
+34: class Report : public QObject {
+35: public:
+36: enum Type {
+37: TXT ,
+38: XMLV2 ,
+39: CSV ,
+40: } ;
+41:
+42: explicit Report ( const QString & filename ) ;
+43: ~ Report ( ) override ;
+44:
+|
+48:
+49: virtual bool create ( ) ;
+50:
+|
+54:
+55: virtual bool open ( ) ;
+56:
+|
+59:
+60: void close ( ) ;
+61:
+|
+64:
+65: virtual void writeHeader ( ) = 0 ;
+66:
+|
+69:
+70: virtual void writeFooter ( ) = 0 ;
+71:
+|
+75:
+76: virtual void writeError ( const ErrorItem & error ) = 0 ;
+77:
+78: protected:
+79:
+|
+82:
+83: QFile * getFile ( ) ;
+84:
+85: private:
+86:
+|
+89:
+90: QString mFilename ;
+91:
+|
+94:
+95: QFile mFile ;
+96: } ;
+
+##file cppcheck-2.8/gui/showtypes.h
+
+1:
+|
+37:
+38: class ShowTypes {
+39: public:
+40:
+|
+43:
+44: enum ShowType {
+45: ShowStyle = 0 ,
+46: ShowWarnings ,
+47: ShowPerformance ,
+48: ShowPortability ,
+49: ShowInformation ,
+50: ShowErrors ,
+51: ShowNone
+52: } ;
+53:
+|
+57:
+58: ShowTypes ( ) ;
+59:
+|
+63:
+64: ~ ShowTypes ( ) ;
+65:
+|
+68:
+69: void load ( ) ;
+70:
+|
+73:
+74: void save ( ) const ;
+75:
+|
+80:
+81: bool isShown ( ShowTypes :: ShowType category ) const ;
+82:
+|
+87:
+88: bool isShown ( Severity :: SeverityType severity ) const ;
+89:
+|
+94:
+95: void show ( ShowTypes :: ShowType category , bool showing ) ;
+96:
+|
+101:
+102: static ShowTypes :: ShowType SeverityToShowType ( Severity :: SeverityType severity ) ;
+103:
+|
+108:
+109: static Severity :: SeverityType ShowTypeToSeverity ( ShowTypes :: ShowType type ) ;
+110:
+|
+116:
+117: static ShowTypes :: ShowType VariantToShowType ( const QVariant & data ) ;
+118:
+119: bool mVisible [ ShowNone ] ;
+120: } ;
+
+##file cppcheck-2.8/gui/resultsview.h
+
+1:
+|
+29:
+30: class ErrorItem ;
+31: class ApplicationList ;
+32: class ThreadHandler ;
+33: class QModelIndex ;
+34: class QPrinter ;
+35: class QSettings ;
+36: class CheckStatistics ;
+37: class QObject ;
+38: class QPoint ;
+39: namespace Ui {
+40: class ResultsView ;
+41: }
+42:
+|
+49:
+50: class ResultsView : public QWidget {
+51: Q_OBJECT
+52: public:
+53:
+54: explicit ResultsView ( QWidget * parent = nullptr ) ;
+55: void initialize ( QSettings * settings , ApplicationList * list , ThreadHandler * checkThreadHandler ) ;
+56: ResultsView ( const ResultsView & ) = delete ;
+57: ~ ResultsView ( ) override ;
+58: ResultsView & operator = ( const ResultsView & ) = delete ;
+59:
+|
+63:
+64: void clear ( bool results ) ;
+65:
+|
+68:
+69: void clear ( const QString & filename ) ;
+70:
+|
+73:
+74: void clearRecheckFile ( const QString & filename ) ;
+75:
+|
+80:
+81: void saveStatistics ( const QString & filename ) const ;
+82:
+|
+88:
+89: void save ( const QString & filename , Report :: Type type ) const ;
+90:
+|
+93:
+94: void updateFromOldReport ( const QString & filename ) const ;
+95:
+|
+105:
+106: void updateSettings ( bool showFullPath ,
+107: bool saveFullPath ,
+108: bool saveAllErrors ,
+109: bool showNoErrorsMessage ,
+110: bool showErrorId ,
+111: bool showInconclusive ) ;
+112:
+|
+120:
+121: void updateStyleSetting ( QSettings * settings ) ;
+122:
+|
+128:
+129: void setCheckDirectory ( const QString & dir ) ;
+130:
+|
+136:
+137: QString getCheckDirectory ( ) ;
+138:
+|
+143:
+144: void checkingStarted ( int count ) ;
+145:
+|
+149:
+150: void checkingFinished ( ) ;
+151:
+|
+156:
+157: bool hasVisibleResults ( ) const ;
+158:
+|
+163:
+164: bool hasResults ( ) const ;
+165:
+|
+170:
+171: void saveSettings ( QSettings * settings ) ;
+172:
+|
+176:
+177: void translate ( ) ;
+178:
+179: void disableProgressbar ( ) ;
+180:
+|
+185:
+186: void readErrorsXml ( const QString & filename ) ;
+187:
+|
+191:
+192: CheckStatistics * getStatistics ( ) const {
+193: return mStatistics ;
+194: }
+195:
+|
+199:
+200: ShowTypes * getShowTypes ( ) const ;
+201:
+202: signals :
+203:
+|
+207:
+208: void gotResults ( ) ;
+209:
+|
+214:
+215: void resultsHidden ( bool hidden ) ;
+216:
+|
+221:
+222: void checkSelected ( QStringList selectedFilesList ) ;
+223:
+224:
+225: void suppressIds ( QStringList ids ) ;
+226:
+|
+233:
+234: void showResults ( ShowTypes :: ShowType type , bool show ) ;
+235:
+|
+241:
+242: void showCppcheckResults ( bool show ) ;
+243:
+|
+249:
+250: void showClangResults ( bool show ) ;
+251:
+|
+254:
+255: void collapseAllResults ( ) ;
+256:
+|
+259:
+260: void expandAllResults ( ) ;
+261:
+|
+264:
+265: void showHiddenResults ( ) ;
+266:
+267: public slots :
+268:
+|
+274:
+275: void progress ( int value , const QString & description ) ;
+276:
+|
+281:
+282: void error ( const ErrorItem & item ) ;
+283:
+|
+286:
+287: void filterResults ( const QString & filter ) ;
+288:
+|
+293:
+294: void updateDetails ( const QModelIndex & index ) ;
+295:
+|
+298:
+299: void print ( ) ;
+300:
+|
+304:
+305: void print ( QPrinter * printer ) ;
+306:
+|
+309:
+310: void printPreview ( ) ;
+311:
+|
+314:
+315: void log ( const QString & str ) ;
+316:
+|
+319:
+320: void debugError ( const ErrorItem & item ) ;
+321:
+|
+324:
+325: void logClear ( ) ;
+326:
+|
+329:
+330: void logCopyEntry ( ) ;
+331:
+|
+334:
+335: void logCopyComplete ( ) ;
+336:
+337: protected:
+338:
+339:
+340:
+341: bool mShowNoErrorsMessage ;
+342:
+343: Ui :: ResultsView * mUI ;
+344:
+345: CheckStatistics * mStatistics ;
+346:
+347: private slots :
+348:
+|
+351:
+352: void on_mListLog_customContextMenuRequested ( const QPoint & pos ) ;
+353: } ;
+
+##file cppcheck-2.8/gui/checkstatistics.h
+
+1:
+|
+33:
+34: class CheckStatistics : public QObject {
+35: public:
+36: explicit CheckStatistics ( QObject * parent = nullptr ) ;
+37:
+|
+43:
+44: void addItem ( const QString & tool , ShowTypes :: ShowType type ) ;
+45:
+|
+49:
+50: void clear ( ) ;
+51:
+|
+58:
+59: unsigned getCount ( const QString & tool , ShowTypes :: ShowType type ) const ;
+60:
+61:
+62: QStringList getTools ( ) const ;
+63:
+64: private:
+65: QMap < QString , unsigned > mStyle ;
+66: QMap < QString , unsigned > mWarning ;
+67: QMap < QString , unsigned > mPerformance ;
+68: QMap < QString , unsigned > mPortability ;
+69: QMap < QString , unsigned > mInformation ;
+70: QMap < QString , unsigned > mError ;
+71: } ;
+
+##file cppcheck-2.8/gui/codeeditor.h
+
+1:
+|
+25:
+26: class CodeEditorStyle ;
+27: class QObject ;
+28: class QPaintEvent ;
+29: class QRect ;
+30: class QResizeEvent ;
+31: class QTextDocument ;
+32:
+33: class Highlighter : public QSyntaxHighlighter {
+34: Q_OBJECT
+35:
+36: public:
+37: explicit Highlighter ( QTextDocument * parent ,
+38: CodeEditorStyle * widgetStyle ) ;
+39:
+40: void setSymbols ( const QStringList & symbols ) ;
+41:
+42: void setStyle ( const CodeEditorStyle & newStyle ) ;
+43:
+44: protected:
+45: void highlightBlock ( const QString & text ) override ;
+46:
+47: private:
+48: enum RuleRole {
+49: Keyword = 1 ,
+50: Class = 2 ,
+51: Comment = 3 ,
+52: Quote = 4 ,
+53: Symbol = 5
+54: } ;
+55: struct HighlightingRule {
+56: QRegularExpression pattern ;
+57: QTextCharFormat format ;
+58: RuleRole ruleRole ;
+59: } ;
+60:
+61: void applyFormat ( HighlightingRule & rule ) ;
+62:
+63: QVector < HighlightingRule > mHighlightingRules ;
+64: QVector < HighlightingRule > mHighlightingRulesWithSymbols ;
+65:
+66: QRegularExpression mCommentStartExpression ;
+67: QRegularExpression mCommentEndExpression ;
+68:
+69: QTextCharFormat mKeywordFormat ;
+70: QTextCharFormat mClassFormat ;
+71: QTextCharFormat mSingleLineCommentFormat ;
+72: QTextCharFormat mMultiLineCommentFormat ;
+73: QTextCharFormat mQuotationFormat ;
+74: QTextCharFormat mSymbolFormat ;
+75:
+76: CodeEditorStyle * mWidgetStyle ;
+77: } ;
+78:
+79: class CodeEditor : public QPlainTextEdit {
+80: Q_OBJECT
+81:
+82: public:
+83: explicit CodeEditor ( QWidget * parent ) ;
+84: CodeEditor ( const CodeEditor & ) = delete ;
+85: CodeEditor & operator = ( const CodeEditor & ) = delete ;
+86: ~ CodeEditor ( ) override ;
+87:
+88: void lineNumberAreaPaintEvent ( QPaintEvent * event ) ;
+89: int lineNumberAreaWidth ( ) ;
+90: void setStyle ( const CodeEditorStyle & newStyle ) ;
+91:
+|
+97:
+98: void setError ( const QString & code , int errorLine , const QStringList & symbols ) ;
+99:
+|
+104:
+105: void setError ( int errorLine , const QStringList & symbols ) ;
+106:
+107: void setFileName ( const QString & fileName ) {
+108: mFileName = fileName ;
+109: }
+110:
+111: QString getFileName ( ) const {
+112: return mFileName ;
+113: }
+114:
+115: void clear ( ) {
+116: mFileName . clear ( ) ;
+117: setPlainText ( QString ( ) ) ;
+118: }
+119:
+120: protected:
+121: void resizeEvent ( QResizeEvent * event ) override ;
+122:
+123: private slots :
+124: void updateLineNumberAreaWidth ( int newBlockCount ) ;
+125: void highlightErrorLine ( ) ;
+126: void updateLineNumberArea ( const QRect & , int ) ;
+127:
+128: private:
+129: QString generateStyleString ( ) ;
+130:
+131: private:
+132: QWidget * mLineNumberArea ;
+133: Highlighter * mHighlighter ;
+134: CodeEditorStyle * mWidgetStyle ;
+135: int mErrorPosition ;
+136: QString mFileName ;
+137: } ;
+138:
+139:
+140: class LineNumberArea : public QWidget {
+141: public:
+142: explicit LineNumberArea ( CodeEditor * editor ) : QWidget ( editor ) {
+143: mCodeEditor = editor ;
+144: }
+145:
+146: QSize sizeHint ( ) const override {
+147: return QSize ( mCodeEditor . lineNumberAreaWidth ( ) , 0 ) ;
+148: }
+149:
+150: protected:
+151: void paintEvent ( QPaintEvent * event ) override {
+152: mCodeEditor . lineNumberAreaPaintEvent ( event ) ;
+153: }
+154:
+155: private:
+156: CodeEditor * mCodeEditor ;
+157: } ;
+
+##file cppcheck-2.8/gui/codeeditorstyle.h
+
+1:
+|
+25:
+26: const QString SETTINGS_STYLE_GROUP ( "EditorStyle" ) ;
+27: const QString SETTINGS_STYLE_TYPE ( "StyleType" ) ;
+28: const QString SETTINGS_STYLE_TYPE_LIGHT ( "DefaultLight" ) ;
+29: const QString SETTINGS_STYLE_TYPE_DARK ( "DefaultDark" ) ;
+30: const QString SETTINGS_STYLE_TYPE_CUSTOM ( "Custom" ) ;
+31: const QString SETTINGS_STYLE_WIDGETFG ( "StyleWidgetFG" ) ;
+32: const QString SETTINGS_STYLE_WIDGETBG ( "StyleWidgetBG" ) ;
+33: const QString SETTINGS_STYLE_HILIFG ( "StyleHighlightFG" ) ;
+34: const QString SETTINGS_STYLE_LINENUMFG ( "StyleLineNumFG" ) ;
+35: const QString SETTINGS_STYLE_LINENUMBG ( "StyleLineNumBG" ) ;
+36: const QString SETTINGS_STYLE_KEYWORDFG ( "StyleKeywordFG" ) ;
+37: const QString SETTINGS_STYLE_KEYWORDWT ( "StyleKeywordWeight" ) ;
+38: const QString SETTINGS_STYLE_CLASSFG ( "StyleClassFG" ) ;
+39: const QString SETTINGS_STYLE_CLASSWT ( "StyleClassWeight" ) ;
+40: const QString SETTINGS_STYLE_QUOTEFG ( "StyleQuoteFG" ) ;
+41: const QString SETTINGS_STYLE_QUOTEWT ( "StyleQuoteWeight" ) ;
+42: const QString SETTINGS_STYLE_COMMENTFG ( "StyleCommentFG" ) ;
+43: const QString SETTINGS_STYLE_COMMENTWT ( "StyleCommentWeight" ) ;
+44: const QString SETTINGS_STYLE_SYMBOLFG ( "StyleSymbolFG" ) ;
+45: const QString SETTINGS_STYLE_SYMBOLBG ( "StyleSymbolBG" ) ;
+46: const QString SETTINGS_STYLE_SYMBOLWT ( "StyleSymbolWeight" ) ;
+47:
+48: class QSettings ;
+49:
+50: class CodeEditorStyle {
+51: public:
+52: explicit CodeEditorStyle (
+53: const QColor & CtrlFGColor , const QColor & CtrlBGColor ,
+54: const QColor & HiLiBGColor ,
+55: const QColor & LnNumFGColor , const QColor & LnNumBGColor ,
+56: const QColor & KeyWdFGColor , const QFont :: Weight & KeyWdWeight ,
+57: const QColor & ClsFGColor , const QFont :: Weight & ClsWeight ,
+58: const QColor & QteFGColor , const QFont :: Weight & QteWeight ,
+59: const QColor & CmtFGColor , const QFont :: Weight & CmtWeight ,
+60: const QColor & SymbFGColor , const QColor & SymbBGColor ,
+61: const QFont :: Weight & SymbWeight ) ;
+62: ~ CodeEditorStyle ( ) { }
+63:
+64: bool operator == ( const CodeEditorStyle & rhs ) const ;
+65: bool operator != ( const CodeEditorStyle & rhs ) const ;
+66:
+67: bool isSystemTheme ( ) const {
+68: return mSystemTheme ;
+69: }
+70:
+71: static CodeEditorStyle getSystemTheme ( ) ;
+72: static CodeEditorStyle loadSettings ( QSettings * settings ) ;
+73: static void saveSettings ( QSettings * settings , const CodeEditorStyle & theStyle ) ;
+74:
+75: public:
+76: bool mSystemTheme ;
+77: QColor widgetFGColor ;
+78: QColor widgetBGColor ;
+79: QColor highlightBGColor ;
+80: QColor lineNumFGColor ;
+81: QColor lineNumBGColor ;
+82: QColor keywordColor ;
+83: QFont :: Weight keywordWeight ;
+84: QColor classColor ;
+85: QFont :: Weight classWeight ;
+86: QColor quoteColor ;
+87: QFont :: Weight quoteWeight ;
+88: QColor commentColor ;
+89: QFont :: Weight commentWeight ;
+90: QColor symbolFGColor ;
+91: QColor symbolBGColor ;
+92: QFont :: Weight symbolWeight ;
+93: } ;
+94:
+95: static const CodeEditorStyle defaultStyleLight (
+96: Qt :: black , QColor ( 240 , 240 , 240 ) ,
+97: QColor ( 255 , 220 , 220 ) ,
+98: Qt :: black , QColor ( 240 , 240 , 240 ) ,
+99: Qt :: darkBlue , QFont :: Bold ,
+100: Qt :: darkMagenta , QFont :: Bold ,
+101: Qt :: darkGreen , QFont :: Normal ,
+102: Qt :: gray , QFont :: Normal ,
+103: Qt :: red , QColor ( 220 , 220 , 255 ) , QFont :: Normal
+104: ) ;
+105:
+106:
+107:
+108: static const CodeEditorStyle defaultStyleDark (
+109: QColor ( 218 , 218 , 218 ) , QColor ( 16 , 16 , 32 ) ,
+110: QColor ( 64 , 64 , 64 ) ,
+111: QColor ( 43 , 145 , 175 ) , QColor ( 16 , 16 , 32 ) ,
+112: QColor ( 0 , 204 , 204 ) , QFont :: Bold ,
+113: QColor ( 218 , 0 , 218 ) , QFont :: Bold ,
+114: QColor ( 0 , 204 , 0 ) , QFont :: Normal ,
+115: QColor ( 180 , 180 , 180 ) , QFont :: Normal ,
+116: QColor ( 218 , 32 , 32 ) , QColor ( 32 , 32 , 108 ) , QFont :: Normal
+117: ) ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type , const QString & value ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters , bool addAllSupported = true , bool addAll = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/csvreport.h
+
+1:
+|
+26:
+27: class ErrorItem ;
+28:
+|
+38:
+39: class CsvReport : public Report {
+40: public:
+41: explicit CsvReport ( const QString & filename ) ;
+42: ~ CsvReport ( ) override ;
+43:
+|
+47:
+48: virtual bool create ( ) override ;
+49:
+|
+52:
+53: virtual void writeHeader ( ) override ;
+54:
+|
+57:
+58: virtual void writeFooter ( ) override ;
+59:
+|
+63:
+64: virtual void writeError ( const ErrorItem & error ) override ;
+65:
+66: private:
+67:
+|
+70:
+71: QTextStream mTxtWriter ;
+72: } ;
+
+##file cppcheck-2.8/gui/erroritem.h
+
+1:
+|
+36:
+37: class GuiSeverity {
+38: public:
+39: static QString toString ( Severity :: SeverityType severity ) {
+40: return QString :: fromStdString ( Severity :: toString ( severity ) ) ;
+41: }
+42:
+43: static Severity :: SeverityType fromString ( const QString & severity ) {
+44: return Severity :: fromString ( severity . toStdString ( ) ) ;
+45: }
+46: } ;
+47:
+|
+50:
+51: class QErrorPathItem {
+52: public:
+53: QErrorPathItem ( ) : line ( 0 ) , column ( -1 ) { }
+54: explicit QErrorPathItem ( const ErrorMessage :: FileLocation & loc ) ;
+55: QString file ;
+56: int line ;
+57: int column ;
+58: QString info ;
+59: } ;
+60:
+61: bool operator == ( const QErrorPathItem & i1 , const QErrorPathItem & i2 ) ;
+62:
+|
+70:
+71: class ErrorItem {
+72: public:
+73: ErrorItem ( ) ;
+74: explicit ErrorItem ( const ErrorMessage & errmsg ) ;
+75:
+|
+79:
+80: QString toString ( ) const ;
+81: QString tool ( ) const ;
+82:
+83: QString file0 ;
+84: QString function ;
+85: QString errorId ;
+86: Severity :: SeverityType severity ;
+87: bool incomplete ;
+88: bool inconclusive ;
+89: QString summary ;
+90: QString message ;
+91: int cwe ;
+92: unsigned long long hash ;
+93: QList < QErrorPathItem > errorPath ;
+94: QString symbolNames ;
+95:
+96:
+97: QString sinceDate ;
+98: QString tags ;
+99:
+|
+102:
+103: static bool sameCID ( const ErrorItem & errorItem1 , const ErrorItem & errorItem2 ) ;
+104: } ;
+105:
+|
+110:
+111: class ErrorLine {
+112: public:
+113: QString file ;
+114: int line ;
+115: QString file0 ;
+116: QString errorId ;
+117: bool incomplete ;
+118: int cwe ;
+119: unsigned long long hash ;
+120: bool inconclusive ;
+121: Severity :: SeverityType severity ;
+122: QString summary ;
+123: QString message ;
+124: QString sinceDate ;
+125: QString tags ;
+126: } ;
+
+##file cppcheck-2.8/gui/printablereport.h
+
+1:
+|
+23:
+24: class ErrorItem ;
+25:
+|
+33:
+34: class PrintableReport : public Report {
+35: public:
+36: PrintableReport ( ) ;
+37: ~ PrintableReport ( ) override ;
+38:
+|
+42:
+43: virtual bool create ( ) override ;
+44:
+|
+47:
+48: virtual void writeHeader ( ) override ;
+49:
+|
+52:
+53: virtual void writeFooter ( ) override ;
+54:
+|
+58:
+59: virtual void writeError ( const ErrorItem & error ) override ;
+60:
+|
+63:
+64: QString getFormattedReportText ( ) const ;
+65:
+66: private:
+67:
+|
+70:
+71: QString mFormattedReport ;
+72: } ;
+
+##file cppcheck-2.8/gui/resultstree.h
+
+1:
+|
+28:
+29: class ApplicationList ;
+30: class Report ;
+31: class ErrorItem ;
+32: class ErrorLine ;
+33: class QModelIndex ;
+34: class QWidget ;
+35: class QItemSelectionModel ;
+36: class ThreadHandler ;
+37: class QContextMenuEvent ;
+38: class QKeyEvent ;
+39: class QObject ;
+40: class QSettings ;
+41:
+|
+49:
+50: class ResultsTree : public QTreeView {
+51: Q_OBJECT
+52: public:
+53: explicit ResultsTree ( QWidget * parent = nullptr ) ;
+54: ~ ResultsTree ( ) override ;
+55: void initialize ( QSettings * settings , ApplicationList * list , ThreadHandler * checkThreadHandler ) ;
+56:
+|
+61:
+62: bool addErrorItem ( const ErrorItem & item ) ;
+63:
+|
+67:
+68: void clear ( ) ;
+69:
+|
+72:
+73: void clear ( const QString & filename ) ;
+74:
+|
+77:
+78: void clearRecheckFile ( const QString & filename ) ;
+79:
+|
+85:
+86: void filterResults ( const QString & filter ) ;
+87:
+|
+90:
+91: void showHiddenResults ( ) ;
+92:
+|
+96:
+97: void refreshTree ( ) ;
+98:
+|
+102:
+103: void saveResults ( Report * report ) const ;
+104:
+|
+107:
+108: void updateFromOldReport ( const QString & filename ) ;
+109:
+|
+118:
+119: void updateSettings ( bool showFullPath , bool saveFullPath , bool saveAllErrors , bool showErrorId , bool showInconclusive ) ;
+120:
+|
+126:
+127: void setCheckDirectory ( const QString & dir ) ;
+128:
+|
+134:
+135: QString getCheckDirectory ( ) ;
+136:
+|
+140:
+141: bool hasVisibleResults ( ) const ;
+142:
+|
+146:
+147: bool hasResults ( ) const ;
+148:
+|
+152:
+153: void saveSettings ( ) const ;
+154:
+|
+158:
+159: void translate ( ) ;
+160:
+|
+163:
+164: void showIdColumn ( bool show ) ;
+165:
+|
+168:
+169: void showInconclusiveColumn ( bool show ) ;
+170:
+|
+173:
+174: bool showIdColumn ( ) const {
+175: return mShowErrorId ;
+176: }
+177:
+|
+180:
+181: ShowTypes mShowSeverities ;
+182:
+183: void keyPressEvent ( QKeyEvent * event ) override ;
+184:
+185: signals :
+186:
+|
+190:
+191: void resultsHidden ( bool hidden ) ;
+192:
+|
+197:
+198: void checkSelected ( QStringList selectedItems ) ;
+199:
+|
+204:
+205: void treeSelectionChanged ( const QModelIndex & current ) ;
+206:
+207:
+208: void suppressIds ( QStringList ids ) ;
+209:
+210: public slots :
+211:
+|
+218:
+219: void showResults ( ShowTypes :: ShowType type , bool show ) ;
+220:
+|
+227:
+228: void showCppcheckResults ( bool show ) ;
+229:
+|
+235:
+236: void showClangResults ( bool show ) ;
+237:
+238: protected slots :
+239:
+|
+243:
+244: void quickStartApplication ( const QModelIndex & index ) ;
+245:
+|
+250:
+251: void context ( int application ) ;
+252:
+|
+255:
+256: void copy ( ) ;
+257:
+|
+261:
+262: void hideResult ( ) ;
+263:
+|
+267:
+268: void recheckSelectedFiles ( ) ;
+269:
+|
+273:
+274: void hideAllIdResult ( ) ;
+275:
+276:
+277: void suppressSelectedIds ( ) ;
+278:
+279:
+280: void suppressHash ( ) ;
+281:
+|
+284:
+285: void openContainingFolder ( ) ;
+286:
+|
+292:
+293: void currentChanged ( const QModelIndex & current , const QModelIndex & previous ) override ;
+294:
+295: protected:
+296:
+|
+300:
+301: void refreshFilePaths ( ) ;
+302:
+|
+306:
+307: void refreshFilePaths ( QStandardItem * item ) ;
+308:
+|
+316:
+317: QString stripPath ( const QString & path , bool saving ) const ;
+318:
+|
+324:
+325: void saveErrors ( Report * report , const QStandardItem * fileItem ) const ;
+326:
+|
+331:
+332: QString severityToIcon ( Severity :: SeverityType severity ) const ;
+333:
+|
+340:
+341: void startApplication ( QStandardItem * target , int application = -1 ) ;
+342:
+|
+348:
+349: void copyPathToClipboard ( QStandardItem * target , bool fullPath ) ;
+350:
+|
+356:
+357: QString getFilePath ( QStandardItem * target , bool fullPath ) ;
+358:
+|
+363:
+364: void contextMenuEvent ( QContextMenuEvent * e ) override ;
+365:
+|
+375:
+376: QStandardItem * addBacktraceFiles ( QStandardItem * parent ,
+377: const ErrorLine & item ,
+378: const bool hide ,
+379: const QString & icon ,
+380: bool childOfMessage ) ;
+381:
+|
+386:
+387: static QString severityToTranslatedString ( Severity :: SeverityType severity ) ;
+388:
+|
+392:
+393: void loadSettings ( ) ;
+394:
+|
+399:
+400: QString askFileDir ( const QString & file ) ;
+401:
+|
+408:
+409: static QStandardItem * createNormalItem ( const QString & name ) ;
+410:
+|
+417:
+418: static QStandardItem * createCheckboxItem ( bool checked ) ;
+419:
+|
+426:
+427: static QStandardItem * createLineNumberItem ( const QString & linenumber ) ;
+428:
+|
+434:
+435: QStandardItem * findFileItem ( const QString & name ) const ;
+436:
+|
+445:
+446: QStandardItem * ensureFileItem ( const QString & fullpath , const QString & file0 , bool hide ) ;
+447:
+|
+451:
+452: QStandardItemModel mModel ;
+453:
+|
+457:
+458: QSettings * mSettings ;
+459:
+|
+463:
+464: QString mFilter ;
+465:
+|
+469:
+470: ApplicationList * mApplications ;
+471:
+|
+475:
+476: QStandardItem * mContextItem ;
+477:
+|
+481:
+482: bool mShowFullPath ;
+483:
+|
+487:
+488: bool mSaveFullPath ;
+489:
+|
+493:
+494: bool mSaveAllErrors ;
+495:
+|
+499:
+500: bool mShowErrorId ;
+501:
+|
+505:
+506: QString mCheckPath ;
+507:
+|
+511:
+512: bool mVisibleErrors ;
+513:
+514: private:
+515:
+516: void tagSelectedItems ( const QString & tag ) ;
+517:
+518:
+519: void readErrorItem ( const QStandardItem * error , ErrorItem * item ) const ;
+520:
+521: QStringList mHiddenMessageId ;
+522:
+523: QItemSelectionModel * mSelectionModel ;
+524: ThreadHandler * mThread ;
+525:
+526: bool mShowCppcheck ;
+527: bool mShowClang ;
+528: } ;
+
+##file cppcheck-2.8/gui/txtreport.h
+
+1:
+|
+26:
+27: class ErrorItem ;
+28: class QObject ;
+29:
+|
+37:
+38: class TxtReport : public Report {
+39: Q_OBJECT
+40:
+41: public:
+42: explicit TxtReport ( const QString & filename ) ;
+43: ~ TxtReport ( ) override ;
+44:
+|
+48:
+49: virtual bool create ( ) override ;
+50:
+|
+53:
+54: virtual void writeHeader ( ) override ;
+55:
+|
+58:
+59: virtual void writeFooter ( ) override ;
+60:
+|
+64:
+65: virtual void writeError ( const ErrorItem & error ) override ;
+66:
+67: private:
+68:
+|
+71:
+72: QTextStream mTxtWriter ;
+73: } ;
+
+##file cppcheck-2.8/gui/xmlreport.h
+
+1:
+|
+26:
+27: class ErrorItem ;
+28:
+|
+35:
+36: class XmlReport : public Report {
+37: public:
+38: explicit XmlReport ( const QString & filename ) ;
+39:
+|
+42:
+43: virtual QList < ErrorItem > read ( ) = 0 ;
+44:
+|
+49:
+50: static QString quoteMessage ( const QString & message ) ;
+51:
+|
+56:
+57: static QString unquoteMessage ( const QString & message ) ;
+58:
+|
+63:
+64: static int determineVersion ( const QString & filename ) ;
+65: } ;
+
+##file cppcheck-2.8/gui/xmlreportv2.h
+
+1:
+|
+26:
+27: class QXmlStreamReader ;
+28: class QXmlStreamWriter ;
+29:
+|
+38:
+39: class XmlReportV2 : public XmlReport {
+40: public:
+41: explicit XmlReportV2 ( const QString & filename ) ;
+42: ~ XmlReportV2 ( ) override ;
+43:
+|
+47:
+48: virtual bool create ( ) override ;
+49:
+|
+52:
+53: virtual bool open ( ) override ;
+54:
+|
+57:
+58: virtual void writeHeader ( ) override ;
+59:
+|
+62:
+63: virtual void writeFooter ( ) override ;
+64:
+|
+68:
+69: virtual void writeError ( const ErrorItem & error ) override ;
+70:
+|
+73:
+74: virtual QList < ErrorItem > read ( ) override ;
+75:
+76: protected:
+77:
+|
+80:
+81: ErrorItem readError ( QXmlStreamReader * reader ) ;
+82:
+83: private:
+84:
+85:
+86:
+87: QXmlStreamReader * mXmlReader ;
+88:
+|
+91:
+92: QXmlStreamWriter * mXmlWriter ;
+93: } ;
+
+##file cppcheck-2.8/gui/resultsview.cpp
+
+1:
+|
+47:
+48: ResultsView :: ResultsView ( QWidget * parent ) :
+49: QWidget ( parent ) ,
+50: mShowNoErrorsMessage ( true ) ,
+51: mUI ( new Ui :: ResultsView ) ,
+52: mStatistics ( new CheckStatistics ( this ) )
+53: {
+54: mUI . setupUi ( this ) ;
+55:
+56: connect ( mUI . mTree , & ResultsTree :: resultsHidden , this , & ResultsView :: resultsHidden ) ;
+57: connect ( mUI . mTree , & ResultsTree :: checkSelected , this , & ResultsView :: checkSelected ) ;
+58: connect ( mUI . mTree , & ResultsTree :: treeSelectionChanged , this , & ResultsView :: updateDetails ) ;
+59: connect ( mUI . mTree , & ResultsTree :: suppressIds , this , & ResultsView :: suppressIds ) ;
+60: connect ( this , & ResultsView :: showResults , mUI . mTree , & ResultsTree :: showResults ) ;
+61: connect ( this , & ResultsView :: showCppcheckResults , mUI . mTree , & ResultsTree :: showCppcheckResults ) ;
+62: connect ( this , & ResultsView :: showClangResults , mUI . mTree , & ResultsTree :: showClangResults ) ;
+63: connect ( this , & ResultsView :: collapseAllResults , mUI . mTree , & ResultsTree :: collapseAll ) ;
+64: connect ( this , & ResultsView :: expandAllResults , mUI . mTree , & ResultsTree :: expandAll ) ;
+65: connect ( this , & ResultsView :: showHiddenResults , mUI . mTree , & ResultsTree :: showHiddenResults ) ;
+66:
+67: mUI . mListLog . setContextMenuPolicy ( Qt :: CustomContextMenu ) ;
+68: }
+69:
+70: void ResultsView :: initialize ( QSettings * settings , ApplicationList * list , ThreadHandler * checkThreadHandler )
+71: {
+72: mUI . mProgress . setMinimum ( 0 ) ;
+73: mUI . mProgress . setVisible ( false ) ;
+74:
+75: CodeEditorStyle theStyle ( CodeEditorStyle :: loadSettings ( settings ) ) ;
+76: mUI . mCode . setStyle ( theStyle ) ;
+77:
+78: QByteArray state ; state = settings . value ( $"Mainwindow/Vertical splitter state" ) . toByteArray ( ) ;
+79: mUI . mVerticalSplitter . restoreState ( state ) ;
+80: mShowNoErrorsMessage = settings . value ( $"Show no errors message" , true ) . toBool ( ) ;
+81:
+82: mUI . mTree . initialize ( settings , list , checkThreadHandler ) ;
+83: }
+84:
+85: ResultsView :: ~ ResultsView ( )
+86: {
+87: delete mUI ;
+88: }
+89:
+90: void ResultsView :: clear ( bool results )
+91: {
+92: if ( results ) {
+93: mUI . mTree . clear ( ) ;
+94: }
+95:
+96: mUI . mDetails . setText ( QString ( ) ) ;
+97:
+98: mStatistics . clear ( ) ;
+99:
+100:
+101: mUI . mProgress . setMaximum ( $1024.0 ) ;
+102: mUI . mProgress . setValue ( 0 ) ;
+103: mUI . mProgress . setFormat ( "%p%" ) ;
+104: }
+105:
+106: void ResultsView :: clear ( const QString & filename )
+107: {
+108: mUI . mTree . clear ( filename ) ;
+109: }
+110:
+111: void ResultsView :: clearRecheckFile ( const QString & filename )
+112: {
+113: mUI . mTree . clearRecheckFile ( filename ) ;
+114: }
+115:
+116: ShowTypes * ResultsView :: getShowTypes ( ) const
+117: {
+118: return & mUI . mTree . mShowSeverities ;
+119: }
+120:
+121: void ResultsView :: progress ( int value , const QString & description )
+122: {
+123: mUI . mProgress . setValue ( value ) ;
+124: mUI . mProgress . setFormat ( QString ( "%p% (%1)" ) . arg ( description ) ) ;
+125: }
+126:
+127: void ResultsView :: error ( const ErrorItem & item )
+128: {
+129: if ( mUI . mTree . addErrorItem ( item ) ) {
+130: emit gotResults ( ) ;
+131: mStatistics . addItem ( item . tool ( ) , ShowTypes :: SeverityToShowType ( item . severity ) ) ;
+132: }
+133: }
+134:
+135: void ResultsView :: filterResults ( const QString & filter )
+136: {
+137: mUI . mTree . filterResults ( filter ) ;
+138: }
+139:
+140: void ResultsView :: saveStatistics ( const QString & filename ) const
+141: {
+142: QFile f ( filename ) ;
+143: if ( ! f . open ( QIODevice :: Text | QIODevice :: Append ) ) {
+144: return ; }
+145: QTextStream ts ( & f ) ;
+146: ts << '[' << QDate :: currentDate ( ) . toString ( "dd.MM.yyyy" ) << "]\n" ;
+147: ts << QDateTime :: currentMSecsSinceEpoch ( ) << '\n' ;
+148: for ( const QString & tool : mStatistics . getTools ( ) ) {
+149: ts << tool << "-error:" << mStatistics . getCount ( tool , ShowTypes :: ShowErrors ) << '\n' ;
+150: ts << tool << "-warning:" << mStatistics . getCount ( tool , ShowTypes :: ShowWarnings ) << '\n' ;
+151: ts << tool << "-style:" << mStatistics . getCount ( tool , ShowTypes :: ShowStyle ) << '\n' ;
+152: ts << tool << "-performance:" << mStatistics . getCount ( tool , ShowTypes :: ShowPerformance ) << '\n' ;
+153: ts << tool << "-portability:" << mStatistics . getCount ( tool , ShowTypes :: ShowPortability ) << '\n' ;
+154: }
+155: }
+156:
+157: void ResultsView :: updateFromOldReport ( const QString & filename ) const
+158: {
+159: mUI . mTree . updateFromOldReport ( filename ) ;
+160: }
+161:
+162: void ResultsView :: save ( const QString & filename , Report :: Type type ) const
+163: {
+164: Report * report ; report = nullptr ;
+165:
+166: switch ( type ) {
+167: case Report :: CSV : ;
+168: report = new CsvReport ( filename ) ;
+169: break ;
+170: case Report :: TXT : ;
+171: report = new TxtReport ( filename ) ;
+172: break ;
+173: case Report :: XMLV2 : ;
+174: report = new XmlReportV2 ( filename ) ;
+175: break ;
+176: }
+177:
+178: if ( report ) {
+179: if ( report . create ( ) ) {
+180: mUI . mTree . saveResults ( report ) ; }
+181: else {
+182: QMessageBox msgBox ;
+183: msgBox . setText ( tr ( "Failed to save the report." ) ) ;
+184: msgBox . setIcon ( QMessageBox :: Critical ) ;
+185: msgBox . exec ( ) ;
+186: }
+187: delete report ;
+188: report = nullptr ;
+189: } else {
+190: QMessageBox msgBox ;
+191: msgBox . setText ( tr ( "Failed to save the report." ) ) ;
+192: msgBox . setIcon ( QMessageBox :: Critical ) ;
+193: msgBox . exec ( ) ;
+194: }
+195: }
+196:
+197: void ResultsView :: print ( )
+198: {
+199: QPrinter printer ;
+200: QPrintDialog dialog ( & printer , this ) ;
+201: dialog . setWindowTitle ( tr ( "Print Report" ) ) ;
+202: if ( dialog . exec ( ) != QDialog :: Accepted ) {
+203: return ; }
+204:
+205: print ( & printer ) ;
+206: }
+207:
+208: void ResultsView :: printPreview ( )
+209: {
+210: QPrinter printer ;
+211: QPrintPreviewDialog dialog ( & printer , this ) ;
+212: connect ( & dialog , SIGNAL ( paintRequested ( QPrinter * ) ) , SLOT ( print ( QPrinter * ) ) ) ;
+213: dialog . exec ( ) ;
+214: }
+215:
+216: void ResultsView :: print ( QPrinter * printer )
+217: {
+218: if ( ! hasResults ( ) ) {
+219: QMessageBox msgBox ;
+220: msgBox . setText ( tr ( "No errors found, nothing to print." ) ) ;
+221: msgBox . setIcon ( QMessageBox :: Critical ) ;
+222: msgBox . exec ( ) ;
+223: return ;
+224: }
+225:
+226: PrintableReport report ;
+227: mUI . mTree . saveResults ( & report ) ;
+228: QTextDocument doc ( report . getFormattedReportText ( ) ) ;
+229: doc . print ( printer ) ;
+230: }
+231:
+232: void ResultsView :: updateSettings ( bool showFullPath ,
+233: bool saveFullPath ,
+234: bool saveAllErrors ,
+235: bool showNoErrorsMessage ,
+236: bool showErrorId ,
+237: bool showInconclusive )
+238: {
+239: mUI . mTree . updateSettings ( showFullPath , saveFullPath , saveAllErrors , showErrorId , showInconclusive ) ;
+240: mShowNoErrorsMessage = showNoErrorsMessage ;
+241: }
+242:
+243: void ResultsView :: updateStyleSetting ( QSettings * settings )
+244: {
+245: CodeEditorStyle theStyle ( CodeEditorStyle :: loadSettings ( settings ) ) ;
+246: mUI . mCode . setStyle ( theStyle ) ;
+247: }
+248:
+249: void ResultsView :: setCheckDirectory ( const QString & dir )
+250: {
+251: mUI . mTree . setCheckDirectory ( dir ) ;
+252: }
+253:
+254: QString ResultsView :: getCheckDirectory ( )
+255: {
+256: return mUI . mTree . getCheckDirectory ( ) ;
+257: }
+258:
+259: void ResultsView :: checkingStarted ( int count )
+260: {
+261: mUI . mProgress . setVisible ( true ) ;
+262: mUI . mProgress . setMaximum ( $1024.0 ) ;
+263: mUI . mProgress . setValue ( 0 ) ;
+264: mUI . mProgress . setFormat ( tr ( "%p% (%1 of %2 files checked)" ) . arg ( 0 ) . arg ( count ) ) ;
+265: }
+266:
+267: void ResultsView :: checkingFinished ( )
+268: {
+269: mUI . mProgress . setVisible ( false ) ;
+270: mUI . mProgress . setFormat ( "%p%" ) ;
+271:
+272:
+273:
+274: mUI . mTree . refreshTree ( ) ;
+275:
+276:
+277: if ( mShowNoErrorsMessage ) {
+278:
+279: if ( ! hasResults ( ) ) {
+280: QMessageBox msg ( QMessageBox :: Information ,
+281: tr ( "Cppcheck" ) ,
+282: tr ( "No errors found." ) ,
+283: QMessageBox :: Ok ,
+284: this ) ;
+285:
+286: msg . exec ( ) ;
+287: }
+288: else if ( ! mUI . mTree . hasVisibleResults ( ) ) {
+289: QString text ; text = tr ( "Errors were found, but they are configured to be hidden.\nTo toggle what kind of errors are shown, open view menu." ) ;
+290:
+291: QMessageBox msg ( QMessageBox :: Information ,
+292: tr ( "Cppcheck" ) ,
+293: text ,
+294: QMessageBox :: Ok ,
+295: this ) ;
+296:
+297: msg . exec ( ) ;
+298: }
+299: }
+300: }
+301:
+302: bool ResultsView :: hasVisibleResults ( ) const
+303: {
+304: return mUI . mTree . hasVisibleResults ( ) ;
+305: }
+306:
+307: bool ResultsView :: hasResults ( ) const
+308: {
+309: return mUI . mTree . hasResults ( ) ;
+310: }
+311:
+312: void ResultsView :: saveSettings ( QSettings * settings )
+313: {
+314: mUI . mTree . saveSettings ( ) ;
+315: QByteArray state ; state = mUI . mVerticalSplitter . saveState ( ) ;
+316: settings . setValue ( $"Mainwindow/Vertical splitter state" , state ) ;
+317: mUI . mVerticalSplitter . restoreState ( state ) ;
+318: }
+319:
+320: void ResultsView :: translate ( )
+321: {
+322: mUI . retranslateUi ( this ) ;
+323: mUI . mTree . translate ( ) ;
+324: }
+325:
+326: void ResultsView :: disableProgressbar ( )
+327: {
+328: mUI . mProgress . setEnabled ( false ) ;
+329: }
+330:
+331: void ResultsView :: readErrorsXml ( const QString & filename )
+332: {
+333: const int version = XmlReport :: determineVersion ( filename ) ;
+334: if ( version == 0 ) {
+335: QMessageBox msgBox ;
+336: msgBox . setText ( tr ( "Failed to read the report." ) ) ;
+337: msgBox . setIcon ( QMessageBox :: Critical ) ;
+338: msgBox . exec ( ) ;
+339: return ;
+340: }
+341: if ( version == 1 ) {
+342: QMessageBox msgBox ;
+343: msgBox . setText ( tr ( "XML format version 1 is no longer supported." ) ) ;
+344: msgBox . setIcon ( QMessageBox :: Critical ) ;
+345: msgBox . exec ( ) ;
+346: return ;
+347: }
+348:
+349: XmlReportV2 report ( filename ) ;
+350: QList < ErrorItem > errors ;
+351: if ( report . open ( ) ) {
+352: errors = report . read ( ) ;
+353: } else {
+354: QMessageBox msgBox ;
+355: msgBox . setText ( tr ( "Failed to read the report." ) ) ;
+356: msgBox . setIcon ( QMessageBox :: Critical ) ;
+357: msgBox . exec ( ) ;
+358: }
+359:
+360: for ( const ErrorItem & item : errors ) {
+361: mUI . mTree . addErrorItem ( item ) ;
+362: }
+363:
+364: QString dir ;
+365: if ( ! errors . isEmpty ( ) && ! errors [ 0 ] . errorPath . isEmpty ( ) ) {
+366: QString relativePath ; relativePath = QFileInfo ( filename ) . canonicalPath ( ) ;
+367: if ( QFileInfo ( relativePath + '/' + errors [ 0 ] . errorPath [ 0 ] . file ) . exists ( ) ) {
+368: dir = relativePath ; }
+369: }
+370:
+371: mUI . mTree . setCheckDirectory ( dir ) ;
+372: }
+373:
+374: void ResultsView :: updateDetails ( const QModelIndex & index )
+375: {
+376: QStandardItemModel * model ; model = qobject_cast < QStandardItemModel * > ( mUI . mTree . model ( ) ) ;
+377: QStandardItem * item ; item = model . itemFromIndex ( index ) ;
+378:
+379: if ( ! item ) {
+380: mUI . mCode . clear ( ) ;
+381: mUI . mDetails . setText ( QString ( ) ) ;
+382: return ;
+383: }
+384:
+385:
+386: if ( item . parent ( ) && item . column ( ) != 0 ) {
+387: item = item . parent ( ) . child ( item . row ( ) , 0 ) ; }
+388:
+389: QVariantMap data ; data = item . data ( ) . toMap ( ) ;
+390:
+391:
+392: if ( ! data . contains ( "severity" ) ) {
+393: mUI . mCode . clear ( ) ;
+394: mUI . mDetails . setText ( QString ( ) ) ;
+395: return ;
+396: }
+397:
+398: const QString message = data [ "message" ] . toString ( ) ;
+399: QString formattedMsg ; formattedMsg = message ;
+400:
+401: const QString file0 = data [ "file0" ] . toString ( ) ;
+402: if ( ! file0 . isEmpty ( ) && Path :: isHeader ( data [ "file" ] . toString ( ) . toStdString ( ) ) ) {
+403: formattedMsg += QString ( "\n\n%1: %2" ) . arg ( tr ( "First included by" ) ) . arg ( QDir :: toNativeSeparators ( file0 ) ) ; }
+404:
+405: if ( data [ "cwe" ] . toInt ( ) > 0 ) {
+406: formattedMsg . prepend ( "CWE: " + QString :: number ( data [ "cwe" ] . toInt ( ) ) + "\n" ) ; }
+407: if ( mUI . mTree . showIdColumn ( ) ) {
+408: formattedMsg . prepend ( tr ( "Id" ) + ": " + data [ "id" ] . toString ( ) + "\n" ) ; }
+409: if ( data [ "incomplete" ] . toBool ( ) ) {
+410: formattedMsg += "\n" + tr ( "Bug hunting analysis is incomplete" ) ; }
+411: mUI . mDetails . setText ( formattedMsg ) ;
+412:
+413: const int lineNumber = data [ "line" ] . toInt ( ) ;
+414:
+415: QString filepath ; filepath = data [ "file" ] . toString ( ) ;
+416: if ( ! QFileInfo ( filepath ) . exists ( ) && QFileInfo ( mUI . mTree . getCheckDirectory ( ) + '/' + filepath ) . exists ( ) ) {
+417: filepath = mUI . mTree . getCheckDirectory ( ) + '/' + filepath ; }
+418:
+419: QStringList symbols ;
+420: if ( data . contains ( "symbolNames" ) ) {
+421: symbols = data [ "symbolNames" ] . toString ( ) . split ( "\n" ) ; }
+422:
+423: if ( filepath == mUI . mCode . getFileName ( ) ) {
+424: mUI . mCode . setError ( lineNumber , symbols ) ;
+425: return ;
+426: }
+427:
+428: QFile file ( filepath ) ;
+429: if ( ! file . open ( QIODevice :: ReadOnly | QIODevice :: Text ) ) {
+430: mUI . mCode . clear ( ) ;
+431: return ;
+432: }
+433:
+434: QTextStream in ( & file ) ;
+435: mUI . mCode . setError ( in . readAll ( ) , lineNumber , symbols ) ;
+436: mUI . mCode . setFileName ( filepath ) ;
+437: }
+438:
+439: void ResultsView :: log ( const QString & str )
+440: {
+441: mUI . mListLog . addItem ( str ) ;
+442: }
+443:
+444: void ResultsView :: debugError ( const ErrorItem & item )
+445: {
+446: mUI . mListLog . addItem ( item . toString ( ) ) ;
+447: }
+448:
+449: void ResultsView :: logClear ( )
+450: {
+451: mUI . mListLog . clear ( ) ;
+452: }
+453:
+454: void ResultsView :: logCopyEntry ( )
+455: {
+456: const QListWidgetItem * item ; item = mUI . mListLog . currentItem ( ) ;
+457: if ( nullptr != item ) {
+458: QClipboard * clipboard ; clipboard = QApplication :: clipboard ( ) ;
+459: clipboard . setText ( item . text ( ) ) ;
+460: }
+461: }
+462:
+463: void ResultsView :: logCopyComplete ( )
+464: {
+465: QString logText ;
+466: for ( int i = 0 ; i < mUI . mListLog . count ( ) ; ++ i ) {
+467: const QListWidgetItem * item ; item = mUI . mListLog . item ( i ) ;
+468: if ( nullptr != item ) {
+469: logText += item . text ( ) ;
+470: }
+471: }
+472: QClipboard * clipboard ; clipboard = QApplication :: clipboard ( ) ;
+473: clipboard . setText ( logText ) ;
+474: }
+475:
+476: void ResultsView :: on_mListLog_customContextMenuRequested ( const QPoint & pos )
+477: {
+478: if ( mUI . mListLog . count ( ) <= 0 ) {
+479: return ; }
+480:
+481: const QPoint globalPos = mUI . mListLog . mapToGlobal ( pos ) ;
+482:
+483: QMenu contextMenu ;
+484: contextMenu . addAction ( tr ( "Clear Log" ) , this , SLOT ( logClear ( ) ) ) ;
+485: contextMenu . addAction ( tr ( "Copy this Log entry" ) , this , SLOT ( logCopyEntry ( ) ) ) ;
+486: contextMenu . addAction ( tr ( "Copy complete Log" ) , this , SLOT ( logCopyComplete ( ) ) ) ;
+487:
+488: contextMenu . exec ( globalPos ) ;
+489: }
+
+
+
+##Value flow

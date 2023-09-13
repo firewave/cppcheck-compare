@@ -1,0 +1,253 @@
+
+
+##file cppcheck-2.8/gui/report.h
+
+1:
+|
+25:
+26: class ErrorItem ;
+27:
+|
+33:
+34: class Report : public QObject {
+35: public:
+36: enum Type {
+37: TXT ,
+38: XMLV2 ,
+39: CSV ,
+40: } ;
+41:
+42: explicit Report ( const QString & filename@var1 ) ;
+43: ~ Report ( ) override ;
+44:
+|
+48:
+49: virtual bool create ( ) ;
+50:
+|
+54:
+55: virtual bool open ( ) ;
+56:
+|
+59:
+60: void close ( ) ;
+61:
+|
+64:
+65: virtual void writeHeader ( ) = 0 ;
+66:
+|
+69:
+70: virtual void writeFooter ( ) = 0 ;
+71:
+|
+75:
+76: virtual void writeError ( const ErrorItem & error@var2 ) = 0 ;
+77:
+78: protected:
+79:
+|
+82:
+83: QFile * getFile ( ) ;
+84:
+85: private:
+86:
+|
+89:
+90: QString mFilename@var3 ;
+91:
+|
+94:
+95: QFile mFile@var4 ;
+96: } ;
+
+##file cppcheck-2.8/gui/xmlreport.h
+
+1:
+|
+26:
+27: class ErrorItem ;
+28:
+|
+35:
+36: class XmlReport : public Report {
+37: public:
+38: explicit XmlReport ( const QString & filename@var5 ) ;
+39:
+|
+42:
+43: virtual QList < ErrorItem > read ( ) = 0 ;
+44:
+|
+49:
+50: static QString quoteMessage ( const QString & message@var6 ) ;
+51:
+|
+56:
+57: static QString unquoteMessage ( const QString & message@var7 ) ;
+58:
+|
+63:
+64: static int determineVersion ( const QString & filename@var8 ) ;
+65: } ;
+
+##file cppcheck-2.8/gui/xmlreport.cpp
+
+1:
+|
+25:
+26: static const char ResultElementName@var9 [ 8 ] = "results" ;
+27: static const char VersionAttribute@var10 [ 8 ] = "version" ;
+28:
+29: XmlReport :: XmlReport ( const QString & filename@var11 ) :
+30: Report ( filename@var11 )
+31: { }
+32:
+33: QString XmlReport :: quoteMessage ( const QString & message@var12 )
+34: {
+35: QString quotedMessage@var13 (@expr1073741846 message@var12 ) ;
+36: quotedMessage@var13 .@expr23 replace (@expr1073741848 "&" , "&amp;" ) ;
+37: quotedMessage@var13 .@expr23 replace (@expr1073741850 "\"" , "&quot;" ) ;
+38: quotedMessage@var13 .@expr23 replace (@expr1073741852 "'" , "&#039;" ) ;
+39: quotedMessage@var13 .@expr23 replace (@expr1073741854 "<" , "&lt;" ) ;
+40: quotedMessage@var13 .@expr23 replace (@expr1073741856 ">" , "&gt;" ) ;
+41: return quotedMessage@var13 ;
+42: }
+43:
+44: QString XmlReport :: unquoteMessage ( const QString & message@var14 )
+45: {
+46: QString quotedMessage@var15 (@expr1073741857 message@var14 ) ;
+47: quotedMessage@var15 .@expr34 replace (@expr1073741859 "&amp;" , "&" ) ;
+48: quotedMessage@var15 .@expr34 replace (@expr1073741861 "&quot;" , "\"" ) ;
+49: quotedMessage@var15 .@expr34 replace (@expr1073741863 "&#039;" , "'" ) ;
+50: quotedMessage@var15 .@expr34 replace (@expr1073741865 "&lt;" , "<" ) ;
+51: quotedMessage@var15 .@expr34 replace (@expr1073741867 "&gt;" , ">" ) ;
+52: return quotedMessage@var15 ;
+53: }
+54:
+55: int XmlReport :: determineVersion ( const QString & filename@var16 )
+56: {
+57: QFile file@var17 ;
+58: file@var17 .@expr1073741870 setFileName (@expr1073741871 filename@var16 ) ;
+59: bool succeed@var18 ; succeed@var18 =@expr1073741872 file@var17 .@expr1073741873 open (@expr1073741874 QIODevice ::@expr1073741875 ReadOnly@expr1073741868 |@expr1073741876 QIODevice ::@expr1073741877 Text@expr1073741869 ) ;
+60: if (@expr1073741878 !@expr1073741879 succeed@var18 ) {
+61: return 0 ; }
+62:
+63: QXmlStreamReader reader@var19 (@expr1073741880 &@expr1073741881 file@var17 ) ;
+64: while (@expr1073741882 !@expr1073741883 reader@var19 .@expr1073741884 atEnd (@expr1073741885 ) ) {
+65: switch (@expr1073741886 reader@var19 .@expr1073741887 readNext (@expr1073741888 ) ) {
+66: case QXmlStreamReader ::@expr1073741889 StartElement :@expr66 ;
+67: if (@expr1073741891 reader@var19 .@expr1073741892 name (@expr1073741893 ) ==@expr1073741894 QString (@expr1073741895 ResultElementName@var9 ) ) {
+68: QXmlStreamAttributes attribs@var20 ; attribs@var20 =@expr1073741896 reader@var19 .@expr1073741897 attributes (@expr1073741898 ) ;
+69: if (@expr1073741899 attribs@var20 .@expr1073741900 hasAttribute (@expr1073741901 QString (@expr1073741902 VersionAttribute@var10 ) ) ) {
+70: int ver@var21 ; ver@var21 =@expr1073741903 attribs@var20 .@expr1073741904 value (@expr1073741905 QString (@expr1073741906 ) , VersionAttribute@var10 ) .@expr1073741907 toString (@expr1073741908 ) .@expr1073741909 toInt (@expr1073741910 ) ;
+71: return ver@var21 ;
+72: } else {
+73: return 1 ; }
+74: }
+75: break ;
+76:
+77:
+78: case QXmlStreamReader ::@expr1073741911 EndElement :@expr66
+79: case QXmlStreamReader ::@expr1073741913 NoToken :@expr66
+80: case QXmlStreamReader ::@expr1073741915 Invalid :@expr66
+81: case QXmlStreamReader ::@expr1073741917 StartDocument :@expr66
+82: case QXmlStreamReader ::@expr1073741919 EndDocument :@expr66
+83: case QXmlStreamReader ::@expr1073741921 Characters :@expr66
+84: case QXmlStreamReader ::@expr1073741923 Comment :@expr66
+85: case QXmlStreamReader ::@expr1073741925 DTD :@expr66
+86: case QXmlStreamReader ::@expr1073741927 EntityReference :@expr66
+87: case QXmlStreamReader ::@expr1073741929 ProcessingInstruction :@expr66 ;
+88: break ;
+89: }
+90: }
+91: return 0 ;
+92: }
+
+
+
+##Value flow
+Line 37
+  TXT always 0
+Line 38
+  XMLV2 always 1
+Line 39
+  CSV always 2
+Line 49
+  ( always {!<=-1,!>=2}
+Line 55
+  ( always {!<=-1,!>=2}
+Line 65
+  = always 0
+  0 always 0
+Line 70
+  = always 0
+  0 always 0
+Line 76
+  = always 0
+  0 always 0
+Line 43
+  = always 0
+  0 always 0
+Line 26
+  8 always 8
+  = always "results"
+  "results" always "results"
+Line 27
+  8 always 8
+  = always "version"
+  "version" always "version"
+Line 36
+  "&" always "&"
+  "&amp;" always "&amp;"
+Line 37
+  "\"" always "\""
+  "&quot;" always "&quot;"
+Line 38
+  "'" always "'"
+  "&#039;" always "&#039;"
+Line 39
+  "<" always "<"
+  "&lt;" always "&lt;"
+Line 40
+  ">" always ">"
+  "&gt;" always "&gt;"
+Line 47
+  "&amp;" always "&amp;"
+  "&" always "&"
+Line 48
+  "&quot;" always "&quot;"
+  "\"" always "\""
+Line 49
+  "&#039;" always "&#039;"
+  "'" always "'"
+Line 50
+  "&lt;" always "&lt;"
+  "<" always "<"
+Line 51
+  "&gt;" always "&gt;"
+  ">" always ">"
+Line 59
+  succeed always {!<=-1,!>=2}
+  succeed always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+Line 60
+  ! always {!<=-1,!>=2}
+  succeed always {!<=-1,!>=2}
+Line 61
+  0 always 0
+Line 63
+  & {lifetime[Address]=(file),!0}
+Line 64
+  ! always {!<=-1,!>=2}
+Line 67
+  == always {!<=-1,!>=2}
+  ResultElementName always "results"
+Line 69
+  VersionAttribute always "version"
+Line 70
+  VersionAttribute always "version"
+Line 73
+  1 always 1
+Line 91
+  0 always 0

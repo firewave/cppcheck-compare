@@ -1,0 +1,582 @@
+
+
+##file cppcheck-2.8/gui/scratchpad.h
+
+1:
+|
+23:
+24: class MainWindow ;
+25: class QObject ;
+26: namespace Ui {
+27: class ScratchPad ;
+28: }
+29:
+|
+35:
+36: class ScratchPad : public QDialog {
+37: Q_OBJECT
+38: public:
+39: explicit ScratchPad ( MainWindow & mainWindow ) ;
+40: ~ ScratchPad ( ) ;
+41:
+|
+44:
+45: void translate ( ) ;
+46:
+47: private slots :
+48:
+49:
+50:
+51: void checkButtonClicked ( ) ;
+52:
+53: private:
+54: Ui :: ScratchPad * mUI ;
+55: MainWindow & mMainWindow ;
+56: } ;
+
+##file cppcheck-2.8/gui/codeeditor.h
+
+1:
+|
+25:
+26: class CodeEditorStyle ;
+27: class QObject ;
+28: class QPaintEvent ;
+29: class QRect ;
+30: class QResizeEvent ;
+31: class QTextDocument ;
+32:
+33: class Highlighter : public QSyntaxHighlighter {
+34: Q_OBJECT
+35:
+36: public:
+37: explicit Highlighter ( QTextDocument * parent ,
+38: CodeEditorStyle * widgetStyle ) ;
+39:
+40: void setSymbols ( const QStringList & symbols ) ;
+41:
+42: void setStyle ( const CodeEditorStyle & newStyle ) ;
+43:
+44: protected:
+45: void highlightBlock ( const QString & text ) override ;
+46:
+47: private:
+48: enum RuleRole {
+49: Keyword = 1 ,
+50: Class = 2 ,
+51: Comment = 3 ,
+52: Quote = 4 ,
+53: Symbol = 5
+54: } ;
+55: struct HighlightingRule {
+56: QRegularExpression pattern ;
+57: QTextCharFormat format ;
+58: RuleRole ruleRole ;
+59: } ;
+60:
+61: void applyFormat ( HighlightingRule & rule ) ;
+62:
+63: QVector < HighlightingRule > mHighlightingRules ;
+64: QVector < HighlightingRule > mHighlightingRulesWithSymbols ;
+65:
+66: QRegularExpression mCommentStartExpression ;
+67: QRegularExpression mCommentEndExpression ;
+68:
+69: QTextCharFormat mKeywordFormat ;
+70: QTextCharFormat mClassFormat ;
+71: QTextCharFormat mSingleLineCommentFormat ;
+72: QTextCharFormat mMultiLineCommentFormat ;
+73: QTextCharFormat mQuotationFormat ;
+74: QTextCharFormat mSymbolFormat ;
+75:
+76: CodeEditorStyle * mWidgetStyle ;
+77: } ;
+78:
+79: class CodeEditor : public QPlainTextEdit {
+80: Q_OBJECT
+81:
+82: public:
+83: explicit CodeEditor ( QWidget * parent ) ;
+84: CodeEditor ( const CodeEditor & ) = delete ;
+85: CodeEditor & operator = ( const CodeEditor & ) = delete ;
+86: ~ CodeEditor ( ) override ;
+87:
+88: void lineNumberAreaPaintEvent ( QPaintEvent * event ) ;
+89: int lineNumberAreaWidth ( ) ;
+90: void setStyle ( const CodeEditorStyle & newStyle ) ;
+91:
+|
+97:
+98: void setError ( const QString & code , int errorLine , const QStringList & symbols ) ;
+99:
+|
+104:
+105: void setError ( int errorLine , const QStringList & symbols ) ;
+106:
+107: void setFileName ( const QString & fileName ) {
+108: mFileName = fileName ;
+109: }
+110:
+111: QString getFileName ( ) const {
+112: return mFileName ;
+113: }
+114:
+115: void clear ( ) {
+116: mFileName . clear ( ) ;
+117: setPlainText ( QString ( ) ) ;
+118: }
+119:
+120: protected:
+121: void resizeEvent ( QResizeEvent * event ) override ;
+122:
+123: private slots :
+124: void updateLineNumberAreaWidth ( int newBlockCount ) ;
+125: void highlightErrorLine ( ) ;
+126: void updateLineNumberArea ( const QRect & , int ) ;
+127:
+128: private:
+129: QString generateStyleString ( ) ;
+130:
+131: private:
+132: QWidget * mLineNumberArea ;
+133: Highlighter * mHighlighter ;
+134: CodeEditorStyle * mWidgetStyle ;
+135: int mErrorPosition ;
+136: QString mFileName ;
+137: } ;
+138:
+139:
+140: class LineNumberArea : public QWidget {
+141: public:
+142: explicit LineNumberArea ( CodeEditor * editor ) : QWidget ( editor ) {
+143: mCodeEditor = editor ;
+144: }
+145:
+146: QSize sizeHint ( ) const override {
+147: return QSize ( mCodeEditor . lineNumberAreaWidth ( ) , 0 ) ;
+148: }
+149:
+150: protected:
+151: void paintEvent ( QPaintEvent * event ) override {
+152: mCodeEditor . lineNumberAreaPaintEvent ( event ) ;
+153: }
+154:
+155: private:
+156: CodeEditor * mCodeEditor ;
+157: } ;
+
+##file cppcheck-2.8/gui/platforms.h
+
+1:
+|
+27:
+28: class QAction ;
+29:
+|
+35:
+36: struct Platform {
+37: QString mTitle ;
+38: Settings :: PlatformType mType ;
+39: QAction * mActMainWindow ;
+40: } ;
+41:
+|
+44:
+45: class Platforms : public QObject {
+46: Q_OBJECT
+47:
+48: public:
+49: explicit Platforms ( QObject * parent = nullptr ) ;
+50: void add ( const QString & title , Settings :: PlatformType platform ) ;
+51: int getCount ( ) const ;
+52: void init ( ) ;
+53: Platform & get ( Settings :: PlatformType platform ) ;
+54:
+55: QList < Platform > mPlatforms ;
+56: } ;
+
+##file cppcheck-2.8/gui/mainwindow.h
+
+1:
+|
+29:
+30: class ThreadHandler ;
+31: class TranslationHandler ;
+32: class ScratchPad ;
+33: class ProjectFile ;
+34: class ApplicationList ;
+35: class QAction ;
+36: class QActionGroup ;
+37: class QSettings ;
+38: class QTimer ;
+39: class QLineEdit ;
+40: class ImportProject ;
+41: class QCloseEvent ;
+42: class QObject ;
+43: namespace Ui {
+44: class MainWindow ;
+45: }
+46:
+|
+53:
+54: class MainWindow : public QMainWindow {
+55: Q_OBJECT
+56: public:
+57:
+|
+60:
+61: enum { MaxRecentProjects = 5 } ;
+62:
+63: MainWindow ( TranslationHandler * th , QSettings * settings ) ;
+64: MainWindow ( const MainWindow & ) = delete ;
+65: ~ MainWindow ( ) override ;
+66: MainWindow & operator = ( const MainWindow & ) = delete ;
+67:
+|
+70:
+71: Platforms mPlatforms ;
+72:
+|
+78:
+79: void analyzeCode ( const QString & code , const QString & filename ) ;
+80:
+81: public slots :
+82:
+83: void analyzeFiles ( ) ;
+84:
+85:
+86: void reAnalyzeAll ( ) ;
+87:
+88:
+89: void checkLibrary ( ) ;
+90:
+91:
+92: void checkConfiguration ( ) ;
+93:
+|
+97:
+98: void performSelectedFilesCheck ( const QStringList & selectedFilesList ) ;
+99:
+100:
+101: void reAnalyzeModified ( ) ;
+102:
+103:
+104: void clearResults ( ) ;
+105:
+106:
+107: void openResults ( ) ;
+108:
+|
+112:
+113: void showStyle ( bool checked ) ;
+114:
+|
+118:
+119: void showErrors ( bool checked ) ;
+120:
+|
+124:
+125: void showWarnings ( bool checked ) ;
+126:
+|
+130:
+131: void showPortability ( bool checked ) ;
+132:
+|
+136:
+137: void showPerformance ( bool checked ) ;
+138:
+|
+142:
+143: void showInformation ( bool checked ) ;
+144:
+145:
+146: void checkAll ( ) ;
+147:
+148:
+149: void uncheckAll ( ) ;
+150:
+151:
+152: void analyzeDirectory ( ) ;
+153:
+154:
+155: void programSettings ( ) ;
+156:
+157:
+158: void about ( ) ;
+159:
+160:
+161: void showLicense ( ) ;
+162:
+163:
+164: void showAuthors ( ) ;
+165:
+166:
+167: void save ( ) ;
+168:
+169:
+170: void newProjectFile ( ) ;
+171:
+172:
+173: void openProjectFile ( ) ;
+174:
+175:
+176: void showScratchpad ( ) ;
+177:
+178:
+179: void closeProjectFile ( ) ;
+180:
+181:
+182: void editProjectFile ( ) ;
+183:
+184:
+185: void showStatistics ( ) ;
+186:
+187:
+188: void showLibraryEditor ( ) ;
+189:
+190: protected slots :
+191:
+192:
+193: void analysisDone ( ) ;
+194:
+195:
+196: void checkLockDownUI ( ) ;
+197:
+198:
+199: void resultsAdded ( ) ;
+200:
+201:
+202: void toggleMainToolBar ( ) ;
+203:
+204:
+205: void toggleViewToolBar ( ) ;
+206:
+207:
+208: void toggleFilterToolBar ( ) ;
+209:
+210:
+211: void aboutToShowViewMenu ( ) ;
+212:
+213:
+214: void stopAnalysis ( ) ;
+215:
+216:
+217: void openHelpContents ( ) ;
+218:
+219:
+220: void filterResults ( ) ;
+221:
+222:
+223: void openRecentProject ( ) ;
+224:
+225:
+226: void selectPlatform ( ) ;
+227:
+228:
+229: void suppressIds ( QStringList ids ) ;
+230:
+231: private:
+232:
+233:
+234: QString getLastResults ( ) const ;
+235:
+236:
+237: void reAnalyze ( bool all ) ;
+238:
+|
+242:
+243: void reAnalyzeSelected ( QStringList files ) ;
+244:
+|
+250:
+251: void analyzeProject ( const ProjectFile * projectFile , const bool checkLibrary = false , const bool checkConfiguration = false ) ;
+252:
+|
+256:
+257: void setLanguage ( const QString & code ) ;
+258:
+259:
+260: void closeEvent ( QCloseEvent * event ) override ;
+261:
+|
+265:
+266: void toggleAllChecked ( bool checked ) ;
+267:
+268:
+269: void enableCheckButtons ( bool enable ) ;
+270:
+271:
+272: void enableResultsButtons ( ) ;
+273:
+|
+281:
+282: QStringList selectFilesToAnalyze ( QFileDialog :: FileMode mode ) ;
+283:
+|
+289:
+290: void doAnalyzeProject ( ImportProject p , const bool checkLibrary = false , const bool checkConfiguration = false ) ;
+291:
+|
+298:
+299: void doAnalyzeFiles ( const QStringList & files , const bool checkLibrary = false , const bool checkConfiguration = false ) ;
+300:
+|
+305:
+306: Settings getCppcheckSettings ( ) ;
+307:
+308:
+309: void loadSettings ( ) ;
+310:
+311:
+312: void saveSettings ( ) const ;
+313:
+|
+317:
+318: void formatAndSetTitle ( const QString & text = QString ( ) ) ;
+319:
+320:
+321: void openOnlineHelp ( ) ;
+322:
+|
+328:
+329: void enableProjectActions ( bool enable ) ;
+330:
+|
+335:
+336: void enableProjectOpenActions ( bool enable ) ;
+337:
+|
+342:
+343: void addIncludeDirs ( const QStringList & includeDirs , Settings & result ) ;
+344:
+|
+348:
+349: void handleCLIParams ( const QStringList & params ) ;
+350:
+|
+354:
+355: void loadResults ( const QString & selectedFile ) ;
+356:
+|
+361:
+362: void loadResults ( const QString & selectedFile , const QString & sourceDirectory ) ;
+363:
+|
+367:
+368: bool loadLastResults ( ) ;
+369:
+|
+373:
+374: void loadProjectFile ( const QString & filePath ) ;
+375:
+|
+381:
+382: Library :: Error loadLibrary ( Library * library , const QString & filename ) ;
+383:
+|
+389:
+390: bool tryLoadLibrary ( Library * library , const QString & filename ) ;
+391:
+|
+394:
+395: void updateMRUMenuItems ( ) ;
+396:
+|
+400:
+401: void addProjectMRU ( const QString & project ) ;
+402:
+|
+406:
+407: void removeProjectMRU ( const QString & project ) ;
+408:
+409:
+410: QSettings * mSettings ;
+411:
+412:
+413: ThreadHandler * mThread ;
+414:
+415:
+416: ApplicationList * mApplications ;
+417:
+418:
+419: TranslationHandler * mTranslation ;
+420:
+421:
+422: Ui :: MainWindow * mUI ;
+423:
+424:
+425: QString mCurrentDirectory ;
+426:
+427:
+428: ScratchPad * mScratchPad ;
+429:
+430:
+431: ProjectFile * mProjectFile ;
+432:
+433:
+434: QLineEdit * mLineEditFilter ;
+435:
+436:
+437: QTimer * mFilterTimer ;
+438:
+439:
+440: QActionGroup * mPlatformActions ;
+441:
+442:
+443: QActionGroup * mCStandardActions ; QActionGroup * mCppStandardActions ;
+444:
+445:
+446: QActionGroup * mSelectLanguageActions ;
+447:
+|
+452:
+453: bool mExiting ;
+454:
+455:
+456: bool mIsLogfileLoaded ;
+457:
+|
+461:
+462: QAction * mRecentProjectActs [ MaxRecentProjects + 1 ] ;
+463:
+464: QString mCppcheckCfgAbout ;
+465: QString mCppcheckCfgProductName ;
+466: } ;
+
+##file cppcheck-2.8/gui/scratchpad.cpp
+
+1:
+|
+25:
+26: ScratchPad :: ScratchPad ( MainWindow & mainWindow )
+27: : QDialog ( & mainWindow )
+28: , mUI ( new Ui :: ScratchPad )
+29: , mMainWindow ( mainWindow )
+30: {
+31: mUI . setupUi ( this ) ;
+32:
+33: connect ( mUI . mCheckButton , & QPushButton :: clicked , this , & ScratchPad :: checkButtonClicked ) ;
+34: }
+35:
+36: ScratchPad :: ~ ScratchPad ( )
+37: {
+38: delete mUI ;
+39: }
+40:
+41: void ScratchPad :: translate ( )
+42: {
+43: mUI . retranslateUi ( this ) ;
+44: }
+45:
+46: void ScratchPad :: checkButtonClicked ( )
+47: {
+48: QString filename ; filename = mUI . lineEdit . text ( ) ;
+49: if ( filename . isEmpty ( ) ) {
+50: filename = "test.cpp" ; }
+51: mMainWindow . analyzeCode ( mUI . plainTextEdit . toPlainText ( ) , filename ) ;
+52: }
+
+
+
+##Value flow

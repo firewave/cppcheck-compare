@@ -1,0 +1,77 @@
+
+
+##file cppcheck-2.8/gui/libraryaddfunctiondialog.h
+
+1:
+|
+23:
+24: class QObject ;
+25: class QWidget ;
+26: namespace Ui {
+27: class LibraryAddFunctionDialog ;
+28: }
+29:
+|
+33:
+34: class LibraryAddFunctionDialog : public QDialog {
+35: Q_OBJECT
+36:
+37: public:
+38: explicit LibraryAddFunctionDialog ( QWidget * parent@var1 = nullptr ) ;
+39: LibraryAddFunctionDialog ( const LibraryAddFunctionDialog & ) = delete ;
+40: ~ LibraryAddFunctionDialog ( ) override ;
+41: LibraryAddFunctionDialog & operator= ( const LibraryAddFunctionDialog & ) = delete ;
+42:
+43: QString functionName ( ) const ;
+44: int numberOfArguments ( ) const ;
+45:
+46: private:
+47: Ui :: LibraryAddFunctionDialog * mUi@var2 ;
+48: } ;
+
+##file cppcheck-2.8/gui/libraryaddfunctiondialog.cpp
+
+1:
+|
+25:
+26: class QWidget ;
+27:
+28: LibraryAddFunctionDialog :: LibraryAddFunctionDialog ( QWidget * parent@var3 ) :
+29: QDialog ( parent@var3 ) ,
+30: mUi@var2 ( new Ui :: LibraryAddFunctionDialog )
+31: {
+32: mUi@var2 .@expr6 setupUi (@expr1073741831 this@expr8 ) ;
+33: static const QRegularExpression rx@var4 (@expr1073741833 $"[_a-zA-Z][_a-zA-Z0-9]*(::[_a-zA-Z][_a-zA-Z0-9]*)*(,[_a-zA-Z][_a-zA-Z0-9]*(::[_a-zA-Z][_a-zA-Z0-9]*)*)*" ) ;
+34: QValidator * validator@var5 ; validator@var5 =@expr1073741834 new QRegularExpressionValidator (@expr1073741835 rx@var4 , this@expr8 ) ;
+35: mUi@var2 .@expr1073741836 functionName@var6 .@expr1073741837 setValidator (@expr1073741838 validator@var5 ) ;
+36: }
+37:
+38: LibraryAddFunctionDialog :: ~ LibraryAddFunctionDialog ( )
+39: {
+40: delete mUi@var2 ;
+41: }
+42:
+43: QString LibraryAddFunctionDialog :: functionName ( ) const
+44: {
+45: return mUi@var2 .@expr1073741839 functionName@var6 .@expr1073741840 text (@expr1073741841 ) ;
+46: }
+47:
+48: int LibraryAddFunctionDialog :: numberOfArguments ( ) const
+49: {
+50: return mUi@var2 .@expr1073741842 numberOfArguments@var7 .@expr1073741843 value (@expr1073741844 ) ;
+51: }
+
+
+
+##Value flow
+Line 38
+  = always 0
+  nullptr always 0
+Line 32
+  this always !0
+Line 33
+  "[_a-zA-Z][_a-zA-Z0-9]*(::[_a-zA-Z][_a-zA-Z0-9]*)*(,[_a-zA-Z][_a-zA-Z0-9]*(::[_a-zA-Z][_a-zA-Z0-9]*)*)*" always "[_a-zA-Z][_a-zA-Z0-9]*(::[_a-zA-Z][_a-zA-Z0-9]*)*(,[_a-zA-Z][_a-zA-Z0-9]*(::[_a-zA-Z][_a-zA-Z0-9]*)*)*"
+Line 34
+  this always !0
+Line 35
+  validator always size=0

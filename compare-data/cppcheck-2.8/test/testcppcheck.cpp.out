@@ -1,0 +1,429 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741942 expected@var22 !=@expr1073741943 actual@var23 ) {
+62: std ::@expr1073741944 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741945 expected@var22 ;
+64: std ::@expr1073741946 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741947 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741948 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741949 str (@expr1073741950 ) , actualStr@var26 .@expr1073741951 str (@expr1073741952 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741953 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741954 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741955 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741956 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testcppcheck.cpp
+
+1:
+|
+30:
+31: class TestCppcheck : public TestFixture {
+32: public:
+33: TestCppcheck ( ) : TestFixture ( "TestCppcheck" ) { }
+34:
+35: private:
+36:
+37: class ErrorLogger2 : public ErrorLogger {
+38: public:
+39: std :: list < std :: string > id@var102 ;
+40:
+41: void reportOut ( const std :: string & , Color = Color :: Reset ) override { }
+42:
+43: void reportErr ( const ErrorMessage & msg@var103 ) override {
+44: id@var102 .@expr1073741957 push_back (@expr1073741958 msg@var103 .@expr1073741959 id@var104 ) ;
+45: }
+46: } ;
+47:
+48: void run ( ) override {
+49: $do ${ $if $(@expr1073741960 $prepareTest $(@expr1073741961 "instancesSorted" $) $) ${ $setVerbose $(@expr1073741962 $false $) $; instancesSorted $(@expr1073741963 $) $; $} $} $while $(@expr1073741964 $false $) ;
+50: $do ${ $if $(@expr1073741965 $prepareTest $(@expr1073741966 "classInfoFormat" $) $) ${ $setVerbose $(@expr1073741967 $false $) $; classInfoFormat $(@expr1073741968 $) $; $} $} $while $(@expr1073741969 $false $) ;
+51: $do ${ $if $(@expr1073741970 $prepareTest $(@expr1073741971 "getErrorMessages" $) $) ${ $setVerbose $(@expr1073741972 $false $) $; getErrorMessages $(@expr1073741973 $) $; $} $} $while $(@expr1073741974 $false $) ;
+52: }
+53:
+54: void instancesSorted ( ) const {
+55: for (@expr1073741975 std ::@expr152 list < Check *@expr153 > ::@expr152 const_iterator i@var105 =@expr1073741979 Check ::@expr156 instances (@expr157 ) .@expr1073741982 begin (@expr1073741983 ) ; i@var105 !=@expr1073741984 Check ::@expr156 instances (@expr157 ) .@expr163 end (@expr164 ) ; ++@expr1073741989 i@var105 ) {
+56: std ::@expr1073741990 list < Check *@expr153 > ::@expr1073741992 const_iterator j@var106 ; j@var106 =@expr1073741993 i@var105 ;
+57: ++@expr1073741994 j@var106 ;
+58: if (@expr1073741995 j@var106 !=@expr1073741996 Check ::@expr156 instances (@expr157 ) .@expr163 end (@expr164 ) ) {
+59: $if $(@expr1073742001 $!@expr1073742002 $assertEquals $(@expr1073742003 "cppcheck-2.8/test/testcppcheck.cpp" $, 59 $, true $, (@expr1073742004 *@expr1073742005 i@var105 ) .@expr1073742006 name (@expr1073742007 ) <@expr1073742008 (@expr1073742009 *@expr1073742010 j@var106 ) .@expr1073742011 name (@expr1073742012 ) $) $) { $return ; }
+60: }
+61: }
+62: }
+63:
+64: void classInfoFormat ( ) const {
+65: for (@expr1073742013 std ::@expr190 list < Check *@expr1073742015 > ::@expr190 const_iterator i@var107 =@expr1073742017 Check ::@expr194 instances (@expr195 ) .@expr1073742020 begin (@expr1073742021 ) ; i@var107 !=@expr1073742022 Check ::@expr194 instances (@expr195 ) .@expr1073742025 end (@expr1073742026 ) ; ++@expr1073742027 i@var107 ) {
+66: const std ::@expr190 string info@var108 =@expr1073742029 (@expr1073742030 *@expr1073742031 i@var107 ) .@expr1073742032 classInfo (@expr1073742033 ) ;
+67: if (@expr1073742034 !@expr1073742035 info@var108 .@expr1073742036 empty (@expr1073742037 ) ) {
+68: $if $(@expr1073742038 $!@expr1073742039 $assert_ $(@expr1073742040 "cppcheck-2.8/test/testcppcheck.cpp" $, 68 $, '\n' !=@expr1073742041 info@var108 [@expr1073742042 0 ] $) $) { $return ; }
+69: $if $(@expr1073742043 $!@expr1073742044 $assert_ $(@expr1073742045 "cppcheck-2.8/test/testcppcheck.cpp" $, 69 $, '\n' ==@expr1073742046 info@var108 .@expr1073742047 back (@expr1073742048 ) $) $) { $return ; }
+70: if (@expr1073742049 info@var108 .@expr1073742050 size (@expr1073742051 ) >@expr1073742052 1 ) {
+71: $if $(@expr1073742053 $!@expr1073742054 $assert_ $(@expr1073742055 "cppcheck-2.8/test/testcppcheck.cpp" $, 71 $, '\n' !=@expr1073742056 info@var108 [@expr1073742057 info@var108 .@expr1073742058 length (@expr1073742059 ) -@expr1073742060 2 ] $) $) { $return ; } }
+72: }
+73: }
+74: }
+75:
+76: void getErrorMessages ( ) const {
+77: ErrorLogger2 errorLogger@var109 ;
+78: CppCheck cppCheck@var110 (@expr1073742061 errorLogger@var109 , true , nullptr ) ;
+79: cppCheck@var110 .@expr1073742062 getErrorMessages (@expr1073742063 ) ;
+80: $if $(@expr1073742064 $!@expr1073742065 $assert_ $(@expr1073742066 "cppcheck-2.8/test/testcppcheck.cpp" $, 80 $, !@expr1073742067 errorLogger@var109 .@expr244 id@var111 .@expr1073742069 empty (@expr1073742070 ) $) $) { $return ; }
+81:
+82:
+83: std ::@expr1073742071 string duplicate@var112 ;
+84: for (@expr1073742072 std ::@expr249 list < std ::@expr249 string > ::@expr249 iterator it@var113 =@expr1073742076 errorLogger@var109 .@expr244 id@var111 .@expr254 begin (@expr255 ) ;
+85: it@var113 !=@expr1073742080 errorLogger@var109 .@expr244 id@var111 .@expr1073742082 end (@expr1073742083 ) ;
+86: ++@expr1073742084 it@var113 ) {
+87: if (@expr1073742085 std ::@expr1073742086 find (@expr1073742087 errorLogger@var109 .@expr244 id@var111 .@expr254 begin (@expr255 ) , it@var113 , *@expr267 it@var113 ) !=@expr1073742092 it@var113 ) {
+88: duplicate@var112 =@expr1073742093 "Duplicate ID: " +@expr1073742094 *@expr267 it@var113 ;
+89: break ;
+90: }
+91: }
+92: $if $(@expr1073742096 $!@expr1073742097 $assertEquals $(@expr1073742098 "cppcheck-2.8/test/testcppcheck.cpp" $, 92 $, "" $, duplicate@var112 $) $) { $return ; }
+93:
+94:
+95: bool foundPurgedConfiguration@var114 ; foundPurgedConfiguration@var114 =@expr1073742099 false ;
+96: bool foundTooManyConfigs@var115 ; foundTooManyConfigs@var115 =@expr1073742100 false ;
+97: for (@expr1073742101 const std ::@expr249 string &@expr1073742103 it@var116 :@expr1073742104 errorLogger@var109 .@expr244 id@var111 ) {
+98: if (@expr1073742106 it@var116 ==@expr1073742107 "purgedConfiguration" ) {
+99: foundPurgedConfiguration@var114 =@expr1073742108 true ; }
+100: else { if (@expr1073742109 it@var116 ==@expr1073742110 "toomanyconfigs" ) {
+101: foundTooManyConfigs@var115 =@expr1073742111 true ; } }
+102: }
+103: $if $(@expr1073742112 $!@expr1073742113 $assert_ $(@expr1073742114 "cppcheck-2.8/test/testcppcheck.cpp" $, 103 $, foundPurgedConfiguration@var114 $) $) { $return ; }
+104: $if $(@expr1073742115 $!@expr1073742116 $assert_ $(@expr1073742117 "cppcheck-2.8/test/testcppcheck.cpp" $, 104 $, foundTooManyConfigs@var115 $) $) { $return ; }
+105: }
+106: } ;
+107:
+108: $namespace ${ TestCppcheck instance_TestCppcheck@var117 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@1}
+  v {!<=-1,!>=2,0@1}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 33
+  "TestCppcheck" always "TestCppcheck"
+Line 49
+  ( always {!<=-1,!>=2}
+  "instancesSorted" always "instancesSorted"
+  false always 0
+  false always 0
+Line 50
+  ( always {!<=-1,!>=2}
+  "classInfoFormat" always "classInfoFormat"
+  false always 0
+  false always 0
+Line 51
+  ( always {!<=-1,!>=2}
+  "getErrorMessages" always "getErrorMessages"
+  false always 0
+  false always 0
+Line 55
+  != always {!<=-1,!>=2}
+Line 57
+  ++ always symbolic=(i+1)
+  j always symbolic=(i)
+Line 58
+  j always symbolic=(i+1)
+  != always {!<=-1,!>=2}
+Line 59
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcppcheck.cpp" always "cppcheck-2.8/test/testcppcheck.cpp"
+  59 always 59
+  true always 1
+  < always {!<=-1,!>=2}
+  j always symbolic=(i+1)
+Line 65
+  != always {!<=-1,!>=2}
+Line 67
+  ! {!<=-1,!>=2,0}
+  info possible size=0
+  ( {!<=-1,!>=2,1}
+Line 68
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcppcheck.cpp" always "cppcheck-2.8/test/testcppcheck.cpp"
+  68 always 68
+  '\n' always 10
+  != always {!<=-1,!>=2}
+  info always !size=0
+  0 always 0
+Line 69
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcppcheck.cpp" always "cppcheck-2.8/test/testcppcheck.cpp"
+  69 always 69
+  '\n' always 10
+  == always {!<=-1,!>=2}
+  info always !size=0
+Line 70
+  ( always !<=-1
+  > always {!<=-1,!>=2}
+  1 always 1
+Line 71
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcppcheck.cpp" always "cppcheck-2.8/test/testcppcheck.cpp"
+  71 always 71
+  '\n' always 10
+  != always {!<=-1,!>=2}
+  info {>=size=2,!<=size=1}
+  info {>=size=2,!<=size=1}
+  ( {>=2,!<=1}
+  - {!<=-1,>=0}
+  2 always 2
+Line 78
+  true always 1
+  nullptr always 0
+Line 80
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcppcheck.cpp" always "cppcheck-2.8/test/testcppcheck.cpp"
+  80 always 80
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+Line 84
+  = {lifetime[Iterator]=(errorLogger.id),lifetime[Object]=(id),start=0}
+  ( {lifetime[Iterator]=(errorLogger.id),lifetime[Object]=(id),start=0}
+Line 85
+  it inconclusive {lifetime[Iterator]=(errorLogger.id),lifetime[Object]=(id),start=0}
+  != always {!<=-1,!>=2}
+  ( {lifetime[Iterator]=(errorLogger.id),lifetime[Object]=(id),end=0}
+Line 87
+  ( {lifetime[Iterator]=(errorLogger.id),lifetime[Object]=(id),lifetime[Iterator]=(errorLogger.id),lifetime[Object]=(id)}
+  ( {lifetime[Iterator]=(errorLogger.id),lifetime[Object]=(id),start=0}
+  it inconclusive {lifetime[Iterator]=(errorLogger.id),lifetime[Object]=(id)}
+  it inconclusive {lifetime[Iterator]=(errorLogger.id),lifetime[Object]=(id)}
+  != always {!<=-1,!>=2}
+Line 88
+  "Duplicate ID: " always "Duplicate ID: "
+Line 92
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcppcheck.cpp" always "cppcheck-2.8/test/testcppcheck.cpp"
+  92 always 92
+  "" always ""
+  duplicate possible {symbolic=("Duplicate ID: "+*it),size=0}
+Line 95
+  foundPurgedConfiguration always {!<=-1,!>=2}
+  foundPurgedConfiguration always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 96
+  foundTooManyConfigs always {!<=-1,!>=2}
+  foundTooManyConfigs always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 97
+  it possible {size=19,size=14}
+Line 98
+  it possible size=14
+  == {!<=-1,!>=2,0}
+  "purgedConfiguration" always "purgedConfiguration"
+Line 99
+  foundPurgedConfiguration always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 100
+  == always {!<=-1,!>=2}
+  "toomanyconfigs" always "toomanyconfigs"
+Line 101
+  foundTooManyConfigs always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 103
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcppcheck.cpp" always "cppcheck-2.8/test/testcppcheck.cpp"
+  103 always 103
+  foundPurgedConfiguration always {!<=-1,!>=2}
+Line 104
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testcppcheck.cpp" always "cppcheck-2.8/test/testcppcheck.cpp"
+  104 always 104
+  foundTooManyConfigs always {!<=-1,!>=2}

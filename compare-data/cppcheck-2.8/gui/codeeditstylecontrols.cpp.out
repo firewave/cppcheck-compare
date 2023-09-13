@@ -1,0 +1,163 @@
+
+
+##file cppcheck-2.8/gui/codeeditstylecontrols.h
+
+1:
+|
+29:
+30: class QObject ;
+31: class QWidget ;
+32:
+33: class SelectColorButton : public QPushButton {
+34: Q_OBJECT
+35: public:
+36: explicit SelectColorButton ( QWidget * parent ) ;
+37: ~ SelectColorButton ( ) override { }
+38:
+39: void setColor ( const QColor & color ) ;
+40: const QColor & getColor ( ) ;
+41:
+42: signals :
+43: void colorChanged ( const QColor & newColor ) ;
+44:
+45: public slots :
+46: void updateColor ( ) ;
+47: void changeColor ( ) ;
+48:
+49: private:
+50: QColor mColor ;
+51: } ;
+52:
+53:
+54: class SelectFontWeightCombo : public QComboBox {
+55: Q_OBJECT
+56: public:
+57: explicit SelectFontWeightCombo ( QWidget * parent ) ;
+58: ~ SelectFontWeightCombo ( ) override { }
+59:
+60: void setWeight ( const QFont :: Weight & weight ) ;
+61: const QFont :: Weight & getWeight ( ) ;
+62:
+63: signals :
+64: void weightChanged ( const QFont :: Weight & newWeight ) ;
+65:
+66: public slots :
+67: void updateWeight ( ) ;
+68: void changeWeight ( int index ) ;
+69:
+70: private:
+71: QFont :: Weight mWeight ;
+72: } ;
+
+##file cppcheck-2.8/gui/codeeditstylecontrols.cpp
+
+1:
+|
+22:
+23: class QWidget ;
+24:
+25: SelectColorButton :: SelectColorButton ( QWidget * parent ) :
+26: QPushButton ( parent ) ,
+27: mColor ( QColor ( 255 , 255 , 255 ) )
+28: {
+29: updateColor ( ) ;
+30: connect ( this , SIGNAL ( clicked ( ) ) , this , SLOT ( changeColor ( ) ) ) ;
+31: }
+32:
+33: void SelectColorButton :: updateColor ( )
+34: {
+35: QString btnColorStyle ; btnColorStyle = QString (
+36: "background-color:rgb(%1,%2,%3);border-style:outset;border-width: 1px;"
+37:
+38: )
+39: . arg ( mColor . red ( ) )
+40: . arg ( mColor . green ( ) )
+41: . arg ( mColor . blue ( ) ) ;
+42: setObjectName ( "SelectColorButton" ) ;
+43: setStyleSheet ( btnColorStyle ) ;
+44: }
+45:
+46: void SelectColorButton :: changeColor ( )
+47: {
+48: QColorDialog pDlg ( mColor ) ;
+49: pDlg . setModal ( true ) ;
+50: int nResult ; nResult = pDlg . exec ( ) ;
+51: if ( nResult == QDialog :: Accepted ) {
+52: setColor ( pDlg . selectedColor ( ) ) ;
+53: emit colorChanged ( mColor ) ;
+54: }
+55: }
+56:
+57: void SelectColorButton :: setColor ( const QColor & color )
+58: {
+59: mColor = color ;
+60: updateColor ( ) ;
+61: }
+62:
+63:
+64: const QColor & SelectColorButton :: getColor ( )
+65: {
+66: return mColor ;
+67: }
+68:
+69: SelectFontWeightCombo :: SelectFontWeightCombo ( QWidget * parent ) :
+70: QComboBox ( parent ) ,
+71: mWeight ( QFont :: Normal )
+72: {
+73: addItem ( QObject :: tr ( "Thin" ) ,
+74: QVariant ( static_cast < int > ( QFont :: Thin ) ) ) ;
+75: addItem ( QObject :: tr ( "ExtraLight" ) ,
+76: QVariant ( static_cast < int > ( QFont :: ExtraLight ) ) ) ;
+77: addItem ( QObject :: tr ( "Light" ) ,
+78: QVariant ( static_cast < int > ( QFont :: Light ) ) ) ;
+79: addItem ( QObject :: tr ( "Normal" ) ,
+80: QVariant ( static_cast < int > ( QFont :: Normal ) ) ) ;
+81: addItem ( QObject :: tr ( "Medium" ) ,
+82: QVariant ( static_cast < int > ( QFont :: Medium ) ) ) ;
+83: addItem ( QObject :: tr ( "DemiBold" ) ,
+84: QVariant ( static_cast < int > ( QFont :: DemiBold ) ) ) ;
+85: addItem ( QObject :: tr ( "Bold" ) ,
+86: QVariant ( static_cast < int > ( QFont :: Bold ) ) ) ;
+87: addItem ( QObject :: tr ( "ExtraBold" ) ,
+88: QVariant ( static_cast < int > ( QFont :: ExtraBold ) ) ) ;
+89: addItem ( QObject :: tr ( "Black" ) ,
+90: QVariant ( static_cast < int > ( QFont :: Black ) ) ) ;
+91: updateWeight ( ) ;
+92: connect ( this , SIGNAL ( currentIndexChanged ( int ) ) ,
+93: this , SLOT ( changeWeight ( int ) ) ) ;
+94: }
+95:
+96: void SelectFontWeightCombo :: updateWeight ( )
+97: {
+98: int nResult ; nResult = findData ( QVariant ( static_cast < int > ( mWeight ) ) ) ;
+99:
+100: if ( nResult != -1 ) {
+101: setCurrentIndex ( nResult ) ;
+102: } else {
+103: setCurrentIndex ( findData ( static_cast < int > ( QFont :: Normal ) ) ) ;
+104: }
+105: }
+106:
+107: void SelectFontWeightCombo :: changeWeight ( int index )
+108: {
+109: if ( index != -1 ) {
+110: setWeight ( static_cast < QFont :: Weight > ( itemData ( index ) . toInt ( ) ) ) ;
+111: emit weightChanged ( mWeight ) ;
+112: }
+113: }
+114:
+115: void SelectFontWeightCombo :: setWeight ( const QFont :: Weight & weight )
+116: {
+117: mWeight = weight ;
+118: updateWeight ( ) ;
+119: }
+120:
+121:
+122: const QFont :: Weight & SelectFontWeightCombo :: getWeight ( )
+123: {
+124: return mWeight ;
+125: }
+
+
+
+##Value flow

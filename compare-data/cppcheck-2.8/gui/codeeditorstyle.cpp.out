@@ -1,0 +1,597 @@
+
+
+##file cppcheck-2.8/gui/codeeditorstyle.h
+
+1:
+|
+25:
+26: const QString SETTINGS_STYLE_GROUP@var1 ( "EditorStyle" ) ;
+27: const QString SETTINGS_STYLE_TYPE@var2 ( "StyleType" ) ;
+28: const QString SETTINGS_STYLE_TYPE_LIGHT@var3 ( "DefaultLight" ) ;
+29: const QString SETTINGS_STYLE_TYPE_DARK@var4 ( "DefaultDark" ) ;
+30: const QString SETTINGS_STYLE_TYPE_CUSTOM@var5 ( "Custom" ) ;
+31: const QString SETTINGS_STYLE_WIDGETFG@var6 ( "StyleWidgetFG" ) ;
+32: const QString SETTINGS_STYLE_WIDGETBG@var7 ( "StyleWidgetBG" ) ;
+33: const QString SETTINGS_STYLE_HILIFG@var8 ( "StyleHighlightFG" ) ;
+34: const QString SETTINGS_STYLE_LINENUMFG@var9 ( "StyleLineNumFG" ) ;
+35: const QString SETTINGS_STYLE_LINENUMBG@var10 ( "StyleLineNumBG" ) ;
+36: const QString SETTINGS_STYLE_KEYWORDFG@var11 ( "StyleKeywordFG" ) ;
+37: const QString SETTINGS_STYLE_KEYWORDWT@var12 ( "StyleKeywordWeight" ) ;
+38: const QString SETTINGS_STYLE_CLASSFG@var13 ( "StyleClassFG" ) ;
+39: const QString SETTINGS_STYLE_CLASSWT@var14 ( "StyleClassWeight" ) ;
+40: const QString SETTINGS_STYLE_QUOTEFG@var15 ( "StyleQuoteFG" ) ;
+41: const QString SETTINGS_STYLE_QUOTEWT@var16 ( "StyleQuoteWeight" ) ;
+42: const QString SETTINGS_STYLE_COMMENTFG@var17 ( "StyleCommentFG" ) ;
+43: const QString SETTINGS_STYLE_COMMENTWT@var18 ( "StyleCommentWeight" ) ;
+44: const QString SETTINGS_STYLE_SYMBOLFG@var19 ( "StyleSymbolFG" ) ;
+45: const QString SETTINGS_STYLE_SYMBOLBG@var20 ( "StyleSymbolBG" ) ;
+46: const QString SETTINGS_STYLE_SYMBOLWT@var21 ( "StyleSymbolWeight" ) ;
+47:
+48: class QSettings ;
+49:
+50: class CodeEditorStyle {
+51: public:
+52: explicit CodeEditorStyle (
+53: const QColor & CtrlFGColor@var22 , const QColor & CtrlBGColor@var23 ,
+54: const QColor & HiLiBGColor@var24 ,
+55: const QColor & LnNumFGColor@var25 , const QColor & LnNumBGColor@var26 ,
+56: const QColor & KeyWdFGColor@var27 , const QFont :: Weight & KeyWdWeight@var28 ,
+57: const QColor & ClsFGColor@var29 , const QFont :: Weight & ClsWeight@var30 ,
+58: const QColor & QteFGColor@var31 , const QFont :: Weight & QteWeight@var32 ,
+59: const QColor & CmtFGColor@var33 , const QFont :: Weight & CmtWeight@var34 ,
+60: const QColor & SymbFGColor@var35 , const QColor & SymbBGColor@var36 ,
+61: const QFont :: Weight & SymbWeight@var37 ) ;
+62: ~ CodeEditorStyle ( ) { }
+63:
+64: bool operator== ( const CodeEditorStyle & rhs@var38 ) const ;
+65: bool operator!= ( const CodeEditorStyle & rhs@var39 ) const ;
+66:
+67: bool isSystemTheme ( ) const {
+68: return mSystemTheme@var43 ;
+69: }
+70:
+71: static CodeEditorStyle getSystemTheme ( ) ;
+72: static CodeEditorStyle loadSettings ( QSettings * settings@var40 ) ;
+73: static void saveSettings ( QSettings * settings@var41 , const CodeEditorStyle & theStyle@var42 ) ;
+74:
+75: public:
+76: bool mSystemTheme@var43 ;
+77: QColor widgetFGColor@var44 ;
+78: QColor widgetBGColor@var45 ;
+79: QColor highlightBGColor@var46 ;
+80: QColor lineNumFGColor@var47 ;
+81: QColor lineNumBGColor@var48 ;
+82: QColor keywordColor@var49 ;
+83: QFont :: Weight keywordWeight@var50 ;
+84: QColor classColor@var51 ;
+85: QFont :: Weight classWeight@var52 ;
+86: QColor quoteColor@var53 ;
+87: QFont :: Weight quoteWeight@var54 ;
+88: QColor commentColor@var55 ;
+89: QFont :: Weight commentWeight@var56 ;
+90: QColor symbolFGColor@var57 ;
+91: QColor symbolBGColor@var58 ;
+92: QFont :: Weight symbolWeight@var59 ;
+93: } ;
+94:
+95: static const CodeEditorStyle defaultStyleLight (
+96: Qt :: black , QColor ( 240 , 240 , 240 ) ,
+97: QColor ( 255 , 220 , 220 ) ,
+98: Qt :: black , QColor ( 240 , 240 , 240 ) ,
+99: Qt :: darkBlue , QFont :: Bold ,
+100: Qt :: darkMagenta , QFont :: Bold ,
+101: Qt :: darkGreen , QFont :: Normal ,
+102: Qt :: gray , QFont :: Normal ,
+103: Qt :: red , QColor ( 220 , 220 , 255 ) , QFont :: Normal
+104: ) ;
+105:
+106:
+107:
+108: static const CodeEditorStyle defaultStyleDark@var60 (
+109: QColor ( 218 , 218 , 218 ) , QColor ( 16 , 16 , 32 ) ,
+110: QColor ( 64 , 64 , 64 ) ,
+111: QColor ( 43 , 145 , 175 ) , QColor ( 16 , 16 , 32 ) ,
+112: QColor ( 0 , 204 , 204 ) , QFont :: Bold ,
+113: QColor ( 218 , 0 , 218 ) , QFont :: Bold ,
+114: QColor ( 0 , 204 , 0 ) , QFont :: Normal ,
+115: QColor ( 180 , 180 , 180 ) , QFont :: Normal ,
+116: QColor ( 218 , 32 , 32 ) , QColor ( 32 , 32 , 108 ) , QFont :: Normal
+117: ) ;
+
+##file cppcheck-2.8/gui/codeeditorstyle.cpp
+
+1:
+|
+22:
+23: CodeEditorStyle :: CodeEditorStyle (
+24: const QColor & CtrlFGColor@var61 , const QColor & CtrlBGColor@var62 ,
+25: const QColor & HiLiBGColor@var63 ,
+26: const QColor & LnNumFGColor@var64 , const QColor & LnNumBGColor@var65 ,
+27: const QColor & KeyWdFGColor@var66 , const QFont :: Weight & KeyWdWeight@var67 ,
+28: const QColor & ClsFGColor@var68 , const QFont :: Weight & ClsWeight@var69 ,
+29: const QColor & QteFGColor@var70 , const QFont :: Weight & QteWeight@var71 ,
+30: const QColor & CmtFGColor@var72 , const QFont :: Weight & CmtWeight@var73 ,
+31: const QColor & SymbFGColor@var74 , const QColor & SymbBGColor@var75 ,
+32: const QFont :: Weight & SymbWeight@var76 ) :
+33: mSystemTheme@var43 ( false ) ,
+34: widgetFGColor@var44 ( CtrlFGColor@var61 ) ,
+35: widgetBGColor@var45 ( CtrlBGColor@var62 ) ,
+36: highlightBGColor@var46 ( HiLiBGColor@var63 ) ,
+37: lineNumFGColor@var47 ( LnNumFGColor@var64 ) ,
+38: lineNumBGColor@var48 ( LnNumBGColor@var65 ) ,
+39: keywordColor@var49 ( KeyWdFGColor@var66 ) ,
+40: keywordWeight@var50 ( KeyWdWeight@var67 ) ,
+41: classColor@var51 ( ClsFGColor@var68 ) ,
+42: classWeight@var52 ( ClsWeight@var69 ) ,
+43: quoteColor@var53 ( QteFGColor@var70 ) ,
+44: quoteWeight@var54 ( QteWeight@var71 ) ,
+45: commentColor@var55 ( CmtFGColor@var72 ) ,
+46: commentWeight@var56 ( CmtWeight@var73 ) ,
+47: symbolFGColor@var57 ( SymbFGColor@var74 ) ,
+48: symbolBGColor@var58 ( SymbBGColor@var75 ) ,
+49: symbolWeight@var59 ( SymbWeight@var76 )
+50: { }
+51:
+52: bool CodeEditorStyle :: operator== ( const CodeEditorStyle & rhs@var77 ) const
+53: {
+54: if (@expr1073741950 mSystemTheme@var43 !=@expr1073741951 rhs@var77 .@expr1073741952 mSystemTheme@var78 ) { return false ; }
+55: if (@expr1073741953 widgetFGColor@var44 !=@expr1073741954 rhs@var77 .@expr1073741955 widgetFGColor@var79 ) { return false ; }
+56: if (@expr1073741956 widgetBGColor@var45 !=@expr1073741957 rhs@var77 .@expr1073741958 widgetBGColor@var80 ) { return false ; }
+57: if (@expr1073741959 highlightBGColor@var46 !=@expr1073741960 rhs@var77 .@expr1073741961 highlightBGColor@var81 ) { return false ; }
+58: if (@expr1073741962 lineNumFGColor@var47 !=@expr1073741963 rhs@var77 .@expr1073741964 lineNumFGColor@var82 ) { return false ; }
+59: if (@expr1073741965 lineNumBGColor@var48 !=@expr1073741966 rhs@var77 .@expr1073741967 lineNumBGColor@var83 ) { return false ; }
+60: if (@expr1073741968 keywordColor@var49 !=@expr1073741969 rhs@var77 .@expr1073741970 keywordColor@var84 ) { return false ; }
+61: if (@expr1073741971 keywordWeight@var50 !=@expr1073741972 rhs@var77 .@expr1073741973 keywordWeight@var85 ) { return false ; }
+62: if (@expr1073741974 classColor@var51 !=@expr1073741975 rhs@var77 .@expr1073741976 classColor@var86 ) { return false ; }
+63: if (@expr1073741977 classWeight@var52 !=@expr1073741978 rhs@var77 .@expr1073741979 classWeight@var87 ) { return false ; }
+64: if (@expr1073741980 quoteColor@var53 !=@expr1073741981 rhs@var77 .@expr1073741982 quoteColor@var88 ) { return false ; }
+65: if (@expr1073741983 quoteWeight@var54 !=@expr1073741984 rhs@var77 .@expr1073741985 quoteWeight@var89 ) { return false ; }
+66: if (@expr1073741986 commentColor@var55 !=@expr1073741987 rhs@var77 .@expr1073741988 commentColor@var90 ) { return false ; }
+67: if (@expr1073741989 commentWeight@var56 !=@expr1073741990 rhs@var77 .@expr1073741991 commentWeight@var91 ) { return false ; }
+68: if (@expr1073741992 symbolFGColor@var57 !=@expr1073741993 rhs@var77 .@expr1073741994 symbolFGColor@var92 ) { return false ; }
+69: if (@expr1073741995 symbolBGColor@var58 !=@expr1073741996 rhs@var77 .@expr1073741997 symbolBGColor@var93 ) { return false ; }
+70: if (@expr1073741998 symbolWeight@var59 !=@expr1073741999 rhs@var77 .@expr1073742000 symbolWeight@var94 ) { return false ; }
+71: return true ;
+72: }
+73:
+74: bool CodeEditorStyle :: operator!= ( const CodeEditorStyle & rhs@var95 ) const
+75: {
+76: return !@expr1073742001 (@expr1073742002 *@expr1073742003 this@expr1073742004 ==@expr1073742005 rhs@var95 ) ;
+77: }
+78:
+79: CodeEditorStyle CodeEditorStyle :: getSystemTheme ( )
+80: {
+81: CodeEditorStyle theStyle@var96 (@expr1073742006 defaultStyleLight ) ;
+82: theStyle@var96 .@expr1073742007 mSystemTheme@var97 =@expr1073742008 true ;
+83: return theStyle@var96 ;
+84: }
+85:
+86: CodeEditorStyle CodeEditorStyle :: loadSettings ( QSettings * settings@var98 )
+87: {
+88: CodeEditorStyle theStyle@var99 (@expr1073742025 CodeEditorStyle ::@expr1073742026 getSystemTheme (@expr1073742027 ) ) ;
+89: if (@expr1073742028 !@expr1073742029 settings@var98 ) {
+90: return theStyle@var99 ; }
+91:
+92: if (@expr1073742030 !@expr1073742031 settings@var98 .@expr1073742032 childGroups (@expr1073742033 ) .@expr1073742034 contains (@expr1073742035 SETTINGS_STYLE_GROUP@var1 ) ) {
+93: return theStyle@var99 ; }
+94:
+95:
+96: settings@var98 .@expr1073742036 beginGroup (@expr1073742037 SETTINGS_STYLE_GROUP@var1 ) ;
+97: QString type@var100 ; type@var100 =@expr1073742038 settings@var98 .@expr215 value (@expr1073742040
+98: SETTINGS_STYLE_TYPE@var2 ,
+99: QVariant (@expr1073742041 SETTINGS_STYLE_TYPE_LIGHT@var3 )
+100: ) .@expr1073742042 toString (@expr1073742043 ) ;
+101: if (@expr1073742044 type@var100 ==@expr1073742045 SETTINGS_STYLE_TYPE_LIGHT@var3 ) {
+102: settings@var98 .@expr222 endGroup (@expr223 ) ;
+103: return theStyle@var99 ;
+104: }
+105: if (@expr1073742048 type@var100 ==@expr1073742049 SETTINGS_STYLE_TYPE_DARK@var4 ) {
+106: theStyle@var99 =@expr1073742050 defaultStyleDark@var60 ;
+107: settings@var98 .@expr222 endGroup (@expr223 ) ;
+108: return theStyle@var99 ;
+109: }
+110: if (@expr1073742053 type@var100 ==@expr1073742054 SETTINGS_STYLE_TYPE_CUSTOM@var5 ) {
+111: theStyle@var99 .@expr1073742055 widgetFGColor@var101 =@expr1073742056 settings@var98 .@expr215 value (@expr1073742058
+112: SETTINGS_STYLE_WIDGETFG@var6 ,
+113: QVariant (@expr1073742059 defaultStyleLight .@expr1073742060 widgetFGColor@expr1073742009 ) ) .@expr1073742061 value < QColor > (@expr1073742062 ) ;
+114: theStyle@var99 .@expr1073742063 widgetBGColor@var102 =@expr1073742064 settings@var98 .@expr215 value (@expr1073742066
+115: SETTINGS_STYLE_WIDGETBG@var7 ,
+116: QVariant (@expr1073742067 defaultStyleLight .@expr1073742068 widgetBGColor@expr1073742010 ) ) .@expr1073742069 value < QColor > (@expr1073742070 ) ;
+117: theStyle@var99 .@expr1073742071 highlightBGColor@var103 =@expr1073742072 settings@var98 .@expr215 value (@expr1073742074
+118: SETTINGS_STYLE_HILIFG@var8 ,
+119: QVariant (@expr1073742075 defaultStyleLight .@expr1073742076 highlightBGColor@expr1073742011 ) ) .@expr1073742077 value < QColor > (@expr1073742078 ) ;
+120: theStyle@var99 .@expr1073742079 lineNumFGColor@var104 =@expr1073742080 settings@var98 .@expr215 value (@expr1073742082
+121: SETTINGS_STYLE_LINENUMFG@var9 ,
+122: QVariant (@expr1073742083 defaultStyleLight .@expr1073742084 lineNumFGColor@expr1073742012 ) ) .@expr1073742085 value < QColor > (@expr1073742086 ) ;
+123: theStyle@var99 .@expr1073742087 lineNumBGColor@var105 =@expr1073742088 settings@var98 .@expr215 value (@expr1073742090
+124: SETTINGS_STYLE_LINENUMBG@var10 ,
+125: QVariant (@expr1073742091 defaultStyleLight .@expr1073742092 lineNumBGColor@expr1073742013 ) ) .@expr1073742093 value < QColor > (@expr1073742094 ) ;
+126: theStyle@var99 .@expr1073742095 keywordColor@var106 =@expr1073742096 settings@var98 .@expr215 value (@expr1073742098
+127: SETTINGS_STYLE_KEYWORDFG@var11 ,
+128: QVariant (@expr1073742099 defaultStyleLight .@expr1073742100 keywordColor@expr1073742014 ) ) .@expr1073742101 value < QColor > (@expr1073742102 ) ;
+129: QVariant defKeyWWt@var107 (@expr1073742103 static_cast < int > (@expr1073742104 defaultStyleLight .@expr1073742105 keywordWeight@expr1073742015 ) ) ;
+130: theStyle@var99 .@expr1073742106 keywordWeight@var108 =@expr1073742107 static_cast < QFont ::@expr284 Weight > (@expr1073742109
+131: settings@var98 .@expr215 value (@expr1073742111 SETTINGS_STYLE_KEYWORDWT@var12 , defKeyWWt@var107 ) .@expr1073742112 toInt (@expr1073742113 ) ) ;
+132: theStyle@var99 .@expr1073742114 classColor@var109 =@expr1073742115 settings@var98 .@expr215 value (@expr1073742117
+133: SETTINGS_STYLE_CLASSFG@var13 ,
+134: QVariant (@expr1073742118 defaultStyleLight .@expr1073742119 classColor@expr1073742016 ) ) .@expr1073742120 value < QColor > (@expr1073742121 ) ;
+135: QVariant defClsWt@var110 (@expr1073742122 static_cast < int > (@expr1073742123 defaultStyleLight .@expr1073742124 classWeight@expr1073742017 ) ) ;
+136: theStyle@var99 .@expr1073742125 classWeight@var111 =@expr1073742126 static_cast < QFont ::@expr284 Weight > (@expr1073742128
+137: settings@var98 .@expr215 value (@expr1073742130 SETTINGS_STYLE_CLASSWT@var14 , defClsWt@var110 ) .@expr1073742131 toInt (@expr1073742132 ) ) ;
+138: theStyle@var99 .@expr1073742133 quoteColor@var112 =@expr1073742134 settings@var98 .@expr215 value (@expr1073742136
+139: SETTINGS_STYLE_QUOTEFG@var15 ,
+140: QVariant (@expr1073742137 defaultStyleLight .@expr1073742138 quoteColor@expr1073742018 ) ) .@expr1073742139 value < QColor > (@expr1073742140 ) ;
+141: QVariant defQteWt@var113 (@expr1073742141 static_cast < int > (@expr1073742142 defaultStyleLight .@expr1073742143 quoteWeight@expr1073742019 ) ) ;
+142: theStyle@var99 .@expr1073742144 quoteWeight@var114 =@expr1073742145 static_cast < QFont ::@expr284 Weight > (@expr1073742147
+143: settings@var98 .@expr215 value (@expr1073742149 SETTINGS_STYLE_QUOTEWT@var16 , defQteWt@var113 ) .@expr1073742150 toInt (@expr1073742151 ) ) ;
+144: theStyle@var99 .@expr1073742152 commentColor@var115 =@expr1073742153 settings@var98 .@expr215 value (@expr1073742155
+145: SETTINGS_STYLE_COMMENTFG@var17 ,
+146: QVariant (@expr1073742156 defaultStyleLight .@expr1073742157 commentColor@expr1073742020 ) ) .@expr1073742158 value < QColor > (@expr1073742159 ) ;
+147: QVariant defCmtWt@var116 (@expr1073742160 static_cast < int > (@expr1073742161 defaultStyleLight .@expr1073742162 commentWeight@expr1073742021 ) ) ;
+148: theStyle@var99 .@expr1073742163 commentWeight@var117 =@expr1073742164 static_cast < QFont ::@expr284 Weight > (@expr1073742166
+149: settings@var98 .@expr215 value (@expr1073742168 SETTINGS_STYLE_COMMENTWT@var18 , defCmtWt@var116 ) .@expr1073742169 toInt (@expr1073742170 ) ) ;
+150: theStyle@var99 .@expr1073742171 symbolFGColor@var118 =@expr1073742172 settings@var98 .@expr215 value (@expr1073742174
+151: SETTINGS_STYLE_SYMBOLFG@var19 ,
+152: QVariant (@expr1073742175 defaultStyleLight .@expr1073742176 symbolFGColor@expr1073742022 ) ) .@expr1073742177 value < QColor > (@expr1073742178 ) ;
+153: theStyle@var99 .@expr1073742179 symbolBGColor@var119 =@expr1073742180 settings@var98 .@expr215 value (@expr1073742182
+154: SETTINGS_STYLE_SYMBOLBG@var20 ,
+155: QVariant (@expr1073742183 defaultStyleLight .@expr1073742184 symbolBGColor@expr1073742023 ) ) .@expr1073742185 value < QColor > (@expr1073742186 ) ;
+156: QVariant defSymWt@var120 (@expr1073742187 static_cast < int > (@expr1073742188 defaultStyleLight .@expr1073742189 symbolWeight@expr1073742024 ) ) ;
+157: theStyle@var99 .@expr1073742190 symbolWeight@var121 =@expr1073742191 static_cast < QFont ::@expr284 Weight > (@expr1073742193
+158: settings@var98 .@expr215 value (@expr1073742195 SETTINGS_STYLE_SYMBOLWT@var21 , defSymWt@var120 ) .@expr1073742196 toInt (@expr1073742197 ) ) ;
+159: }
+160: settings@var98 .@expr222 endGroup (@expr223 ) ;
+161: return theStyle@var99 ;
+162: }
+163:
+164: void CodeEditorStyle :: saveSettings ( QSettings * settings@var122 ,
+165: const CodeEditorStyle & theStyle@var123 )
+166: {
+167: if (@expr1073742201 !@expr1073742202 settings@var122 ) {
+168: return ; }
+169:
+170: if (@expr1073742203 settings@var122 .@expr1073742204 childGroups (@expr1073742205 ) .@expr1073742206 contains (@expr1073742207 SETTINGS_STYLE_GROUP@var1 ) ) {
+171: settings@var122 .@expr1073742208 remove (@expr1073742209 SETTINGS_STYLE_GROUP@var1 ) ;
+172: if (@expr1073742210 theStyle@var123 .@expr1073742211 isSystemTheme (@expr1073742212 ) ) {
+173: return ; }
+174: }
+175:
+176: settings@var122 .@expr1073742213 beginGroup (@expr1073742214 SETTINGS_STYLE_GROUP@var1 ) ;
+177: bool isDefaultLight@var124 ; isDefaultLight@var124 =@expr1073742215 defaultStyleLight@expr1073742200 ==@expr1073742216 theStyle@var123 ;
+178: bool isDefaultDark@var125 ; isDefaultDark@var125 =@expr1073742217 defaultStyleDark@var60 ==@expr1073742218 theStyle@var123 ;
+179: if (@expr1073742219 isDefaultLight@var124 &&@expr1073742220 !@expr1073742221 isDefaultDark@var125 ) {
+180: settings@var122 .@expr398 setValue (@expr1073742223 SETTINGS_STYLE_TYPE@var2 ,
+181: SETTINGS_STYLE_TYPE_LIGHT@var3 ) ;
+182: } else { if (@expr1073742224 !@expr1073742225 isDefaultLight@var124 &&@expr1073742226 isDefaultDark@var125 ) {
+183: settings@var122 .@expr398 setValue (@expr1073742228 SETTINGS_STYLE_TYPE@var2 ,
+184: SETTINGS_STYLE_TYPE_DARK@var4 ) ;
+185: } else {
+186: settings@var122 .@expr398 setValue (@expr1073742230 SETTINGS_STYLE_TYPE@var2 ,
+187: SETTINGS_STYLE_TYPE_CUSTOM@var5 ) ;
+188: settings@var122 .@expr398 setValue (@expr1073742232 SETTINGS_STYLE_WIDGETFG@var6 ,
+189: QVariant (@expr1073742233 theStyle@var123 .@expr1073742234 widgetFGColor@var126 ) ) ;
+190: settings@var122 .@expr398 setValue (@expr1073742236 SETTINGS_STYLE_WIDGETBG@var7 ,
+191: QVariant (@expr1073742237 theStyle@var123 .@expr1073742238 widgetBGColor@var127 ) ) ;
+192: settings@var122 .@expr398 setValue (@expr1073742240 SETTINGS_STYLE_HILIFG@var8 ,
+193: QVariant (@expr1073742241 theStyle@var123 .@expr1073742242 highlightBGColor@var128 ) ) ;
+194: settings@var122 .@expr398 setValue (@expr1073742244 SETTINGS_STYLE_LINENUMFG@var9 ,
+195: QVariant (@expr1073742245 theStyle@var123 .@expr1073742246 lineNumFGColor@var129 ) ) ;
+196: settings@var122 .@expr398 setValue (@expr1073742248 SETTINGS_STYLE_LINENUMBG@var10 ,
+197: QVariant (@expr1073742249 theStyle@var123 .@expr1073742250 lineNumBGColor@var130 ) ) ;
+198: settings@var122 .@expr398 setValue (@expr1073742252 SETTINGS_STYLE_KEYWORDFG@var11 ,
+199: QVariant (@expr1073742253 theStyle@var123 .@expr1073742254 keywordColor@var131 ) ) ;
+200: settings@var122 .@expr398 setValue (@expr1073742256 SETTINGS_STYLE_KEYWORDWT@var12 ,
+201: QVariant (@expr1073742257 static_cast < int > (@expr1073742258 theStyle@var123 .@expr1073742259 keywordWeight@var132 ) ) ) ;
+202: settings@var122 .@expr398 setValue (@expr1073742261 SETTINGS_STYLE_CLASSFG@var13 ,
+203: QVariant (@expr1073742262 theStyle@var123 .@expr1073742263 classColor@var133 ) ) ;
+204: settings@var122 .@expr398 setValue (@expr1073742265 SETTINGS_STYLE_CLASSWT@var14 ,
+205: QVariant (@expr1073742266 static_cast < int > (@expr1073742267 theStyle@var123 .@expr1073742268 classWeight@var134 ) ) ) ;
+206: settings@var122 .@expr398 setValue (@expr1073742270 SETTINGS_STYLE_QUOTEFG@var15 ,
+207: QVariant (@expr1073742271 theStyle@var123 .@expr1073742272 quoteColor@var135 ) ) ;
+208: settings@var122 .@expr398 setValue (@expr1073742274 SETTINGS_STYLE_QUOTEWT@var16 ,
+209: QVariant (@expr1073742275 static_cast < int > (@expr1073742276 theStyle@var123 .@expr1073742277 quoteWeight@var136 ) ) ) ;
+210: settings@var122 .@expr398 setValue (@expr1073742279 SETTINGS_STYLE_COMMENTFG@var17 ,
+211: QVariant (@expr1073742280 theStyle@var123 .@expr1073742281 commentColor@var137 ) ) ;
+212: settings@var122 .@expr398 setValue (@expr1073742283 SETTINGS_STYLE_COMMENTWT@var18 ,
+213: QVariant (@expr1073742284 static_cast < int > (@expr1073742285 theStyle@var123 .@expr1073742286 commentWeight@var138 ) ) ) ;
+214: settings@var122 .@expr398 setValue (@expr1073742288 SETTINGS_STYLE_SYMBOLFG@var19 ,
+215: QVariant (@expr1073742289 theStyle@var123 .@expr1073742290 symbolFGColor@var139 ) ) ;
+216: settings@var122 .@expr398 setValue (@expr1073742292 SETTINGS_STYLE_SYMBOLBG@var20 ,
+217: QVariant (@expr1073742293 theStyle@var123 .@expr1073742294 symbolBGColor@var140 ) ) ;
+218: settings@var122 .@expr398 setValue (@expr1073742296 SETTINGS_STYLE_SYMBOLWT@var21 ,
+219: QVariant (@expr1073742297 static_cast < int > (@expr1073742298 theStyle@var123 .@expr1073742299 symbolWeight@var141 ) ) ) ;
+220: } }
+221: settings@var122 .@expr1073742300 endGroup (@expr1073742301 ) ;
+222: }
+
+
+
+##Value flow
+Line 26
+  "EditorStyle" always "EditorStyle"
+Line 27
+  "StyleType" always "StyleType"
+Line 28
+  "DefaultLight" always "DefaultLight"
+Line 29
+  "DefaultDark" always "DefaultDark"
+Line 30
+  "Custom" always "Custom"
+Line 31
+  "StyleWidgetFG" always "StyleWidgetFG"
+Line 32
+  "StyleWidgetBG" always "StyleWidgetBG"
+Line 33
+  "StyleHighlightFG" always "StyleHighlightFG"
+Line 34
+  "StyleLineNumFG" always "StyleLineNumFG"
+Line 35
+  "StyleLineNumBG" always "StyleLineNumBG"
+Line 36
+  "StyleKeywordFG" always "StyleKeywordFG"
+Line 37
+  "StyleKeywordWeight" always "StyleKeywordWeight"
+Line 38
+  "StyleClassFG" always "StyleClassFG"
+Line 39
+  "StyleClassWeight" always "StyleClassWeight"
+Line 40
+  "StyleQuoteFG" always "StyleQuoteFG"
+Line 41
+  "StyleQuoteWeight" always "StyleQuoteWeight"
+Line 42
+  "StyleCommentFG" always "StyleCommentFG"
+Line 43
+  "StyleCommentWeight" always "StyleCommentWeight"
+Line 44
+  "StyleSymbolFG" always "StyleSymbolFG"
+Line 45
+  "StyleSymbolBG" always "StyleSymbolBG"
+Line 46
+  "StyleSymbolWeight" always "StyleSymbolWeight"
+Line 64
+  ( always {!<=-1,!>=2}
+Line 65
+  ( always {!<=-1,!>=2}
+Line 67
+  ( always {!<=-1,!>=2}
+Line 68
+  return always {!<=-1,!>=2}
+  mSystemTheme always {!<=-1,!>=2}
+Line 76
+  mSystemTheme always {!<=-1,!>=2}
+Line 96
+  240 always 240
+  240 always 240
+  240 always 240
+Line 97
+  255 always 255
+  220 always 220
+  220 always 220
+Line 98
+  240 always 240
+  240 always 240
+  240 always 240
+Line 103
+  220 always 220
+  220 always 220
+  255 always 255
+Line 109
+  218 always 218
+  218 always 218
+  218 always 218
+  16 always 16
+  16 always 16
+  32 always 32
+Line 110
+  64 always 64
+  64 always 64
+  64 always 64
+Line 111
+  43 always 43
+  145 always 145
+  175 always 175
+  16 always 16
+  16 always 16
+  32 always 32
+Line 112
+  0 always 0
+  204 always 204
+  204 always 204
+Line 113
+  218 always 218
+  0 always 0
+  218 always 218
+Line 114
+  0 always 0
+  204 always 204
+  0 always 0
+Line 115
+  180 always 180
+  180 always 180
+  180 always 180
+Line 116
+  218 always 218
+  32 always 32
+  32 always 32
+  32 always 32
+  32 always 32
+  108 always 108
+Line 33
+  mSystemTheme always {!<=-1,!>=2}
+  false always 0
+Line 52
+  ( always {!<=-1,!>=2}
+Line 54
+  mSystemTheme always {!<=-1,!>=2}
+  != always {!<=-1,!>=2}
+  . always {!<=-1,!>=2}
+  mSystemTheme always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 55
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 56
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 57
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 58
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 59
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 60
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 61
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 62
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 63
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 64
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 65
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 66
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 67
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 68
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 69
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 70
+  != always {!<=-1,!>=2}
+  return always {!<=-1,!>=2}
+  false always 0
+Line 71
+  return always {!<=-1,!>=2}
+  true always 1
+Line 74
+  ( always {!<=-1,!>=2}
+Line 76
+  return always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  this always !0
+  == always {!<=-1,!>=2}
+Line 82
+  . always {!<=-1,!>=2}
+  mSystemTheme always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 89
+  ! always {!<=-1,!>=2}
+Line 92
+  ! always {!<=-1,!>=2}
+  settings always !0
+Line 96
+  settings always !0
+Line 97
+  settings always !0
+Line 101
+  == always {!<=-1,!>=2}
+Line 102
+  settings always !0
+Line 105
+  == always {!<=-1,!>=2}
+Line 110
+  == always {!<=-1,!>=2}
+Line 167
+  ! always {!<=-1,!>=2}
+Line 170
+  settings always !0
+Line 171
+  settings always !0
+Line 172
+  ( always {!<=-1,!>=2}
+Line 176
+  settings always !0
+Line 177
+  isDefaultLight always {!<=-1,!>=2}
+  isDefaultLight always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 178
+  isDefaultDark always {!<=-1,!>=2}
+  isDefaultDark always {!<=-1,!>=2}
+  = always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 179
+  isDefaultLight {!<=-1,!>=2,0}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  isDefaultDark {symbolic=(defaultStyleDark==theStyle),!<=-1,!>=2}
+Line 180
+  settings always !0
+Line 182
+  ! {!<=-1,!>=2,1}
+  isDefaultLight {!<=-1,!>=2,0}
+  && always {!<=-1,!>=2}
+  isDefaultDark {symbolic=(defaultStyleDark==theStyle),!<=-1,!>=2}
+Line 183
+  settings always !0
+Line 186
+  settings always !0
+Line 188
+  settings always !0
+Line 190
+  settings always !0
+Line 192
+  settings always !0
+Line 194
+  settings always !0
+Line 196
+  settings always !0
+Line 198
+  settings always !0
+Line 200
+  settings always !0
+Line 202
+  settings always !0
+Line 204
+  settings always !0
+Line 206
+  settings always !0
+Line 208
+  settings always !0
+Line 210
+  settings always !0
+Line 212
+  settings always !0
+Line 214
+  settings always !0
+Line 216
+  settings always !0
+Line 218
+  settings always !0
+Line 221
+  settings always !0

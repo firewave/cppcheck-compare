@@ -1,0 +1,510 @@
+
+
+##file cppcheck-2.8/gui/application.h
+
+1:
+|
+42:
+43: class Application {
+44: public:
+45: Application ( ) { }
+46: Application ( const QString & name@var1 , const QString & path@var2 , const QString & params@var3 ) ;
+47:
+|
+51:
+52: QString getName ( ) const {
+53: return mName@var7 ;
+54: }
+55:
+|
+59:
+60: QString getPath ( ) const {
+61: return mPath@var8 ;
+62: }
+63:
+|
+67:
+68: QString getParameters ( ) const {
+69: return mParameters@var9 ;
+70: }
+71:
+|
+75:
+76: void setName ( const QString & name@var4 ) {
+77: mName@var7 =@expr1073741884 name@var4 ;
+78: }
+79:
+|
+83:
+84: void setPath ( const QString & path@var5 ) {
+85: mPath@var8 =@expr1073741885 path@var5 ;
+86: }
+87:
+|
+91:
+92: void setParameters ( const QString & parameters@var6 ) {
+93: mParameters@var9 =@expr1073741886 parameters@var6 ;
+94: }
+95:
+96: private:
+97:
+|
+100:
+101: QString mName@var7 ;
+102:
+|
+105:
+106: QString mPath@var8 ;
+107:
+|
+110:
+111: QString mParameters@var9 ;
+112: } ;
+
+##file cppcheck-2.8/gui/applicationlist.h
+
+1:
+|
+32:
+33: class ApplicationList : public QObject {
+34: Q_OBJECT
+35: public:
+36:
+37: explicit ApplicationList ( QObject * parent@var10 = nullptr ) ;
+38: ~ ApplicationList ( ) override ;
+39:
+|
+46:
+47: bool loadSettings ( ) ;
+48:
+|
+51:
+52: void saveSettings ( ) const ;
+53:
+|
+57:
+58: int getApplicationCount ( ) const ;
+59:
+|
+65:
+66: const Application & getApplication ( const int index@var11 ) const ;
+67: Application & getApplication ( const int index@var12 ) ;
+68:
+|
+72:
+73: int getDefaultApplication ( ) const {
+74: return mDefaultApplicationIndex@var21 ;
+75: }
+76:
+|
+81:
+82: void addApplication ( const Application & app@var13 ) ;
+83:
+|
+88:
+89: void removeApplication ( const int index@var14 ) ;
+90:
+|
+94:
+95: void setDefault ( const int index@var15 ) ;
+96:
+|
+101:
+102: void copy ( const ApplicationList * list@var16 ) ;
+103:
+104: protected:
+105:
+|
+109:
+110: void clear ( ) ;
+111:
+|
+119:
+120: private:
+121:
+122: bool checkAndAddApplication ( const QString & appPath@var17 , const QString & name@var18 , const QString & parameters@var19 ) ;
+123:
+|
+127:
+128: QList < Application > mApplications@var20 ;
+129:
+|
+133:
+134: int mDefaultApplicationIndex@var21 ;
+135: } ;
+
+##file cppcheck-2.8/gui/common.h
+
+1:
+|
+113:
+114: QString getPath ( const QString & type@var22 ) ;
+115:
+|
+121:
+122: void setPath ( const QString & type@var23 , const QString & value@var24 ) ;
+123:
+|
+147:
+148: QString toFilterString ( const QMap < QString , QString > & filters@var25 , bool addAllSupported@var26 = true , bool addAll@var27 = true ) ;
+149:
+|
+152:
+153: QString getDataDir ( ) ;
+
+##file cppcheck-2.8/gui/applicationlist.cpp
+
+1:
+|
+27:
+28: ApplicationList :: ApplicationList ( QObject * parent@var28 ) :
+29: QObject ( parent@var28 ) ,
+30: mDefaultApplicationIndex@var21 ( -1 )
+31: {
+32:
+33: }
+34:
+35: ApplicationList :: ~ ApplicationList ( )
+36: {
+37: clear (@expr1073741887 ) ;
+38: }
+39:
+40: bool ApplicationList :: loadSettings ( )
+41: {
+42: QSettings settings@var29 ;
+43: QStringList names@var30 ; names@var30 =@expr1073741888 settings@var29 .@expr65 value (@expr1073741890 $"Application names" , QStringList (@expr67 ) ) .@expr1073741892 toStringList (@expr1073741893 ) ;
+44: QStringList paths@var31 ; paths@var31 =@expr1073741894 settings@var29 .@expr65 value (@expr1073741896 $"Application paths" , QStringList (@expr67 ) ) .@expr1073741898 toStringList (@expr1073741899 ) ;
+45: QStringList params@var32 ; params@var32 =@expr1073741900 settings@var29 .@expr65 value (@expr1073741902 $"Application parameters" , QStringList (@expr67 ) ) .@expr1073741904 toStringList (@expr1073741905 ) ;
+46: int defapp@var33 ; defapp@var33 =@expr1073741906 settings@var29 .@expr65 value (@expr1073741908 $"Default Application" , -1 ) .@expr1073741909 toInt (@expr1073741910 ) ;
+47:
+48:
+49:
+50: bool succeeded@var34 ; succeeded@var34 =@expr1073741911 true ;
+51: if (@expr1073741912 !@expr1073741913 names@var30 .@expr90 empty (@expr91 ) &&@expr1073741916 !@expr1073741917 paths@var31 .@expr94 empty (@expr95 ) &&@expr1073741920 params@var32 .@expr97 empty (@expr98 ) ) {
+52: for (@expr1073741923 int i@var35 =@expr1073741924 0 ; i@var35 <@expr1073741925 paths@var31 .@expr1073741926 length (@expr1073741927 ) ; i@var35 ++@expr1073741928 ) {
+53: params@var32 <<@expr1073741929 QString (@expr1073741930 ) ; }
+54: succeeded@var34 =@expr1073741931 false ;
+55: }
+56:
+57: if (@expr1073741932 names@var30 .@expr90 empty (@expr91 ) &&@expr1073741935 paths@var31 .@expr94 empty (@expr95 ) &&@expr1073741938 params@var32 .@expr97 empty (@expr98 ) ) {
+58:
+59:
+60: if (@expr1073741941 QFileInfo (@expr1073741942 "/usr/bin/gedit" ) .@expr1073741943 isExecutable (@expr1073741944 ) ) {
+61: Application app@var36 ;
+62: app@var36 .@expr1073741945 setName (@expr1073741946 "gedit" ) ;
+63: app@var36 .@expr1073741947 setPath (@expr1073741948 "/usr/bin/gedit" ) ;
+64: app@var36 .@expr1073741949 setParameters (@expr1073741950 "+(line) (file)" ) ;
+65: addApplication (@expr1073741951 app@var36 ) ;
+66: defapp@var33 =@expr1073741952 0 ;
+67: }
+68: checkAndAddApplication (@expr1073741953 "/usr/bin/geany" , "geany" , "+(line) (file)" ) ;
+69: checkAndAddApplication (@expr1073741954 "/usr/bin/qtcreator" , "Qt Creator" , "-client (file):(line)" ) ;
+70:
+71: if (@expr1073741955 QFileInfo (@expr1073741956 "/usr/bin/kate" ) .@expr1073741957 isExecutable (@expr1073741958 ) ) {
+72: Application app@var37 ;
+73: app@var37 .@expr1073741959 setName (@expr1073741960 "kate" ) ;
+74: app@var37 .@expr1073741961 setPath (@expr1073741962 "/usr/bin/kate" ) ;
+75: app@var37 .@expr1073741963 setParameters (@expr1073741964 "-l(line) (file)" ) ;
+76: addApplication (@expr1073741965 app@var37 ) ;
+77: defapp@var33 =@expr1073741966 0 ;
+78: }
+79:
+|
+83:
+84: } else { if (@expr1073741967 names@var30 .@expr144 size (@expr145 ) ==@expr1073741970 paths@var31 .@expr1073741971 size (@expr1073741972 ) ) {
+85: for (@expr1073741973 int i@var38 =@expr1073741974 0 ; i@var38 <@expr1073741975 names@var30 .@expr144 size (@expr145 ) ; i@var38 ++@expr1073741978 ) {
+86: const Application app@var39 (@expr1073741979 names@var30 [@expr1073741980 i@var38 ] , paths@var31 [@expr1073741981 i@var38 ] , params@var32 [@expr1073741982 i@var38 ] ) ;
+87: addApplication (@expr1073741983 app@var39 ) ;
+88: }
+89: } }
+90:
+91: if (@expr1073741984 defapp@var33 ==@expr1073741985 -1 ) {
+92: mDefaultApplicationIndex@var21 =@expr1073741986 0 ; }
+93: else { if (@expr1073741987 defapp@var33 <@expr1073741988 names@var30 .@expr144 size (@expr145 ) ) {
+94: mDefaultApplicationIndex@var21 =@expr1073741991 defapp@var33 ; }
+95: else {
+96: mDefaultApplicationIndex@var21 =@expr1073741992 0 ; } }
+97:
+98: return succeeded@var34 ;
+99: }
+100:
+101: void ApplicationList :: saveSettings ( ) const
+102: {
+103: QSettings settings@var40 ;
+104: QStringList names@var41 ;
+105: QStringList paths@var42 ;
+106: QStringList params@var43 ;
+107:
+108: for (@expr1073741993 int i@var44 =@expr1073741994 0 ; i@var44 <@expr1073741995 getApplicationCount (@expr1073741996 ) ; i@var44 ++@expr1073741997 ) {
+109: const Application &@expr1073741998 app@var45 =@expr1073741999 getApplication (@expr1073742000 i@var44 ) ;
+110: names@var41 <<@expr1073742001 app@var45 .@expr1073742002 getName (@expr1073742003 ) ;
+111: paths@var42 <<@expr1073742004 app@var45 .@expr1073742005 getPath (@expr1073742006 ) ;
+112: params@var43 <<@expr1073742007 app@var45 .@expr1073742008 getParameters (@expr1073742009 ) ;
+113: }
+114:
+115: settings@var40 .@expr186 setValue (@expr1073742011 $"Application names" , names@var41 ) ;
+116: settings@var40 .@expr186 setValue (@expr1073742013 $"Application paths" , paths@var42 ) ;
+117: settings@var40 .@expr186 setValue (@expr1073742015 $"Application parameters" , params@var43 ) ;
+118: settings@var40 .@expr186 setValue (@expr1073742017 $"Default Application" , mDefaultApplicationIndex@var21 ) ;
+119: }
+120:
+121: int ApplicationList :: getApplicationCount ( ) const
+122: {
+123: return mApplications@var20 .@expr1073742018 size (@expr1073742019 ) ;
+124: }
+125:
+126: Application & ApplicationList :: getApplication ( const int index@var46 )
+127: {
+128: if (@expr1073742020 index@var46 >=@expr1073742021 0 &&@expr1073742022 index@var46 <@expr1073742023 mApplications@var20 .@expr1073742024 size (@expr1073742025 ) ) {
+129: return mApplications@var20 [@expr1073742026 index@var46 ] ;
+130: }
+131:
+132: static Application dummy@var47 ;
+133: return dummy@var47 ;
+134: }
+135:
+136: const Application & ApplicationList :: getApplication ( const int index@var48 ) const
+137: {
+138: if (@expr1073742027 index@var48 >=@expr1073742028 0 &&@expr1073742029 index@var48 <@expr1073742030 mApplications@var20 .@expr1073742031 size (@expr1073742032 ) ) {
+139: return mApplications@var20 [@expr1073742033 index@var48 ] ;
+140: }
+141:
+142: static const Application dummy@var49 ;
+143: return dummy@var49 ;
+144: }
+145:
+146: void ApplicationList :: addApplication ( const Application & app@var50 )
+147: {
+148: if (@expr1073742034 app@var50 .@expr1073742035 getName (@expr1073742036 ) .@expr1073742037 isEmpty (@expr1073742038 ) ||@expr1073742039 app@var50 .@expr1073742040 getPath (@expr1073742041 ) .@expr1073742042 isEmpty (@expr1073742043 ) ) {
+149: return ;
+150: }
+151: mApplications@var20 <<@expr1073742044 app@var50 ;
+152: }
+153:
+154: void ApplicationList :: removeApplication ( const int index@var51 )
+155: {
+156: mApplications@var20 .@expr1073742045 removeAt (@expr1073742046 index@var51 ) ;
+157: }
+158:
+159: void ApplicationList :: setDefault ( const int index@var52 )
+160: {
+161: if (@expr1073742047 index@var52 <@expr1073742048 mApplications@var20 .@expr1073742049 size (@expr1073742050 ) &&@expr1073742051 index@var52 >=@expr1073742052 0 ) {
+162: mDefaultApplicationIndex@var21 =@expr1073742053 index@var52 ;
+163: }
+164: }
+165:
+166: void ApplicationList :: copy ( const ApplicationList * list@var53 )
+167: {
+168: if (@expr1073742054 !@expr1073742055 list@var53 ) {
+169: return ;
+170: }
+171:
+172: clear (@expr1073742056 ) ;
+173: for (@expr1073742057 int i@var54 =@expr1073742058 0 ; i@var54 <@expr1073742059 list@var53 .@expr1073742060 getApplicationCount (@expr1073742061 ) ; i@var54 ++@expr1073742062 ) {
+174: const Application &@expr1073742063 app@var55 =@expr1073742064 list@var53 .@expr1073742065 getApplication (@expr1073742066 i@var54 ) ;
+175: addApplication (@expr1073742067 app@var55 ) ;
+176: }
+177: mDefaultApplicationIndex@var21 =@expr1073742068 list@var53 .@expr1073742069 getDefaultApplication (@expr1073742070 ) ;
+178: }
+179:
+180: void ApplicationList :: clear ( )
+181: {
+182: mApplications@var20 .@expr1073742071 clear (@expr1073742072 ) ;
+183: mDefaultApplicationIndex@var21 =@expr1073742073 -1 ;
+184: }
+185:
+186: bool ApplicationList :: checkAndAddApplication ( const QString & appPath@var56 , const QString & name@var57 , const QString & parameters@var58 )
+187: {
+188: if (@expr1073742074 QFileInfo (@expr251 appPath@var56 ) .@expr1073742076 exists (@expr1073742077 ) &&@expr1073742078 QFileInfo (@expr251 appPath@var56 ) .@expr1073742080 isExecutable (@expr1073742081 ) ) {
+189: Application app@var59 ;
+190: app@var59 .@expr1073742082 setName (@expr1073742083 name@var57 ) ;
+191: app@var59 .@expr1073742084 setPath (@expr1073742085 "\"" +@expr1073742086 appPath@var56 +@expr1073742087 "\"" ) ;
+192: app@var59 .@expr1073742088 setParameters (@expr1073742089 parameters@var58 ) ;
+193: addApplication (@expr1073742090 app@var59 ) ;
+194: return true ;
+195: }
+196: return false ;
+197: }
+
+
+
+##Value flow
+Line 37
+  = always 0
+  nullptr always 0
+Line 47
+  ( always {!<=-1,!>=2}
+Line 122
+  ( always {!<=-1,!>=2}
+Line 148
+  addAllSupported always {!<=-1,!>=2}
+  = always 1
+  true always 1
+  , always 1
+  addAll always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 30
+  -1 always -1
+Line 40
+  ( always {!<=-1,!>=2}
+Line 43
+  "Application names" always "Application names"
+Line 44
+  "Application paths" always "Application paths"
+Line 45
+  "Application parameters" always "Application parameters"
+Line 46
+  "Default Application" always "Default Application"
+  -1 always -1
+Line 50
+  succeeded always {!<=-1,!>=2}
+  succeeded always {!<=-1,!>=2}
+  = always 1
+  true always 1
+Line 51
+  ! always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  ! always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+  i possible 0
+  < always {!<=-1,!>=2}
+Line 54
+  succeeded always {!<=-1,!>=2}
+  = always 0
+  false always 0
+Line 57
+  && always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+Line 60
+  "/usr/bin/gedit" always "/usr/bin/gedit"
+Line 62
+  "gedit" always "gedit"
+Line 63
+  "/usr/bin/gedit" always "/usr/bin/gedit"
+Line 64
+  "+(line) (file)" always "+(line) (file)"
+Line 66
+  = always 0
+  0 always 0
+Line 68
+  "/usr/bin/geany" always "/usr/bin/geany"
+  "geany" always "geany"
+  "+(line) (file)" always "+(line) (file)"
+Line 69
+  "/usr/bin/qtcreator" always "/usr/bin/qtcreator"
+  "Qt Creator" always "Qt Creator"
+  "-client (file):(line)" always "-client (file):(line)"
+Line 71
+  "/usr/bin/kate" always "/usr/bin/kate"
+Line 73
+  "kate" always "kate"
+Line 74
+  "/usr/bin/kate" always "/usr/bin/kate"
+Line 75
+  "-l(line) (file)" always "-l(line) (file)"
+Line 77
+  = always 0
+  0 always 0
+Line 84
+  == always {!<=-1,!>=2}
+Line 85
+  = always 0
+  0 always 0
+  i possible 0
+  < always {!<=-1,!>=2}
+Line 91
+  defapp possible 0
+  == {!<=-1,!>=2,0}
+  -1 always -1
+Line 92
+  = always 0
+  0 always 0
+Line 93
+  defapp {0,!-1}
+  < always {!<=-1,!>=2}
+Line 94
+  = always !-1
+  defapp always !-1
+Line 96
+  = always 0
+  0 always 0
+Line 98
+  return always {!<=-1,!>=2}
+  succeeded always {!<=-1,!>=2}
+Line 108
+  = always 0
+  0 always 0
+  i possible 0
+  < always {!<=-1,!>=2}
+Line 109
+  i {<=symbolic=(getApplicationCount()-1),!>=symbolic=(getApplicationCount())}
+Line 115
+  "Application names" always "Application names"
+Line 116
+  "Application paths" always "Application paths"
+Line 117
+  "Application parameters" always "Application parameters"
+Line 118
+  "Default Application" always "Default Application"
+Line 128
+  index possible <=symbolic=(getApplicationCount()-1)@13
+  >= always {!<=-1,!>=2}
+  0 always 0
+  && always {!<=-1,!>=2}
+  index {>=0,!<=-1}
+  < always {!<=-1,!>=2}
+Line 129
+  index {>=0,!<=-1}
+Line 138
+  index possible <=symbolic=(list->getApplicationCount()-1)@7
+  >= always {!<=-1,!>=2}
+  0 always 0
+  && always {!<=-1,!>=2}
+  index {>=0,!<=-1}
+  < always {!<=-1,!>=2}
+Line 139
+  index {>=0,!<=-1}
+Line 148
+  || always {!<=-1,!>=2}
+Line 161
+  index possible {>=0,<=-1}
+  < always {!<=-1,!>=2}
+  && always {!<=-1,!>=2}
+  >= always {!<=-1,!>=2}
+  0 always 0
+Line 162
+  = {>=0,!<=-1}
+  index {>=0,!<=-1}
+Line 168
+  ! always {!<=-1,!>=2}
+Line 173
+  = always 0
+  0 always 0
+  i possible 0
+  < always {!<=-1,!>=2}
+  list always !0
+Line 174
+  list always !0
+  i {<=symbolic=(list->getApplicationCount()-1),!>=symbolic=(list->getApplicationCount())}
+Line 177
+  list always !0
+Line 183
+  = always -1
+  -1 always -1
+Line 186
+  ( always {!<=-1,!>=2}
+Line 188
+  && always {!<=-1,!>=2}
+Line 191
+  "\"" always "\""
+  "\"" always "\""
+Line 194
+  return always {!<=-1,!>=2}
+  true always 1
+Line 196
+  return always {!<=-1,!>=2}
+  false always 0

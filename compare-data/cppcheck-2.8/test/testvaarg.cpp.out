@@ -1,0 +1,826 @@
+
+
+##file cppcheck-2.8/test/testsuite.h
+
+1:
+|
+31:
+32: class options ;
+33:
+34: class TestFixture : public ErrorLogger {
+35: private:
+36: static std :: ostringstream errmsg@var1 ;
+37: static unsigned int countTests@var2 ;
+38: static unsigned long fails_counter@var3 ;
+39: static unsigned long todos_counter@var4 ;
+40: static unsigned long succeeded_todos_counter@var5 ;
+41: static std :: set < std :: string > missingLibs@var6 ;
+42: bool mVerbose@var7 ;
+43: std :: string mTemplateFormat@var8 ;
+44: std :: string mTemplateLocation@var9 ;
+45: std :: string mTestname@var10 ;
+46:
+47: protected:
+48: std :: string exename@var11 ;
+49: std :: string testToRun@var12 ;
+50: bool quiet_tests@var13 ;
+51:
+52: virtual void run ( ) = 0 ;
+53:
+54: bool prepareTest ( const char testname@var14 [ ] ) ;
+55: std :: string getLocationStr ( const char * const filename@var15 , const unsigned int linenr@var16 ) const ;
+56:
+57: bool assert_ ( const char * const filename@var17 , const unsigned int linenr@var18 , const bool condition@var19 ) const ;
+58:
+59: template < typename T , typename U >
+60: bool assertEquals ( const char * const filename@var20 , const unsigned int linenr@var21 , const T & expected@var22 , const U & actual@var23 , const std :: string & msg@var24 = emptyString ) const {
+61: if (@expr1073741935 expected@var22 !=@expr1073741936 actual@var23 ) {
+62: std ::@expr1073741937 ostringstream expectedStr@var25 ;
+63: expectedStr@var25 <<@expr1073741938 expected@var22 ;
+64: std ::@expr1073741939 ostringstream actualStr@var26 ;
+65: actualStr@var26 <<@expr1073741940 actual@var23 ;
+66:
+67: assertEqualsFailed (@expr1073741941 filename@var20 , linenr@var21 , expectedStr@var25 .@expr1073741942 str (@expr1073741943 ) , actualStr@var26 .@expr1073741944 str (@expr1073741945 ) , msg@var24 ) ;
+68: }
+69: return expected@var22 ==@expr1073741946 actual@var23 ;
+70: }
+71:
+72:
+73:
+74: void assertEqualsFailed ( const char * const filename@var27 , const unsigned int linenr@var28 , const std :: string & expected@var29 , const std :: string & actual@var30 , const std :: string & msg@var31 ) const ;
+75:
+76: bool assertEquals ( const char * const filename@var32 , const unsigned int linenr@var33 , const std :: string & expected@var34 , const std :: string & actual@var35 , const std :: string & msg@var36 = emptyString ) const ;
+77: void assertEqualsWithoutLineNumbers ( const char * const filename@var37 , const unsigned int linenr@var38 , const std :: string & expected@var39 , const std :: string & actual@var40 , const std :: string & msg@var41 = emptyString ) const ;
+78: bool assertEquals ( const char * const filename@var42 , const unsigned int linenr@var43 , const char expected@var44 [ ] , const std :: string & actual@var45 , const std :: string & msg@var46 = emptyString ) const ;
+79: bool assertEquals ( const char * const filename@var47 , const unsigned int linenr@var48 , const char expected@var49 [ ] , const char actual@var50 [ ] , const std :: string & msg@var51 = emptyString ) const ;
+80: bool assertEquals ( const char * const filename@var52 , const unsigned int linenr@var53 , const std :: string & expected@var54 , const char actual@var55 [ ] , const std :: string & msg@var56 = emptyString ) const ;
+81: bool assertEquals ( const char * const filename@var57 , const unsigned int linenr@var58 , const long long expected@var59 , const long long actual@var60 , const std :: string & msg@var61 = emptyString ) const ;
+82: void assertEqualsDouble ( const char * const filename@var62 , const unsigned int linenr@var63 , const double expected@var64 , const double actual@var65 , const double tolerance@var66 , const std :: string & msg@var67 = emptyString ) const ;
+83:
+84: void todoAssertEquals ( const char * const filename@var68 , const unsigned int linenr@var69 , const std :: string & wanted@var70 ,
+85: const std :: string & current@var71 , const std :: string & actual@var72 ) const ;
+86: void todoAssertEquals ( const char * const filename@var73 , const unsigned int linenr@var74 , const char wanted@var75 [ ] ,
+87: const char current@var76 [ ] , const std :: string & actual@var77 ) const ;
+88: void todoAssertEquals ( const char * const filename@var78 , const unsigned int linenr@var79 , const long long wanted@var80 ,
+89: const long long current@var81 , const long long actual@var82 ) const ;
+90: void assertThrow ( const char * const filename@var83 , const unsigned int linenr@var84 ) const ;
+91: void assertThrowFail ( const char * const filename@var85 , const unsigned int linenr@var86 ) const ;
+92: void assertNoThrowFail ( const char * const filename@var87 , const unsigned int linenr@var88 ) const ;
+93: static void complainMissingLib ( const char * const libname@var89 ) ;
+94: static std :: string deleteLineNumber ( const std :: string & message@var90 ) ;
+95:
+96: void setVerbose ( bool v@var91 ) {
+97: mVerbose@var7 =@expr1073741947 v@var91 ;
+98: }
+99:
+100: void setMultiline ( ) {
+101: mTemplateFormat@var8 =@expr1073741948 "{file}:{line}:{severity}:{message}" ;
+102: mTemplateLocation@var9 =@expr1073741949 "{file}:{line}:note:{info}" ;
+103: }
+104:
+105: void processOptions ( const options & args@var92 ) ;
+106: public:
+107: void reportOut ( const std :: string & outmsg@var93 , Color c@var94 = Color :: Reset ) override ;
+108: void reportErr ( const ErrorMessage & msg@var95 ) override ;
+109: void run ( const std :: string & str@var96 ) ;
+110: static void printHelp ( ) ;
+111: const std :: string classname@var97 ;
+112:
+113: explicit TestFixture ( const char * const _name@var98 ) ;
+114: ~ TestFixture ( ) override { }
+115:
+116: static unsigned long runTests ( const options & args@var99 ) ;
+117: } ;
+118:
+119: extern std :: ostringstream errout@var100 ;
+120: extern std :: ostringstream output@var101 ;
+
+##file cppcheck-2.8/test/testvaarg.cpp
+
+1:
+|
+27:
+28: class TestVaarg : public TestFixture {
+29: public:
+30: TestVaarg ( ) : TestFixture ( "TestVaarg" ) { }
+31:
+32: private:
+33: Settings settings@var102 ;
+34:
+35:
+36: void check_ ( const char code@var103 [ ] , const char * file@var104 , int line@var105 ) {
+37:
+38: errout@var100 .@expr1073741950 str (@expr1073741951 "" ) ;
+39:
+40:
+41: Tokenizer tokenizer@var106 (@expr1073741952 &@expr129 settings@var102 , this@expr130 ) ;
+42: std ::@expr1073741955 istringstream istr@var107 (@expr1073741956 code@var103 ) ;
+43: $assert_ $(@expr1073741957 file@var104 $, line@var105 $, $(@expr1073741958 tokenizer@var106 .@expr1073741959 tokenize (@expr1073741960 istr@var107 , "test.cpp" ) $) $) ;
+44:
+45:
+46: CheckVaarg checkVaarg@var108 ;
+47: checkVaarg@var108 .@expr1073741961 runChecks (@expr1073741962 &@expr1073741963 tokenizer@var106 , &@expr129 settings@var102 , this@expr130 ) ;
+48: }
+49:
+50: void run ( ) override {
+51: settings@var102 .@expr1073741966 severity@var109 .@expr1073741967 enable (@expr1073741968 Severity ::@expr1073741969 warning@expr1073741965 ) ;
+52:
+53: $do ${ $if $(@expr1073741970 $prepareTest $(@expr1073741971 "wrongParameterTo_va_start" $) $) ${ $setVerbose $(@expr1073741972 $false $) $; wrongParameterTo_va_start $(@expr1073741973 $) $; $} $} $while $(@expr1073741974 $false $) ;
+54: $do ${ $if $(@expr1073741975 $prepareTest $(@expr1073741976 "referenceAs_va_start" $) $) ${ $setVerbose $(@expr1073741977 $false $) $; referenceAs_va_start $(@expr1073741978 $) $; $} $} $while $(@expr1073741979 $false $) ;
+55: $do ${ $if $(@expr1073741980 $prepareTest $(@expr1073741981 "va_end_missing" $) $) ${ $setVerbose $(@expr1073741982 $false $) $; va_end_missing $(@expr1073741983 $) $; $} $} $while $(@expr1073741984 $false $) ;
+56: $do ${ $if $(@expr1073741985 $prepareTest $(@expr1073741986 "va_list_usedBeforeStarted" $) $) ${ $setVerbose $(@expr1073741987 $false $) $; va_list_usedBeforeStarted $(@expr1073741988 $) $; $} $} $while $(@expr1073741989 $false $) ;
+57: $do ${ $if $(@expr1073741990 $prepareTest $(@expr1073741991 "va_start_subsequentCalls" $) $) ${ $setVerbose $(@expr1073741992 $false $) $; va_start_subsequentCalls $(@expr1073741993 $) $; $} $} $while $(@expr1073741994 $false $) ;
+58: $do ${ $if $(@expr1073741995 $prepareTest $(@expr1073741996 "unknownFunctionScope" $) $) ${ $setVerbose $(@expr1073741997 $false $) $; unknownFunctionScope $(@expr1073741998 $) $; $} $} $while $(@expr1073741999 $false $) ;
+59: }
+60:
+61: void wrongParameterTo_va_start ( ) {
+62: $check_ $(@expr1073742000 "void Format(char* szFormat, char* szBuffer, size_t nSize, ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szFormat);\n    va_end(arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 62 $)
+63:
+64:
+65:
+66: ;
+67: $if $(@expr1073742001 $!@expr1073742002 $assertEquals $(@expr1073742003 "cppcheck-2.8/test/testvaarg.cpp" $, 67 $, "[test.cpp:3]: (warning) 'szFormat' given to va_start() is not last named argument of the function. Did you intend to pass 'nSize'?\n" $, errout@var100 .@expr180 str (@expr181 ) $) $) { $return ; }
+68:
+69: $check_ $(@expr1073742006 "void Format(char* szFormat, char* szBuffer, size_t nSize, ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 69 $)
+70:
+71:
+72:
+73: ;
+74: $if $(@expr1073742007 $!@expr1073742008 $assertEquals $(@expr1073742009 "cppcheck-2.8/test/testvaarg.cpp" $, 74 $, "[test.cpp:3]: (warning) 'szBuffer' given to va_start() is not last named argument of the function. Did you intend to pass 'nSize'?\n" $, errout@var100 .@expr180 str (@expr181 ) $) $) { $return ; }
+75:
+76: $check_ $(@expr1073742012 "void Format(char* szFormat, char* szBuffer, size_t nSize, ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, nSize);\n    va_end(arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 76 $)
+77:
+78:
+79:
+80: ;
+81: $if $(@expr1073742013 $!@expr1073742014 $assertEquals $(@expr1073742015 "cppcheck-2.8/test/testvaarg.cpp" $, 81 $, "" $, errout@var100 .@expr180 str (@expr181 ) $) $) { $return ; }
+82:
+83: $check_ $(@expr1073742018 "int main(int argc, char *argv[]) {\n    long(^addthem)(const char *, ...) = ^long(const char *format, ...) {\n        va_list argp;\n        va_start(argp, format);\n        c = va_arg(argp, int);\n    };\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 83 $)
+84:
+|
+88:
+89: ;
+90: $if $(@expr1073742019 $!@expr1073742020 $assertEquals $(@expr1073742021 "cppcheck-2.8/test/testvaarg.cpp" $, 90 $, "[test.cpp:6]: (error) va_list 'argp' was opened but not closed by va_end().\n" $, errout@var100 .@expr180 str (@expr181 ) $) $) { $return ; }
+91:
+92: $check_ $(@expr1073742024 "void Format(char* szFormat, char* szBuffer, size_t nSize, ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr);\n    va_end(arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 92 $)
+93:
+94:
+95:
+96: ;
+97: $if $(@expr1073742025 $!@expr1073742026 $assertEquals $(@expr1073742027 "cppcheck-2.8/test/testvaarg.cpp" $, 97 $, "" $, errout@var100 .@expr180 str (@expr181 ) $) $) { $return ; }
+98:
+99: $check_ $(@expr1073742030 "void assertf_fail(const char *assertion, const char *file, int line, const char *func, const char* msg, ...) {\n    struct A {\n        A(char* buf, int size) {}\n            void printf(const char * format, ...) {\n                va_list args;\n                va_start(args, format);\n                va_end(args);\n        }\n    };\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 99 $)
+100:
+|
+107:
+108: ;
+109: $if $(@expr1073742031 $!@expr1073742032 $assertEquals $(@expr1073742033 "cppcheck-2.8/test/testvaarg.cpp" $, 109 $, "" $, errout@var100 .@expr180 str (@expr181 ) $) $) { $return ; }
+110: }
+111:
+112: void referenceAs_va_start ( ) {
+113: $check_ $(@expr1073742036 "void Format(char* szFormat, char (&szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 113 $)
+114:
+115:
+116:
+117: ;
+118: $if $(@expr1073742037 $!@expr1073742038 $assertEquals $(@expr1073742039 "cppcheck-2.8/test/testvaarg.cpp" $, 118 $, "[test.cpp:3]: (error) Using reference 'szBuffer' as parameter for va_start() results in undefined behaviour.\n" $, errout@var100 .@expr216 str (@expr217 ) $) $) { $return ; }
+119:
+120: $check_ $(@expr1073742042 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 120 $)
+121:
+122:
+123:
+124: ;
+125: $if $(@expr1073742043 $!@expr1073742044 $assertEquals $(@expr1073742045 "cppcheck-2.8/test/testvaarg.cpp" $, 125 $, "" $, errout@var100 .@expr216 str (@expr217 ) $) $) { $return ; }
+126: }
+127:
+128: void va_end_missing ( ) {
+129: $check_ $(@expr1073742048 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 129 $)
+130:
+131:
+132:
+133: ;
+134: $if $(@expr1073742049 $!@expr1073742050 $assertEquals $(@expr1073742051 "cppcheck-2.8/test/testvaarg.cpp" $, 134 $, "" $, errout@var100 .@expr228 str (@expr229 ) $) $) { $return ; }
+135:
+136:
+137: $check_ $(@expr1073742054 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    try {\n        throw sth;\n    } catch(...) {\n        va_end(arg_ptr);\n    }\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 137 $)
+138:
+|
+144:
+145: ;
+146: $if $(@expr1073742055 $!@expr1073742056 $assertEquals $(@expr1073742057 "cppcheck-2.8/test/testvaarg.cpp" $, 146 $, "" $, errout@var100 .@expr228 str (@expr229 ) $) $) { $return ; }
+147:
+148: $check_ $(@expr1073742060 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 148 $)
+149:
+150:
+151: ;
+152: $if $(@expr1073742061 $!@expr1073742062 $assertEquals $(@expr1073742063 "cppcheck-2.8/test/testvaarg.cpp" $, 152 $, "[test.cpp:4]: (error) va_list 'arg_ptr' was opened but not closed by va_end().\n" $, errout@var100 .@expr228 str (@expr229 ) $) $) { $return ; }
+153:
+154: $check_ $(@expr1073742066 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    if(sth) return;\n    va_end(arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 154 $)
+155:
+|
+158:
+159: ;
+160: $if $(@expr1073742067 $!@expr1073742068 $assertEquals $(@expr1073742069 "cppcheck-2.8/test/testvaarg.cpp" $, 160 $, "[test.cpp:4]: (error) va_list 'arg_ptr' was opened but not closed by va_end().\n" $, errout@var100 .@expr228 str (@expr229 ) $) $) { $return ; }
+161:
+162:
+163: $check_ $(@expr1073742072 "void f(int n, ...)\n{\n    va_list ap;\n    va_start(ap, n);\n    std::vector<std::string> v(n);\n    std::generate_n(v.begin(), n, [&ap]()\n    {\n        return va_arg(ap, const char*);\n    });\n    va_end(ap);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 163 $)
+164:
+|
+172:
+173: ;
+174: $if $(@expr1073742073 $!@expr1073742074 $assertEquals $(@expr1073742075 "cppcheck-2.8/test/testvaarg.cpp" $, 174 $, "" $, errout@var100 .@expr228 str (@expr229 ) $) $) { $return ; }
+175:
+176: $check_ $(@expr1073742078 "void f(int n, ...)\n{\n    va_list ap;\n    va_start(ap, n);\n    std::vector<std::string> v(n);\n    std::generate_n(v.begin(), n, [&ap]()\n    {\n        return va_arg(ap, const char*);\n    });\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 176 $)
+177:
+|
+184:
+185: ;
+186: $if $(@expr1073742079 $!@expr1073742080 $assertEquals $(@expr1073742081 "cppcheck-2.8/test/testvaarg.cpp" $, 186 $, "[test.cpp:10]: (error) va_list 'ap' was opened but not closed by va_end().\n" $, errout@var100 .@expr228 str (@expr229 ) $) $) { $return ; }
+187: }
+188:
+189: void va_list_usedBeforeStarted ( ) {
+190: $check_ $(@expr1073742084 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    return va_arg(arg_ptr, float);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 190 $)
+191:
+192:
+193: ;
+194: $if $(@expr1073742085 $!@expr1073742086 $assertEquals $(@expr1073742087 "cppcheck-2.8/test/testvaarg.cpp" $, 194 $, "[test.cpp:3]: (error) va_list 'arg_ptr' used before va_start() was called.\n" $, errout@var100 .@expr264 str (@expr265 ) $) $) { $return ; }
+195:
+196: $check_ $(@expr1073742090 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    foo(arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 196 $)
+197:
+198:
+199: ;
+200: $if $(@expr1073742091 $!@expr1073742092 $assertEquals $(@expr1073742093 "cppcheck-2.8/test/testvaarg.cpp" $, 200 $, "[test.cpp:3]: (error) va_list 'arg_ptr' used before va_start() was called.\n" $, errout@var100 .@expr264 str (@expr265 ) $) $) { $return ; }
+201:
+202: $check_ $(@expr1073742096 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_copy(f, arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 202 $)
+203:
+204:
+205: ;
+206: $if $(@expr1073742097 $!@expr1073742098 $assertEquals $(@expr1073742099 "cppcheck-2.8/test/testvaarg.cpp" $, 206 $, "[test.cpp:3]: (error) va_list 'arg_ptr' used before va_start() was called.\n" $, errout@var100 .@expr264 str (@expr265 ) $) $) { $return ; }
+207:
+208: $check_ $(@expr1073742102 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n    return va_arg(arg_ptr, float);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 208 $)
+209:
+|
+212:
+213: ;
+214: $if $(@expr1073742103 $!@expr1073742104 $assertEquals $(@expr1073742105 "cppcheck-2.8/test/testvaarg.cpp" $, 214 $, "[test.cpp:5]: (error) va_list 'arg_ptr' used before va_start() was called.\n" $, errout@var100 .@expr264 str (@expr265 ) $) $) { $return ; }
+215:
+216: $check_ $(@expr1073742108 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_end(arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 216 $)
+217:
+218:
+219: ;
+220: $if $(@expr1073742109 $!@expr1073742110 $assertEquals $(@expr1073742111 "cppcheck-2.8/test/testvaarg.cpp" $, 220 $, "[test.cpp:3]: (error) va_list 'arg_ptr' used before va_start() was called.\n" $, errout@var100 .@expr264 str (@expr265 ) $) $) { $return ; }
+221:
+222:
+223: $check_ $(@expr1073742114 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n    va_start(arg_ptr, szBuffer);\n    foo(va_arg(arg_ptr, float));\n    va_end(arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 223 $)
+224:
+|
+229:
+230: ;
+231: $if $(@expr1073742115 $!@expr1073742116 $assertEquals $(@expr1073742117 "cppcheck-2.8/test/testvaarg.cpp" $, 231 $, "" $, errout@var100 .@expr264 str (@expr265 ) $) $) { $return ; }
+232:
+233:
+234: $check_ $(@expr1073742120 "void Format(va_list v1) {\n    va_list v2;\n    va_copy(v2, v1);\n    foo(va_arg(v1, float));\n    va_end(v2);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 234 $)
+235:
+|
+238:
+239: ;
+240: $if $(@expr1073742121 $!@expr1073742122 $assertEquals $(@expr1073742123 "cppcheck-2.8/test/testvaarg.cpp" $, 240 $, "" $, errout@var100 .@expr264 str (@expr265 ) $) $) { $return ; }
+241:
+242:
+243: $check_ $(@expr1073742126 "void foo(int flag1, int flag2, ...) {\n    switch (flag1) {\n    default:\n        va_list vargs;\n        va_start(vargs, flag2);\n        if (flag2) {\n            va_end(vargs);\n            break;\n        }\n        int data = va_arg(vargs, int);\n        va_end(vargs);\n    }\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 243 $)
+244:
+|
+254:
+255: ;
+256: $if $(@expr1073742127 $!@expr1073742128 $assertEquals $(@expr1073742129 "cppcheck-2.8/test/testvaarg.cpp" $, 256 $, "" $, errout@var100 .@expr264 str (@expr265 ) $) $) { $return ; }
+257:
+258:
+259: $check_ $(@expr1073742132 "void action_push(int type, ...) {\n    va_list args;\n    va_start(args, type);\n    switch (push_mode) {\n    case UNDO:\n        list_add(&act->node, &to_redo);\n        break;\n    case REDO:\n        list_add(&act->node, &to_undo);\n        break;\n    }\n    va_end(args);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 259 $)
+260:
+|
+270:
+271: ;
+272: $if $(@expr1073742133 $!@expr1073742134 $assertEquals $(@expr1073742135 "cppcheck-2.8/test/testvaarg.cpp" $, 272 $, "" $, errout@var100 .@expr264 str (@expr265 ) $) $) { $return ; }
+273:
+274: $check_ $(@expr1073742138 "void action_push(int type, ...) {\n    va_list args;\n    va_start(args, type);\n    switch (push_mode) {\n    case UNDO:\n        list_add(&act->node, &to_redo);\n        va_end(args);\n        break;\n    case REDO:\n        list_add(&act->node, &to_undo);\n        va_end(args);\n        break;\n    }\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 274 $)
+275:
+|
+286:
+287: ;
+288: $if $(@expr1073742139 $!@expr1073742140 $assertEquals $(@expr1073742141 "cppcheck-2.8/test/testvaarg.cpp" $, 288 $, "" $, errout@var100 .@expr264 str (@expr265 ) $) $) { $return ; }
+289:
+290: $check_ $(@expr1073742144 "void action_push(int type, ...) {\n    va_list args;\n    va_start(args, type);\n    switch (push_mode) {\n    case UNDO:\n        list_add(&act->node, &to_redo);\n        break;\n    case REDO:\n        list_add(&act->node, &to_undo);\n        va_end(args);\n        break;\n    }\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 290 $)
+291:
+|
+301:
+302: ;
+303: $if $(@expr1073742145 $!@expr1073742146 $assertEquals $(@expr1073742147 "cppcheck-2.8/test/testvaarg.cpp" $, 303 $, "[test.cpp:13]: (error) va_list 'args' was opened but not closed by va_end().\n" $, errout@var100 .@expr264 str (@expr265 ) $) $) { $return ; }
+304:
+305:
+306: $check_ $(@expr1073742150 "void redisvFormatCommand(char *format, va_list ap, bool flag) {\n    va_list _cpy;\n    va_copy(_cpy, ap);\n    if (flag)\n        goto fmt_valid;\n    va_end(_cpy);\n    goto format_err;\nfmt_valid:\n    sdscatvprintf(curarg, _format, _cpy);\n    va_end(_cpy);\nformat_err:\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 306 $)
+307:
+|
+316:
+317: ;
+318: $if $(@expr1073742151 $!@expr1073742152 $assertEquals $(@expr1073742153 "cppcheck-2.8/test/testvaarg.cpp" $, 318 $, "" $, errout@var100 .@expr264 str (@expr265 ) $) $) { $return ; }
+319: }
+320:
+321: void va_start_subsequentCalls ( ) {
+322: $check_ $(@expr1073742156 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 322 $)
+323:
+|
+326:
+327: ;
+328: $if $(@expr1073742157 $!@expr1073742158 $assertEquals $(@expr1073742159 "cppcheck-2.8/test/testvaarg.cpp" $, 328 $, "[test.cpp:4]: (error) va_start() or va_copy() called subsequently on 'arg_ptr' without va_end() in between.\n" $, errout@var100 .@expr336 str (@expr337 ) $) $) { $return ; }
+329:
+330: $check_ $(@expr1073742162 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list vl1;\n    va_start(vl1, szBuffer);\n    va_copy(vl1, vl1);\n    va_end(vl1);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 330 $)
+331:
+|
+334:
+335: ;
+336: $if $(@expr1073742163 $!@expr1073742164 $assertEquals $(@expr1073742165 "cppcheck-2.8/test/testvaarg.cpp" $, 336 $, "[test.cpp:4]: (error) va_start() or va_copy() called subsequently on 'vl1' without va_end() in between.\n" $, errout@var100 .@expr336 str (@expr337 ) $) $) { $return ; }
+337:
+338: $check_ $(@expr1073742168 "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 338 $)
+339:
+|
+343:
+344: ;
+345: $if $(@expr1073742169 $!@expr1073742170 $assertEquals $(@expr1073742171 "cppcheck-2.8/test/testvaarg.cpp" $, 345 $, "" $, errout@var100 .@expr336 str (@expr337 ) $) $) { $return ; }
+346: }
+347:
+348: void unknownFunctionScope ( ) {
+349: $check_ $(@expr1073742174 "void BG_TString::Format() {\n  BG_TChar * f;\n  va_start(args,f);\n  BG_TString result(f);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 349 $)
+350:
+351:
+352:
+353: ;
+354: $if $(@expr1073742175 $!@expr1073742176 $assertEquals $(@expr1073742177 "cppcheck-2.8/test/testvaarg.cpp" $, 354 $, "" $, errout@var100 .@expr1073742178 str (@expr1073742179 ) $) $) { $return ; }
+355:
+356:
+357: $check_ $(@expr1073742180 "void mowgli_object_message_broadcast(mowgli_object_t *self, const char *name, ...) {\n  va_list va;\n  MOWGLI_LIST_FOREACH(n, self->klass->message_handlers.head) {\n    if (!strcasecmp(sig2->name, name))\n      break;\n  }\n  va_start(va, name);\n  va_end(va);\n}" $, "cppcheck-2.8/test/testvaarg.cpp" $, 357 $)
+358:
+|
+364:
+365: ;
+366: }
+367: } ;
+368:
+369: $namespace ${ TestVaarg instance_TestVaarg@var110 $; $}
+
+
+
+##Value flow
+Line 37
+  countTests always !<=-1
+Line 38
+  fails_counter always !<=-1
+Line 39
+  todos_counter always !<=-1
+Line 40
+  succeeded_todos_counter always !<=-1
+Line 42
+  mVerbose always {!<=-1,!>=2}
+Line 50
+  quiet_tests always {!<=-1,!>=2}
+Line 52
+  = always 0
+  0 always 0
+Line 54
+  ( always {!<=-1,!>=2}
+Line 55
+  , always !<=-1
+  linenr always !<=-1
+Line 57
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+  , always {!<=-1,!>=2}
+  condition always {!<=-1,!>=2}
+Line 60
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 61
+  != always {!<=-1,!>=2}
+Line 63
+  expected always !symbolic=(actual)
+Line 65
+  actual always !symbolic=(expected)
+Line 67
+  linenr always !<=-1
+Line 69
+  return always {!<=-1,!>=2}
+  == always {!<=-1,!>=2}
+Line 74
+  , always !<=-1
+  linenr always !<=-1
+Line 76
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 77
+  , always !<=-1
+  linenr always !<=-1
+Line 78
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 79
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 80
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 81
+  ( always {!<=-1,!>=2}
+  , always !<=-1
+  linenr always !<=-1
+Line 82
+  , always !<=-1
+  linenr always !<=-1
+Line 84
+  , always !<=-1
+  linenr always !<=-1
+Line 86
+  , always !<=-1
+  linenr always !<=-1
+Line 88
+  , always !<=-1
+  linenr always !<=-1
+Line 90
+  , always !<=-1
+  linenr always !<=-1
+Line 91
+  , always !<=-1
+  linenr always !<=-1
+Line 92
+  , always !<=-1
+  linenr always !<=-1
+Line 96
+  v always {!<=-1,!>=2}
+Line 97
+  mVerbose always {!<=-1,!>=2}
+  = {!<=-1,!>=2,0@32}
+  v {!<=-1,!>=2,0@32}
+Line 101
+  = always "{file}:{line}:{severity}:{message}"
+  "{file}:{line}:{severity}:{message}" always "{file}:{line}:{severity}:{message}"
+Line 102
+  = always "{file}:{line}:note:{info}"
+  "{file}:{line}:note:{info}" always "{file}:{line}:note:{info}"
+Line 116
+  ( always !<=-1
+Line 30
+  "TestVaarg" always "TestVaarg"
+Line 38
+  "" always ""
+Line 41
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 42
+  code possible {"void BG_TString::Format() {\n  BG_TChar * f;\n  va_start(args,f);\n  BG_TString result(f);\n}"@1,"void mowgli_object_message_broadcast(mowgli_object_t *self, const char *name, ...) {\n  va_list va;\n  MOWGLI_LIST_FOREACH(n, self->klass->message_handlers.head) {\n    if (!strcasecmp(sig2->name, name))\n      break;\n  }\n  va_start(va, name);\n  va_end(va);\n}"@2,"void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}"@3,"void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list vl1;\n    va_start(vl1, szBuffer);\n    va_copy(vl1, vl1);\n    va_end(vl1);\n}"@4,"void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}"@5,"void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    return va_arg(arg_ptr, float);\n}"@6,"void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    foo(arg_ptr);\n}"@7,"void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_copy(f, arg_ptr);\n}"@8,"void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n    return va_arg(arg_ptr, float);\n}"@9,"void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_end(arg_ptr);\n}"@10}
+Line 43
+  ( always {!<=-1,!>=2}
+  file inconclusive {"cppcheck-2.8/test/testvaarg.cpp"@1,"cppcheck-2.8/test/testvaarg.cpp"@2,"cppcheck-2.8/test/testvaarg.cpp"@3,"cppcheck-2.8/test/testvaarg.cpp"@4,"cppcheck-2.8/test/testvaarg.cpp"@5,"cppcheck-2.8/test/testvaarg.cpp"@6,"cppcheck-2.8/test/testvaarg.cpp"@7,"cppcheck-2.8/test/testvaarg.cpp"@8,"cppcheck-2.8/test/testvaarg.cpp"@9,"cppcheck-2.8/test/testvaarg.cpp"@10}
+  line inconclusive {349@1,357@2,322@3,330@4,338@5,190@6,196@7,202@8,208@9,216@10}
+  "test.cpp" always "test.cpp"
+Line 47
+  & {lifetime[Address]=(tokenizer),!0}
+  & {lifetime[Address]=(settings),!0}
+  this always !0
+Line 53
+  ( always {!<=-1,!>=2}
+  "wrongParameterTo_va_start" always "wrongParameterTo_va_start"
+  false always 0
+  false always 0
+Line 54
+  ( always {!<=-1,!>=2}
+  "referenceAs_va_start" always "referenceAs_va_start"
+  false always 0
+  false always 0
+Line 55
+  ( always {!<=-1,!>=2}
+  "va_end_missing" always "va_end_missing"
+  false always 0
+  false always 0
+Line 56
+  ( always {!<=-1,!>=2}
+  "va_list_usedBeforeStarted" always "va_list_usedBeforeStarted"
+  false always 0
+  false always 0
+Line 57
+  ( always {!<=-1,!>=2}
+  "va_start_subsequentCalls" always "va_start_subsequentCalls"
+  false always 0
+  false always 0
+Line 58
+  ( always {!<=-1,!>=2}
+  "unknownFunctionScope" always "unknownFunctionScope"
+  false always 0
+  false always 0
+Line 62
+  "void Format(char* szFormat, char* szBuffer, size_t nSize, ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szFormat);\n    va_end(arg_ptr);\n}" always "void Format(char* szFormat, char* szBuffer, size_t nSize, ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szFormat);\n    va_end(arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  62 always 62
+Line 67
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  67 always 67
+  "[test.cpp:3]: (warning) 'szFormat' given to va_start() is not last named argument of the function. Did you intend to pass 'nSize'?\n" always "[test.cpp:3]: (warning) 'szFormat' given to va_start() is not last named argument of the function. Did you intend to pass 'nSize'?\n"
+Line 69
+  "void Format(char* szFormat, char* szBuffer, size_t nSize, ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}" always "void Format(char* szFormat, char* szBuffer, size_t nSize, ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  69 always 69
+Line 74
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  74 always 74
+  "[test.cpp:3]: (warning) 'szBuffer' given to va_start() is not last named argument of the function. Did you intend to pass 'nSize'?\n" always "[test.cpp:3]: (warning) 'szBuffer' given to va_start() is not last named argument of the function. Did you intend to pass 'nSize'?\n"
+Line 76
+  "void Format(char* szFormat, char* szBuffer, size_t nSize, ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, nSize);\n    va_end(arg_ptr);\n}" always "void Format(char* szFormat, char* szBuffer, size_t nSize, ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, nSize);\n    va_end(arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  76 always 76
+Line 81
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  81 always 81
+  "" always ""
+Line 83
+  "int main(int argc, char *argv[]) {\n    long(^addthem)(const char *, ...) = ^long(const char *format, ...) {\n        va_list argp;\n        va_start(argp, format);\n        c = va_arg(argp, int);\n    };\n}" always "int main(int argc, char *argv[]) {\n    long(^addthem)(const char *, ...) = ^long(const char *format, ...) {\n        va_list argp;\n        va_start(argp, format);\n        c = va_arg(argp, int);\n    };\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  83 always 83
+Line 90
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  90 always 90
+  "[test.cpp:6]: (error) va_list 'argp' was opened but not closed by va_end().\n" always "[test.cpp:6]: (error) va_list 'argp' was opened but not closed by va_end().\n"
+Line 92
+  "void Format(char* szFormat, char* szBuffer, size_t nSize, ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr);\n    va_end(arg_ptr);\n}" always "void Format(char* szFormat, char* szBuffer, size_t nSize, ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr);\n    va_end(arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  92 always 92
+Line 97
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  97 always 97
+  "" always ""
+Line 99
+  "void assertf_fail(const char *assertion, const char *file, int line, const char *func, const char* msg, ...) {\n    struct A {\n        A(char* buf, int size) {}\n            void printf(const char * format, ...) {\n                va_list args;\n                va_start(args, format);\n                va_end(args);\n        }\n    };\n}" always "void assertf_fail(const char *assertion, const char *file, int line, const char *func, const char* msg, ...) {\n    struct A {\n        A(char* buf, int size) {}\n            void printf(const char * format, ...) {\n                va_list args;\n                va_start(args, format);\n                va_end(args);\n        }\n    };\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  99 always 99
+Line 109
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  109 always 109
+  "" always ""
+Line 113
+  "void Format(char* szFormat, char (&szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}" always "void Format(char* szFormat, char (&szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  113 always 113
+Line 118
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  118 always 118
+  "[test.cpp:3]: (error) Using reference 'szBuffer' as parameter for va_start() results in undefined behaviour.\n" always "[test.cpp:3]: (error) Using reference 'szBuffer' as parameter for va_start() results in undefined behaviour.\n"
+Line 120
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  120 always 120
+Line 125
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  125 always 125
+  "" always ""
+Line 129
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  129 always 129
+Line 134
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  134 always 134
+  "" always ""
+Line 137
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    try {\n        throw sth;\n    } catch(...) {\n        va_end(arg_ptr);\n    }\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    try {\n        throw sth;\n    } catch(...) {\n        va_end(arg_ptr);\n    }\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  137 always 137
+Line 146
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  146 always 146
+  "" always ""
+Line 148
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  148 always 148
+Line 152
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  152 always 152
+  "[test.cpp:4]: (error) va_list 'arg_ptr' was opened but not closed by va_end().\n" always "[test.cpp:4]: (error) va_list 'arg_ptr' was opened but not closed by va_end().\n"
+Line 154
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    if(sth) return;\n    va_end(arg_ptr);\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    if(sth) return;\n    va_end(arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  154 always 154
+Line 160
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  160 always 160
+  "[test.cpp:4]: (error) va_list 'arg_ptr' was opened but not closed by va_end().\n" always "[test.cpp:4]: (error) va_list 'arg_ptr' was opened but not closed by va_end().\n"
+Line 163
+  "void f(int n, ...)\n{\n    va_list ap;\n    va_start(ap, n);\n    std::vector<std::string> v(n);\n    std::generate_n(v.begin(), n, [&ap]()\n    {\n        return va_arg(ap, const char*);\n    });\n    va_end(ap);\n}" always "void f(int n, ...)\n{\n    va_list ap;\n    va_start(ap, n);\n    std::vector<std::string> v(n);\n    std::generate_n(v.begin(), n, [&ap]()\n    {\n        return va_arg(ap, const char*);\n    });\n    va_end(ap);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  163 always 163
+Line 174
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  174 always 174
+  "" always ""
+Line 176
+  "void f(int n, ...)\n{\n    va_list ap;\n    va_start(ap, n);\n    std::vector<std::string> v(n);\n    std::generate_n(v.begin(), n, [&ap]()\n    {\n        return va_arg(ap, const char*);\n    });\n}" always "void f(int n, ...)\n{\n    va_list ap;\n    va_start(ap, n);\n    std::vector<std::string> v(n);\n    std::generate_n(v.begin(), n, [&ap]()\n    {\n        return va_arg(ap, const char*);\n    });\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  176 always 176
+Line 186
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  186 always 186
+  "[test.cpp:10]: (error) va_list 'ap' was opened but not closed by va_end().\n" always "[test.cpp:10]: (error) va_list 'ap' was opened but not closed by va_end().\n"
+Line 190
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    return va_arg(arg_ptr, float);\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    return va_arg(arg_ptr, float);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  190 always 190
+Line 194
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  194 always 194
+  "[test.cpp:3]: (error) va_list 'arg_ptr' used before va_start() was called.\n" always "[test.cpp:3]: (error) va_list 'arg_ptr' used before va_start() was called.\n"
+Line 196
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    foo(arg_ptr);\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    foo(arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  196 always 196
+Line 200
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  200 always 200
+  "[test.cpp:3]: (error) va_list 'arg_ptr' used before va_start() was called.\n" always "[test.cpp:3]: (error) va_list 'arg_ptr' used before va_start() was called.\n"
+Line 202
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_copy(f, arg_ptr);\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_copy(f, arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  202 always 202
+Line 206
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  206 always 206
+  "[test.cpp:3]: (error) va_list 'arg_ptr' used before va_start() was called.\n" always "[test.cpp:3]: (error) va_list 'arg_ptr' used before va_start() was called.\n"
+Line 208
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n    return va_arg(arg_ptr, float);\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n    return va_arg(arg_ptr, float);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  208 always 208
+Line 214
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  214 always 214
+  "[test.cpp:5]: (error) va_list 'arg_ptr' used before va_start() was called.\n" always "[test.cpp:5]: (error) va_list 'arg_ptr' used before va_start() was called.\n"
+Line 216
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_end(arg_ptr);\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_end(arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  216 always 216
+Line 220
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  220 always 220
+  "[test.cpp:3]: (error) va_list 'arg_ptr' used before va_start() was called.\n" always "[test.cpp:3]: (error) va_list 'arg_ptr' used before va_start() was called.\n"
+Line 223
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n    va_start(arg_ptr, szBuffer);\n    foo(va_arg(arg_ptr, float));\n    va_end(arg_ptr);\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n    va_start(arg_ptr, szBuffer);\n    foo(va_arg(arg_ptr, float));\n    va_end(arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  223 always 223
+Line 231
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  231 always 231
+  "" always ""
+Line 234
+  "void Format(va_list v1) {\n    va_list v2;\n    va_copy(v2, v1);\n    foo(va_arg(v1, float));\n    va_end(v2);\n}" always "void Format(va_list v1) {\n    va_list v2;\n    va_copy(v2, v1);\n    foo(va_arg(v1, float));\n    va_end(v2);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  234 always 234
+Line 240
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  240 always 240
+  "" always ""
+Line 243
+  "void foo(int flag1, int flag2, ...) {\n    switch (flag1) {\n    default:\n        va_list vargs;\n        va_start(vargs, flag2);\n        if (flag2) {\n            va_end(vargs);\n            break;\n        }\n        int data = va_arg(vargs, int);\n        va_end(vargs);\n    }\n}" always "void foo(int flag1, int flag2, ...) {\n    switch (flag1) {\n    default:\n        va_list vargs;\n        va_start(vargs, flag2);\n        if (flag2) {\n            va_end(vargs);\n            break;\n        }\n        int data = va_arg(vargs, int);\n        va_end(vargs);\n    }\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  243 always 243
+Line 256
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  256 always 256
+  "" always ""
+Line 259
+  "void action_push(int type, ...) {\n    va_list args;\n    va_start(args, type);\n    switch (push_mode) {\n    case UNDO:\n        list_add(&act->node, &to_redo);\n        break;\n    case REDO:\n        list_add(&act->node, &to_undo);\n        break;\n    }\n    va_end(args);\n}" always "void action_push(int type, ...) {\n    va_list args;\n    va_start(args, type);\n    switch (push_mode) {\n    case UNDO:\n        list_add(&act->node, &to_redo);\n        break;\n    case REDO:\n        list_add(&act->node, &to_undo);\n        break;\n    }\n    va_end(args);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  259 always 259
+Line 272
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  272 always 272
+  "" always ""
+Line 274
+  "void action_push(int type, ...) {\n    va_list args;\n    va_start(args, type);\n    switch (push_mode) {\n    case UNDO:\n        list_add(&act->node, &to_redo);\n        va_end(args);\n        break;\n    case REDO:\n        list_add(&act->node, &to_undo);\n        va_end(args);\n        break;\n    }\n}" always "void action_push(int type, ...) {\n    va_list args;\n    va_start(args, type);\n    switch (push_mode) {\n    case UNDO:\n        list_add(&act->node, &to_redo);\n        va_end(args);\n        break;\n    case REDO:\n        list_add(&act->node, &to_undo);\n        va_end(args);\n        break;\n    }\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  274 always 274
+Line 288
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  288 always 288
+  "" always ""
+Line 290
+  "void action_push(int type, ...) {\n    va_list args;\n    va_start(args, type);\n    switch (push_mode) {\n    case UNDO:\n        list_add(&act->node, &to_redo);\n        break;\n    case REDO:\n        list_add(&act->node, &to_undo);\n        va_end(args);\n        break;\n    }\n}" always "void action_push(int type, ...) {\n    va_list args;\n    va_start(args, type);\n    switch (push_mode) {\n    case UNDO:\n        list_add(&act->node, &to_redo);\n        break;\n    case REDO:\n        list_add(&act->node, &to_undo);\n        va_end(args);\n        break;\n    }\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  290 always 290
+Line 303
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  303 always 303
+  "[test.cpp:13]: (error) va_list 'args' was opened but not closed by va_end().\n" always "[test.cpp:13]: (error) va_list 'args' was opened but not closed by va_end().\n"
+Line 306
+  "void redisvFormatCommand(char *format, va_list ap, bool flag) {\n    va_list _cpy;\n    va_copy(_cpy, ap);\n    if (flag)\n        goto fmt_valid;\n    va_end(_cpy);\n    goto format_err;\nfmt_valid:\n    sdscatvprintf(curarg, _format, _cpy);\n    va_end(_cpy);\nformat_err:\n}" always "void redisvFormatCommand(char *format, va_list ap, bool flag) {\n    va_list _cpy;\n    va_copy(_cpy, ap);\n    if (flag)\n        goto fmt_valid;\n    va_end(_cpy);\n    goto format_err;\nfmt_valid:\n    sdscatvprintf(curarg, _format, _cpy);\n    va_end(_cpy);\nformat_err:\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  306 always 306
+Line 318
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  318 always 318
+  "" always ""
+Line 322
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  322 always 322
+Line 328
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  328 always 328
+  "[test.cpp:4]: (error) va_start() or va_copy() called subsequently on 'arg_ptr' without va_end() in between.\n" always "[test.cpp:4]: (error) va_start() or va_copy() called subsequently on 'arg_ptr' without va_end() in between.\n"
+Line 330
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list vl1;\n    va_start(vl1, szBuffer);\n    va_copy(vl1, vl1);\n    va_end(vl1);\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list vl1;\n    va_start(vl1, szBuffer);\n    va_copy(vl1, vl1);\n    va_end(vl1);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  330 always 330
+Line 336
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  336 always 336
+  "[test.cpp:4]: (error) va_start() or va_copy() called subsequently on 'vl1' without va_end() in between.\n" always "[test.cpp:4]: (error) va_start() or va_copy() called subsequently on 'vl1' without va_end() in between.\n"
+Line 338
+  "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}" always "void Format(char* szFormat, char (*szBuffer)[_Size], ...) {\n    va_list arg_ptr;\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n    va_start(arg_ptr, szBuffer);\n    va_end(arg_ptr);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  338 always 338
+Line 345
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  345 always 345
+  "" always ""
+Line 349
+  "void BG_TString::Format() {\n  BG_TChar * f;\n  va_start(args,f);\n  BG_TString result(f);\n}" always "void BG_TString::Format() {\n  BG_TChar * f;\n  va_start(args,f);\n  BG_TString result(f);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  349 always 349
+Line 354
+  ! always {!<=-1,!>=2}
+  ( always {!<=-1,!>=2}
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  354 always 354
+  "" always ""
+Line 357
+  "void mowgli_object_message_broadcast(mowgli_object_t *self, const char *name, ...) {\n  va_list va;\n  MOWGLI_LIST_FOREACH(n, self->klass->message_handlers.head) {\n    if (!strcasecmp(sig2->name, name))\n      break;\n  }\n  va_start(va, name);\n  va_end(va);\n}" always "void mowgli_object_message_broadcast(mowgli_object_t *self, const char *name, ...) {\n  va_list va;\n  MOWGLI_LIST_FOREACH(n, self->klass->message_handlers.head) {\n    if (!strcasecmp(sig2->name, name))\n      break;\n  }\n  va_start(va, name);\n  va_end(va);\n}"
+  "cppcheck-2.8/test/testvaarg.cpp" always "cppcheck-2.8/test/testvaarg.cpp"
+  357 always 357
