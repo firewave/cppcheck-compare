@@ -1,6 +1,15 @@
 #!/bin/sh
 
+# TODO: add parameter to specify the version to compare
+
 SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"/
+
+# TODO: generate data from last official release
+rm -rf 2.12.0.tar.gz cppcheck-2.12.0
+wget https://github.com/danmar/cppcheck/archive/refs/tags/2.12.0.tar.gz
+tar xvf 2.12.0.tar.gz
+
+# TODO: fetch and build latest Cppcheck
 
 # TODO: download to SCRIPTDIR
 rm -rf 2.8.tar.gz cppcheck-2.8
